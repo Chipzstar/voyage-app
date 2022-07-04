@@ -6,7 +6,7 @@ const SideMenuItem = ({ title, icon }) => {
 	return (
 		<a href='#' className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-menu-hover-100 dark:hover:bg-gray-700'>
 			<img src={icon} alt='' className='w-6 h-6'/>
-			<span className='ml-6 text-base md:text-xl'>{title}</span>
+			<span className='ml-6 text-base md:text-lg'>{title}</span>
 		</a>
 	);
 };
@@ -52,7 +52,7 @@ const Sidebar = () => {
 
 				<a href='#' className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-menu-hover-100 dark:hover:bg-gray-700'>
 					<Logout size={30} strokeWidth={1} color={'black'} />
-					<span className='flex-1 ml-6 text-base md:text-xl whitespace-nowrap'>Sign Out</span>
+					<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
 				</a>
 			</div>
 		</aside>

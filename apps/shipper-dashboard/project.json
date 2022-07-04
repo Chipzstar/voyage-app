@@ -9,7 +9,7 @@
       "defaultConfiguration": "production",
       "options": {
         "root": "apps/shipper-dashboard",
-        "outputPath": "dist/apps/shipper-dashboard"
+        "outputPath": "build/apps/shipper-dashboard"
       },
       "configurations": {
         "development": {},
