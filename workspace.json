@@ -2,6 +2,8 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
+    "carrier-dashboard": "apps/carrier-dashboard",
+    "carrier-dashboard-e2e": "apps/carrier-dashboard-e2e",
     "shipper-dashboard": "apps/shipper-dashboard",
     "shipper-dashboard-e2e": "apps/shipper-dashboard-e2e"
   }
