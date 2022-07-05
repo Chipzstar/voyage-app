@@ -14,7 +14,9 @@ const quote = () => {
 			customerPONumber: '',
 			weight: '',
 			quantity: 1,
-			pickupDate: null
+			pickupDate: null,
+			pickupLocation: '',
+			deliveryLocation: ''
 		}
 	});
 
@@ -82,25 +84,17 @@ const quote = () => {
 								<header className='quote-header'>Pickup</header>
 								<div className=''>
 									<TextInput
+										size="md"
 										radius={0}
-										label={
-											<span>
-												Internal PO No. <span className='text-voyage-grey'>(optional)</span>
-											</span>
-										}
-										placeholder=''
-										{...form.getInputProps('internalPONumber')}
+										placeholder='Location name or Postal Code'
+										{...form.getInputProps('pickupLocation')}
 									/>
 								</div>
 								<div className=''>
 									<TextInput
+										size="md"
 										radius={0}
-										label={
-											<span>
-												Internal PO No. <span className='text-voyage-grey'>(optional)</span>
-											</span>
-										}
-										placeholder=''
+										placeholder='County'
 										{...form.getInputProps('internalPONumber')}
 									/>
 								</div>
@@ -109,25 +103,17 @@ const quote = () => {
 								<header className='quote-header'>Delivery</header>
 								<div className=''>
 									<TextInput
+										size="md"
 										radius={0}
-										label={
-											<span>
-												Internal PO No. <span className='text-voyage-grey'>(optional)</span>
-											</span>
-										}
-										placeholder=''
-										{...form.getInputProps('internalPONumber')}
+										placeholder='Location name or Postal Code'
+										{...form.getInputProps('deliveryLocation')}
 									/>
 								</div>
 								<div className=''>
 									<TextInput
+										size="md"
 										radius={0}
-										label={
-											<span>
-												Internal PO No. <span className='text-voyage-grey'>(optional)</span>
-											</span>
-										}
-										placeholder=''
+										placeholder='Country'
 										{...form.getInputProps('internalPONumber')}
 									/>
 								</div>
