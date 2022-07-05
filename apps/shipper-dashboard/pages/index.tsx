@@ -10,7 +10,7 @@ export function Index() {
 	const [calendar, showCalendar] = useState(false);
 
 	return (
-		<div className='p-4'>
+		<div className='p-4 h-full'>
 			<div className='flex items-center justify-between px-4 py-3'>
 				<div className='flex flex-col justify-center'>
 					<span className='text-4xl font-semibold'>Home</span>
