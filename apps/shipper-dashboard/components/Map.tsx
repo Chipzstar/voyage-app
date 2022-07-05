@@ -33,9 +33,7 @@ const Map = props => {
 		);
 	}, [])
 	return (
-		<div id="map-container" className={styles.mapWrapper} style={{height: 500}}>
-
-		</div>
+		<div id="map-container" className={styles.mapWrapper} style={{height: 500}}/>
 	);
 };
 

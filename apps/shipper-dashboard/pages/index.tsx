@@ -1,24 +1,31 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Layout from '../layout/Layout';
 import CalendarFilter from '../components/CalendarFilter';
 import DashboardPanels from '../components/DashboardPanels';
 import Map from '../components/Map';
+import dayjs from 'dayjs';
+import CalendarPicker from '../components/CalendarPicker';
 
 export function Index() {
-	const [active, setActive] = useState({ date: new Date() });
+	const [active, setActive] = useState({ date: dayjs().format('DD.MM.YYYY') });
+	const [calendar, showCalendar] = useState(false);
+
 	return (
 		<Layout>
 			<div className='p-4'>
-				<div className='flex justify-between px-4 pt-3'>
+				<div className='flex items-center justify-between px-4 py-3'>
 					<div className='flex flex-col justify-center'>
 						<span className='dashboard-header mb-3'>
 							<span className='text-4xl font-semibold'>Home</span>
 						</span>
 					</div>
-					<CalendarFilter current={active} onSelect={setActive} />
+					<CalendarPicker opened={calendar} onClose={() => showCalendar(false)} value={active.date} setValue={value => setActive(prevState => ({ date: dayjs(new Date(value)).format('DD.MM.YYYY') }))}/>
+					<CalendarFilter
+						current={active.date}
+						showCalendar={showCalendar} />
 				</div>
 				<DashboardPanels id='dashboard' date={active.date} />
-				<div className="my-6">
+				<div className='my-6'>
 					<Map />
 				</div>
 			</div>
