@@ -16,7 +16,8 @@ module.exports = {
 				'voyage-grey': {
 					DEFAULT: '#CCCCCC'
 				},
-				'menu-hover': {
+
+				'secondary': {
 					DEFAULT: '#3646F5',
 					'50': '#E5E7FE',
 					'100': '#D1D5FD',
