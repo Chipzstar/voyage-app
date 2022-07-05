@@ -2,42 +2,46 @@ import React from 'react';
 import { Logout } from 'tabler-icons-react';
 import { PATHS } from '../utils';
 import Link from 'next/link';
+import classNames from 'classnames';
+import { useRouter } from 'next/router';
 
-const SideMenuItem = ({ title, icon, href }) => {
+const SideMenuItem = ({ title, icon, href, isActive }) => {
+
+	const wrapperStyles = classNames({
+		'hover:bg-secondary-100': true,
+		'dark:hover:bg-gray-700': true,
+		'bg-secondary-100': isActive
+	});
+
 	return (
-		<Link href={href}>
-			<div role="button" className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-secondary-100 dark:hover:bg-gray-700'>
-				<img src={icon} alt='' className='w-6 h-6' />
-				<span className='ml-6 text-base md:text-lg'>{title}</span>
-			</div>
-		</Link>
+		<li className={wrapperStyles}>
+			<Link href={href}>
+				<div role='button' className='px-4 flex items-center py-4 text-base font-normal text-gray-900 dark:text-white'>
+					<img src={icon} alt='' className='w-6 h-6' />
+					<span className='ml-6 text-base md:text-lg'>{title}</span>
+				</div>
+			</Link>
+		</li>
 	);
 };
 
 const Sidebar = () => {
+	const router = useRouter()
 	return (
 		<aside className='w-64 h-screen' aria-label='Sidebar'>
-			<div className='h-full overflow-y-auto py-4 px-3 bg-gray-50 dark:bg-gray-800 flex flex-col border-r-2 border-gray-300'>
-				<a href='/' className='flex flex-row items-center pl-2.5 mb-7'>
-					<img src='/static/images/favicon.svg' className='mr-3 h-6 sm:h-7' alt='Voyage Logo' />
-					<span className='self-center text-2xl font-semibold whitespace-nowrap dark:text-white mb-0.5'>Voyage</span>
-				</a>
-				<ul className='grow space-y-6'>
-					<li>
-						<SideMenuItem title='Home' icon='/static/images/home.svg' href={PATHS.HOME} />
-					</li>
-					<li>
-						<SideMenuItem title='Bookings' icon='/static/images/bookings.svg' href={PATHS.BOOKINGS} />
-					</li>
-					<li>
-						<SideMenuItem title='Shipments' icon='/static/images/shipments.svg' href={PATHS.SHIPMENTS} />
-					</li>
-					<li>
-						<SideMenuItem title='Workflows' icon='/static/images/workflows.svg' href={PATHS.WORKFLOWS} />
-					</li>
-					<li>
-						<SideMenuItem title='Billing' icon='/static/images/billing.svg' href={PATHS.BILLING} />
-					</li>
+			<div className='h-full overflow-y-auto py-4 bg-gray-50 dark:bg-gray-800 flex flex-col border-r-2 border-gray-300'>
+				<Link href={PATHS.HOME}>
+					<div role='button' className='flex flex-row items-center pl-4 mb-7'>
+						<img src='/static/images/favicon.svg' className='mr-3 h-6 sm:h-7' alt='Voyage Logo' />
+						<span className='self-center text-2xl font-semibold whitespace-nowrap dark:text-white mb-0.5'>voyage</span>
+					</div>
+				</Link>
+				<ul className='grow space-y-4'>
+					<SideMenuItem title='Home' icon='/static/images/home.svg' href={PATHS.HOME} isActive={router.pathname === PATHS.HOME} />
+					<SideMenuItem title='Bookings' icon='/static/images/bookings.svg' href={PATHS.BOOKINGS} isActive={router.pathname === PATHS.BOOKINGS} />
+					<SideMenuItem title='Shipments' icon='/static/images/shipments.svg' href={PATHS.SHIPMENTS} isActive={router.pathname === PATHS.SHIPMENTS} />
+					<SideMenuItem title='Workflows' icon='/static/images/workflows.svg' href={PATHS.WORKFLOWS} isActive={router.pathname === PATHS.WORKFLOWS} />
+					<SideMenuItem title='Billing' icon='/static/images/billing.svg' href={PATHS.BILLING} isActive={router.pathname === PATHS.BILLING} />
 				</ul>
 
 				<a href='#' className='flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-secondary-100 dark:hover:bg-gray-700'>
