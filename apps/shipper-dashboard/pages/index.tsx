@@ -2,14 +2,10 @@ import { useState } from 'react';
 import Layout from '../layout/Layout';
 import CalendarFilter from '../components/CalendarFilter';
 import DashboardPanels from '../components/DashboardPanels';
+import Map from '../components/Map';
 
 export function Index() {
-	/*
-	 * Replace the elements below with your own.
-	 *
-	 * Note: The corresponding styles are in the ./index.scss file.
-	 */
-	const [active, setActive] = useState({ date: new Date() })
+	const [active, setActive] = useState({ date: new Date() });
 	return (
 		<Layout>
 			<div className='p-4'>
@@ -22,6 +18,9 @@ export function Index() {
 					<CalendarFilter current={active} onSelect={setActive} />
 				</div>
 				<DashboardPanels id='dashboard' date={active.date} />
+				<div className="my-6">
+					<Map />
+				</div>
 			</div>
 		</Layout>
 	);

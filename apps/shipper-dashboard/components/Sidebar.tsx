@@ -1,6 +1,6 @@
 import React from 'react';
 import { Logout } from 'tabler-icons-react';
-import styles from '../styles/layout.module.scss';
+import styles from '../scss/layout.module.scss';
 
 const SideMenuItem = ({ title, icon }) => {
 	return (

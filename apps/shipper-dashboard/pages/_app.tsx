@@ -3,12 +3,12 @@ import Head from 'next/head';
 import '../styles/globals.css';
 import Favicon from '../components/Favicon';
 
-function CustomApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
 	return (
 		<>
 			<Head>
 				<Favicon/>
-				<title>Welcome to shipper-dashboard!</title>
+				<title>Shipper Dashboard</title>
 			</Head>
 			<main className='app'>
 				<Component {...pageProps} />
@@ -17,4 +17,4 @@ function CustomApp({ Component, pageProps }: AppProps) {
 	);
 }
 
-export default CustomApp;
+export default App;
