@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const DashboardPanels = ({ id, date }) => {
+const DashboardPanels = ({ date }) => {
 	return (
 		<div className='mx-auto'>
 			<div className='grid grid-cols-1 md:gird-cols-2 lg:grid-cols-3 gap-6'>

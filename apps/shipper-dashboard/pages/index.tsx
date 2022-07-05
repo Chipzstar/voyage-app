@@ -18,7 +18,7 @@ export function Index() {
 				<CalendarPicker opened={calendar} onClose={() => showCalendar(false)} value={active.date} setValue={value => setActive(prevState => ({ date: dayjs(new Date(value)).format('DD.MM.YYYY') }))} />
 				<CalendarFilter current={active.date} showCalendar={showCalendar} />
 			</div>
-			<DashboardPanels id='dashboard' date={active.date} />
+			<DashboardPanels date={active.date} />
 			<div className='my-6'>
 				<Map />
 			</div>

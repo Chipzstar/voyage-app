@@ -5,7 +5,7 @@ import Quotes from '../containers/Quotes';
 const bookings = () => {
 	const [activeTab, setActiveTab] = useState(1);
 	return (
-		<div className='mx-auto p-4'>
+		<div className='p-4'>
 			<div className='px-4'>
 				<section className='flex flex-row items-center justify-between mb-8 py-3'>
 					<h2 className='text-3xl font-semibold'>Bookings</h2>
