@@ -13,7 +13,7 @@ export function Index() {
 		<div className='p-4 h-full'>
 			<div className='flex items-center justify-between px-4 py-3'>
 				<div className='flex flex-col justify-center'>
-					<span className='text-4xl font-semibold'>Home</span>
+					<span className='text-4xl font-medium'>Home</span>
 				</div>
 				<CalendarPicker opened={calendar} onClose={() => showCalendar(false)} value={active.date} setValue={value => setActive(prevState => ({ date: dayjs(new Date(value)).format('DD.MM.YYYY') }))} />
 				<CalendarFilter current={active.date} showCalendar={showCalendar} />

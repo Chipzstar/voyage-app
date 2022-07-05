@@ -12,11 +12,13 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				helvetica: ['Helvetica', 'sans']
+			},
 			colors:{
 				'voyage-grey': {
 					DEFAULT: '#CCCCCC'
 				},
-
 				'secondary': {
 					DEFAULT: '#3646F5',
 					'50': '#E5E7FE',

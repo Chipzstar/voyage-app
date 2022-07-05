@@ -4,6 +4,27 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    @font-face {
+        font-family: "Helvetica";
+        font-weight: 500;
+        font-style: normal;
+        src: url('/apps/shipper-dashboard/public/static/fonts/Helvetica/Helvetica.ttf') format('truetype');
+    }
+}
+
+@layer components {
+    .quote-header {
+        @apply text-4xl font-light
+    }
+    .page-header {
+        @apply text-3xl font-semibold font-normal
+    }
+    .voyage-button {
+        @apply bg-secondary-500 hover:bg-secondary-700 text-white font-semibold h-12 w-48
+    }
+}
+
 @font-face {
     font-family: "Helvetica";
     src: url("../public/static/fonts/Helvetica/Helvetica.ttf");
