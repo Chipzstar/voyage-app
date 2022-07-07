@@ -31,7 +31,7 @@ const quote = () => {
 					<div id='quote-form-container' className='flex flex-col space-y-5 col-span-3'>
 						<div className='grid grid-cols-1 gap-6'>
 							<header className='quote-header'>Service Type</header>
-							<div className='p-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 gap-x-12 pb-12'>
+							<div className='p-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 gap-x-12'>
 								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Warehouse to warehouse</button>
 								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to store distribution</button>
 								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to carrier injections</button>
