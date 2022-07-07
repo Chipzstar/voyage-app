@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, Textarea, NumberInput, Select } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { useForm, formList  } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
 import { Calendar } from 'tabler-icons-react';
 import { ChevronDown, ChevronLeft } from 'tabler-icons-react';
@@ -14,6 +14,7 @@ const quote = () => {
 		initialValues: {
 			serviceType: '',
 			shipmentType: '',
+			activitiesRequired: formList([]),
 			internalPONumber: '',
 			customerPONumber: '',
 			weight: '',
@@ -162,7 +163,7 @@ const quote = () => {
 								</div>
 							</div>
 						</div>
-						<div className='grid grid-cols-2 gap-5'>
+						<div className='grid grid-cols-2 gap-6'>
 							<div className='flex flex-col space-y-6'>
 								<header className='quote-header'>Pickup</header>
 								<div className=''>
@@ -201,20 +202,54 @@ const quote = () => {
 								<DatePicker className='w-72' radius={0} size='md' placeholder='Pickup Date' rightSection={<Calendar size={16} />} {...form.getInputProps('pickupDate')} />
 							</div>
 						</div>
-						<div className='grid grid-cols-2 gap-5'>
+						<div className='grid grid-cols-1 gap-5'>
 							<div className='flex flex-col space-y-6'>
-								<header className='quote-header'>Equipment Type</header>
-								<p>Select equipment type</p>
-								<Select
-									radius={0}
-									size='md'
-									defaultValue='No preference'
-									rightSection={<ChevronDown size={14} />}
-									rightSectionWidth={30}
-									styles={{ rightSection: { pointerEvents: 'none' } }}
-									data={['No preference', 'Explosives', 'Gases', 'Flammable Items', 'Toxic & Infectious substances', 'Radioactive Material', 'Corrosives', 'Other Dangerous Goods']}
-								/>
+								<header className='quote-header'>Activities/Equipment Required</header>
+								<div className='py-4 grid grid-cols-1 lg:grid-cols-4 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
+									<button type='button' className={`${inputButton} ${form.values.activitiesRequired.includes('No Preference') && 'bg-secondary text-white'}`} onClick={() => {
+										if (!form.values.activitiesRequired.includes('No Preference')) {
+											form.addListItem('activitiesRequired', 'No Preference')
+										} else {
+											const index = form.values.activitiesRequired.indexOf('No Preference')
+											form.removeListItem('activitiesRequired', index)
+										}
+									}}>
+										No Preference
+									</button>
+									<button type='button' className={`${inputButton} ${form.values.activitiesRequired.includes('Flatbed Trailer') && 'bg-secondary text-white'}`} onClick={() => {
+										if (!form.values.activitiesRequired.includes('Flatbed Trailer')) {
+											form.addListItem('activitiesRequired', 'Flatbed Trailer')
+										} else {
+											const index = form.values.activitiesRequired.indexOf('Flatbed Trailer')
+											form.removeListItem('activitiesRequired', index)
+										}
+									}}>
+										Flatbed Trailer
+									</button>
+									<button type='button' className={`${inputButton} ${form.values.activitiesRequired.includes('Luton Van') && 'bg-secondary text-white'}`} onClick={() => {
+										if (!form.values.activitiesRequired.includes('Luton Van')) {
+											form.addListItem('activitiesRequired', 'Luton Van')
+										} else {
+											const index = form.values.activitiesRequired.indexOf('Luton Van')
+											form.removeListItem('activitiesRequired', index)
+										}
+									}}>
+										Luton Van
+									</button>
+									<button type='button' className={`${inputButton} ${form.values.activitiesRequired.includes('Tail lift') && 'bg-secondary text-white'}`} onClick={() => {
+										if (!form.values.activitiesRequired.includes('Tail lift')) {
+											form.addListItem('activitiesRequired', 'Tail lift')
+										} else {
+											const index = form.values.activitiesRequired.indexOf('Tail lift')
+											form.removeListItem('activitiesRequired', index)
+										}
+									}}>
+										Tail lift
+									</button>
+								</div>
 							</div>
+						</div>
+						<div className="grid grid-cols-1 gap-5">
 							<div className='flex flex-col space-y-6'>
 								<header className='quote-header'>Notes</header>
 								<Textarea radius={0} placeholder='Notes' required autosize minRows={3} maxRows={6} />
