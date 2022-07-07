@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import Quotes from '../../containers/Quotes';
-import DataGrid from '../../components/DataGrid';
 
 const index = () => {
 	const [activeTab, setActiveTab] = useState(0);
@@ -9,7 +8,7 @@ const index = () => {
 	return (
 		<div className='p-4 h-screen'>
 			<div className='px-4 h-full'>
-				<section className='flex flex-row items-center justify-between mb-8 py-3'>
+				<section className='flex flex-row items-center justify-between mb-8 py-4'>
 					<h2 className='page-header'>Shipment History</h2>
 				</section>
 				<Tabs active={activeTab} onTabChange={setActiveTab} grow>

@@ -5,12 +5,15 @@ import { DatePicker } from '@mantine/dates';
 import { Calendar } from 'tabler-icons-react';
 import { ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
+import classNames from 'classnames';
 
 const quote = () => {
 	const router = useRouter();
 
 	const form = useForm({
 		initialValues: {
+			serviceType: '',
+			shipmentType: '',
 			internalPONumber: '',
 			customerPONumber: '',
 			weight: '',
@@ -19,6 +22,16 @@ const quote = () => {
 			pickupLocation: '',
 			deliveryLocation: ''
 		}
+	});
+
+	const inputButton = classNames({
+		'h-16': true,
+		'px-3': true,
+		border: true,
+		'border-gray-300': true,
+		'hover:bg-secondary': true,
+		'hover:text-white': true,
+		'font-medium': true
 	});
 
 	return (
@@ -33,9 +46,29 @@ const quote = () => {
 						<div className='grid grid-cols-1 gap-6'>
 							<header className='quote-header'>Service Type</header>
 							<div className='py-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
-								<button type="button" className="h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Warehouse to warehouse</button>
-								<button type="button" className="h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to store distribution</button>
-								<button type="button" className="h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to carrier injections</button>
+								<button type='button' className={`${inputButton} ${form.values.serviceType === 'W2W' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('serviceType', 'W2W')}>
+									Warehouse to warehouse
+								</button>
+								<button type='button' className={`${inputButton} ${form.values.serviceType === 'D2S' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('serviceType', 'D2S')}>
+									Direct to store distribution
+								</button>
+								<button type='button' className={`${inputButton} ${form.values.serviceType === 'D2C' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('serviceType', 'D2C')}>
+									Direct to carrier injections
+								</button>
+							</div>
+						</div>
+						<div className='grid grid-cols-1 gap-6'>
+							<header className='quote-header'>Shipment Type</header>
+							<div className='py-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
+								<button type='button' className={`${inputButton} ${form.values.shipmentType === 'FTL' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('shipmentType', 'FTL')}>
+									FTL
+								</button>
+								<button type='button' className={`${inputButton} ${form.values.shipmentType === 'LTL' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('shipmentType', 'LTL')}>
+									LTL
+								</button>
+								<button type='button' className={`${inputButton} ${form.values.shipmentType === 'LPS' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('shipmentType', 'LPS')}>
+									Less than pallet size
+								</button>
 							</div>
 						</div>
 						<div className='grid grid-cols-1 gap-6'>
@@ -69,24 +102,54 @@ const quote = () => {
 									<NumberInput radius={0} required label='Weight' placeholder='' rightSection={<span className='text-voyage-grey pr-3'>Kg</span>} {...form.getInputProps('weight')} />
 								</div>
 								<div className='col-span-4 lg:col-span-6 lg:row-span-2'>
-									<Textarea size="sm" radius={0} label='Load Description' required autosize minRows={3} maxRows={6} />
+									<Textarea size='sm' radius={0} label='Load Description' required autosize minRows={3} maxRows={6} />
 								</div>
 								<div className='lg:col-span-6 col-span-4 lg:row-span-2 grid grid-cols-12 gap-x-6 gap-y-4'>
 									<div className='col-span-4 lg:row-span-1'>
-										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Length' placeholder='Units' {...form.getInputProps('quantity')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+										<NumberInput
+											size='sm'
+											defaultValue={1}
+											radius={0}
+											min={1}
+											max={100}
+											label='Item Length'
+											placeholder='Units'
+											{...form.getInputProps('quantity')}
+											rightSection={<span className='text-voyage-grey pr-3'>cm</span>}
+										/>
 									</div>
 									<div className='col-span-4 lg:row-span-1'>
-										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Width' placeholder='Units' {...form.getInputProps('quantity')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+										<NumberInput
+											size='sm'
+											defaultValue={1}
+											radius={0}
+											min={1}
+											max={100}
+											label='Item Width'
+											placeholder='Units'
+											{...form.getInputProps('quantity')}
+											rightSection={<span className='text-voyage-grey pr-3'>cm</span>}
+										/>
 									</div>
 									<div className='col-span-4 lg:row-span-1'>
-										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Height' placeholder='Units' {...form.getInputProps('quantity')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+										<NumberInput
+											size='sm'
+											defaultValue={1}
+											radius={0}
+											min={1}
+											max={100}
+											label='Item Height'
+											placeholder='Units'
+											{...form.getInputProps('quantity')}
+											rightSection={<span className='text-voyage-grey pr-3'>cm</span>}
+										/>
 									</div>
 									<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
-										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
+										<NumberInput size='sm' defaultValue={1} radius={0} min={1} max={100} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
 									</div>
 									<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
 										<Select
-											size="sm"
+											size='sm'
 											radius={0}
 											label='Item Packaging'
 											placeholder='Pick one'
@@ -104,9 +167,9 @@ const quote = () => {
 								<header className='quote-header'>Pickup</header>
 								<div className=''>
 									<Select
-										placeholder="Select Location"
+										placeholder='Select Location'
 										radius={0}
-										size="md"
+										size='md'
 										defaultValue='No preference'
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
@@ -119,9 +182,9 @@ const quote = () => {
 								<header className='quote-header'>Delivery</header>
 								<div className=''>
 									<Select
-										placeholder="Select Destination"
+										placeholder='Select Destination'
 										radius={0}
-										size="md"
+										size='md'
 										defaultValue='No preference'
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
@@ -144,7 +207,7 @@ const quote = () => {
 								<p>Select equipment type</p>
 								<Select
 									radius={0}
-									size="md"
+									size='md'
 									defaultValue='No preference'
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}
@@ -159,9 +222,9 @@ const quote = () => {
 						</div>
 					</div>
 					<div id='button-container' className='flex flex-col justify-center space-y-8'>
-						<button className="voyage-button">Optimize</button>
-						<button className="voyage-button">Manually Book</button>
-						<button className="voyage-button bg-transparent text-black hover:bg-stone-100">Cancel</button>
+						<button className='voyage-button'>Optimize</button>
+						<button className='voyage-button'>Manually Book</button>
+						<button className='voyage-button bg-transparent text-black hover:bg-stone-100'>Cancel</button>
 					</div>
 				</form>
 			</div>
