@@ -27,7 +27,7 @@ const SideMenuItem = ({ title, icon, href, isActive }) => {
 const Sidebar = () => {
 	const router = useRouter();
 	return (
-		<div className='h-full overflow-y-auto py-4 bg-gray-50 dark:bg-gray-800 flex flex-col border-r-2 border-gray-300'>
+		<div className='w-64 h-full overflow-y-auto py-4 bg-gray-50 dark:bg-gray-800 flex flex-col border-r-2 border-gray-300'>
 			<Link href={PATHS.HOME}>
 				<div role='button' className='flex flex-row items-center pl-4 mb-7'>
 					<img src='/static/images/favicon.svg' className='mr-3 h-6 sm:h-7' alt='Voyage Logo' />
