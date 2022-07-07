@@ -30,9 +30,17 @@ const quote = () => {
 				<form onSubmit={form.onSubmit(values => console.log(values))} className='grid grid-cols-3 lg:grid-cols-4 gap-20'>
 					<div id='quote-form-container' className='flex flex-col space-y-5 col-span-3'>
 						<div className='grid grid-cols-1 gap-6'>
+							<header className='quote-header'>Service Type</header>
+							<div className='p-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 gap-x-12 pb-12'>
+								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Warehouse to warehouse</button>
+								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to store distribution</button>
+								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to carrier injections</button>
+							</div>
+						</div>
+						<div className='grid grid-cols-1 gap-6'>
 							<header className='quote-header'>Load Type</header>
-							<div className='border border-gray-300 p-4 grid lg:grid-cols-12 gap-y-4 gap-x-12 pb-12'>
-								<div className='col-span-4'>
+							<div className='border border-gray-300 p-4 grid grid-cols-4 lg:grid-cols-12 lg:row-span-3 gap-y-4 gap-x-12 pb-12'>
+								<div className='lg:row-span-1 col-span-4'>
 									<TextInput
 										radius={0}
 										label={
@@ -44,7 +52,7 @@ const quote = () => {
 										{...form.getInputProps('internalPONumber')}
 									/>
 								</div>
-								<div className='col-span-4'>
+								<div className='lg:row-span-1 col-span-4'>
 									<TextInput
 										radius={0}
 										label={
@@ -56,26 +64,37 @@ const quote = () => {
 										{...form.getInputProps('customerPONumber')}
 									/>
 								</div>
-								<div className='col-span-4'>
+								<div className='lg:row-span-1 col-span-4 '>
 									<NumberInput radius={0} required label='Weight' placeholder='' rightSection={<span className='text-voyage-grey pr-3'>Kg</span>} {...form.getInputProps('weight')} />
 								</div>
-								<div className='col-span-6'>
-									<Textarea size="sm" radius={0} label='Load Description' required autosize maxRows={6} />
+								<div className='col-span-4 lg:col-span-6 lg:row-span-2'>
+									<Textarea size="sm" radius={0} label='Load Description' required autosize minRows={3} maxRows={6} />
 								</div>
-								<div className='col-span-3'>
-									<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
-								</div>
-								<div className='col-span-3'>
-									<Select
-										size="sm"
-										radius={0}
-										label='Item Packaging'
-										placeholder='Pick one'
-										rightSection={<ChevronDown size={14} />}
-										rightSectionWidth={30}
-										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={['Pallets', 'Crates', 'Skids', 'Containers', 'Boxes']}
-									/>
+								<div className='lg:col-span-6 col-span-4 lg:row-span-2 grid grid-cols-12 gap-x-6 gap-y-4'>
+									<div className='col-span-4 lg:row-span-1'>
+										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Length' placeholder='Units' {...form.getInputProps('quantity')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+									</div>
+									<div className='col-span-4 lg:row-span-1'>
+										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Width' placeholder='Units' {...form.getInputProps('quantity')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+									</div>
+									<div className='col-span-4 lg:row-span-1'>
+										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Height' placeholder='Units' {...form.getInputProps('quantity')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+									</div>
+									<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
+										<NumberInput size="sm" defaultValue={1} radius={0} min={1} max={100} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
+									</div>
+									<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
+										<Select
+											size="sm"
+											radius={0}
+											label='Item Packaging'
+											placeholder='Pick one'
+											rightSection={<ChevronDown size={14} />}
+											rightSectionWidth={30}
+											styles={{ rightSection: { pointerEvents: 'none' } }}
+											data={['Pallets', 'Crates', 'Skids', 'Containers', 'Boxes']}
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -83,38 +102,30 @@ const quote = () => {
 							<div className='flex flex-col space-y-6'>
 								<header className='quote-header'>Pickup</header>
 								<div className=''>
-									<TextInput
-										size="md"
+									<Select
+										placeholder="Select Location"
 										radius={0}
-										placeholder='Location name or Postal Code'
-										{...form.getInputProps('pickupLocation')}
-									/>
-								</div>
-								<div className=''>
-									<TextInput
 										size="md"
-										radius={0}
-										placeholder='County'
-										{...form.getInputProps('internalPONumber')}
+										defaultValue='No preference'
+										rightSection={<ChevronDown size={14} />}
+										rightSectionWidth={30}
+										styles={{ rightSection: { pointerEvents: 'none' } }}
+										data={['Warehouse 1', 'Warehouse 2', 'Warehouse 3', 'Warehouse 4', 'Warehouse 5']}
 									/>
 								</div>
 							</div>
 							<div className='flex flex-col space-y-6'>
 								<header className='quote-header'>Delivery</header>
 								<div className=''>
-									<TextInput
-										size="md"
+									<Select
+										placeholder="Select Destination"
 										radius={0}
-										placeholder='Location name or Postal Code'
-										{...form.getInputProps('deliveryLocation')}
-									/>
-								</div>
-								<div className=''>
-									<TextInput
 										size="md"
-										radius={0}
-										placeholder='Country'
-										{...form.getInputProps('internalPONumber')}
+										defaultValue='No preference'
+										rightSection={<ChevronDown size={14} />}
+										rightSectionWidth={30}
+										styles={{ rightSection: { pointerEvents: 'none' } }}
+										data={['Store 1', 'Store 2', 'Store 3', 'Store 4', 'Store 5']}
 									/>
 								</div>
 							</div>
