@@ -16,6 +16,7 @@
 
 .booking-container {
   min-height: calc(100vh - 225px);
+  height: calc(100vh - 225px);
 }
 
 /*

@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 
 const quote = () => {
 	const router = useRouter();
+
 	const form = useForm({
 		initialValues: {
 			internalPONumber: '',
