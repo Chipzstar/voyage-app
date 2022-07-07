@@ -12,7 +12,6 @@ export default class _Document extends Document {
 			<Html>
 				<Head>
 					<link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
-					<meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
 					<Favicon />
 				</Head>
 				<body>

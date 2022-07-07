@@ -22,7 +22,7 @@ const quote = () => {
 	});
 
 	return (
-		<div className='p-4 h-screen'>
+		<div className='p-4 min-h-screen'>
 			<div className='px-4'>
 				<section className='flex items-center space-x-4 mb-8' role='button' onClick={() => router.back()}>
 					<ChevronLeft size={48} strokeWidth={2} color={'black'} />
@@ -32,10 +32,10 @@ const quote = () => {
 					<div id='quote-form-container' className='flex flex-col space-y-5 col-span-3'>
 						<div className='grid grid-cols-1 gap-6'>
 							<header className='quote-header'>Service Type</header>
-							<div className='p-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 gap-x-12'>
-								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Warehouse to warehouse</button>
-								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to store distribution</button>
-								<button type="button" className="lg:w-72 h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to carrier injections</button>
+							<div className='py-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
+								<button type="button" className="h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Warehouse to warehouse</button>
+								<button type="button" className="h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to store distribution</button>
+								<button type="button" className="h-16 px-3 border border-gray-300 hover:bg-secondary hover:text-white font-medium">Direct to carrier injections</button>
 							</div>
 						</div>
 						<div className='grid grid-cols-1 gap-6'>

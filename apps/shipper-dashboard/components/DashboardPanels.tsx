@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const DashboardPanels = ({ date }) => {
 	return (
 		<div className='mx-auto'>
-			<div className='grid grid-cols-1 md:gird-cols-2 lg:grid-cols-3 gap-6'>
+			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 				<div className='flex flex-col justify-center p-4 div border border-voyage-grey'>
 					<div className='ml-7 space-y-3'>
 						<header>
@@ -39,7 +39,7 @@ const DashboardPanels = ({ date }) => {
 							<h2 className='text-2xl font-semibold'>Optimization Overview</h2>
 						</header>
 						<div className="h-32 flex items-end">
-							<img src='/static/images/optimization-overview.svg' alt='' />
+							<img src='/static/images/optimization.svg' alt='' />
 						</div>
 					</div>
 				</div>

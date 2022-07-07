@@ -11,10 +11,11 @@ const DataGrid = props => {
 			<td>{element.quantity}</td>
 			<td>{element.price}</td>
 			<td>{element.rate}</td>
+			<td>{element.timeWindow}</td>
 			<td>{element.carrier}</td>
 			<td>
 				<ChevronDown
-					size={48}
+					size={32}
 					strokeWidth={1}
 					color={'black'}
 				/>
@@ -30,6 +31,7 @@ const DataGrid = props => {
 					<th>No. of quotes</th>
 					<th>Price/Kg</th>
 					<th>Rate</th>
+					<th>Time Window</th>
 					<th>Carrier</th>
 					<th>Action</th>
 				</tr>

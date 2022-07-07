@@ -15,6 +15,7 @@ function App({ Component, pageProps }: AppProps) {
 		<Layout>
 			<Head>
 				<Favicon />
+				<meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
 				<title>Shipper Dashboard</title>
 			</Head>
 			<MantineProvider
