@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
-
 dayjs.extend(customParseFormat);
 
 function App({ Component, pageProps }: AppProps) {

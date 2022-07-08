@@ -1,46 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { SAMPLE_QUOTES } from '../utils';
 import { Table } from '@mantine/core';
 import { ChevronDown } from 'tabler-icons-react';
+import EmptyTable from './EmptyTable';
 
-const DataGrid = props => {
-	const rows = SAMPLE_QUOTES.map(element => (
-		<tr key={element.quoteId}>
-			<td>{element.quoteId}</td>
-			<td>{element.quantity}</td>
-			<td>{element.price}</td>
-			<td>{element.rate}</td>
-			<td>{element.timeWindow}</td>
-			<td>{element.carrier}</td>
-			<td>
-				<ChevronDown
-					size={32}
-					strokeWidth={1}
-					color={'black'}
-				/>
-			</td>
-		</tr>
-	));
+const DataGrid = ({ rows, headings=[] }) => {
 
-	return (
-		<Table verticalSpacing="sm" fontSize="md">
+	return rows?.length ? (
+		<Table verticalSpacing='sm' fontSize='md'>
 			<thead>
 				<tr>
-					<th>QuoteId</th>
-					<th>No. of quotes</th>
-					<th>Price/Kg</th>
-					<th>Rate</th>
-					<th>Time Window</th>
-					<th>Carrier</th>
-					<th>Action</th>
+					{headings?.map((name, index) => <th key={index}>{name}</th>)}
 				</tr>
 			</thead>
 			<tbody>{rows}</tbody>
 		</Table>
+	) : (
+		<EmptyTable />
 	);
 };
 
-DataGrid.propTypes = {};
+DataGrid.propTypes = {
+	rows: PropTypes.array.isRequired,
+	headings: PropTypes.array.isRequired
+};
 
 export default DataGrid;
