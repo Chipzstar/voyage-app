@@ -11,6 +11,8 @@ export const PATHS = {
 	BILLING: '/billing'
 };
 
+export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled']
+
 export const SAMPLE_QUOTES = [
 	{
 		quoteID: 'QTE123',

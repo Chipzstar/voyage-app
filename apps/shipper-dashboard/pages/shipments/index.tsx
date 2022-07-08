@@ -1,40 +1,45 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
-import { SAMPLE_SHIPMENTS } from '../../utils';
-import { ChevronDown } from 'tabler-icons-react';
+import { SAMPLE_SHIPMENTS, STATUSES } from '../../utils';
 import classNames from 'classnames';
 
-const index = () => {
-	const [activeTab, setActiveTab] = useState(0);
+const Empty = ({message}) => (
+	<div className='mx-auto my-auto'>
+		<span className='text-3xl my-auto mx-auto'>{message}</span>
+	</div>
+);
 
-	const rows = SAMPLE_SHIPMENTS.map(element => {
+const index = () => {
+	const [activeTab, setActiveTab] = useState({ index: 0, statuses: STATUSES });
+
+	const rows = SAMPLE_SHIPMENTS.filter(element => activeTab.statuses.includes(element.status)).map((element, index) => {
 		const statusClass = classNames({
 			'py-1.5': true,
 			'w-28': true,
-			'rounded': true,
+			rounded: true,
 			'text-center': true,
-			'capitalize': true,
+			capitalize: true,
 			'text-white': true,
 			'text-lg': true,
-			'bg-new': element.status === "new",
-			'bg-pending-400': element.status === "pending",
-			'bg-dispatched-400': element.status === "dispatched",
-			'bg-en-route': element.status === "en-route",
-			'bg-completed': element.status === "completed",
-			'bg-cancelled': element.status === "cancelled",
-		})
+			'bg-new': element.status === 'new',
+			'bg-pending-400': element.status === 'pending',
+			'bg-dispatched-400': element.status === 'dispatched',
+			'bg-en-route': element.status === 'en-route',
+			'bg-completed': element.status === 'completed',
+			'bg-cancelled': element.status === 'cancelled'
+		});
 		return (
-			<tr key={element.shipmentID}>
-				<td>
+			<tr key={index}>
+				<td colSpan={1}>
 					<span className='text-secondary font-semibold text-lg'>{element.shipmentID}</span>
 				</td>
-				<td>
+				<td colSpan={1}>
 					<div className={statusClass}>
 						<span>{element.status}</span>
 					</div>
 				</td>
-				<td>
+				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
 						<span>{element.pickup.facility}</span>
 						<span>{element.pickup.location}</span>
@@ -43,7 +48,7 @@ const index = () => {
 						</span>
 					</div>
 				</td>
-				<td>
+				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
 						<span>{element.delivery.facility}</span>
 						<span>{element.delivery.location}</span>
@@ -52,8 +57,10 @@ const index = () => {
 						</span>
 					</div>
 				</td>
-				<td role='button'>
-					<ChevronDown size={32} strokeWidth={1} color={'black'} />
+				<td role='button' colSpan={2}>
+					<button className='bg-transparent flex grow'>
+						<span className='text-secondary font-semibold text-lg'>View</span>
+					</button>
 				</td>
 			</tr>
 		);
@@ -65,30 +72,29 @@ const index = () => {
 				<section className='flex flex-row items-center justify-between mb-8 py-4'>
 					<h2 className='page-header'>Shipment History</h2>
 				</section>
-				<Tabs active={activeTab} onTabChange={setActiveTab} grow>
-					<Tabs.Tab label='All'>
-						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} />
+				<Tabs
+					grow
+					active={activeTab.index}
+					onTabChange={(value, key) => {
+						console.log(key);
+						setActiveTab(prevState => ({
+							...prevState,
+							index: value,
+							statuses: key.split(' ')
+						}));
+					}}
+				>
+					<Tabs.Tab label='All' tabKey={STATUSES.join(' ')}>
+						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message="No shipments created" />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='Pending'>
-						<div className='py-5 booking-container flex'>
-							<div className='mx-auto my-auto'>
-								<span className='text-3xl my-auto mx-auto'>No Shipments created</span>
-							</div>
-						</div>
+					<Tabs.Tab label='Pending' tabKey='new pending'>
+						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message="No shipments pending" />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='In Progress'>
-						<div className='py-5 booking-container flex'>
-							<div className='mx-auto my-auto'>
-								<span className='text-3xl my-auto mx-auto'>No Shipments created</span>
-							</div>
-						</div>
+					<Tabs.Tab label='In Progress' tabKey='dispatched en-route'>
+						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message="No shipments in -transit"/>} />
 					</Tabs.Tab>
-					<Tabs.Tab label='Completed'>
-						<div className='py-5 booking-container flex'>
-							<div className='mx-auto my-auto'>
-								<span className='text-3xl my-auto mx-auto'>No Shipments created</span>
-							</div>
-						</div>
+					<Tabs.Tab label='Completed' tabKey='completed'>
+						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message={"No shipments completed"} />} />
 					</Tabs.Tab>
 				</Tabs>
 			</div>

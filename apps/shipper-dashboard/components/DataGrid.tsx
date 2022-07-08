@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from '@mantine/core';
-import { ChevronDown } from 'tabler-icons-react';
 import EmptyTable from './EmptyTable';
 
-const DataGrid = ({ rows, headings=[] }) => {
+const DataGrid = ({ rows, headings=[], emptyContent }) => {
 
 	return rows?.length ? (
 		<Table verticalSpacing='sm' fontSize='md'>
@@ -16,7 +15,7 @@ const DataGrid = ({ rows, headings=[] }) => {
 			<tbody>{rows}</tbody>
 		</Table>
 	) : (
-		<EmptyTable />
+		<EmptyTable content={emptyContent}/>
 	);
 };
 
