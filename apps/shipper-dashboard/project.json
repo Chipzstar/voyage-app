@@ -21,6 +21,7 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "shipper-dashboard:build",
+
         "dev": true
       },
       "configurations": {

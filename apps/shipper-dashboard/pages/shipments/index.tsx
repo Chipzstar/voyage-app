@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
-import { SAMPLE_SHIPMENTS, STATUSES } from '../../utils';
+import { PATHS, SAMPLE_SHIPMENTS, STATUSES } from '../../utils';
 import classNames from 'classnames';
+import { useRouter } from 'next/router';
 
 const Empty = ({message}) => (
 	<div className='mx-auto my-auto'>
@@ -11,6 +12,7 @@ const Empty = ({message}) => (
 );
 
 const index = () => {
+	const router = useRouter();
 	const [activeTab, setActiveTab] = useState({ index: 0, statuses: STATUSES });
 
 	const rows = SAMPLE_SHIPMENTS.filter(element => activeTab.statuses.includes(element.status)).map((element, index) => {
@@ -58,7 +60,7 @@ const index = () => {
 					</div>
 				</td>
 				<td role='button' colSpan={2}>
-					<button className='bg-transparent flex grow'>
+					<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.shipmentID}`)}>
 						<span className='text-secondary font-semibold text-lg'>View</span>
 					</button>
 				</td>
@@ -69,7 +71,7 @@ const index = () => {
 	return (
 		<div className='p-4 h-screen'>
 			<div className='px-4 h-full'>
-				<section className='flex flex-row items-center justify-between mb-8 py-4'>
+				<section className='flex flex-row items-center justify-between mb-8 py-3 h-20'>
 					<h2 className='page-header'>Shipment History</h2>
 				</section>
 				<Tabs

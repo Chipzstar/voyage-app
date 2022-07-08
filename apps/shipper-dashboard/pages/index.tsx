@@ -20,7 +20,7 @@ export function Index() {
 			</div>
 			<DashboardPanels date={active.date} />
 			<div className='my-6'>
-				<Map />
+				<Map height={595}/>
 			</div>
 		</div>
 	);
