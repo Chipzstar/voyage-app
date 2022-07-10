@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import styles from '../scss/map.module.scss';
+import PropTypes from 'prop-types';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 
@@ -36,7 +36,7 @@ const Map = ({ height=500 }) => {
 };
 
 Map.propTypes = {
-
+	height: PropTypes.number
 };
 
 export default Map;
