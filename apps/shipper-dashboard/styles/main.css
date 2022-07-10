@@ -16,7 +16,10 @@
 
 .booking-container {
   min-height: calc(100vh - 225px);
-  height: calc(100vh - 225px);
+}
+
+.workflows-container {
+  min-height: calc(100vh - 90px);
 }
 
 /*

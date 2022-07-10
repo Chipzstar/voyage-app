@@ -86,16 +86,16 @@ const index = () => {
 						}));
 					}}
 				>
-					<Tabs.Tab label='All' tabKey={STATUSES.join(' ')}>
+					<Tabs.Tab label='All' tabKey={STATUSES.join(' ')} className="text-lg">
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message="No shipments created" />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='Pending' tabKey='new pending'>
+					<Tabs.Tab label='Pending' tabKey='new pending' className="text-lg">
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message="No shipments pending" />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='In Progress' tabKey='dispatched en-route'>
+					<Tabs.Tab label='In Progress' tabKey='dispatched en-route' className="text-lg">
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message="No shipments in -transit"/>} />
 					</Tabs.Tab>
-					<Tabs.Tab label='Completed' tabKey='completed'>
+					<Tabs.Tab label='Completed' tabKey='completed' className="text-lg">
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message={"No shipments completed"} />} />
 					</Tabs.Tab>
 				</Tabs>

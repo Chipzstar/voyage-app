@@ -15,10 +15,10 @@ const bookings = () => {
 					<button className='bg-secondary hover:bg-secondary-600 font-medium text-white h-12 w-36' onClick={() => router.push(PATHS.QUOTE)}>New Quote</button>
 				</section>
 				<Tabs active={activeTab} onTabChange={setActiveTab} grow>
-					<Tabs.Tab label='Quotes'>
+					<Tabs.Tab label='Quotes' className="text-lg">
 						<Quotes />
 					</Tabs.Tab>
-					<Tabs.Tab label='Booked'>You have no booked orders yet</Tabs.Tab>
+					<Tabs.Tab label='Booked' className="text-lg">You have no booked orders yet</Tabs.Tab>
 				</Tabs>
 			</div>
 		</div>
