@@ -2,13 +2,16 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { SAMPLE_EVENTS } from '../../utils';
+import { PATHS, SAMPLE_EVENTS } from '../../utils';
+import { SAMPLE_SHIPMENTS } from '../../utils';
+import { Button } from '@mantine/core';
 
 export async function getServerSideProps(context) {
-	console.log(context);
+	const index = SAMPLE_SHIPMENTS.findIndex(shipment => shipment.shipmentID === context.params.shipmentID);
 	return {
 		props: {
-			shipmentID: context.params.shipmentID
+			shipmentID: context.params.shipmentID,
+			pageIndex: index
 		} // will be passed to the page component as props
 	};
 }
@@ -25,14 +28,18 @@ const viewShipment = props => {
 				<header className='flex flex-row items-center justify-between mb-8 py-3'>
 					<h2 className='text-2xl uppercase'>{props.shipmentID}</h2>
 					<div className='flex flex-row justify-between space-x-8'>
-						<button className='pagination-button space-x-3'>
-							<ChevronLeft size={24} strokeWidth={1} color={'black'} />
+						<Button disabled={!props.pageIndex} variant="outline" color="gray" radius={0} leftIcon={<ChevronLeft size={24} strokeWidth={1} />} className="h-12" onClick={() => {
+							const prevIndex = props.pageIndex - 1
+							router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[prevIndex].shipmentID}`)
+						}}>
 							<span className='text-lg'>Prev</span>
-						</button>
-						<button className='pagination-button space-x-3'>
+						</Button>
+						<Button disabled={props.pageIndex === SAMPLE_SHIPMENTS.length - 1} variant="outline" color="gray" radius={0} rightIcon={<ChevronRight size={24} strokeWidth={1} />} className="h-12" onClick={() => {
+							const nextIndex = props.pageIndex + 1
+							router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[nextIndex].shipmentID}`)
+						}}>
 							<span className='text-lg'>Next</span>
-							<ChevronRight size={24} strokeWidth={1} color={'black'} />
-						</button>
+						</Button>
 					</div>
 				</header>
 				<main className='grow'>

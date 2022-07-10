@@ -5,6 +5,7 @@ import { Textarea, TextInput } from '@mantine/core';
 
 const Locations = props => {
 	const [locationForm, showLocationForm] = useState(false);
+
 	const form = useForm({
 		initialValues: {
 			locationName: '',
@@ -240,11 +241,9 @@ const Locations = props => {
 				<div id='operating-hours' className='col-span-2 space-y-8'>
 					<header className='quote-header'>Operating hours</header>
 					<div className='relative grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 px-8 py-4 border border-gray-300'>
-						<button className="text-secondary rounded w-12 absolute right-4 top-4 bg-transparent">
-							Edit
-						</button>
-						<div className="flex flex-col space-y-4">
-							<h4 className="text-3xl font-normal">Shipping hours</h4>
+						<button className='text-secondary rounded w-12 absolute right-4 top-4 bg-transparent'>Edit</button>
+						<div className='flex flex-col space-y-4'>
+							<h4 className='text-3xl font-normal'>Shipping hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
 									<tr>
@@ -252,7 +251,7 @@ const Locations = props => {
 										<td>08:00 - 18:00</td>
 									</tr>
 									<tr>
-										<td>Tuesday</td>	
+										<td>Tuesday</td>
 										<td>08:00 - 18:00</td>
 									</tr>
 									<tr>
@@ -278,77 +277,81 @@ const Locations = props => {
 								</tbody>
 							</table>
 						</div>
-						<div className="flex flex-col space-y-4">
-							<h4 className="text-3xl font-normal">Receiving hours</h4>
+						<div className='flex flex-col space-y-4'>
+							<h4 className='text-3xl font-normal'>Receiving hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-								<tr>
-									<td>Monday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Tuesday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Wednesday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Thursday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Friday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Saturday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Sunday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
+									<tr>
+										<td>Monday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Tuesday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Wednesday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Thursday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Friday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Saturday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Sunday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
-						<div className="flex flex-col space-y-4">
-							<h4 className="text-3xl font-normal">Facility hours</h4>
+						<div className='flex flex-col space-y-4'>
+							<h4 className='text-3xl font-normal'>Facility hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-								<tr>
-									<td>Monday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Tuesday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Wednesday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Thursday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Friday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Saturday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
-								<tr>
-									<td>Sunday</td>
-									<td>08:00 - 18:00</td>
-								</tr>
+									<tr>
+										<td>Monday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Tuesday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Wednesday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Thursday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Friday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Saturday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
+									<tr>
+										<td>Sunday</td>
+										<td>08:00 - 18:00</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
 					</div>
+				</div>
+				<div id='submit-container' className='col-span-2 space-x-8'>
+					<button className='voyage-button w-64 h-14 text-lg'>Save</button>
+					<button className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100'>Cancel</button>
 				</div>
 			</form>
 		</div>
