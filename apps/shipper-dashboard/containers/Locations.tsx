@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { useForm } from '@mantine/form';
 import { Textarea, TextInput } from '@mantine/core';
+import OperatingHoursForm from '../components/OperatingHoursForm';
+import { updateHours } from '../store/features/operatingHoursSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 
 const Locations = props => {
+	const dispatch = useDispatch();
+	const operatingHours = useSelector(state => state['operatingHours']);
 	const [locationForm, showLocationForm] = useState(false);
+	const [operatingHoursForm, toggleOperatingHoursForm] = useState(false);
 
 	const form = useForm({
 		initialValues: {
@@ -18,132 +24,13 @@ const Locations = props => {
 			country: '',
 			pickupInstructions: '',
 			deliveryInstructions: '',
-			operatingHours: [
-				{
-					shipping: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					receiving: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					facility: {
-						isActive: true,
-						open: 8,
-						close: 18
-					}
-				},
-				{
-					shipping: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					receiving: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					facility: {
-						isActive: true,
-						open: 8,
-						close: 18
-					}
-				},
-				{
-					shipping: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					receiving: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					facility: {
-						isActive: true,
-						open: 8,
-						close: 18
-					}
-				},
-				{
-					shipping: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					receiving: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					facility: {
-						isActive: true,
-						open: 8,
-						close: 18
-					}
-				},
-				{
-					shipping: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					receiving: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					facility: {
-						isActive: true,
-						open: 8,
-						close: 18
-					}
-				},
-				{
-					shipping: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					receiving: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					facility: {
-						isActive: true,
-						open: 8,
-						close: 18
-					}
-				},
-				{
-					shipping: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					receiving: {
-						isActive: true,
-						open: 8,
-						close: 18
-					},
-					facility: {
-						isActive: true,
-						open: 8,
-						close: 18
-					}
-				}
-			]
+			operatingHours
 		}
 	});
 
 	return locationForm ? (
 		<div className='py-5 workflows-container'>
+			<OperatingHoursForm  opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)}/>
 			<form onSubmit={form.onSubmit(values => console.log(values))} className='grid grid-cols-1 lg:grid-cols-2 gap-y-10 lg:gap-20'>
 				<div id='address-form-container' className='grid grid-cols-1 lg:grid-cols-2 gap-5 col-span-1'>
 					<header className='quote-header col-span-2'>Address</header>
@@ -241,39 +128,56 @@ const Locations = props => {
 				<div id='operating-hours' className='col-span-2 space-y-8'>
 					<header className='quote-header'>Operating hours</header>
 					<div className='relative grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 px-8 py-4 border border-gray-300'>
-						<button className='text-secondary rounded w-12 absolute right-4 top-4 bg-transparent'>Edit</button>
+						<button
+							className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent'
+							onClick={() => {
+								toggleOperatingHoursForm(true);
+								/*dispatch(
+									updateHours({
+										index: 0,
+										value: {
+											shipping: {
+												isActive: false,
+												open: 10,
+												close: 14
+											},
+											receiving: {
+												isActive: false,
+												open: 10,
+												close: 14
+											},
+											facility: {
+												isActive: false,
+												open: 10,
+												close: 14
+											}
+										}
+									})
+								);*/
+							}}
+						>
+							Edit
+						</button>
 						<div className='flex flex-col space-y-4'>
 							<h4 className='text-3xl font-normal'>Shipping hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									<tr>
-										<td>Monday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Tuesday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Wednesday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Thursday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Friday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Saturday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Sunday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
+									{operatingHours.map(({ shipping }, index) => (
+										<tr key={index}>
+											<td>{dayjs().day(index).format('dddd')}</td>
+											<td>
+												{dayjs({
+													h: shipping.open['h'],
+													m: shipping.open['m']
+												}).format('HH:mm')}
+												&nbsp;-&nbsp;
+												{dayjs({
+													h: shipping.close['h'],
+													m: shipping.close['m']
+												}).format('HH:mm')}
+											</td>
+										</tr>
+									))}
 								</tbody>
 							</table>
 						</div>
@@ -281,34 +185,22 @@ const Locations = props => {
 							<h4 className='text-3xl font-normal'>Receiving hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									<tr>
-										<td>Monday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Tuesday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Wednesday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Thursday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Friday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Saturday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Sunday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
+									{operatingHours.map(({ receiving }, index) => (
+										<tr key={index}>
+											<td>{dayjs().day(index).format('dddd')}</td>
+											<td>
+												{dayjs({
+													h: receiving.open['h'],
+													m: receiving.open['m']
+												}).format('HH:mm')}
+												&nbsp;-&nbsp;
+												{dayjs({
+													h: receiving.close['h'],
+													m: receiving.close['m']
+												}).format('HH:mm')}
+											</td>
+										</tr>
+									))}
 								</tbody>
 							</table>
 						</div>
@@ -316,42 +208,34 @@ const Locations = props => {
 							<h4 className='text-3xl font-normal'>Facility hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									<tr>
-										<td>Monday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Tuesday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Wednesday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Thursday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Friday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Saturday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
-									<tr>
-										<td>Sunday</td>
-										<td>08:00 - 18:00</td>
-									</tr>
+									{operatingHours.map(({ facility }, index) => (
+										<tr key={index}>
+											<td>{dayjs().day(index).format('dddd')}</td>
+											<td>
+												{dayjs({
+													h: facility.open['h'],
+													m: facility.open['m']
+												}).format('HH:mm')}
+												&nbsp;-&nbsp;
+												{dayjs({
+													h: facility.close['h'],
+													m: facility.close['m']
+												}).format('HH:mm')}
+											</td>
+										</tr>
+									))}
 								</tbody>
 							</table>
 						</div>
 					</div>
 				</div>
 				<div id='submit-container' className='col-span-2 space-x-8'>
-					<button className='voyage-button w-64 h-14 text-lg'>Save</button>
-					<button className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100'>Cancel</button>
+					<button className='voyage-button w-64 h-14 text-lg' onClick={() => showLocationForm(false)}>
+						Save
+					</button>
+					<button className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100' onClick={() => showLocationForm(false)}>
+						Cancel
+					</button>
 				</div>
 			</form>
 		</div>
@@ -363,7 +247,7 @@ const Locations = props => {
 				</button>
 			</header>
 			<div className='grid grid-cols-1 gap-6'>
-				<h3>Warehouses</h3>
+				<h3 className="shipment-header">You have no locations saved</h3>
 			</div>
 		</div>
 	);

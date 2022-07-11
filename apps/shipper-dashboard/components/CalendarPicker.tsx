@@ -6,10 +6,6 @@ import dayjs from 'dayjs';
 
 const CalendarPicker = ({ opened, onClose, value, setValue }) => {
 
-	useEffect(() => {
-		console.log(value)
-	}, []);
-
 	return (
 		<Modal opened={opened} onClose={onClose} centered size='md' withCloseButton={false} closeOnEscape closeOnClickOutside>
 			<div className='flex justify-center items-center'>

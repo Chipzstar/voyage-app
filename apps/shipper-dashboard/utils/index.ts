@@ -192,3 +192,261 @@ export const SAMPLE_EVENTS = [
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
 	}
 ]
+
+export const DEFAULT_OPERATING_HOURS = [
+	{
+		shipping: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		receiving: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		facility: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		}
+	},
+	{
+		shipping: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		receiving: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		facility: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		}
+	},
+	{
+		shipping: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		receiving: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		facility: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		}
+	},
+	{
+		shipping: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		receiving: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		facility: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		}
+	},
+	{
+		shipping: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		receiving: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		facility: {
+			isActive: true,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		}
+	},
+	{
+		shipping: {
+			isActive: false,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		receiving: {
+			isActive: false,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		facility: {
+			isActive: false,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		}
+	},
+	{
+		shipping: {
+			isActive: false,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		receiving: {
+			isActive: false,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		},
+		facility: {
+			isActive: false,
+			open: {
+				h: 8,
+				m: 0
+			},
+			close: {
+				h: 18,
+				m: 0
+			}
+		}
+	}
+]
+
+/**
+ * Converts a day number to a string.
+ *
+ * @param {Number} dayIndex
+ * @return {String} Returns day as string
+ */
+export function dayOfWeekAsString(dayIndex) {
+	return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex] || '';
+}
