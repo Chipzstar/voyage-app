@@ -281,8 +281,8 @@ const create = () => {
 					</div>
 				</div>
 				<div id='button-container' className='flex flex-col justify-center space-y-8'>
-					<button className='voyage-button'>Optimize</button>
-					<button className='voyage-button'>Manually Book</button>
+					<button className='voyage-button'>Book</button>
+					<button className='voyage-button'>Save and go to Booking</button>
 					<button className='voyage-button bg-transparent text-black hover:bg-stone-100'>Cancel</button>
 				</div>
 			</form>
