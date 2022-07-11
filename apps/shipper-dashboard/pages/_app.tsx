@@ -2,24 +2,14 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Favicon from '../components/Favicon';
 import '../styles/globals.css';
-import 'dayjs/locale/en';
-import dayjs from 'dayjs';
+import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { Provider } from 'react-redux';
 import store, { persistor } from '../store';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import weekday from 'dayjs/plugin/weekday';
-import updateLocale from 'dayjs/plugin/updateLocale'
-import objectSupport from 'dayjs/plugin/objectSupport';
-
-dayjs.extend(updateLocale)
-dayjs.extend(objectSupport);
-dayjs.extend(weekday)
-dayjs.extend(customParseFormat);
-
+moment.tz.setDefault('Europe/London');
 function App({ Component, pageProps }: AppProps) {
 	return (
 		<Provider store={store}>

@@ -1,24 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { DEFAULT_OPERATING_HOURS } from '../../utils';
-
-interface TimeWindow {
-	h: number,
-	m: number
-}
-
-interface OperatingProps {
-	isActive: boolean;
-	open: TimeWindow;
-	close: TimeWindow;
-}
-
-// Define a type for the slice state
-interface OperatingHoursState {
-	shipping: OperatingProps
-	receiving: OperatingProps
-	facility: OperatingProps
-}
+import { OperatingHoursState } from '../../utils/types';
 
 // Define the initial state using that type
 const initialState: OperatingHoursState[] = DEFAULT_OPERATING_HOURS

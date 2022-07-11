@@ -16,3 +16,22 @@ export interface Quote {
 	carrier: string;
 	carrierQuotes: CarrierQuote
 }
+
+// Define a type for the slice state
+export interface OperatingHoursState {
+	shipping: OperatingProps
+	receiving: OperatingProps
+	facility: OperatingProps
+}
+
+interface OperatingProps {
+	isActive: boolean;
+	open: TimeWindow;
+	close: TimeWindow;
+}
+
+export interface TimeWindow {
+	h: number,
+	m: number
+}
+

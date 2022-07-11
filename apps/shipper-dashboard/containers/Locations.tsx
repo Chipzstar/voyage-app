@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useForm } from '@mantine/form';
 import { Textarea, TextInput } from '@mantine/core';
 import OperatingHoursForm from '../components/OperatingHoursForm';
-import { updateHours } from '../store/features/operatingHoursSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import dayjs from 'dayjs';
+import moment from 'moment';
+import { OperatingHoursState, TimeWindow } from '../utils/types';
 
 const Locations = props => {
 	const dispatch = useDispatch();
@@ -28,9 +28,11 @@ const Locations = props => {
 		}
 	});
 
+	// @ts-ignore
+	// @ts-ignore
 	return locationForm ? (
 		<div className='py-5 workflows-container'>
-			<OperatingHoursForm  opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)}/>
+			<OperatingHoursForm opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)} />
 			<form onSubmit={form.onSubmit(values => console.log(values))} className='grid grid-cols-1 lg:grid-cols-2 gap-y-10 lg:gap-20'>
 				<div id='address-form-container' className='grid grid-cols-1 lg:grid-cols-2 gap-5 col-span-1'>
 					<header className='quote-header col-span-2'>Address</header>
@@ -162,22 +164,26 @@ const Locations = props => {
 							<h4 className='text-3xl font-normal'>Shipping hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									{operatingHours.map(({ shipping }, index) => (
-										<tr key={index}>
-											<td>{dayjs().day(index).format('dddd')}</td>
-											<td>
-												{dayjs({
-													h: shipping.open['h'],
-													m: shipping.open['m']
-												}).format('HH:mm')}
-												&nbsp;-&nbsp;
-												{dayjs({
-													h: shipping.close['h'],
-													m: shipping.close['m']
-												}).format('HH:mm')}
-											</td>
-										</tr>
-									))}
+									{operatingHours.map((item: OperatingHoursState, index) => {
+										const openFormat: TimeWindow = {
+											h: item.shipping.open['h'],
+											m: item.shipping.open['m']
+										}
+										const closeFormat: TimeWindow = {
+											h: item.shipping.close['h'],
+											m: item.shipping.close['m']
+										}
+										return (
+											<tr key={index}>
+												<td>{moment().day(index).format('dddd')}</td>
+												<td>
+													{moment(openFormat).format('HH:mm')}
+													&nbsp;-&nbsp;
+													{moment(closeFormat).format('HH:mm')}
+												</td>
+											</tr>
+										);
+									})}
 								</tbody>
 							</table>
 						</div>
@@ -185,22 +191,26 @@ const Locations = props => {
 							<h4 className='text-3xl font-normal'>Receiving hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									{operatingHours.map(({ receiving }, index) => (
-										<tr key={index}>
-											<td>{dayjs().day(index).format('dddd')}</td>
-											<td>
-												{dayjs({
-													h: receiving.open['h'],
-													m: receiving.open['m']
-												}).format('HH:mm')}
-												&nbsp;-&nbsp;
-												{dayjs({
-													h: receiving.close['h'],
-													m: receiving.close['m']
-												}).format('HH:mm')}
-											</td>
-										</tr>
-									))}
+									{operatingHours.map((item: OperatingHoursState, index) => {
+										const openFormat: TimeWindow = {
+											h: item.receiving.open['h'],
+											m: item.receiving.open['m']
+										};
+										const closeFormat: TimeWindow = {
+											h: item.receiving.close['h'],
+											m: item.receiving.close['m']
+										};
+										return (
+											<tr key={index}>
+												<td>{moment().day(index).format('dddd')}</td>
+												<td>
+													{moment(openFormat).format('HH:mm')}
+													&nbsp;-&nbsp;
+													{moment(closeFormat).format('HH:mm')}
+												</td>
+											</tr>
+										);
+									})}
 								</tbody>
 							</table>
 						</div>
@@ -208,22 +218,26 @@ const Locations = props => {
 							<h4 className='text-3xl font-normal'>Facility hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									{operatingHours.map(({ facility }, index) => (
-										<tr key={index}>
-											<td>{dayjs().day(index).format('dddd')}</td>
-											<td>
-												{dayjs({
-													h: facility.open['h'],
-													m: facility.open['m']
-												}).format('HH:mm')}
-												&nbsp;-&nbsp;
-												{dayjs({
-													h: facility.close['h'],
-													m: facility.close['m']
-												}).format('HH:mm')}
-											</td>
-										</tr>
-									))}
+									{operatingHours.map((item: OperatingHoursState, index) => {
+										const openFormat: TimeWindow = {
+											h: item.facility.open['h'],
+											m: item.facility.open['m']
+										};
+										const closeFormat: TimeWindow = {
+											h: item.facility.close['h'],
+											m: item.facility.close['m']
+										};
+										return (
+											<tr key={index}>
+												<td>{moment().day(index).format('dddd')}</td>
+												<td>
+													{moment(openFormat).format('HH:mm')}
+													&nbsp;-&nbsp;
+													{moment(closeFormat).format('HH:mm')}
+												</td>
+											</tr>
+										);
+									})}
 								</tbody>
 							</table>
 						</div>
@@ -247,7 +261,7 @@ const Locations = props => {
 				</button>
 			</header>
 			<div className='grid grid-cols-1 gap-6'>
-				<h3 className="shipment-header">You have no locations saved</h3>
+				<h3 className='shipment-header'>You have no locations saved</h3>
 			</div>
 		</div>
 	);
