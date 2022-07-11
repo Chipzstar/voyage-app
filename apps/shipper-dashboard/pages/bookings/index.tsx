@@ -1,24 +1,30 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
-import Quotes from '../../containers/Quotes';
 import { useRouter } from 'next/router';
 import { PATHS } from '../../utils';
+import Bookings from '../../containers/Bookings';
 
 const bookings = () => {
 	const [activeTab, setActiveTab] = useState(0);
-	const router = useRouter()
+	const router = useRouter();
 	return (
 		<div className='p-4 h-screen'>
 			<div className='px-4 h-full'>
 				<section className='flex flex-row items-center justify-between mb-8 py-3'>
 					<h2 className='page-header'>Bookings</h2>
-					<button className='bg-secondary hover:bg-secondary-600 font-medium text-white h-12 w-36' onClick={() => router.push(PATHS.QUOTE)}>New Quote</button>
+					<div className="flex space-x-6">
+						<button disabled className='voyage-button h-12 w-auto px-4' onClick={() => router.push(PATHS.BOOKING_CALENDAR)}>
+							Booking Calendar
+						</button>
+						<button className='voyage-button h-12 w-36' onClick={() => router.push(PATHS.CREATE_BOOKING)}>
+							New Booking
+						</button>
+					</div>
 				</section>
 				<Tabs active={activeTab} onTabChange={setActiveTab} grow>
-					<Tabs.Tab label='Quotes' className="text-lg">
-						<Quotes />
+					<Tabs.Tab label='Booked' className='text-lg'>
+						<Bookings />
 					</Tabs.Tab>
-					<Tabs.Tab label='Booked' className="text-lg">You have no booked orders yet</Tabs.Tab>
 				</Tabs>
 			</div>
 		</div>

@@ -26,8 +26,8 @@ const OperatingHoursForm = ({ opened, onClose, onSave }) => {
 			closeOnClickOutside
 			size='lg'
 			classNames={{
-				title: 'text-xl font-semibold',
-				close: 'h-8 w-8'
+				title: 'text-2xl font-semibold',
+				close: 'h-8 w-8 text-2xl'
 			}}
 		>
 			<form onSubmit={form.onSubmit(values => onSave(values))} className='flex flex-col p-4 space-y-6'>

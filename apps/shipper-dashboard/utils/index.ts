@@ -6,10 +6,11 @@ dayjs.extend(customParseFormat);
 export const PATHS = {
 	HOME: '/',
 	BOOKINGS: '/bookings',
-	QUOTE: '/bookings/quote',
+	CREATE_BOOKING: '/bookings/create',
+	BOOKING_CALENDAR: '/bookings/calendar',
 	SHIPMENTS: '/shipments',
 	WORKFLOWS: '/workflows',
-	BILLING: '/billing'
+	BILLING: '/billing',
 };
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];
@@ -58,121 +59,145 @@ export const SAMPLE_QUOTES = [
 export const SAMPLE_SHIPMENTS = [
 	{
 		shipmentID: 'VOY-ID123',
+		bookingStatus: "Booked",
 		status: 'new',
+		pricePerKg: 5.56,
+		rate: 550.21,
+		carrier: 'HBCS Logistics',
 		pickup: {
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
 	{
 		shipmentID: 'VOY-ID124',
+		bookingStatus: "Booked",
 		status: 'dispatched',
+		pricePerKg: 5.56,
+		rate: 550.21,
+		carrier: 'HBCS Logistics',
 		pickup: {
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
 	{
 		shipmentID: 'VOY-ID125',
+		bookingStatus: "Booked",
 		status: 'new',
+		pricePerKg: 5.56,
+		rate: 550.21,
+		carrier: 'HBCS Logistics',
 		pickup: {
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
 	{
 		shipmentID: 'VOY-ID126',
+		bookingStatus: "Booked",
 		status: 'pending',
+		pricePerKg: 5.56,
+		rate: 550.21,
+		carrier: 'HBCS Logistics',
 		pickup: {
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
 	{
 		shipmentID: 'VOY-ID127',
+		bookingStatus: "Booked",
 		status: 'en-route',
+		pricePerKg: 5.56,
+		rate: 550.21,
+		carrier: 'HBCS Logistics',
 		pickup: {
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
 	{
 		shipmentID: 'VOY-ID128',
+		bookingStatus: "Booked",
 		status: 'new',
+		pricePerKg: 5.56,
+		rate: 550.21,
+		carrier: 'HBCS Logistics',
 		pickup: {
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('17/06/22 21:37', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('18/06/22 21:37', 'DD/MM/YY HH:mm').format()
+				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	}

@@ -7,13 +7,14 @@ import { ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
-const quote = () => {
+const create = () => {
 	const router = useRouter();
 
 	const form = useForm({
 		initialValues: {
 			serviceType: '',
 			shipmentType: '',
+			schedulingType: '',
 			activitiesRequired: formList([]),
 			internalPONumber: '',
 			customerPONumber: '',
@@ -196,6 +197,14 @@ const quote = () => {
 					</div>
 					<div className='grid grid-cols-1 gap-6'>
 						<header className='quote-header'>Scheduling</header>
+						<div className='grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
+							<button type='button' className={`${inputButton} ${form.values.schedulingType === 'one-time' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', 'one-time')}>
+								One-time
+							</button>
+							<button type='button' className={`${inputButton} ${form.values.schedulingType === 'recurring' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', 'recurring')}>
+								Recurring
+							</button>
+						</div>
 						<div className='flex flex-col space-y-4'>
 							<p className='font-normal'>Select a pickup date, and we’ll calculate a delivery date based on transit time.</p>
 							<DatePicker className='w-72' radius={0} size='md' placeholder='Pickup Date' rightSection={<Calendar size={16} />} {...form.getInputProps('pickupDate')} />
@@ -281,4 +290,4 @@ const quote = () => {
 	);
 };
 
-export default quote;
+export default create;
