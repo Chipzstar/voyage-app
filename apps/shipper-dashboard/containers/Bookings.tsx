@@ -27,7 +27,7 @@ const Bookings = () => {
 				<td>{element.shipmentID}</td>
 				<td>{element.bookingStatus}</td>
 				<td>{element.pricePerKg}</td>
-				<td>{element.rate}</td>
+				<td>£{element.rate}</td>
 				<td>{`${minWindow} - ${maxWindow} hours`}</td>
 				<td>{element.carrier}</td>
 				<td role='button'>
