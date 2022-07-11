@@ -281,9 +281,10 @@ const create = () => {
 					</div>
 				</div>
 				<div id='button-container' className='flex flex-col justify-center space-y-8'>
-					<button className='voyage-button'>Book</button>
-					<button className='voyage-button'>Save and go to Booking</button>
-					<button className='voyage-button bg-transparent text-black hover:bg-stone-100'>Cancel</button>
+					{form.values.weight && form.values.pickupDate && <span className="text-4xl text-center lg:w-72">£345.00</span>}
+					<button className='voyage-button lg:w-72'>Book</button>
+					<button className='voyage-button lg:w-72'>Save and go to Booking</button>
+					<button className='voyage-button lg:w-72 bg-transparent text-black hover:bg-stone-100'>Cancel</button>
 				</div>
 			</form>
 		</div>
