@@ -10,7 +10,7 @@ const DashboardPanels = ({ date }) => {
 						<header>
 							<h2 className='text-2xl font-semibold'>Shipment Overview</h2>
 						</header>
-						<div className="h-32 flex items-end">
+						<div className='h-32 flex items-end'>
 							<img src='/static/images/shipment-overview.svg' alt='' />
 						</div>
 					</div>
@@ -18,28 +18,30 @@ const DashboardPanels = ({ date }) => {
 				<div className='flex flex-col justify-center p-4 div border border-voyage-grey'>
 					<div className='ml-7 space-y-3'>
 						<header>
-							<h2 className='text-2xl font-semibold'>Active Quotes</h2>
+							<h2 className='text-2xl font-semibold'>Optimization Overview</h2>
 						</header>
-						<div className="h-32 flex items-end">
-							<img src='/static/images/active-quotes.svg' alt='' />
+						<div className='h-32 flex items-end'>
+							<img src='/static/images/optimization.svg' alt='' />
 						</div>
-					</div>
-				</div>
-				<div className='flex flex-col justify-center p-4 div border border-voyage-grey space-y-3'>
-					<header>
-						<h2 className='text-2xl font-semibold'>Total Number of Bookings</h2>
-					</header>
-					<div className="h-32 flex items-end">
-						<img src='/static/images/number-of-bookings.svg' alt='' />
 					</div>
 				</div>
 				<div className='flex flex-col justify-center p-4 div border border-voyage-grey'>
 					<div className='ml-7 space-y-3'>
 						<header>
-							<h2 className='text-2xl font-semibold'>Optimization Overview</h2>
+							<h2 className='text-2xl font-semibold'>Total Pallets</h2>
 						</header>
-						<div className="h-32 flex items-end">
-							<img src='/static/images/optimization.svg' alt='' />
+						<div className='h-32 flex items-end'>
+							<img src='/static/images/total-pallets.svg' alt='' />
+						</div>
+					</div>
+				</div>
+				<div className='flex flex-col justify-center p-4 div border border-voyage-grey space-y-3'>
+					<div className="ml-7 space-y-3">
+						<header>
+							<h2 className='text-2xl font-semibold'>Total Number of Bookings</h2>
+						</header>
+						<div className='h-32 flex items-end'>
+							<img src='/static/images/number-of-bookings.svg' alt='' />
 						</div>
 					</div>
 				</div>
@@ -48,7 +50,7 @@ const DashboardPanels = ({ date }) => {
 						<header>
 							<h2 className='text-2xl font-semibold'>Sustainability</h2>
 						</header>
-						<div className="h-32 flex items-end">
+						<div className='h-32 flex items-end'>
 							<img src='/static/images/sustainability.svg' alt='' />
 						</div>
 					</div>
@@ -58,7 +60,7 @@ const DashboardPanels = ({ date }) => {
 						<header>
 							<h2 className='text-2xl font-semibold'>Notifications</h2>
 						</header>
-						<div className="h-32 flex items-center">
+						<div className='h-32 flex items-center'>
 							<img src='/static/images/notifications.svg' alt='' />
 						</div>
 					</div>

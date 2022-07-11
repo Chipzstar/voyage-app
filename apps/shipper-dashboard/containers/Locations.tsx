@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { Textarea, TextInput } from '@mantine/core';
 import OperatingHoursForm from '../components/OperatingHoursForm';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { OperatingHoursState, TimeWindow } from '../utils/types';
+import { updateHours, setOperatingHours } from '../store/features/operatingHoursSlice';
 
 const Locations = props => {
 	const dispatch = useDispatch();
@@ -28,11 +29,13 @@ const Locations = props => {
 		}
 	});
 
-	// @ts-ignore
-	// @ts-ignore
+	const handleSubmit = useCallback(({ operatingHours }) => {
+		dispatch(setOperatingHours(operatingHours));
+	}, []);
+
 	return locationForm ? (
 		<div className='py-5 workflows-container'>
-			<OperatingHoursForm opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)} />
+			<OperatingHoursForm opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)} onSave={handleSubmit} />
 			<form onSubmit={form.onSubmit(values => console.log(values))} className='grid grid-cols-1 lg:grid-cols-2 gap-y-10 lg:gap-20'>
 				<div id='address-form-container' className='grid grid-cols-1 lg:grid-cols-2 gap-5 col-span-1'>
 					<header className='quote-header col-span-2'>Address</header>
@@ -130,34 +133,7 @@ const Locations = props => {
 				<div id='operating-hours' className='col-span-2 space-y-8'>
 					<header className='quote-header'>Operating hours</header>
 					<div className='relative grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 px-8 py-4 border border-gray-300'>
-						<button
-							className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent'
-							onClick={() => {
-								toggleOperatingHoursForm(true);
-								/*dispatch(
-									updateHours({
-										index: 0,
-										value: {
-											shipping: {
-												isActive: false,
-												open: 10,
-												close: 14
-											},
-											receiving: {
-												isActive: false,
-												open: 10,
-												close: 14
-											},
-											facility: {
-												isActive: false,
-												open: 10,
-												close: 14
-											}
-										}
-									})
-								);*/
-							}}
-						>
+						<button className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent' onClick={() => toggleOperatingHoursForm(true)}>
 							Edit
 						</button>
 						<div className='flex flex-col space-y-4'>
@@ -168,11 +144,11 @@ const Locations = props => {
 										const openFormat: TimeWindow = {
 											h: item.shipping.open['h'],
 											m: item.shipping.open['m']
-										}
+										};
 										const closeFormat: TimeWindow = {
 											h: item.shipping.close['h'],
 											m: item.shipping.close['m']
-										}
+										};
 										return (
 											<tr key={index}>
 												<td>{moment().day(index).format('dddd')}</td>

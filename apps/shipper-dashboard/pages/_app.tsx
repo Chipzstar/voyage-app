@@ -10,6 +10,13 @@ import store, { persistor } from '../store';
 import { PersistGate } from 'redux-persist/integration/react';
 
 moment.tz.setDefault('Europe/London');
+moment.updateLocale('en', {
+	week : {
+		dow : 1,
+	}
+});
+moment.locale('en');
+
 function App({ Component, pageProps }: AppProps) {
 	return (
 		<Provider store={store}>

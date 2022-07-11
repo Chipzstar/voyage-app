@@ -21,9 +21,13 @@ export const OperatingHoursSlice = createSlice({
 				return item;
 			});
 		},
+		setOperatingHours: (state, action: PayloadAction<OperatingHoursState[]>) => {
+			console.log(action.payload)
+			return action.payload
+		}
 	},
 })
 
-export const { updateHours } = OperatingHoursSlice.actions
+export const { updateHours, setOperatingHours } = OperatingHoursSlice.actions
 
 export default OperatingHoursSlice.reducer
