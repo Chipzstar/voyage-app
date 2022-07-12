@@ -4,10 +4,17 @@ import locationsReducer from './features/locationSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
 	operatingHours: operatingHoursReducer,
 	locations: locationsReducer
 })
+
+const rootReducer = (state, action) => {
+	if (['LOGOUT', 'RESET'].includes(action.type)) {
+		state = undefined;
+	}
+	return appReducer(state, action);
+}
 
 const persistConfig = {
 	key: 'root',

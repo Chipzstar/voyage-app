@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { LocationType } from '../utils/types';
 import NewLocation from './NewLocation';
 
 const Locations = props => {
+	const dispatch = useDispatch()
 	const locations = useSelector(state => state['locations']);
 	const [locationForm, showLocationForm] = useState({ show: false, defaultValues: null });
 
@@ -105,6 +106,9 @@ const Locations = props => {
 					</ul>
 				</div>
 			</main>
+			<div className="flex mt-20 justify-center items-center h-full grow w-100">
+				<button className="voyage-button h-12 md:w-48 w-auto" onClick={() => dispatch(({type: 'RESET'}))}>Reset</button>
+			</div>
 		</div>
 	);
 };
