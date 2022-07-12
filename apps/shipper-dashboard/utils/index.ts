@@ -1,9 +1,7 @@
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import moment from 'moment';
 import { Location, LocationType } from './types';
-
-dayjs.extend(customParseFormat);
-
+import { customAlphabet } from 'nanoid';
+const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTU,VWXYZ123456789")
 export const PATHS = {
 	HOME: '/',
 	BOOKINGS: '/bookings',
@@ -15,6 +13,8 @@ export const PATHS = {
 };
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];
+
+export enum EDIT_MODES { NEW, UPDATE}
 
 export const SAMPLE_QUOTES = [
 	{
@@ -57,79 +57,6 @@ export const SAMPLE_QUOTES = [
 	{ quoteID: 'QTE123', quantity: 2, price: 140.12, rate: '#', timeWindow: '#', carrier: 'Cerium' }
 ];
 
-export const SAMPLE_LOCATIONS: Location[] = [
-	{
-		name: 'John Lewis Warehouse',
-		type: LocationType.WAREHOUSE,
-		addressLine1: '4 Cranbrook Way',
-		addressLine2: 'Shirley',
-		city: 'Solihull',
-		postcode: 'B90 4GT',
-		region: 'Birmingham',
-		country: 'UK'
-	},
-	{
-		name: 'DHL Warehouse',
-		type: LocationType.WAREHOUSE,
-		addressLine1: '10 Stirling Rd',
-		addressLine2: 'Shirley',
-		city: 'Solihull',
-		postcode: 'B90 4NE',
-		region: 'Birmingham',
-		country: 'UK'
-	},
-	{
-		name: 'Mountain Warehouse',
-		type: LocationType.WAREHOUSE,
-		addressLine1: 'Mell Square Shopping Centre',
-		addressLine2: '8 Mill Ln',
-		city: 'Solihull',
-		postcode: 'B90 4GT',
-		region: 'Birmingham',
-		country: 'UK'
-	},
-	{
-		name: 'DRM2 Amazon Warehouse',
-		type: LocationType.WAREHOUSE,
-		addressLine1: '645 Oliver Rd',
-		addressLine2: '',
-		city: 'Romford',
-		postcode: 'RM20 3AL',
-		region: 'Grays',
-		country: 'UK'
-	},
-	{
-		name: 'Boots Store',
-		type: LocationType.STORE,
-		addressLine1: '361 Oxford St',
-		addressLine2: 'Shirley',
-		city: 'London',
-		postcode: 'W1C 2JL',
-		region: 'London',
-		country: 'UK'
-	},
-	{
-		name: 'adidas Flagship Store London',
-		type: LocationType.STORE,
-		addressLine1: '425 Oxford St',
-		addressLine2: 'Shirley',
-		city: 'London',
-		postcode: 'W1C 2PG',
-		region: 'London',
-		country: 'UK'
-	},
-	{
-		name: 'Decathlon',
-		type: LocationType.STORE,
-		addressLine1: "Unit 6b Bugsby's Way",
-		addressLine2: 'New Charlton',
-		city: 'London',
-		postcode: 'SE7 7ST',
-		region: 'London',
-		country: 'UK'
-	}
-]
-
 export const SAMPLE_SHIPMENTS = [
 	{
 		shipmentID: 'VOY-ID123',
@@ -142,16 +69,16 @@ export const SAMPLE_SHIPMENTS = [
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
@@ -166,16 +93,16 @@ export const SAMPLE_SHIPMENTS = [
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
@@ -190,16 +117,16 @@ export const SAMPLE_SHIPMENTS = [
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
@@ -214,16 +141,16 @@ export const SAMPLE_SHIPMENTS = [
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
@@ -238,16 +165,16 @@ export const SAMPLE_SHIPMENTS = [
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	},
@@ -262,16 +189,16 @@ export const SAMPLE_SHIPMENTS = [
 			facility: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: dayjs('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
 			}
 		},
 		delivery: {
 			facility: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: dayjs('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: dayjs('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
 			}
 		}
 	}
@@ -403,7 +330,7 @@ export const SAMPLE_EVENTS = [
 	}
 ];
 
-export const DEFAULT_OPERATING_HOURS = [
+export let DEFAULT_OPERATING_HOURS = [
 	{
 		shipping: {
 			isActive: true,
@@ -648,6 +575,146 @@ export const DEFAULT_OPERATING_HOURS = [
 				m: 0
 			}
 		}
+	}
+];
+
+export const SAMPLE_LOCATIONS: Location[] = [
+	{
+		id: `location_${nanoid(16)}`,
+		name: 'John Lewis Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: '4 Cranbrook Way',
+		addressLine2: 'Shirley',
+		city: 'Solihull',
+		postcode: 'B90 4GT',
+		region: 'Birmingham',
+		country: 'UK',
+		pickupInstructions: '',
+		deliveryInstructions: '',
+		operatingHours: DEFAULT_OPERATING_HOURS.map((item, index) =>
+			index === 0
+				? {
+						...item,
+						shipping: {
+							isActive: false,
+							open: {
+								h: 7,
+								m: 0
+							},
+							close: {
+								h: 20,
+								m: 0
+							}
+						},
+						receiving: {
+							isActive: false,
+							open: {
+								h: 7,
+								m: 0
+							},
+							close: {
+								h: 20,
+								m: 0
+							}
+						},
+						facility: {
+							isActive: false,
+							open: {
+								h: 7,
+								m: 0
+							},
+							close: {
+								h: 20,
+								m: 0
+							}
+						}
+				  }
+				: item
+		)
+	},
+	{
+		id: `location_${nanoid(16)}`,
+		name: 'DHL Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: '10 Stirling Rd',
+		addressLine2: 'Shirley',
+		city: 'Solihull',
+		postcode: 'B90 4NE',
+		region: 'Birmingham',
+		country: 'UK',
+		pickupInstructions: '',
+		deliveryInstructions: '',
+		operatingHours: DEFAULT_OPERATING_HOURS
+	},
+	{
+		id: `location_${nanoid(16)}`,
+		name: 'Mountain Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: 'Mell Square Shopping Centre',
+		addressLine2: '8 Mill Ln',
+		city: 'Solihull',
+		postcode: 'B90 4GT',
+		region: 'Birmingham',
+		country: 'UK',
+		pickupInstructions: '',
+		deliveryInstructions: '',
+		operatingHours: DEFAULT_OPERATING_HOURS
+	},
+	{
+		id: `location_${nanoid(16)}`,
+		name: 'DRM2 Amazon Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: '645 Oliver Rd',
+		addressLine2: '',
+		city: 'Romford',
+		postcode: 'RM20 3AL',
+		region: 'Grays',
+		country: 'UK',
+		pickupInstructions: '',
+		deliveryInstructions: '',
+		operatingHours: DEFAULT_OPERATING_HOURS
+	},
+	{
+		id: `location_${nanoid(16)}`,
+		name: 'Boots Store',
+		type: LocationType.STORE,
+		addressLine1: '361 Oxford St',
+		addressLine2: 'Shirley',
+		city: 'London',
+		postcode: 'W1C 2JL',
+		region: 'London',
+		country: 'UK',
+		pickupInstructions: '',
+		deliveryInstructions: '',
+		operatingHours: DEFAULT_OPERATING_HOURS
+	},
+	{
+		id: `location_${nanoid(16)}`,
+		name: 'adidas Flagship Store London',
+		type: LocationType.STORE,
+		addressLine1: '425 Oxford St',
+		addressLine2: 'Shirley',
+		city: 'London',
+		postcode: 'W1C 2PG',
+		region: 'London',
+		country: 'UK',
+		pickupInstructions: '',
+		deliveryInstructions: '',
+		operatingHours: DEFAULT_OPERATING_HOURS
+	},
+	{
+		id: `location_${nanoid(16)}`,
+		name: 'Decathlon',
+		type: LocationType.STORE,
+		addressLine1: "Unit 6b Bugsby's Way",
+		addressLine2: 'New Charlton',
+		city: 'London',
+		postcode: 'SE7 7ST',
+		region: 'London',
+		country: 'UK',
+		pickupInstructions: '',
+		deliveryInstructions: '',
+		operatingHours: DEFAULT_OPERATING_HOURS
 	}
 ];
 

@@ -1,41 +1,44 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import OperatingHoursForm from '../components/OperatingHoursForm';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { LocationType, OperatingHoursState, TimeWindow } from '../utils/types';
 import moment from 'moment';
-import { useForm } from '@mantine/form';
-import { setOperatingHours } from '../store/features/operatingHoursSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { formList, useForm } from '@mantine/form';
+import { useDispatch } from 'react-redux';
+import { DEFAULT_OPERATING_HOURS, EDIT_MODES } from '../utils';
+import { nanoid } from 'nanoid';
 
-const NewLocation = ({ onSave, onCancel, location }) => {
+const NewLocation = ({ onCancel, onSubmit, locationID="", location=null }) => {
 	const [operatingHoursForm, toggleOperatingHoursForm] = useState(false);
 	const dispatch = useDispatch();
-	const operatingHours = useSelector(state => state['operatingHours']);
+
 	const form = useForm({
 		initialValues: {
-			locationName: location?.name,
-			locationType: location?.type.toString(),
+			id: locationID || `location_${nanoid(16)}`,
+			name: location?.name,
+			type: location ? location.type : LocationType.WAREHOUSE,
 			addressLine1: location?.addressLine1,
 			addressLine2: location?.addressLine2,
 			city: location?.city,
-			postalCode: location?.postcode,
+			postcode: location?.postcode,
 			region: location?.region,
 			country: location?.country,
-			pickupInstructions: '',
-			deliveryInstructions: '',
-			operatingHours
+			pickupInstructions: location?.pickupInstructions,
+			deliveryInstructions: location?.deliveryInstructions,
+			operatingHours: location ? formList([...location.operatingHours]) : formList([...DEFAULT_OPERATING_HOURS])
 		}
 	});
 
-	const handleSubmit = useCallback(({ operatingHours }) => {
-		dispatch(setOperatingHours(operatingHours));
+	const handleSubmit = useCallback((values) => {
+		form.setFieldValue('operatingHours', values.operatingHours)
+		toggleOperatingHoursForm(false)
 	}, []);
 
 	return (
 		<div className='py-5 workflows-container'>
-			<OperatingHoursForm opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)} onSave={handleSubmit} />
-			<form onSubmit={form.onSubmit(values => console.log(values))} className='grid grid-cols-1 lg:grid-cols-2 gap-y-10 lg:gap-20'>
+			<OperatingHoursForm opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)} onSave={handleSubmit} operatingHours={location?.operatingHours}/>
+			<form onSubmit={form.onSubmit(onSubmit)} className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-y-10 lg:gap-x-20'>
 				<div id='address-form-container' className='grid grid-cols-1 lg:grid-cols-2 gap-5 col-span-1'>
 					<header className='quote-header col-span-2'>Address</header>
 					<div className='col-span-2'>
@@ -46,7 +49,7 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 							size='md'
 							radius={0}
 							placeholder='Location Name'
-							{...form.getInputProps('locationName')}
+							{...form.getInputProps('name')}
 						/>
 					</div>
 					<div className='col-span-2'>
@@ -58,11 +61,11 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 							radius={0}
 							placeholder='Location Type'
 							data={[
-								{ value: LocationType.WAREHOUSE.toString(), label: 'Warehouse' },
-								{ value: LocationType.STORE.toString(), label: 'Store' },
-								{ value: LocationType.LASTMILE_COURIER.toString(), label: 'Final Mile Courier' }
+								{ value: LocationType.WAREHOUSE, label: 'Warehouse' },
+								{ value: LocationType.STORE, label: 'Store' },
+								{ value: LocationType.LASTMILE_COURIER, label: 'Final Mile Courier' }
 							]}
-							{...form.getInputProps('locationType')}
+							{...form.getInputProps('type')}
 						/>
 					</div>
 					<div className='col-span-2'>
@@ -116,6 +119,17 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 							}}
 							size='md'
 							radius={0}
+							placeholder='Postal Code'
+							{...form.getInputProps('postcode')}
+						/>
+					</div>
+					<div className='col-span-2'>
+						<TextInput
+							classNames={{
+								input: 'py-4'
+							}}
+							size='md'
+							radius={0}
 							placeholder='Country'
 							{...form.getInputProps('country')}
 						/>
@@ -137,14 +151,14 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 				<div id='operating-hours' className='col-span-2 space-y-8'>
 					<header className='quote-header'>Operating hours</header>
 					<div className='relative grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 px-8 py-4 border border-gray-300'>
-						<button className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent' onClick={() => toggleOperatingHoursForm(true)}>
+						<button type="button" className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent' onClick={() => toggleOperatingHoursForm(true)}>
 							Edit
 						</button>
 						<div className='flex flex-col space-y-4'>
 							<h4 className='text-3xl font-normal'>Shipping hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									{operatingHours.map((item: OperatingHoursState, index) => {
+									{form.values.operatingHours.map((item: OperatingHoursState, index) => {
 										const openFormat: TimeWindow = {
 											h: item.shipping.open['h'],
 											m: item.shipping.open['m']
@@ -156,11 +170,11 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 										return (
 											<tr key={index}>
 												<td>{moment().day(index).format('dddd')}</td>
-												<td>
+												{item.shipping.isActive ? <td>
 													{moment(openFormat).format('HH:mm')}
 													&nbsp;-&nbsp;
 													{moment(closeFormat).format('HH:mm')}
-												</td>
+												</td> : <td>Closed</td>}
 											</tr>
 										);
 									})}
@@ -171,7 +185,7 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 							<h4 className='text-3xl font-normal'>Receiving hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									{operatingHours.map((item: OperatingHoursState, index) => {
+									{form.values.operatingHours.map((item: OperatingHoursState, index) => {
 										const openFormat: TimeWindow = {
 											h: item.receiving.open['h'],
 											m: item.receiving.open['m']
@@ -183,11 +197,11 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 										return (
 											<tr key={index}>
 												<td>{moment().day(index).format('dddd')}</td>
-												<td>
+												{item.receiving.isActive ? <td>
 													{moment(openFormat).format('HH:mm')}
 													&nbsp;-&nbsp;
 													{moment(closeFormat).format('HH:mm')}
-												</td>
+												</td> : <td>Closed</td>}
 											</tr>
 										);
 									})}
@@ -198,7 +212,7 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 							<h4 className='text-3xl font-normal'>Facility hours</h4>
 							<table className='table-auto border-none'>
 								<tbody>
-									{operatingHours.map((item: OperatingHoursState, index) => {
+									{form.values.operatingHours.map((item: OperatingHoursState, index) => {
 										const openFormat: TimeWindow = {
 											h: item.facility.open['h'],
 											m: item.facility.open['m']
@@ -210,11 +224,11 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 										return (
 											<tr key={index}>
 												<td>{moment().day(index).format('dddd')}</td>
-												<td>
+												{item.facility.isActive ? <td>
 													{moment(openFormat).format('HH:mm')}
 													&nbsp;-&nbsp;
 													{moment(closeFormat).format('HH:mm')}
-												</td>
+												</td> : <td>Closed</td>}
 											</tr>
 										);
 									})}
@@ -224,10 +238,10 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 					</div>
 				</div>
 				<div id='submit-container' className='col-span-2 space-x-8'>
-					<button className='voyage-button w-64 h-14 text-lg' onClick={onSave}>
+					<button type="submit" className='voyage-button w-64 h-14 text-lg'>
 						Save
 					</button>
-					<button className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100' onClick={onCancel}>
+					<button type="button" className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100' onClick={onCancel}>
 						Cancel
 					</button>
 				</div>
@@ -238,8 +252,9 @@ const NewLocation = ({ onSave, onCancel, location }) => {
 
 NewLocation.propTypes = {
 	location: PropTypes.any,
-	onSave: PropTypes.func.isRequired,
-	onCancel: PropTypes.func.isRequired
+	locationID: PropTypes.string,
+	onCancel: PropTypes.func.isRequired,
+	onSubmit: PropTypes.func.isRequired
 };
 
 export default NewLocation;

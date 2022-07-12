@@ -1,11 +1,9 @@
-import { combineReducers } from '@reduxjs/toolkit'
-import operatingHoursReducer from './features/operatingHoursSlice';
+import { combineReducers } from '@reduxjs/toolkit';
 import locationsReducer from './features/locationSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 
 const appReducer = combineReducers({
-	operatingHours: operatingHoursReducer,
 	locations: locationsReducer
 })
 

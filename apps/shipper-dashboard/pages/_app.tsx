@@ -9,11 +9,12 @@ import { MantineProvider } from '@mantine/core';
 import { Provider } from 'react-redux';
 import store, { persistor } from '../store';
 import { PersistGate } from 'redux-persist/integration/react';
+import TabContextProvider from '../context/TabContext';
 
 moment.tz.setDefault('Europe/London');
 moment.updateLocale('en', {
-	week : {
-		dow : 1,
+	week: {
+		dow: 1
 	}
 });
 moment.locale('en');
@@ -36,7 +37,9 @@ function App({ Component, pageProps }: AppProps) {
 						}}
 					>
 						<main className='app'>
-							<Component {...pageProps} />
+							<TabContextProvider>
+								<Component {...pageProps} />
+							</TabContextProvider>
 						</main>
 					</MantineProvider>
 				</Layout>
