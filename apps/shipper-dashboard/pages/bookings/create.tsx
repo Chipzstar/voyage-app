@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TextInput, Textarea, NumberInput, Select } from '@mantine/core';
 import { useForm, formList } from '@mantine/form';
 import { DatePicker } from '@mantine/dates';
@@ -6,9 +6,12 @@ import { Calendar } from 'tabler-icons-react';
 import { ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
+import { LocationType } from '../../utils/types';
+import { useSelector } from 'react-redux';
 
 const create = () => {
 	const router = useRouter();
+	const locations = useSelector(state => state['locations'])
 
 	const form = useForm({
 		initialValues: {
@@ -35,6 +38,9 @@ const create = () => {
 		'hover:text-white': true,
 		'font-medium': true
 	});
+
+	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
+	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
 
 	return (
 		<div className='pb-4 px-8 min-h-screen'>
@@ -175,7 +181,7 @@ const create = () => {
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}
 									styles={{ rightSection: { pointerEvents: 'none' } }}
-									data={['Warehouse 1', 'Warehouse 2', 'Warehouse 3', 'Warehouse 4', 'Warehouse 5']}
+									data={warehouses.map(({name}) => name)}
 								/>
 							</div>
 						</div>
@@ -190,7 +196,7 @@ const create = () => {
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}
 									styles={{ rightSection: { pointerEvents: 'none' } }}
-									data={['Store 1', 'Store 2', 'Store 3', 'Store 4', 'Store 5']}
+									data={stores.map(({name}) => name)}
 								/>
 							</div>
 						</div>

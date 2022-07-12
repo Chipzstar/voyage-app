@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import CalendarPicker from './CalendarPicker';
+import CalendarPicker from '../modals/CalendarPicker';
 
 const CalendarFilter = ({ current, showCalendar }) => {
 	return (

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Radio, RadioGroup, Switch } from '@mantine/core';
+import VehicleOptions from '../modals/VehicleOptions';
 
 const CarrierPreferences = () => {
+	const [optionsForm, showOptions] = useState(false);
 	return (
 		<div className='py-5 workflows-container'>
+			<VehicleOptions opened={optionsForm} onClose={() => showOptions(false)} onSave={undefined} />
 			<div className='grid grid-cols-1 gap-8'>
 				<div className='flex flex-col space-y-4'>
 					<div className='flex flex-col space-y-2'>
@@ -18,7 +21,7 @@ const CarrierPreferences = () => {
 						<span className='font-normal'>Communicate selection criteria for provided quotes from carriers</span>
 					</div>
 					<div>
-						<RadioGroup required orientation='vertical' color="gray">
+						<RadioGroup required orientation='vertical' color='gray'>
 							<Radio value='price' label='Lowest price' />
 							<Radio value='fast-delivery-eta' label='Fastest delivery time' />
 							<Radio value='early-pickup-eta' label='Earliest pickup time' />
@@ -32,11 +35,11 @@ const CarrierPreferences = () => {
 						<span className='font-normal'>Communicate vehicle type selection preferences</span>
 					</div>
 					<div>
-						<RadioGroup required orientation='vertical' color="gray">
-							<Radio value='cargo-van' label='Cargo Van' />
-							<Radio value='tail-lift-truck' label='Tail-lift truck' />
-							<Radio value='jumbo-trailer' label='Jumbo trailer (mega trailer) trucks' />
-							<Radio value='semi-trailer-truck' label='Semi-trailer truck' />
+						<RadioGroup required orientation='vertical' color='gray'>
+							<Radio value='cargo-van' label='Cargo Van' onClick={() => showOptions(true)} />
+							<Radio value='tail-lift-truck' label='Tail-lift truck' onClick={() => showOptions(true)} />
+							<Radio value='jumbo-trailer' label='Jumbo trailer (mega trailer) trucks' onClick={() => showOptions(true)} />
+							<Radio value='semi-trailer-truck' label='Semi-trailer truck' onClick={() => showOptions(true)} />
 						</RadioGroup>
 					</div>
 				</div>
@@ -46,7 +49,7 @@ const CarrierPreferences = () => {
 						<span className='font-normal'>Control how your shipments should be optimized</span>
 					</div>
 					<div>
-						<RadioGroup required orientation='vertical' color="gray">
+						<RadioGroup required orientation='vertical' color='gray'>
 							<Radio value='mileage' label='Minimize drive time' />
 							<Radio value='punctual' label='Arrive on time' />
 							<Radio value='cost' label='Minimize cost' />

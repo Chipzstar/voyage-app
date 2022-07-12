@@ -3,7 +3,7 @@ import CalendarFilter from '../components/CalendarFilter';
 import DashboardPanels from '../components/DashboardPanels';
 import Map from '../components/Map';
 import dayjs from 'dayjs';
-import CalendarPicker from '../components/CalendarPicker';
+import CalendarPicker from '../modals/CalendarPicker';
 
 export function Index() {
 	const [active, setActive] = useState({ date: dayjs().format('DD.MM.YYYY') });

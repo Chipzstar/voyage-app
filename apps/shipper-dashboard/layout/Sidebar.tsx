@@ -42,7 +42,7 @@ const Sidebar = () => {
 				<SideMenuItem title='Billing' icon='/static/images/billing.svg' href={PATHS.BILLING} isActive={router.pathname.includes(PATHS.BILLING)} />
 			</ul>
 
-			<a href='#' className='flex items-center p-4 text-base font-normal text-gray-900 dark:text-white hover:bg-secondary-100 dark:hover:bg-gray-700'>
+			<a href='apps/shipper-dashboard/layout/Sidebar#' className='flex items-center p-4 text-base font-normal text-gray-900 dark:text-white hover:bg-secondary-100 dark:hover:bg-gray-700'>
 				<Logout size={30} strokeWidth={1} color={'black'} />
 				<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
 			</a>

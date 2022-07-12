@@ -46,9 +46,8 @@ const viewShipment = props => {
 					<div className='grid grid-cols-1 lg:grid-cols-2 gap-x-10'>
 						<div className='grid grid-cols-1 gap-y-8 place-content-start'>
 							<aside className='border border-voyage-grey p-5 flex flex-col space-y-4'>
-								<div className='flex flex-row justify-between items-center'>
+								<div className='flex flex-row items-center'>
 									<header className='shipment-header'>Provider</header>
-									<span className='px-5 py-1 bg-dispatched-50 text-dispatched font-semibold rounded-full'>Self-Booked</span>
 								</div>
 								<div className='space-y-2'>
 									<span className='text-2xl font-medium'>Carrier</span>

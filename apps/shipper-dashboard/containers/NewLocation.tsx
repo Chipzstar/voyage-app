@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import OperatingHoursForm from '../components/OperatingHoursForm';
+import OperatingHoursForm from '../modals/OperatingHoursForm';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { LocationType, OperatingHoursState, TimeWindow } from '../utils/types';
 import moment from 'moment';
