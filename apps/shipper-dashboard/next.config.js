@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withNx = require('@nrwl/next/plugins/with-nx');
-const path = require('path')
+const path = require('path');
 
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
@@ -12,7 +12,7 @@ const nextConfig = {
 		svgr: false
 	},
 	sassOptions: {
-		includePaths: [path.join(__dirname, 'styles')]
+		includePaths: [path.join(__dirname, 'scss')]
 	}
 };
 

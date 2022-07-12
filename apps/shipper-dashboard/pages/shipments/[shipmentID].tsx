@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { PATHS, SAMPLE_EVENTS } from '../../utils';
+import { PATHS, SAMPLE_HISTORY } from '../../utils';
 import { SAMPLE_SHIPMENTS } from '../../utils';
 import { Button } from '@mantine/core';
 
@@ -74,7 +74,7 @@ const viewShipment = props => {
 								<header className='shipment-header'>Summary</header>
 								<div className='px-8 pt-8'>
 									<ul className='-pb-11'>
-										{SAMPLE_EVENTS.map(event => (
+										{SAMPLE_HISTORY.map(event => (
 											<li>
 												<div className='relative pb-8'>
 													<span className='absolute top-2 left-2 -ml-px h-full w-0.5 bg-secondary' aria-hidden='true'></span>

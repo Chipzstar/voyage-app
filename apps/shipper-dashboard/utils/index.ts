@@ -10,7 +10,7 @@ export const PATHS = {
 	BOOKING_CALENDAR: '/bookings/calendar',
 	SHIPMENTS: '/shipments',
 	WORKFLOWS: '/workflows',
-	BILLING: '/billing',
+	BILLING: '/billing'
 };
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];
@@ -59,7 +59,7 @@ export const SAMPLE_QUOTES = [
 export const SAMPLE_SHIPMENTS = [
 	{
 		shipmentID: 'VOY-ID123',
-		bookingStatus: "Booked",
+		bookingStatus: 'Booked',
 		status: 'new',
 		pricePerKg: 5.56,
 		rate: 550.21,
@@ -83,7 +83,7 @@ export const SAMPLE_SHIPMENTS = [
 	},
 	{
 		shipmentID: 'VOY-ID124',
-		bookingStatus: "Booked",
+		bookingStatus: 'Booked',
 		status: 'dispatched',
 		pricePerKg: 5.56,
 		rate: 550.21,
@@ -107,7 +107,7 @@ export const SAMPLE_SHIPMENTS = [
 	},
 	{
 		shipmentID: 'VOY-ID125',
-		bookingStatus: "Booked",
+		bookingStatus: 'Booked',
 		status: 'new',
 		pricePerKg: 5.56,
 		rate: 550.21,
@@ -131,7 +131,7 @@ export const SAMPLE_SHIPMENTS = [
 	},
 	{
 		shipmentID: 'VOY-ID126',
-		bookingStatus: "Booked",
+		bookingStatus: 'Booked',
 		status: 'pending',
 		pricePerKg: 5.56,
 		rate: 550.21,
@@ -155,7 +155,7 @@ export const SAMPLE_SHIPMENTS = [
 	},
 	{
 		shipmentID: 'VOY-ID127',
-		bookingStatus: "Booked",
+		bookingStatus: 'Booked',
 		status: 'en-route',
 		pricePerKg: 5.56,
 		rate: 550.21,
@@ -179,7 +179,7 @@ export const SAMPLE_SHIPMENTS = [
 	},
 	{
 		shipmentID: 'VOY-ID128',
-		bookingStatus: "Booked",
+		bookingStatus: 'Booked',
 		status: 'new',
 		pricePerKg: 5.56,
 		rate: 550.21,
@@ -203,7 +203,7 @@ export const SAMPLE_SHIPMENTS = [
 	}
 ];
 
-export const SAMPLE_EVENTS = [
+export const SAMPLE_HISTORY = [
 	{
 		status: 'Shipment Accepted',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
@@ -216,7 +216,118 @@ export const SAMPLE_EVENTS = [
 		status: 'Shipment Completed',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
 	}
-]
+];
+
+export const SAMPLE_EVENTS = [
+	{
+		title: 'All Day Event very long title',
+		bgColor: '#ff7f50',
+		allDay: true,
+		start: new Date(2022, 7, 0),
+		end: new Date(2022, 7, 1)
+	},
+	{
+		title: 'Long Event',
+		start: new Date(2022, 7, 7),
+		end: new Date(2022, 7, 10)
+	},
+
+	{
+		title: 'DTS STARTS',
+		bgColor: '#dc143c',
+		start: new Date(2016, 2, 13, 0, 0, 0),
+		end: new Date(2016, 2, 20, 0, 0, 0)
+	},
+
+	{
+		title: 'DTS ENDS',
+		bgColor: '#ff8c00',
+		start: new Date(2016, 10, 6, 0, 0, 0),
+		end: new Date(2016, 10, 13, 0, 0, 0)
+	},
+
+	{
+		title: 'Some Event',
+		bgColor: '#9932cc',
+		start: new Date(2022, 7, 9, 0, 0, 0),
+		end: new Date(2022, 7, 9, 0, 0, 0)
+	},
+	{
+		title: 'Conference',
+		bgColor: '#e9967a',
+		start: new Date(2022, 7, 11),
+		end: new Date(2022, 7, 13),
+		desc: 'Big conference for important people'
+	},
+	{
+		title: 'Meeting',
+		bgColor: '#8fbc8f',
+		start: new Date(2022, 7, 12, 10, 30, 0, 0),
+		end: new Date(2022, 7, 12, 12, 30, 0, 0),
+		desc: 'Pre-meeting meeting, to prepare for the meeting'
+	},
+	{
+		title: 'Lunch',
+		bgColor: '#cd5c5c',
+		start: new Date(2022, 7, 12, 12, 0, 0, 0),
+		end: new Date(2022, 7, 12, 13, 0, 0, 0),
+		desc: 'Power lunch'
+	},
+	{
+		title: 'Happy Hour',
+		start: new Date(2022, 7, 12, 12, 0, 0, 0),
+		end: new Date(2022, 7, 12, 13, 0, 0, 0),
+		desc: 'Power lunch happy hour'
+	},
+	{
+		title: 'Meeting',
+		bgColor: '#da70d6',
+		start: new Date(2022, 7, 12, 14, 0, 0, 0),
+		end: new Date(2022, 7, 12, 15, 0, 0, 0)
+	},
+	{
+		title: 'Happy Hour',
+		bgColor: '#eee8aa',
+		start: new Date(2022, 7, 17, 17, 0, 0, 0),
+		end: new Date(2022, 7, 17, 17, 30, 0, 0),
+		desc: 'Most important meal of the day'
+	},
+	{
+		title: 'Dinner',
+		bgColor: '#98fb98',
+		start: new Date(2022, 7, 15, 20, 0, 0, 0),
+		end: new Date(2022, 7, 15, 21, 0, 0, 0)
+	},
+	{
+		title: 'Birthday Party',
+		bgColor: '#afeeee',
+		start: new Date(2022, 7, 13, 7, 0, 0),
+		end: new Date(2022, 7, 13, 10, 30, 0)
+	},
+	{
+		title: 'Birthday Party 2',
+		bgColor: '#db7093',
+		start: new Date(2022, 7, 13, 7, 0, 0),
+		end: new Date(2022, 7, 13, 10, 30, 0)
+	},
+	{
+		title: 'Birthday Party 7',
+		bgColor: '#cd853f',
+		start: new Date(2022, 7, 13, 7, 0, 0),
+		end: new Date(2022, 7, 13, 10, 30, 0)
+	},
+	{
+		title: 'Late Night Event',
+		bgColor: '#b0e0e6',
+		start: new Date(2022, 7, 17, 19, 30, 0),
+		end: new Date(2022, 7, 18, 2, 0, 0)
+	},
+	{
+		title: 'Multi-day Event',
+		start: new Date(2022, 7, 20, 19, 30, 0),
+		end: new Date(2022, 7, 22, 2, 0, 0)
+	}
+];
 
 export const DEFAULT_OPERATING_HOURS = [
 	{
@@ -464,7 +575,7 @@ export const DEFAULT_OPERATING_HOURS = [
 			}
 		}
 	}
-]
+];
 
 /**
  * Converts a day number to a string.
@@ -473,5 +584,5 @@ export const DEFAULT_OPERATING_HOURS = [
  * @return {String} Returns day as string
  */
 export function dayOfWeekAsString(dayIndex) {
-	return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex] || '';
+	return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex] || '';
 }
