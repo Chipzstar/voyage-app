@@ -13,7 +13,7 @@ const OperatingHoursForm = ({ opened, onClose, onSave, operatingHours = null }) 
 
 	const form = useForm({
 		initialValues: {
-			operatingHours: operatingHours ? formList(operatingHours) : formList([...DEFAULT_OPERATING_HOURS])
+			operatingHours: operatingHours ? formList([...operatingHours]) : formList([...DEFAULT_OPERATING_HOURS])
 		}
 	});
 
