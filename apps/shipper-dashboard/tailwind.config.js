@@ -15,6 +15,9 @@ module.exports = {
 			fontFamily: {
 				helvetica: ['Helvetica', 'sans']
 			},
+			spacing: {
+				'128': '32rem',
+			},
 			colors:{
 				'voyage-grey': {
 					DEFAULT: '#CCCCCC'
