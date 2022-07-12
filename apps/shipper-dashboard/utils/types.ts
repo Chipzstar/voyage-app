@@ -35,3 +35,15 @@ export interface TimeWindow {
 	m: number
 }
 
+export enum LocationType { WAREHOUSE, STORE, LASTMILE_COURIER }
+
+export interface Location {
+	name: string,
+	type: LocationType,
+	addressLine1: string,
+	addressLine2: string,
+	city: string,
+	postcode: string,
+	region: string,
+	country: string
+}

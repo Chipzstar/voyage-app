@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { Location, LocationType } from './types';
 
 dayjs.extend(customParseFormat);
 
@@ -55,6 +56,79 @@ export const SAMPLE_QUOTES = [
 	{ quoteID: 'QTE123', quantity: 2, price: 137.33, rate: '#', timeWindow: '#', carrier: 'Barium' },
 	{ quoteID: 'QTE123', quantity: 2, price: 140.12, rate: '#', timeWindow: '#', carrier: 'Cerium' }
 ];
+
+export const SAMPLE_LOCATIONS: Location[] = [
+	{
+		name: 'John Lewis Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: '4 Cranbrook Way',
+		addressLine2: 'Shirley',
+		city: 'Solihull',
+		postcode: 'B90 4GT',
+		region: 'Birmingham',
+		country: 'UK'
+	},
+	{
+		name: 'DHL Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: '10 Stirling Rd',
+		addressLine2: 'Shirley',
+		city: 'Solihull',
+		postcode: 'B90 4NE',
+		region: 'Birmingham',
+		country: 'UK'
+	},
+	{
+		name: 'Mountain Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: 'Mell Square Shopping Centre',
+		addressLine2: '8 Mill Ln',
+		city: 'Solihull',
+		postcode: 'B90 4GT',
+		region: 'Birmingham',
+		country: 'UK'
+	},
+	{
+		name: 'DRM2 Amazon Warehouse',
+		type: LocationType.WAREHOUSE,
+		addressLine1: '645 Oliver Rd',
+		addressLine2: '',
+		city: 'Romford',
+		postcode: 'RM20 3AL',
+		region: 'Grays',
+		country: 'UK'
+	},
+	{
+		name: 'Boots Store',
+		type: LocationType.STORE,
+		addressLine1: '361 Oxford St',
+		addressLine2: 'Shirley',
+		city: 'London',
+		postcode: 'W1C 2JL',
+		region: 'London',
+		country: 'UK'
+	},
+	{
+		name: 'adidas Flagship Store London',
+		type: LocationType.STORE,
+		addressLine1: '425 Oxford St',
+		addressLine2: 'Shirley',
+		city: 'London',
+		postcode: 'W1C 2PG',
+		region: 'London',
+		country: 'UK'
+	},
+	{
+		name: 'Decathlon',
+		type: LocationType.STORE,
+		addressLine1: "Unit 6b Bugsby's Way",
+		addressLine2: 'New Charlton',
+		city: 'London',
+		postcode: 'SE7 7ST',
+		region: 'London',
+		country: 'UK'
+	}
+]
 
 export const SAMPLE_SHIPMENTS = [
 	{
@@ -235,15 +309,15 @@ export const SAMPLE_EVENTS = [
 	{
 		title: 'DTS STARTS',
 		bgColor: '#dc143c',
-		start: new Date(2016, 2, 13, 0, 0, 0),
-		end: new Date(2016, 2, 20, 0, 0, 0)
+		start: new Date(2022, 2, 13, 0, 0, 0),
+		end: new Date(2022, 2, 20, 0, 0, 0)
 	},
 
 	{
 		title: 'DTS ENDS',
 		bgColor: '#ff8c00',
-		start: new Date(2016, 10, 6, 0, 0, 0),
-		end: new Date(2016, 10, 13, 0, 0, 0)
+		start: new Date(2022, 10, 6, 0, 0, 0),
+		end: new Date(2022, 10, 13, 0, 0, 0)
 	},
 
 	{

@@ -18,7 +18,7 @@ const create = () => {
 			activitiesRequired: formList([]),
 			internalPONumber: '',
 			customerPONumber: '',
-			weight: '',
+			weight: 0,
 			quantity: 1,
 			pickupDate: null,
 			pickupLocation: '',

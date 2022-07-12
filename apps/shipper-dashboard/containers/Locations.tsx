@@ -1,13 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useForm } from '@mantine/form';
 import { Textarea, TextInput } from '@mantine/core';
 import OperatingHoursForm from '../components/OperatingHoursForm';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { OperatingHoursState, TimeWindow } from '../utils/types';
-import { updateHours, setOperatingHours } from '../store/features/operatingHoursSlice';
+import { LocationType, OperatingHoursState, TimeWindow } from '../utils/types';
+import { setOperatingHours } from '../store/features/operatingHoursSlice';
+import { SAMPLE_LOCATIONS } from '../utils';
 
 const Locations = props => {
+	const locations = useSelector(state => state['locations']);
 	const dispatch = useDispatch();
 	const operatingHours = useSelector(state => state['operatingHours']);
 	const [locationForm, showLocationForm] = useState(false);
@@ -32,6 +34,10 @@ const Locations = props => {
 	const handleSubmit = useCallback(({ operatingHours }) => {
 		dispatch(setOperatingHours(operatingHours));
 	}, []);
+
+	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
+	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
+	const lastmileCouriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
 
 	return locationForm ? (
 		<div className='py-5 workflows-container'>
@@ -236,9 +242,47 @@ const Locations = props => {
 					Create new location
 				</button>
 			</header>
-			<div className='grid grid-cols-1 gap-6'>
-				<h3 className='shipment-header'>You have no locations saved</h3>
-			</div>
+			<main className="space-y-10">
+				<div className='flex flex-col space-y-2'>
+					<div className='pb-4 shipment-header'>
+						<header>Warehouses</header>
+					</div>
+					<ul>
+						{warehouses?.map(({ name }) => (
+							<li className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
+								<span className='text-medium text-xl'>{name}</span>
+								<button className='capitalize voyage-button'>edit</button>
+							</li>
+						))}
+					</ul>
+				</div>
+				<div className='flex flex-col space-y-2'>
+					<div className='pb-4 shipment-header'>
+						<header>Stores</header>
+					</div>
+					<ul>
+						{stores?.map(({ name }) => (
+							<li className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
+								<span className='text-medium text-xl'>{name}</span>
+								<button className='capitalize voyage-button'>edit</button>
+							</li>
+						))}
+					</ul>
+				</div>
+				<div className='flex flex-col space-y-2'>
+					<div className='pb-4 shipment-header'>
+						<header>Final Mile Carriers</header>
+					</div>
+					<ul>
+						{lastmileCouriers?.map(({ name }) => (
+							<li className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
+								<span className='text-medium text-xl'>{name}</span>
+								<button className='capitalize voyage-button'>edit</button>
+							</li>
+						))}
+					</ul>
+				</div>
+			</main>
 		</div>
 	);
 };
