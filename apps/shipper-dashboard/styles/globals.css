@@ -26,8 +26,20 @@
     .voyage-button {
         @apply bg-secondary-500 hover:bg-secondary-700 text-white font-semibold h-12 md:w-48
     }
+    .cancel-button {
+        @apply bg-gray-400 hover:bg-gray-500 font-semibold h-12 md:w-48
+    }
+    .delete-button {
+        @apply bg-red-500 hover:bg-red-700 text-white font-semibold h-12 md:w-48
+    }
     .pagination-button {
         @apply border border-gray-300 px-5 py-2 flex items-center hover:shadow-sm
+    }
+    .modal-content {
+        @apply text-xl font-normal
+    }
+    .modal-header {
+        @apply text-xl font-semibold
     }
 }
 

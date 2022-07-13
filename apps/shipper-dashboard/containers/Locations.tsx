@@ -3,24 +3,55 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LocationType } from '../utils/types';
 import NewLocation from './NewLocation';
 import { useRouter } from 'next/router';
-import { createLocation, updateLocation } from '../store/features/locationSlice';
+import { createLocation, deleteLocation, updateLocation } from '../store/features/locationSlice';
+import { useModals } from '@mantine/modals';
+import { Text } from '@mantine/core';
 
 const Locations = props => {
+	const modals = useModals();
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const locations = useSelector(state => state['locations']);
+	// state
 	const [locationForm, showLocationForm] = useState({ show: false, id: '', defaultValues: null });
 
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
-	const lastmileCouriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
+	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
 
-	const handleSubmit = useCallback(values => {
-		console.log(values);
-		// if location already exists, perform location UPDATE, otherwise perform location CREATE
-		locationForm.id ? dispatch(updateLocation(values)) : dispatch(createLocation(values));
-		showLocationForm(prevState => ({ ...prevState, show: false, id: '', defaultValues: null }));
-	}, [locationForm]);
+	const handleSubmit = useCallback(
+		values => {
+			console.log(values);
+			// if location already exists, perform location UPDATE, otherwise perform location CREATE
+			locationForm.id ? dispatch(updateLocation(values)) : dispatch(createLocation(values));
+			showLocationForm(prevState => ({ ...prevState, show: false, id: '', defaultValues: null }));
+		},
+		[locationForm]
+	);
+
+	const openConfirmModal = (id, name) => modals.openConfirmModal({
+		title: 'Delete Location',
+		children: (
+			<Text size="md">
+				You have selected <strong>{name}</strong><br/>
+				Are you sure you want to delete this location?
+			</Text>
+		),
+		labels: { confirm: 'Delete', cancel: 'Cancel' },
+		onConfirm: () => dispatch(deleteLocation(id)),
+		onCancel: () => console.log('Cancel'),
+		classNames: {
+			title: 'modal-header'
+		},
+		confirmProps: {
+			color: 'red',
+			classNames: {
+				root: 'bg-red-500'
+			}
+		},
+		closeOnCancel: true,
+		closeOnConfirm: true
+	});
 
 	return locationForm.show ? (
 		<NewLocation
@@ -51,18 +82,23 @@ const Locations = props => {
 						{warehouses?.map((location, index) => (
 							<li key={index} className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
 								<span className='text-medium text-xl'>{location.name}</span>
-								<button
-									className='capitalize voyage-button md:w-24 h-8'
-									onClick={() =>
-										showLocationForm(prevState => ({
-											show: true,
-											id: location.id,
-											defaultValues: location
-										}))
-									}
-								>
-									edit
-								</button>
+								<div className='space-x-4'>
+									<button
+										className='capitalize voyage-button md:w-20 h-8'
+										onClick={() =>
+											showLocationForm(prevState => ({
+												show: true,
+												id: location.id,
+												defaultValues: location
+											}))
+										}
+									>
+										edit
+									</button>
+									<button className='capitalize delete-button md:w-20 h-8' onClick={() => openConfirmModal(location.id, location.name)}>
+										delete
+									</button>
+								</div>
 							</li>
 						))}
 					</ul>
@@ -75,18 +111,23 @@ const Locations = props => {
 						{stores?.map((location, index) => (
 							<li key={index} className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
 								<span className='text-medium text-xl'>{location.name}</span>
-								<button
-									className='capitalize voyage-button md:w-24 h-8'
-									onClick={() =>
-										showLocationForm(prevState => ({
-											show: true,
-											id: location.id,
-											defaultValues: location
-										}))
-									}
-								>
-									edit
-								</button>
+								<div className='space-x-4'>
+									<button
+										className='capitalize voyage-button md:w-20 h-8'
+										onClick={() =>
+											showLocationForm(prevState => ({
+												show: true,
+												id: location.id,
+												defaultValues: location
+											}))
+										}
+									>
+										edit
+									</button>
+									<button className='capitalize delete-button md:w-20 h-8' onClick={() => openConfirmModal(location.id, location.name)}>
+										delete
+									</button>
+								</div>
 							</li>
 						))}
 					</ul>
@@ -96,21 +137,26 @@ const Locations = props => {
 						<header>Final Mile Carriers</header>
 					</div>
 					<ul>
-						{lastmileCouriers?.map((location, index) => (
+						{carriers?.map((location, index) => (
 							<li key={index} className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
 								<span className='text-medium text-xl'>{location.name}</span>
-								<button
-									className='capitalize voyage-button md:w-24 h-8'
-									onClick={() =>
-										showLocationForm(prevState => ({
-											show: true,
-											id: location.id,
-											defaultValues: location
-										}))
-									}
-								>
-									edit
-								</button>
+								<div className='space-x-4'>
+									<button
+										className='capitalize voyage-button md:w-20 h-8'
+										onClick={() =>
+											showLocationForm(prevState => ({
+												show: true,
+												id: location.id,
+												defaultValues: location
+											}))
+										}
+									>
+										edit
+									</button>
+									<button className='capitalize delete-button md:w-20 h-8' onClick={() => openConfirmModal(location.id, location.name)}>
+										delete
+									</button>
+								</div>
 							</li>
 						))}
 					</ul>
@@ -122,7 +168,7 @@ const Locations = props => {
 					onClick={() => {
 						dispatch({ type: 'RESET' });
 						// @ts-ignore
-						router.reload(window.location.pathname);
+						// router.reload(window.location.pathname);
 					}}
 				>
 					Reset

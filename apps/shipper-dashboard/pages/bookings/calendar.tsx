@@ -3,7 +3,7 @@ import { ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
-import { SAMPLE_EVENTS } from 'apps/shipper-dashboard/utils';
+import { SAMPLE_EVENTS } from 'apps/shipper-dashboard/utils/constants';
 import CustomWeekView from '../../containers/CustomWeekView';
 
 const localizer = momentLocalizer(moment);

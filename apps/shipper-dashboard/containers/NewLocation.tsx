@@ -6,7 +6,7 @@ import { LocationType, OperatingHoursState, TimeWindow } from '../utils/types';
 import moment from 'moment';
 import { formList, useForm } from '@mantine/form';
 import { useDispatch } from 'react-redux';
-import { DEFAULT_OPERATING_HOURS, EDIT_MODES } from '../utils';
+import { DEFAULT_OPERATING_HOURS } from '../utils/constants';
 import { nanoid } from 'nanoid';
 
 const NewLocation = ({ onCancel, onSubmit, locationID="", location=null }) => {
@@ -148,66 +148,12 @@ const NewLocation = ({ onCancel, onSubmit, locationID="", location=null }) => {
 						<Textarea minRows={3} maxRows={6} size='md' radius={0} placeholder='Delivery Instructions' {...form.getInputProps('deliveryInstructions')} />
 					</div>
 				</div>
-				<div id='operating-hours' className='col-span-2 space-y-8'>
+				<div id='operating-hours' className='col-span-1 space-y-8'>
 					<header className='quote-header'>Operating hours</header>
-					<div className='relative grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 px-8 py-4 border border-gray-300'>
+					<div className='relative px-8 py-4 border border-gray-300 w-auto'>
 						<button type="button" className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent' onClick={() => toggleOperatingHoursForm(true)}>
 							Edit
 						</button>
-						<div className='flex flex-col space-y-4'>
-							<h4 className='text-3xl font-normal'>Shipping hours</h4>
-							<table className='table-auto border-none'>
-								<tbody>
-									{form.values.operatingHours.map((item: OperatingHoursState, index) => {
-										const openFormat: TimeWindow = {
-											h: item.shipping.open['h'],
-											m: item.shipping.open['m']
-										};
-										const closeFormat: TimeWindow = {
-											h: item.shipping.close['h'],
-											m: item.shipping.close['m']
-										};
-										return (
-											<tr key={index}>
-												<td>{moment().day(index).format('dddd')}</td>
-												{item.shipping.isActive ? <td>
-													{moment(openFormat).format('HH:mm')}
-													&nbsp;-&nbsp;
-													{moment(closeFormat).format('HH:mm')}
-												</td> : <td>Closed</td>}
-											</tr>
-										);
-									})}
-								</tbody>
-							</table>
-						</div>
-						<div className='flex flex-col space-y-4'>
-							<h4 className='text-3xl font-normal'>Receiving hours</h4>
-							<table className='table-auto border-none'>
-								<tbody>
-									{form.values.operatingHours.map((item: OperatingHoursState, index) => {
-										const openFormat: TimeWindow = {
-											h: item.receiving.open['h'],
-											m: item.receiving.open['m']
-										};
-										const closeFormat: TimeWindow = {
-											h: item.receiving.close['h'],
-											m: item.receiving.close['m']
-										};
-										return (
-											<tr key={index}>
-												<td>{moment().day(index).format('dddd')}</td>
-												{item.receiving.isActive ? <td>
-													{moment(openFormat).format('HH:mm')}
-													&nbsp;-&nbsp;
-													{moment(closeFormat).format('HH:mm')}
-												</td> : <td>Closed</td>}
-											</tr>
-										);
-									})}
-								</tbody>
-							</table>
-						</div>
 						<div className='flex flex-col space-y-4'>
 							<h4 className='text-3xl font-normal'>Facility hours</h4>
 							<table className='table-auto border-none'>

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SAMPLE_LOCATIONS } from '../../utils';
+import { SAMPLE_LOCATIONS } from '../../utils/constants';
 import { Location } from '../../utils/types';
 
 const initialState = SAMPLE_LOCATIONS
@@ -23,10 +23,13 @@ export const locationSlice = createSlice({
 				}
 				return item;
 			});
+		},
+		deleteLocation: (state, action: PayloadAction<string>) => {
+			return state.filter((item: Location) => item.id !== action.payload)
 		}
 	},
 })
 
-export const { createLocation, updateLocation, updateOperatingHours } = locationSlice.actions
+export const { createLocation, updateLocation, deleteLocation } = locationSlice.actions
 
 export default locationSlice.reducer

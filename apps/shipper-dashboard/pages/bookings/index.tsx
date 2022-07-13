@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { PATHS } from '../../utils';
+import { PATHS } from '../../utils/constants';
 import Bookings from '../../containers/Bookings';
 
 const bookings = () => {

@@ -1,10 +1,11 @@
 import React from 'react';
+import { Timeline, Text, Button } from '@mantine/core';
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { PATHS, SAMPLE_HISTORY } from '../../utils';
-import { SAMPLE_SHIPMENTS } from '../../utils';
-import { Button } from '@mantine/core';
+import { PATHS, SAMPLE_HISTORY } from '../../utils/constants';
+import { SAMPLE_SHIPMENTS } from '../../utils/constants';
+import moment from 'moment';
 
 export async function getServerSideProps(context) {
 	const index = SAMPLE_SHIPMENTS.findIndex(shipment => shipment.shipmentID === context.params.shipmentID);
@@ -28,16 +29,32 @@ const viewShipment = props => {
 				<header className='flex flex-row items-center justify-between mb-8 py-3'>
 					<h2 className='text-2xl uppercase'>{props.shipmentID}</h2>
 					<div className='flex flex-row justify-between space-x-8'>
-						<Button disabled={!props.pageIndex} variant="outline" color="gray" radius={0} leftIcon={<ChevronLeft size={24} strokeWidth={1} />} className="h-12" onClick={() => {
-							const prevIndex = props.pageIndex - 1
-							router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[prevIndex].shipmentID}`)
-						}}>
+						<Button
+							disabled={!props.pageIndex}
+							variant='outline'
+							color='gray'
+							radius={0}
+							leftIcon={<ChevronLeft size={24} strokeWidth={1} />}
+							className='h-12'
+							onClick={() => {
+								const prevIndex = props.pageIndex - 1;
+								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[prevIndex].shipmentID}`);
+							}}
+						>
 							<span className='text-lg'>Prev</span>
 						</Button>
-						<Button disabled={props.pageIndex === SAMPLE_SHIPMENTS.length - 1} variant="outline" color="gray" radius={0} rightIcon={<ChevronRight size={24} strokeWidth={1} />} className="h-12" onClick={() => {
-							const nextIndex = props.pageIndex + 1
-							router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[nextIndex].shipmentID}`)
-						}}>
+						<Button
+							disabled={props.pageIndex === SAMPLE_SHIPMENTS.length - 1}
+							variant='outline'
+							color='gray'
+							radius={0}
+							rightIcon={<ChevronRight size={24} strokeWidth={1} />}
+							className='h-12'
+							onClick={() => {
+								const nextIndex = props.pageIndex + 1;
+								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[nextIndex].shipmentID}`);
+							}}
+						>
 							<span className='text-lg'>Next</span>
 						</Button>
 					</div>
@@ -71,7 +88,7 @@ const viewShipment = props => {
 							</aside>
 							<aside className='border border-voyage-grey p-5'>
 								<header className='shipment-header'>Summary</header>
-								<div className='px-8 pt-8'>
+								{/*<div className='px-8 pt-8'>
 									<ul className='-pb-11'>
 										{SAMPLE_HISTORY.map(event => (
 											<li>
@@ -90,6 +107,20 @@ const viewShipment = props => {
 											</li>
 										))}
 									</ul>
+								</div>*/}
+								<div className='pt-8'>
+									<Timeline active={1} bulletSize={24} lineWidth={2}>
+										{SAMPLE_HISTORY.map((event, index) => (
+											<Timeline.Item title={event.status} active={index === SAMPLE_HISTORY.length - 1}>
+												<Text color='dimmed' size='sm'>
+													{event.description}
+												</Text>
+												<Text size='xs' mt={4}>
+													{moment.unix(event.timestamp).from(moment())}
+												</Text>
+											</Timeline.Item>
+										))}
+									</Timeline>
 								</div>
 							</aside>
 						</div>

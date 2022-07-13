@@ -2,10 +2,12 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Favicon from '../components/Favicon';
 import '../styles/globals.css';
+import 'antd/dist/antd.css';
 import 'react-big-calendar/lib/sass/styles.scss';
 import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
 import store, { persistor } from '../store';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -36,11 +38,13 @@ function App({ Component, pageProps }: AppProps) {
 							colorScheme: 'light'
 						}}
 					>
-						<main className='app'>
+						<ModalsProvider>
 							<TabContextProvider>
-								<Component {...pageProps} />
+								<main className='app'>
+									<Component {...pageProps} />
+								</main>
 							</TabContextProvider>
-						</main>
+						</ModalsProvider>
 					</MantineProvider>
 				</Layout>
 			</PersistGate>

@@ -1,6 +1,6 @@
 import React from 'react';
 import DataGrid from '../components/DataGrid';
-import { PATHS, SAMPLE_QUOTES } from '../utils';
+import { PATHS, SAMPLE_QUOTES } from '../utils/constants';
 import { ChevronDown } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 

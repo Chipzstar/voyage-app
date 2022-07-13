@@ -2,6 +2,7 @@ import moment from 'moment';
 import { Location, LocationType } from './types';
 import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTU,VWXYZ123456789")
+
 export const PATHS = {
 	HOME: '/',
 	BOOKINGS: '/bookings',
@@ -14,7 +15,11 @@ export const PATHS = {
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];
 
-export enum EDIT_MODES { NEW, UPDATE}
+export enum SERVICE_TYPES {
+	WAREHOUSE_TO_WAREHOUSE='W2W',
+	DIRECT_TO_STORE_DISTRIBUTION='D2S',
+	DIRECT_TO_CARRIER_INJECTION='D2C',
+}
 
 export const SAMPLE_QUOTES = [
 	{
@@ -207,15 +212,18 @@ export const SAMPLE_SHIPMENTS = [
 export const SAMPLE_HISTORY = [
 	{
 		status: 'Shipment Accepted',
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
+		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
+		timestamp: moment().subtract(2, "hours").unix()
 	},
 	{
 		status: 'Shipment In Progress',
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
+		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
+		timestamp: moment().subtract(90, "minutes").unix()
 	},
 	{
 		status: 'Shipment Completed',
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.'
+		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
+		timestamp: moment().subtract(1, "hours").unix()
 	}
 ];
 

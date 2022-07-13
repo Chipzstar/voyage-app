@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
-import { PATHS, SAMPLE_SHIPMENTS, STATUSES } from '../../utils';
+import { PATHS, SAMPLE_SHIPMENTS, STATUSES } from '../../utils/constants';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 

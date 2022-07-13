@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
 import { TextInput, Textarea, NumberInput, Select } from '@mantine/core';
 import { useForm, formList } from '@mantine/form';
-import { DatePicker } from '@mantine/dates';
-import { Calendar } from 'tabler-icons-react';
 import { ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import { LocationType } from '../../utils/types';
 import { useSelector } from 'react-redux';
+import DateTimePicker from '../../components/DateTimePickerBase';
+import { PATHS, SERVICE_TYPES } from 'apps/shipper-dashboard/utils/constants';
 
 const create = () => {
 	const router = useRouter();
-	const locations = useSelector(state => state['locations'])
+	const locations = useSelector(state => state['locations']);
 
 	const form = useForm({
 		initialValues: {
@@ -41,6 +41,33 @@ const create = () => {
 
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
+	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
+
+	const pickupData = useMemo(() => {
+		switch (form.values.serviceType) {
+			case SERVICE_TYPES.WAREHOUSE_TO_WAREHOUSE:
+				return warehouses.map(({ name }) => name);
+			case SERVICE_TYPES.DIRECT_TO_STORE_DISTRIBUTION:
+				return warehouses.map(({ name }) => name);
+			case SERVICE_TYPES.DIRECT_TO_CARRIER_INJECTION:
+				return warehouses.map(({ name }) => name).concat(stores.map(({ name }) => name));
+			default:
+				return locations.map(({ name }) => name);
+		}
+	}, [form.values.serviceType]);
+
+	const deliveryData = useMemo(() => {
+		switch (form.values.serviceType) {
+			case SERVICE_TYPES.WAREHOUSE_TO_WAREHOUSE:
+				return warehouses.map(({ name }) => name);
+			case SERVICE_TYPES.DIRECT_TO_STORE_DISTRIBUTION:
+				return stores.map(({ name }) => name);
+			case SERVICE_TYPES.DIRECT_TO_CARRIER_INJECTION:
+				return carriers.map(({ name }) => name);
+			default:
+				return locations.map(({ name }) => name);
+		}
+	}, [form.values.serviceType]);
 
 	return (
 		<div className='pb-4 px-8 min-h-screen'>
@@ -53,13 +80,25 @@ const create = () => {
 					<div className='grid grid-cols-1 gap-6'>
 						<header className='quote-header'>Service Type</header>
 						<div className='py-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
-							<button type='button' className={`${inputButton} ${form.values.serviceType === 'W2W' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('serviceType', 'W2W')}>
+							<button
+								type='button'
+								className={`${inputButton} ${form.values.serviceType === SERVICE_TYPES.WAREHOUSE_TO_WAREHOUSE && 'bg-secondary text-white'}`}
+								onClick={() => form.setFieldValue('serviceType', SERVICE_TYPES.WAREHOUSE_TO_WAREHOUSE)}
+							>
 								Warehouse to warehouse
 							</button>
-							<button type='button' className={`${inputButton} ${form.values.serviceType === 'D2S' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('serviceType', 'D2S')}>
+							<button
+								type='button'
+								className={`${inputButton} ${form.values.serviceType === SERVICE_TYPES.DIRECT_TO_STORE_DISTRIBUTION && 'bg-secondary text-white'}`}
+								onClick={() => form.setFieldValue('serviceType', SERVICE_TYPES.DIRECT_TO_STORE_DISTRIBUTION)}
+							>
 								Direct to store distribution
 							</button>
-							<button type='button' className={`${inputButton} ${form.values.serviceType === 'D2C' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('serviceType', 'D2C')}>
+							<button
+								type='button'
+								className={`${inputButton} ${form.values.serviceType === SERVICE_TYPES.DIRECT_TO_CARRIER_INJECTION && 'bg-secondary text-white'}`}
+								onClick={() => form.setFieldValue('serviceType', SERVICE_TYPES.DIRECT_TO_CARRIER_INJECTION)}
+							>
 								Direct to carrier injections
 							</button>
 						</div>
@@ -174,14 +213,18 @@ const create = () => {
 							<header className='quote-header'>Pickup</header>
 							<div className=''>
 								<Select
-									placeholder='Select Location'
+									placeholder='Select Origin'
 									radius={0}
 									size='md'
-									defaultValue='No preference'
+									searchable
+									creatable
+									getCreateLabel={query => `+ Create ${query}`}
+									onCreate={query => router.push(PATHS.WORKFLOWS)}
+									required
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}
 									styles={{ rightSection: { pointerEvents: 'none' } }}
-									data={warehouses.map(({name}) => name)}
+									data={pickupData}
 								/>
 							</div>
 						</div>
@@ -189,14 +232,18 @@ const create = () => {
 							<header className='quote-header'>Delivery</header>
 							<div className=''>
 								<Select
+									required
 									placeholder='Select Destination'
 									radius={0}
 									size='md'
-									defaultValue='No preference'
+									searchable
+									creatable
+									getCreateLabel={query => `+ Create ${query}`}
+									onCreate={query => router.push(PATHS.WORKFLOWS)}
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}
 									styles={{ rightSection: { pointerEvents: 'none' } }}
-									data={stores.map(({name}) => name)}
+									data={deliveryData}
 								/>
 							</div>
 						</div>
@@ -213,7 +260,7 @@ const create = () => {
 						</div>
 						<div className='flex flex-col space-y-4'>
 							<p className='font-normal'>Select a pickup date, and we’ll calculate a delivery date based on transit time.</p>
-							<DatePicker className='w-72' radius={0} size='md' placeholder='Pickup Date' rightSection={<Calendar size={16} />} {...form.getInputProps('pickupDate')} />
+							<DateTimePicker radius={0} size='md' placeholder='Pickup Date' inputFormat={'DD-MMM-YYYY HH:mm a'} value={form.values.pickupDate} onChange={value => form.setFieldValue('pickupDate', value)} classNames={{root: "md:w-96"}}/>
 						</div>
 					</div>
 					<div className='grid grid-cols-1 gap-5'>
@@ -287,7 +334,7 @@ const create = () => {
 					</div>
 				</div>
 				<div id='button-container' className='flex flex-col flex-wrap justify-center space-y-8'>
-					{form.values.weight && form.values.pickupDate && <span className="text-4xl text-center lg:w-72">£345.00</span>}
+					{!!form.values.weight && !!form.values.pickupDate && <span className='text-4xl text-center lg:w-72'>£345.00</span>}
 					<button className='voyage-button w-auto '>Book</button>
 					<button className='voyage-button w-auto leading-5'>Save and go to Booking</button>
 					<button className='voyage-button w-auto  bg-transparent text-black hover:bg-stone-100'>Cancel</button>

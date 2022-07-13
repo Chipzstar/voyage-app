@@ -7,7 +7,7 @@ import { Clock } from 'tabler-icons-react';
 import { formList, useForm } from '@mantine/form';
 import moment from 'moment';
 import { OperatingHoursState } from '../utils/types';
-import { DEFAULT_OPERATING_HOURS } from '../utils';
+import { DEFAULT_OPERATING_HOURS } from '../utils/constants';
 
 const OperatingHoursForm = ({ opened, onClose, onSave, operatingHours = null }) => {
 
@@ -102,9 +102,8 @@ const OperatingHoursForm = ({ opened, onClose, onSave, operatingHours = null }) 
 		>
 			<form onSubmit={form.onSubmit(values => onSave(values))} className='flex flex-col p-4 space-y-6'>
 				<span className='text-gray-700'>Select the hours during the week when this facility can pickup & receive shipments</span>
-				<Switch color='blue' label='Use the same hours for shipping and receiving' />
 				<div className='grid grid-cols-1 gap-4'>{Fields}</div>
-				<div className='flex justify-center'>
+				<div className='flex justify-center pt-4'>
 					<button type='submit' className='voyage-button'>
 						Save
 					</button>

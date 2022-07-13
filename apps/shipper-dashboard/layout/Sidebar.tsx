@@ -1,6 +1,6 @@
 import React from 'react';
 import { Logout } from 'tabler-icons-react';
-import { PATHS } from '../utils';
+import { PATHS } from '../utils/constants';
 import Link from 'next/link';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';

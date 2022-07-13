@@ -1,6 +1,6 @@
 import React from 'react';
 import DataGrid from '../components/DataGrid';
-import { PATHS, SAMPLE_SHIPMENTS } from '../utils';
+import { PATHS, SAMPLE_SHIPMENTS } from '../utils/constants';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 
