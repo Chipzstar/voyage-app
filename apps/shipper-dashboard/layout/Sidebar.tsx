@@ -4,6 +4,7 @@ import { PATHS } from '../utils/constants';
 import Link from 'next/link';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
 
 const SideMenuItem = ({ title, icon, href, isActive }) => {
 	const wrapperStyles = classNames({
@@ -25,6 +26,7 @@ const SideMenuItem = ({ title, icon, href, isActive }) => {
 };
 
 const Sidebar = () => {
+	const dispatch = useDispatch();
 	const router = useRouter();
 	return (
 		<div className='w-48 lg:w-64 h-full overflow-y-auto py-4 bg-gray-50 dark:bg-gray-800 flex flex-col border-r-2 border-gray-300'>
@@ -42,10 +44,18 @@ const Sidebar = () => {
 				<SideMenuItem title='Billing' icon='/static/images/billing.svg' href={PATHS.BILLING} isActive={router.pathname.includes(PATHS.BILLING)} />
 			</ul>
 
-			<a href='apps/shipper-dashboard/layout/Sidebar#' className='flex items-center p-4 text-base font-normal text-gray-900 dark:text-white hover:bg-secondary-100 dark:hover:bg-gray-700'>
+			<div
+				role='button'
+				className='flex items-center p-4 text-base font-normal text-gray-900 dark:text-white hover:bg-secondary-100 dark:hover:bg-gray-700'
+				onClick={() => {
+					dispatch({ type: 'RESET' });
+					// @ts-ignore
+					// router.reload(window.location.pathname);
+				}}
+			>
 				<Logout size={30} strokeWidth={1} color={'black'} />
 				<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
-			</a>
+			</div>
 		</div>
 	);
 };

@@ -20,18 +20,17 @@ const Empty = () => {
 const Bookings = () => {
 	const router = useRouter();
 	const rows = SAMPLE_SHIPMENTS.map(element => {
-		const minWindow = moment(element.delivery.window.start).diff(moment(element.pickup.window.end), "hours")
-		const maxWindow = moment(element.delivery.window.end).diff(moment(element.pickup.window.start), "hours")
+		const minWindow = moment.unix(element.delivery.window.start).diff(moment.unix(element.pickup.window.end), "hours")
+		const maxWindow = moment.unix(element.delivery.window.end).diff(moment.unix(element.pickup.window.start), "hours")
 		return (
-			<tr key={element.shipmentID}>
-				<td>{element.shipmentID}</td>
+			<tr key={element.id}>
+				<td>{element.id}</td>
 				<td>{element.bookingStatus}</td>
-				<td>{element.pricePerKg}</td>
 				<td>£{element.rate}</td>
 				<td>{`${minWindow} - ${maxWindow} hours`}</td>
-				<td>{element.carrier}</td>
+				<td>{element.carrier.name}</td>
 				<td role='button'>
-					<span className="text-secondary" onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.shipmentID}`)}>View in shipments</span>
+					<span className="text-secondary" onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.id}`)}>View in shipments</span>
 				</td>
 			</tr>
 		);
@@ -39,7 +38,7 @@ const Bookings = () => {
 
 	return (
 		<div className='py-5 booking-container'>
-			<DataGrid rows={rows} headings={['Booking ID', 'Status', 'Price/Kg', 'Rate', 'Time Window', 'Carrier', '']} emptyContent={<Empty />} />
+			<DataGrid rows={rows} headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']} emptyContent={<Empty />} />
 		</div>
 	);
 };

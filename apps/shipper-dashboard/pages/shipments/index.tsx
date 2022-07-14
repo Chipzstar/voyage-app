@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
-import { PATHS, SAMPLE_SHIPMENTS, STATUSES } from '../../utils/constants';
+import { PATHS, STATUSES } from '../../utils/constants';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const Empty = ({message}) => (
 	<div className='mx-auto my-auto'>
@@ -14,8 +16,9 @@ const Empty = ({message}) => (
 const index = () => {
 	const router = useRouter();
 	const [activeTab, setActiveTab] = useState({ index: 0, statuses: STATUSES });
+	const shipments = useSelector(state => state['shipments']);
 
-	const rows = SAMPLE_SHIPMENTS.filter(element => activeTab.statuses.includes(element.status)).map((element, index) => {
+	const rows = shipments.filter(element => activeTab.statuses.includes(element.status)).map((element, index) => {
 		const statusClass = classNames({
 			'py-1.5': true,
 			'w-28': true,
@@ -27,14 +30,14 @@ const index = () => {
 			'bg-new': element.status === 'new',
 			'bg-pending-400': element.status === 'pending',
 			'bg-dispatched-400': element.status === 'dispatched',
-			'bg-en-route': element.status === 'en-route',
-			'bg-completed': element.status === 'completed',
-			'bg-cancelled': element.status === 'cancelled'
+			'bg-en-route-400': element.status === 'en-route',
+			'bg-completed-300': element.status === 'completed',
+			'bg-cancelled-300': element.status === 'cancelled'
 		});
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
-					<span className='text-secondary font-semibold text-lg'>{element.shipmentID}</span>
+					<span className='text-secondary font-semibold text-lg'>{element.id}</span>
 				</td>
 				<td colSpan={1}>
 					<div className={statusClass}>
@@ -43,24 +46,24 @@ const index = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span>{element.pickup.facility}</span>
+						<span>{element.pickup.facilityName}</span>
 						<span>{element.pickup.location}</span>
-						<span>
-							{element.pickup.window.start} - {element.pickup.window.end}
-						</span>
+						{element.delivery.window ? <span>
+							{moment.unix(element.pickup.window.start).format("HH:mm")} - {moment.unix(element.pickup.window.end).format("HH:mm DD MMM")}
+						</span> : <span>Estimating delivery window...</span>}
 					</div>
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span>{element.delivery.facility}</span>
+						<span>{element.delivery.facilityName}</span>
 						<span>{element.delivery.location}</span>
 						<span>
-							{element.delivery.window.start} - {element.delivery.window.end}
+							{moment.unix(element.delivery?.window?.start).format("HH:mm")} - {moment.unix(element.delivery?.window?.end).format("HH:mm DD MMM")}
 						</span>
 					</div>
 				</td>
 				<td role='button' colSpan={2}>
-					<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.shipmentID}`)}>
+					<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.id}`)}>
 						<span className='text-secondary font-semibold text-lg'>View</span>
 					</button>
 				</td>

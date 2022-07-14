@@ -162,18 +162,6 @@ const Locations = props => {
 					</ul>
 				</div>
 			</main>
-			<div className='flex mt-20 justify-center items-center h-full grow w-100'>
-				<button
-					className='voyage-button h-12 md:w-48 w-auto'
-					onClick={() => {
-						dispatch({ type: 'RESET' });
-						// @ts-ignore
-						// router.reload(window.location.pathname);
-					}}
-				>
-					Reset
-				</button>
-			</div>
 		</div>
 	);
 };

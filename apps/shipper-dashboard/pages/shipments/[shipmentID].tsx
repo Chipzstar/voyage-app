@@ -8,7 +8,7 @@ import { SAMPLE_SHIPMENTS } from '../../utils/constants';
 import moment from 'moment';
 
 export async function getServerSideProps(context) {
-	const index = SAMPLE_SHIPMENTS.findIndex(shipment => shipment.shipmentID === context.params.shipmentID);
+	const index = SAMPLE_SHIPMENTS.findIndex(shipment => shipment.id === context.params.shipmentID);
 	return {
 		props: {
 			shipmentID: context.params.shipmentID,
@@ -38,7 +38,7 @@ const viewShipment = props => {
 							className='h-12'
 							onClick={() => {
 								const prevIndex = props.pageIndex - 1;
-								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[prevIndex].shipmentID}`);
+								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[prevIndex].id}`);
 							}}
 						>
 							<span className='text-lg'>Prev</span>
@@ -52,7 +52,7 @@ const viewShipment = props => {
 							className='h-12'
 							onClick={() => {
 								const nextIndex = props.pageIndex + 1;
-								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[nextIndex].shipmentID}`);
+								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[nextIndex].id}`);
 							}}
 						>
 							<span className='text-lg'>Next</span>
@@ -111,7 +111,7 @@ const viewShipment = props => {
 								<div className='pt-8'>
 									<Timeline active={1} bulletSize={24} lineWidth={2}>
 										{SAMPLE_HISTORY.map((event, index) => (
-											<Timeline.Item title={event.status} active={index === SAMPLE_HISTORY.length - 1}>
+											<Timeline.Item key={index} title={event.status} active={index === SAMPLE_HISTORY.length - 1}>
 												<Text color='dimmed' size='sm'>
 													{event.description}
 												</Text>

@@ -1,7 +1,8 @@
 import moment from 'moment';
-import { Location, LocationType } from './types';
+import { Location, LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from './types';
 import { customAlphabet } from 'nanoid';
-const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTU,VWXYZ123456789")
+
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 
 export const PATHS = {
 	HOME: '/',
@@ -14,12 +15,6 @@ export const PATHS = {
 };
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];
-
-export enum SERVICE_TYPES {
-	WAREHOUSE_TO_WAREHOUSE='W2W',
-	DIRECT_TO_STORE_DISTRIBUTION='D2S',
-	DIRECT_TO_CARRIER_INJECTION='D2C',
-}
 
 export const SAMPLE_QUOTES = [
 	{
@@ -64,146 +59,284 @@ export const SAMPLE_QUOTES = [
 
 export const SAMPLE_SHIPMENTS = [
 	{
-		shipmentID: 'VOY-ID123',
+		id: 'VOY-ID123',
 		bookingStatus: 'Booked',
-		status: 'new',
-		pricePerKg: 5.56,
+		status: STATUS.PENDING,
+		serviceType: SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE,
+		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
+		schedulingType: SCHEDULING_TYPE.ONE_TIME,
+		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
+		internalPONumber: "PO 931-977981-8760",
+		customerPONumber: "PO 931-977981-8760",
 		rate: 550.21,
-		carrier: 'HBCS Logistics',
+		package: {
+			weight: 19000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: "",
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name:'HBCS Logistics',
+			driverName: 'Ben Award',
+			driverPhone: '+447507210809',
+			location: [-1.778197, 52.412811]
+		},
 		pickup: {
-			facility: 'Moved HQ',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
 			}
 		},
 		delivery: {
-			facility: 'Packfleet',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
 			}
 		}
 	},
 	{
-		shipmentID: 'VOY-ID124',
+		id: 'VOY-ID124',
 		bookingStatus: 'Booked',
-		status: 'dispatched',
-		pricePerKg: 5.56,
+		status: STATUS.DISPATCHED,
+		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
+		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
+		schedulingType: SCHEDULING_TYPE.ONE_TIME,
+		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
+		internalPONumber: "PO 931-977981-8760",
+		customerPONumber: "PO 931-977981-8760",
 		rate: 550.21,
-		carrier: 'HBCS Logistics',
+		package: {
+			weight: 14000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: "",
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name:'HBCS Logistics',
+			driverName: 'Ben Award',
+			driverPhone: '+447507210809',
+			location: [-1.778197, 52.412811]
+		},
 		pickup: {
-			facility: 'Moved HQ',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
 			}
 		},
 		delivery: {
-			facility: 'Packfleet',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
 			}
 		}
 	},
 	{
-		shipmentID: 'VOY-ID125',
+		id: 'VOY-ID125',
 		bookingStatus: 'Booked',
-		status: 'new',
-		pricePerKg: 5.56,
+		status: STATUS.EN_ROUTE,
+		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
+		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
+		schedulingType: SCHEDULING_TYPE.RECURRING,
+		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
+		internalPONumber: "PO 931-977981-8760",
+		customerPONumber: "PO 931-977981-8760",
 		rate: 550.21,
-		carrier: 'HBCS Logistics',
+		package: {
+			weight: 9000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: "",
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name:'HBCS Logistics',
+			driverName: 'Ben Award',
+			driverPhone: '+447507210809',
+			location: [-1.778197, 52.412811]
+		},
 		pickup: {
-			facility: 'Moved HQ',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
 			}
 		},
 		delivery: {
-			facility: 'Packfleet',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
 			}
 		}
 	},
 	{
-		shipmentID: 'VOY-ID126',
+		id: 'VOY-ID127',
 		bookingStatus: 'Booked',
-		status: 'pending',
-		pricePerKg: 5.56,
+		status: STATUS.CANCELLED,
+		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
+		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
+		schedulingType: SCHEDULING_TYPE.RECURRING,
+		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
+		internalPONumber: "PO 931-977981-8760",
+		customerPONumber: "PO 931-977981-8760",
 		rate: 550.21,
-		carrier: 'HBCS Logistics',
+		package: {
+			weight: 9000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: "",
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name:'HBCS Logistics',
+			driverName: 'Ben Award',
+			driverPhone: '+447507210809',
+			location: [-1.778197, 52.412811]
+		},
 		pickup: {
-			facility: 'Moved HQ',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
 			}
 		},
 		delivery: {
-			facility: 'Packfleet',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
 			}
 		}
 	},
 	{
-		shipmentID: 'VOY-ID127',
+		id: 'VOY-ID128',
 		bookingStatus: 'Booked',
-		status: 'en-route',
-		pricePerKg: 5.56,
+		status: STATUS.DISPATCHED,
+		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
+		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
+		schedulingType: SCHEDULING_TYPE.ONE_TIME,
+		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
+		internalPONumber: "PO 931-977981-8760",
+		customerPONumber: "PO 931-977981-8760",
 		rate: 550.21,
-		carrier: 'HBCS Logistics',
+		package: {
+			weight: 9000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: "",
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name:'HBCS Logistics',
+			driverName: 'Ben Award',
+			driverPhone: '+447507210809',
+			location: [-1.778197, 52.412811]
+		},
 		pickup: {
-			facility: 'Moved HQ',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
 			}
 		},
 		delivery: {
-			facility: 'Packfleet',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
 			}
 		}
 	},
 	{
-		shipmentID: 'VOY-ID128',
+		id: 'VOY-ID130',
 		bookingStatus: 'Booked',
-		status: 'new',
-		pricePerKg: 5.56,
+		status: STATUS.COMPLETED,
+		serviceType: SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE,
+		shipmentType: SHIPMENT_TYPE.LESS_THAN_PALLET_SIZE,
+		schedulingType: SCHEDULING_TYPE.ONE_TIME,
+		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
+		internalPONumber: "PO 931-977981-8760",
+		customerPONumber: "PO 931-977981-8760",
 		rate: 550.21,
-		carrier: 'HBCS Logistics',
+		package: {
+			weight: 15000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: "",
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name:'HBCS Logistics',
+			driverName: 'Ben Award',
+			driverPhone: '+447507210809',
+			location: [-1.778197, 52.412811]
+		},
 		pickup: {
-			facility: 'Moved HQ',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
 			}
 		},
 		delivery: {
-			facility: 'Packfleet',
+			facilityId: `facility_${nanoid(24)}`,
+			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').format(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').format()
+				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
+				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
 			}
 		}
 	}
@@ -213,17 +346,17 @@ export const SAMPLE_HISTORY = [
 	{
 		status: 'Shipment Accepted',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-		timestamp: moment().subtract(2, "hours").unix()
+		timestamp: moment().subtract(2, 'hours').unix()
 	},
 	{
 		status: 'Shipment In Progress',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-		timestamp: moment().subtract(90, "minutes").unix()
+		timestamp: moment().subtract(90, 'minutes').unix()
 	},
 	{
 		status: 'Shipment Completed',
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.',
-		timestamp: moment().subtract(1, "hours").unix()
+		timestamp: moment().subtract(1, 'hours').unix()
 	}
 ];
 
@@ -599,46 +732,7 @@ export const SAMPLE_LOCATIONS: Location[] = [
 		country: 'UK',
 		pickupInstructions: '',
 		deliveryInstructions: '',
-		operatingHours: DEFAULT_OPERATING_HOURS.map((item, index) =>
-			index === 0
-				? {
-						...item,
-						shipping: {
-							isActive: false,
-							open: {
-								h: 7,
-								m: 0
-							},
-							close: {
-								h: 20,
-								m: 0
-							}
-						},
-						receiving: {
-							isActive: false,
-							open: {
-								h: 7,
-								m: 0
-							},
-							close: {
-								h: 20,
-								m: 0
-							}
-						},
-						facility: {
-							isActive: false,
-							open: {
-								h: 7,
-								m: 0
-							},
-							close: {
-								h: 20,
-								m: 0
-							}
-						}
-				  }
-				: item
-		)
+		operatingHours: DEFAULT_OPERATING_HOURS
 	},
 	{
 		id: `location_${nanoid(16)}`,
