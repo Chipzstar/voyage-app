@@ -97,14 +97,14 @@ export interface Carrier {
 	name: string
 	driverName: string,
 	driverPhone: string,
-	location: Coordinates,
-	vehicle: string
+	location?: Coordinates,
+	vehicle?: string
 }
 
 export interface Shipment {
 	id: string;
 	bookingStatus: string;
-	status: string;
+	status: STATUS;
 	serviceType: SERVICE_TYPE;
 	shipmentType: SHIPMENT_TYPE;
 	schedulingType: SCHEDULING_TYPE;

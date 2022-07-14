@@ -1,5 +1,15 @@
 import moment from 'moment';
-import { Location, LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from './types';
+import {
+	Location,
+	LocationType,
+	PACKAGE_TYPE,
+	SCHEDULING_TYPE,
+	SERVICE_TYPE,
+	Shipment,
+	SHIPMENT_ACTIVITY,
+	SHIPMENT_TYPE,
+	STATUS
+} from './types';
 import { customAlphabet } from 'nanoid';
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
@@ -57,7 +67,7 @@ export const SAMPLE_QUOTES = [
 	{ quoteID: 'QTE123', quantity: 2, price: 140.12, rate: '#', timeWindow: '#', carrier: 'Cerium' }
 ];
 
-export const SAMPLE_SHIPMENTS = [
+export const SAMPLE_SHIPMENTS: Shipment[] = [
 	{
 		id: 'VOY-ID123',
 		bookingStatus: 'Booked',
