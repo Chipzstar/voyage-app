@@ -8,9 +8,9 @@
     "test": "nx test",
     "sass:shippers": "sass --watch apps/shipper-dashboard/scss:apps/shipper-dashboard/styles",
     "sass:carriers": "sass --watch apps/carrier-dashboard/scss:apps/carrier-dashboard/styles",
-    "nx:shipper:serve": "nx serve --project shipper-dashboard",
+    "nx:shipper:serve": "doppler run -- nx serve --project shipper-dashboard",
     "nx:shipper:build": "nx build --project shipper-dashboard",
-    "nx:carrier:serve": "nx serve --project carrier-dashboard",
+    "nx:carrier:serve": "doppler run -- nx serve --project carrier-dashboard",
     "nx:carrier:build": "nx build --project carrier-dashboard",
     "nx:shipper:export": "nx export shipper-dashboard",
     "nx:cache-clean": "nx clear-cache"

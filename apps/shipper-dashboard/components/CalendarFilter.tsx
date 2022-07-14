@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React  from 'react';
 import PropTypes from 'prop-types';
-import CalendarPicker from '../modals/CalendarPicker';
+import { DateRangePicker } from '@mantine/dates';
+import { Calendar } from 'tabler-icons-react';
 
-const CalendarFilter = ({ current, showCalendar }) => {
+const CalendarFilter = ({ current, setCurrent }) => {
 	return (
-		<div role="button" className='border border-gray-300 px-5 py-3 flex flex-row items-center space-x-8' onClick={() => showCalendar(true)}>
-			<span>{current}</span>
-			<img src='/static/images/calendar.svg' alt='' className='h-6 w-6' />
-		</div>
+		<DateRangePicker
+			size="md"
+			radius={0}
+			inputFormat="DD.MM.YYYY"
+			placeholder="Pick dates range"
+			value={current}
+			rightSection={<Calendar size={18} color="grey"/>}
+			onChange={(value) => setCurrent(value)}
+		/>
 	);
 };
 
 CalendarFilter.propTypes = {
-	current: PropTypes.string.isRequired,
-	showCalendar: PropTypes.func.isRequired
+	current: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+	setCurrent: PropTypes.func.isRequired,
 };
 
 export default CalendarFilter;
