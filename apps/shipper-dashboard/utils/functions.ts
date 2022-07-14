@@ -1,7 +1,7 @@
 import { customAlphabet } from 'nanoid';
 import { Delivery, Location, Pickup, Shipment, STATUS } from './types';
 
-import { NewBooking } from '../pages/bookings/types';
+import { NewBooking } from './bookings/types';
 import moment from 'moment';
 
 const nanoIdNumber = customAlphabet('1234567890');

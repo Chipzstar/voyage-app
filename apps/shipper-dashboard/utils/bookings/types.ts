@@ -1,4 +1,4 @@
-import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '../../utils/types';
+import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '../types';
 
 export interface NewBooking {
 	serviceType: SERVICE_TYPE;

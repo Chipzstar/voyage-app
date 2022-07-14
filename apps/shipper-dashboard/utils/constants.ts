@@ -1,7 +1,7 @@
 import moment from 'moment';
 import {
 	Location,
-	LocationType,
+	LocationType, OperatingHoursState,
 	PACKAGE_TYPE,
 	SCHEDULING_TYPE,
 	SERVICE_TYPE,
@@ -481,7 +481,7 @@ export const SAMPLE_EVENTS = [
 	}
 ];
 
-export let DEFAULT_OPERATING_HOURS = [
+export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 	{
 		shipping: {
 			isActive: true,
