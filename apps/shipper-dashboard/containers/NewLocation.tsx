@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import OperatingHoursForm from '../modals/OperatingHoursForm';
 import { Select, Textarea, TextInput } from '@mantine/core';
-import { LocationType, OperatingHoursState, TimeWindow } from '../utils/types';
+import { LocationTimeWindow, LocationType, OperatingHoursState } from '../utils/types';
 import moment from 'moment';
 import { formList, useForm } from '@mantine/form';
 import { useDispatch } from 'react-redux';
@@ -159,11 +159,11 @@ const NewLocation = ({ onCancel, onSubmit, locationID="", location=null }) => {
 							<table className='table-auto border-none'>
 								<tbody>
 									{form.values.operatingHours.map((item: OperatingHoursState, index) => {
-										const openFormat: TimeWindow = {
+										const openFormat: LocationTimeWindow = {
 											h: item.facility.open['h'],
 											m: item.facility.open['m']
 										};
-										const closeFormat: TimeWindow = {
+										const closeFormat: LocationTimeWindow = {
 											h: item.facility.close['h'],
 											m: item.facility.close['m']
 										};
