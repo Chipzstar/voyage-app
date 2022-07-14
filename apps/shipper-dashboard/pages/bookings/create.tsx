@@ -83,15 +83,16 @@ const create = () => {
 		setFTL(active)
 		form.setFieldValue('shipmentType', shipmentType)
 		if (active) {
+			form.setFieldValue('weight', 26000);
 			form.setFieldValue('packageType', PACKAGE_TYPE.PALLET)
 			form.setFieldValue('quantity', 26)
 		} else {
+			form.setFieldValue('weight', 0);
 			form.setFieldValue('quantity', 1)
 		}
 	}
 
 	const handleSubmit = useCallback((values) => {
-		console.log(values)
 		const pickupLocation = locations.find(({id}) => id === values.pickupLocation)
 		const deliveryLocation = locations.find(({id}) => id === values.deliveryLocation)
 		const shipment = generateShipment(values, pickupLocation, deliveryLocation)

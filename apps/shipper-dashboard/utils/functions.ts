@@ -8,7 +8,7 @@ const nanoIdNumber = customAlphabet('1234567890');
 
 function calculateRate (weight, numPallets, miles=300){
 	const sum = (weight * 0.02) + (numPallets * 25.7) + (miles * 4.5)
-	return Number(sum / 3)
+	return Number((sum / 3).toPrecision(2))
 }
 
 export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Shipment {
