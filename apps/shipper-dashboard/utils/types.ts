@@ -124,7 +124,7 @@ export interface LocationTimeWindow {
 }
 
 interface OperatingProps {
-	isActive: Boolean;
+	isActive: boolean;
 	open: LocationTimeWindow;
 	close: LocationTimeWindow;
 }
