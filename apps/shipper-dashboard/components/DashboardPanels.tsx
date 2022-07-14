@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import ShipmentOverview from '../charts/ShipmentOverview';
 
 ChartJS.register(ArcElement, Legend, Tooltip);
 
@@ -23,18 +24,16 @@ const DashboardPanels = ({ date }) => {
 		<div className='mx-auto'>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
 				<div className='flex flex-col justify-center p-4 div border border-voyage-grey'>
-					<div className='ml-7 space-y-3'>
-						<header>
+					<div className='space-y-3'>
+						<header className="ml-7">
 							<h2 className='text-2xl font-semibold'>Shipment Overview</h2>
 						</header>
-						<div className='h-32 flex items-end'>
-							<img src='/static/images/shipment-overview.svg' alt='' />
-						</div>
+						<ShipmentOverview interval={'month'} />
 					</div>
 				</div>
 				<div className='flex flex-col justify-center p-4 div border border-voyage-grey'>
 					<div className='space-y-3'>
-						<header className="ml-7">
+						<header className='ml-7'>
 							<h2 className='text-2xl font-semibold'>On Time</h2>
 						</header>
 						<div className='h-32 flex'>
@@ -44,9 +43,9 @@ const DashboardPanels = ({ date }) => {
 									maintainAspectRatio: false,
 									plugins: {
 										legend: {
-											position: "right",
+											position: 'right'
 										}
-									},
+									}
 								}}
 							/>
 						</div>

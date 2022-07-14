@@ -65,7 +65,7 @@ const create = () => {
 			default:
 				return locations.map(({ id, name }) => ({value: id, label: name}));
 		}
-	}, [form.values.serviceType]);
+	}, [form.values.serviceType, locations]);
 	const deliveryData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:
@@ -77,7 +77,7 @@ const create = () => {
 			default:
 				return locations.map(({ id, name }) => ({value: id, label: name}));
 		}
-	}, [form.values.serviceType]);
+	}, [form.values.serviceType, locations]);
 
 	const handleFTL = (active, shipmentType) => {
 		setFTL(active)
@@ -99,11 +99,11 @@ const create = () => {
 		console.log(shipment)
 		dispatch(createShipment(shipment))
 		router.push(PATHS.SHIPMENTS).then(() => console.log("Navigated to shipments page"))
-	}, []);
+	}, [locations]);
 
 	return (
 		<div className='pb-4 px-8 min-h-screen'>
-			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white' role='button' onClick={() => router.back()}>
+			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button' onClick={() => router.back()}>
 				<ChevronLeft size={48} strokeWidth={2} color={'black'} />
 				<span className='page-header'>Bookings</span>
 			</section>
@@ -177,7 +177,7 @@ const create = () => {
 								/>
 							</div>
 							<div className='lg:row-span-1 col-span-4 '>
-								<NumberInput radius={0} min={0} max={26000} required label='Weight' placeholder='' rightSection={<span className='text-voyage-grey pr-3'>Kg</span>} {...form.getInputProps('weight')} />
+								<NumberInput radius={0} min={0} max={26000} disabled={isFTL} required={!isFTL} label='Weight' placeholder='' rightSection={<span className='text-voyage-grey pr-3'>Kg</span>} {...form.getInputProps('weight')} />
 							</div>
 							<div className='col-span-4 lg:col-span-6 lg:row-span-2'>
 								<Textarea size='sm' radius={0} label='Load Description' autosize minRows={3} maxRows={6} {...form.getInputProps('description')} />
@@ -193,11 +193,12 @@ const create = () => {
 									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Height' placeholder='Units' rightSection={<span className='text-voyage-grey pr-3'>cm</span>} {...form.getInputProps('height')} />
 								</div>
 								<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
-									<NumberInput required size='sm' radius={0} min={1} max={26} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
+									<NumberInput required={!isFTL} size='sm' radius={0} min={1} max={26} disabled={isFTL} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
 								</div>
 								<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
 									<Select
-										required
+										disabled={isFTL}
+										required={!isFTL}
 										size='sm'
 										radius={0}
 										label='Item Packaging'
@@ -354,14 +355,14 @@ const create = () => {
 					</div>
 				</div>
 				<div id='button-container' className='flex flex-col flex-wrap justify-center space-y-8'>
-					{!!form.values.weight && !!form.values.pickupDate && <span className='text-4xl text-center lg:w-72'>£345.00</span>}
+					{!!form.values.weight && !!form.values.pickupDate && <span className='text-4xl text-center w-auto'>£345.00</span>}
 					<button type='submit' className='voyage-button w-auto'>
 						Book
 					</button>
 					<button type='button' className='voyage-button w-auto leading-5' onClick={() => console.log(form.values.pickupDate)}>
 						Save and go to Booking
 					</button>
-					<button type='button' className='voyage-button w-auto  bg-transparent text-black hover:bg-stone-100' onClick={() => router.back()}>
+					<button type='button' className='voyage-button w-auto bg-transparent text-black hover:bg-stone-100' onClick={() => router.back()}>
 						Cancel
 					</button>
 				</div>
