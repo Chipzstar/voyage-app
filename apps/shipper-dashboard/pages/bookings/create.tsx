@@ -288,7 +288,7 @@ const create = props => {
 									searchable
 									creatable
 									getCreateLabel={query => `+ Create ${query}`}
-									onCreate={query => router.push(PATHS.WORKFLOWS)}
+									onCreate={query => router.push(`${PATHS.NEW_LOCATION}?locationName=${query}`, ``, { scroll: true })}
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}
 									styles={{ rightSection: { pointerEvents: 'none' } }}
