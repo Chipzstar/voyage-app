@@ -1,6 +1,7 @@
-import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '../types';
+import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, UnixTimestamp } from '../types';
 
 export interface NewBooking {
+	createdAt: UnixTimestamp,
 	serviceType: SERVICE_TYPE;
 	shipmentType: SHIPMENT_TYPE;
 	schedulingType: SCHEDULING_TYPE;

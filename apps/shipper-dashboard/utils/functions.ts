@@ -28,6 +28,7 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 	}
 	return {
 		id: `VOY-ID${nanoIdNumber(3)}`,
+		createdAt: values.createdAt,
 		bookingStatus: 'Booked',
 		status: STATUS.NEW,
 		serviceType: values.serviceType,
