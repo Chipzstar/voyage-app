@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { TextInput, Textarea, NumberInput, Select } from '@mantine/core';
+import { TextInput, Textarea, NumberInput, Select, MultiSelect } from '@mantine/core';
 import { useForm, formList } from '@mantine/form';
 import { ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
@@ -11,6 +11,7 @@ import { PATHS } from 'apps/shipper-dashboard/utils/constants';
 import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
 import { generateShipment } from '../../utils/functions';
+import { Month } from '@mantine/dates';
 
 const create = () => {
 	const router = useRouter();
@@ -295,15 +296,33 @@ const create = () => {
 						</div>
 						<div className='flex flex-col space-y-4'>
 							<p className='font-normal'>Select a pickup date, and we’ll calculate a delivery date based on transit time.</p>
-							<DateTimePicker
-								radius={0}
-								size='md'
-								placeholder='Pickup Date'
-								inputFormat={'DD-MMM-YYYY HH:mm a'}
-								value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}
-								onChange={(value: Date) => form.setFieldValue('pickupDate', moment(value).unix())}
-								classNames={{ root: 'md:w-96' }}
-							/>
+							<div className='flex flex-row items-center space-x-6'>
+								<DateTimePicker
+									radius={0}
+									size='md'
+									placeholder='Pickup Date'
+									inputFormat={'DD-MMM-YYYY HH:mm a'}
+									value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}
+									onChange={(value: Date) => form.setFieldValue('pickupDate', moment(value).unix())}
+									classNames={{ root: 'md:w-96' }}
+								/>
+								{form.values.schedulingType === SCHEDULING_TYPE.RECURRING && (
+									<MultiSelect
+										radius={0}
+										size='md'
+										data={[
+											{ value: '1', label: 'Monday' },
+											{ value: '2', label: 'Tuesday' },
+											{ value: '3', label: 'Wednesday' },
+											{ value: '4', label: 'Thursday' },
+											{ value: '5', label: 'Friday' },
+											{ value: '6', label: 'Saturday' },
+											{ value: '0', label: 'Sunday' }
+										]}
+										placeholder='Pick days of the week that apply'
+									/>
+								)}
+							</div>
 						</div>
 					</div>
 					<div className='grid grid-cols-1 gap-5'>
