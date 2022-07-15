@@ -1,16 +1,15 @@
 import React, { useCallback } from 'react';
-import { ArcElement, Chart as ChartJS, Legend, Tooltip, BarElement, LinearScale, CategoryScale } from 'chart.js';
+import { ArcElement, BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Tooltip } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import ShipmentOverview from '../charts/ShipmentOverview';
 import TotalPallets from '../charts/TotalPallets';
 import TotalNumberBookings from '../charts/TotalNumberBookings';
 import moment from 'moment';
-import { DateRange } from '../utils/types';
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
 const data = {
-	labels: ['On Time Pickup\t\t\t\t\t(16%)', 'On Time Dropoff\t\t\t\t(19%)'],
+	labels: ['On Time Pickup\t\t\t\t\t16%', 'On Time Dropoff\t\t\t\t19%'],
 	datasets: [
 		{
 			label: '# of Votes',

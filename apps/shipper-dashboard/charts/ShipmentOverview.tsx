@@ -14,7 +14,7 @@ const ShipmentOverview = ({ interval }) => {
 
 	const data = useMemo(() => {
 		const dataPoints = getOverviewDetails()
-		const labels = [`Completed\t\t${dataPoints[0]}`, `Pending\t\t\t\t\t\t${dataPoints[1]}`];
+		const labels = [`Completed\t\t\t\t\t${dataPoints[0]}`, `Pending\t\t\t\t\t\t\t\t\t${dataPoints[1]}`];
 		const datasets = [
 			{
 				label: 'Shipment Overview',

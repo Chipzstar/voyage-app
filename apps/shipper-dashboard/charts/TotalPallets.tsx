@@ -58,7 +58,7 @@ const TotalPallets = ({ range, genLabels }) => {
 								usePointStyle: true,
 								pointStyle: 'circle'
 							},
-							position: 'right',
+							position: 'top',
 							title: {
 								text: `${total}`
 							}

@@ -57,7 +57,7 @@ const TotalNumberBookings = ({ range, genLabels }: InputProps) => {
 								usePointStyle: true,
 								pointStyle: 'circle'
 							},
-							position: 'right'
+							position: 'top'
 						}
 					}
 				}}
