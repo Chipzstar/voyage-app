@@ -16,7 +16,7 @@ const ShipmentOverview = ({ interval }) => {
 		const labels = ['Completed', 'Pending'];
 		const datasets = [
 			{
-				label: '# of Votes',
+				label: 'Shipment Overview',
 				data: getOverviewDetails(),
 				hoverBackgroundColor: ['rgba(101, 188, 85, 1)', 'rgba(255, 105, 57, 1)'],
 				hoverBorderColor: ['rgba(101, 188, 85, 1)', 'rgba(255, 105, 57, 1)'],
@@ -36,9 +36,15 @@ const ShipmentOverview = ({ interval }) => {
 			<Doughnut
 				data={data}
 				options={{
+					cutout: 50,
 					maintainAspectRatio: false,
 					plugins: {
 						legend: {
+							labels: {
+								boxWidth: 5,
+								usePointStyle: true,
+								pointStyle: 'circle'
+							},
 							position: 'right'
 						}
 					}

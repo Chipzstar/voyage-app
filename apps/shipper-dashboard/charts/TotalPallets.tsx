@@ -1,23 +1,32 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Doughnut } from 'react-chartjs-2';
-import { PACKAGE_TYPE, Shipment } from '../utils/types';
+import { Bar } from 'react-chartjs-2';
+import { PACKAGE_TYPE, Shipment, UnixTimestamp } from '../utils/types';
+import moment from 'moment';
+import { filterByTimeRange } from '../utils/functions';
 
-const TotalPallets = ({ interval }) => {
+const TotalPallets = ({ range, genLabels }) => {
 	const shipments = useSelector(state => state['shipments']);
+	const filter = useCallback(filterByTimeRange, [range]);
 
-	const numPallets = useMemo(() => {
-		return shipments
-			.filter((shipment: Shipment) => shipment.package.packageType === PACKAGE_TYPE.PALLET)
-			.reduce((prev, curr: Shipment) => prev + curr.package.quantity, 0)
-	}, [shipments, interval]);
+	const generateDataPoints = useCallback((timestamps) => {
+		const filteredShipments = filter(shipments, range);
+		return timestamps.map((timestamp: UnixTimestamp) => {
+			const startOfDay = moment.unix(timestamp).unix()
+			const endOfDay = moment.unix(timestamp).endOf('day').unix()
+			// filter by time interval and package type == PALLET
+			let palletShipments = filteredShipments.filter(({ createdAt, package: { packageType } }: Shipment) => packageType === PACKAGE_TYPE.PALLET && moment(createdAt).isAfter(startOfDay) && moment(createdAt).isBefore(endOfDay));
+			// calculate total number pallets for the data point
+			return palletShipments.reduce((prev, curr: Shipment) => prev + curr.package.quantity, 0)
+		})
+	}, [shipments, range]);
 
 	const data = useMemo(() => {
-		const labels = ['Number of Pallets'];
+		const { values, labels } = genLabels(range)
 		const datasets = [
 			{
 				label: '# of Pallets',
-				data: [numPallets],
+				data: generateDataPoints(values),
 				hoverBackgroundColor: ['rgba(54, 70, 245, 0.9)'],
 				hoverBorderColor: ['rgba(54, 70, 245, 0.9)'],
 				borderColor: ['rgba(54, 70, 245, 1)'],
@@ -29,17 +38,22 @@ const TotalPallets = ({ interval }) => {
 			labels,
 			datasets
 		};
-	},  [interval])
+	},  [range])
 
 	return (
 		<div className='h-32 flex'>
-			<Doughnut
+			<Bar
 				data={data}
 				options={{
 					maintainAspectRatio: false,
 					plugins: {
 						legend: {
-							 display: false
+							labels: {
+								boxWidth: 5,
+								usePointStyle: true,
+								pointStyle: 'circle'
+							},
+							position: 'right'
 						}
 					}
 				}}

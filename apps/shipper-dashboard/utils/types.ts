@@ -1,3 +1,5 @@
+export type UnixTimestamp = number
+
 export interface CarrierQuote {
 	quoteID: string,
 	quantity: number,
@@ -50,7 +52,10 @@ export interface Package {
 	description: string,
 }
 
+//types
 export type Coordinates = [longitude: number, latitude: number]
+
+export type DateRange = [Date, Date]
 //ENUMS
 
 export enum STATUS {
@@ -103,6 +108,7 @@ export interface Carrier {
 
 export interface Shipment {
 	id: string;
+	createdAt: UnixTimestamp,
 	bookingStatus: string;
 	status: STATUS;
 	serviceType: SERVICE_TYPE;

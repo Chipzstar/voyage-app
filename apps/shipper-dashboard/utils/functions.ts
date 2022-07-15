@@ -59,3 +59,12 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 		}
 	};
 }
+
+export function filterByTimeRange(data: [], range: [Date, Date]){
+	const startDate = moment(range[0]).startOf('day')
+	const endDate = moment(range[1]).endOf('day')
+	return data.filter(({createdAt}) => {
+		const curr = moment.unix(createdAt);
+		return curr.isBefore(endDate) && curr.isAfter(startDate)
+	})
+}

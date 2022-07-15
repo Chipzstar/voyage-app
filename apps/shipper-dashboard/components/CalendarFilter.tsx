@@ -12,7 +12,7 @@ const CalendarFilter = ({ current, setCurrent }) => {
 			placeholder="Pick dates range"
 			value={current}
 			rightSection={<Calendar size={18} color="grey"/>}
-			onChange={(value) => setCurrent(value)}
+			onChange={(value) => value[1] instanceof Date ? setCurrent(value) : null}
 		/>
 	);
 };

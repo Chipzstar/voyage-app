@@ -70,6 +70,7 @@ export const SAMPLE_QUOTES = [
 export const SAMPLE_SHIPMENTS: Shipment[] = [
 	{
 		id: 'VOY-ID123',
+		createdAt: moment().unix(),
 		bookingStatus: 'Booked',
 		status: STATUS.PENDING,
 		serviceType: SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE,
@@ -117,6 +118,7 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 	},
 	{
 		id: 'VOY-ID124',
+		createdAt: moment().unix(),
 		bookingStatus: 'Booked',
 		status: STATUS.DISPATCHED,
 		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
@@ -164,6 +166,7 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 	},
 	{
 		id: 'VOY-ID125',
+		createdAt: moment().unix(),
 		bookingStatus: 'Booked',
 		status: STATUS.EN_ROUTE,
 		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
@@ -211,6 +214,7 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 	},
 	{
 		id: 'VOY-ID127',
+		createdAt: moment().unix(),
 		bookingStatus: 'Booked',
 		status: STATUS.CANCELLED,
 		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
@@ -258,6 +262,7 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 	},
 	{
 		id: 'VOY-ID128',
+		createdAt: moment().unix(),
 		bookingStatus: 'Booked',
 		status: STATUS.DISPATCHED,
 		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
@@ -305,6 +310,7 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 	},
 	{
 		id: 'VOY-ID130',
+		createdAt: moment().unix(),
 		bookingStatus: 'Booked',
 		status: STATUS.COMPLETED,
 		serviceType: SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE,
