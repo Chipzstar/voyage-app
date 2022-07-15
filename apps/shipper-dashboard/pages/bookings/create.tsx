@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_TYPE } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '../../components/DateTimePickerBase';
-import { PATHS} from 'apps/shipper-dashboard/utils/constants';
+import { PATHS } from 'apps/shipper-dashboard/utils/constants';
 import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
 import { generateShipment } from '../../utils/functions';
@@ -36,8 +36,8 @@ const create = () => {
 			pickupDate: null,
 			pickupLocation: '',
 			deliveryLocation: '',
-            description: '',
-			notes: '',
+			description: '',
+			notes: ''
 		}
 	});
 
@@ -58,50 +58,60 @@ const create = () => {
 	const pickupData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:
-				return warehouses.map(({ id, name }) => ({value: id, label: name}));
+				return warehouses.map(({ id, name }) => ({ value: id, label: name }));
 			case SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION:
-				return warehouses.map(({ id, name }) => ({value: id, label: name}));
+				return warehouses.map(({ id, name }) => ({ value: id, label: name }));
 			case SERVICE_TYPE.DIRECT_TO_CARRIER_INJECTION:
-				return warehouses.map(({ id, name }) => ({value: id, label: name})).concat(stores.map(({ id, name }) => ({value: id, label: name})));
+				return warehouses
+					.map(({ id, name }) => ({ value: id, label: name }))
+					.concat(
+						stores.map(({ id, name }) => ({
+							value: id,
+							label: name
+						}))
+					);
 			default:
-				return locations.map(({ id, name }) => ({value: id, label: name}));
+				return locations.map(({ id, name }) => ({ value: id, label: name }));
 		}
 	}, [form.values.serviceType, locations]);
 	const deliveryData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:
-				return warehouses.map(({ id, name }) => ({value: id, label: name}));
+				return warehouses.map(({ id, name }) => ({ value: id, label: name }));
 			case SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION:
-				return stores.map(({ id, name }) => ({value: id, label: name}));
+				return stores.map(({ id, name }) => ({ value: id, label: name }));
 			case SERVICE_TYPE.DIRECT_TO_CARRIER_INJECTION:
-				return carriers.map(({ id, name }) => ({value: id, label: name}));
+				return carriers.map(({ id, name }) => ({ value: id, label: name }));
 			default:
-				return locations.map(({ id, name }) => ({value: id, label: name}));
+				return locations.map(({ id, name }) => ({ value: id, label: name }));
 		}
 	}, [form.values.serviceType, locations]);
 
 	const handleFTL = (active, shipmentType) => {
-		setFTL(active)
-		form.setFieldValue('shipmentType', shipmentType)
+		setFTL(active);
+		form.setFieldValue('shipmentType', shipmentType);
 		if (active) {
 			form.setFieldValue('weight', 26000);
-			form.setFieldValue('packageType', PACKAGE_TYPE.PALLET)
-			form.setFieldValue('quantity', 26)
+			form.setFieldValue('packageType', PACKAGE_TYPE.PALLET);
+			form.setFieldValue('quantity', 26);
 		} else {
 			form.setFieldValue('weight', 0);
-			form.setFieldValue('quantity', 1)
+			form.setFieldValue('quantity', 1);
 		}
-	}
+	};
 
-	const handleSubmit = useCallback((values) => {
-		const pickupLocation = locations.find(({id}) => id === values.pickupLocation)
-		const deliveryLocation = locations.find(({id}) => id === values.deliveryLocation)
-		// update the createdAt timestamp
-		values.createdAt = moment().unix()
-		const shipment = generateShipment(values, pickupLocation, deliveryLocation)
-		dispatch(createShipment(shipment))
-		router.push(PATHS.SHIPMENTS).then(() => console.log("Navigated to shipments page"))
-	}, [locations]);
+	const handleSubmit = useCallback(
+		values => {
+			const pickupLocation = locations.find(({ id }) => id === values.pickupLocation);
+			const deliveryLocation = locations.find(({ id }) => id === values.deliveryLocation);
+			// update the createdAt timestamp
+			values.createdAt = moment().unix();
+			const shipment = generateShipment(values, pickupLocation, deliveryLocation);
+			dispatch(createShipment(shipment));
+			router.push(PATHS.SHIPMENTS).then(() => console.log('Navigated to shipments page'));
+		},
+		[locations]
+	);
 
 	return (
 		<div className='pb-4 px-8 min-h-screen'>
@@ -179,7 +189,17 @@ const create = () => {
 								/>
 							</div>
 							<div className='lg:row-span-1 col-span-4 '>
-								<NumberInput radius={0} min={0} max={26000} disabled={isFTL} required={!isFTL} label='Weight' placeholder='' rightSection={<span className='text-voyage-grey pr-3'>Kg</span>} {...form.getInputProps('weight')} />
+								<NumberInput
+									radius={0}
+									min={0}
+									max={26000}
+									disabled={isFTL}
+									required={!isFTL}
+									label='Weight'
+									placeholder=''
+									rightSection={<span className='text-voyage-grey pr-3'>Kg</span>}
+									{...form.getInputProps('weight')}
+								/>
 							</div>
 							<div className='col-span-4 lg:col-span-6 lg:row-span-2'>
 								<Textarea size='sm' radius={0} label='Load Description' autosize minRows={3} maxRows={6} {...form.getInputProps('description')} />
@@ -232,7 +252,7 @@ const create = () => {
 									searchable
 									creatable
 									getCreateLabel={query => `+ Create ${query}`}
-									onCreate={query => router.push(`${PATHS.NEW_LOCATION}?locationName=${query}`)}
+									onCreate={query => router.push(`${PATHS.NEW_LOCATION}?locationName=${query}`, ``, { scroll: true })}
 									required
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}

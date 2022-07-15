@@ -14,8 +14,8 @@ export async function getServerSideProps(context) {
 	console.log(context);
 	return {
 		props: {
-			locationID: String(context.query?.locationId),
-			locationName: String(context.query?.locationName)
+			locationID: context.query?.locationId || '',
+			locationName: context.query?.locationName || ''
 		} // will be passed to the page component as props
 	};
 }
@@ -36,16 +36,16 @@ const location = props => {
 	const form = useForm({
 		initialValues: {
 			id: props.locationID || `location_${nanoid(16)}`,
-			name: props.locationName  || location?.name,
+			name: props.locationName || location?.name || '',
 			type: location ? location.type : LocationType.WAREHOUSE,
-			addressLine1: location?.addressLine1,
-			addressLine2: location?.addressLine2,
-			city: location?.city,
-			postcode: location?.postcode,
-			region: location?.region,
-			country: location?.country,
-			pickupInstructions: location?.pickupInstructions,
-			deliveryInstructions: location?.deliveryInstructions,
+			addressLine1: location?.addressLine1 || '',
+			addressLine2: location?.addressLine2 || '',
+			city: location?.city || '',
+			postcode: location?.postcode || '',
+			region: location?.region || '',
+			country: location?.country || '',
+			pickupInstructions: location?.pickupInstructions || '',
+			deliveryInstructions: location?.deliveryInstructions || '',
 			operatingHours: location ? formList([...location.operatingHours]) : formList([...DEFAULT_OPERATING_HOURS])
 		}
 	});
@@ -55,7 +55,7 @@ const location = props => {
 		// if location already exists, perform location UPDATE, otherwise perform location CREATE
 		props.locationID ? dispatch(updateLocation(values)) : dispatch(createLocation(values));
 		router.push(`${PATHS.WORKFLOWS}#1`);
-	}, []);
+	}, [props.locationID]);
 
 	const saveOperatingHours = useCallback(values => {
 		form.setFieldValue('operatingHours', values.operatingHours);
