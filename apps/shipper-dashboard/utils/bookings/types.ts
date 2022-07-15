@@ -1,6 +1,7 @@
 import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, UnixTimestamp } from '../types';
 
 export interface NewBooking {
+	id: string,
 	createdAt: UnixTimestamp,
 	serviceType: SERVICE_TYPE;
 	shipmentType: SHIPMENT_TYPE;

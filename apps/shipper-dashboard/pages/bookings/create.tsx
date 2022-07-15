@@ -1,44 +1,58 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { TextInput, Textarea, NumberInput, Select, MultiSelect } from '@mantine/core';
-import { useForm, formList } from '@mantine/form';
-import { ChevronDown, ChevronLeft } from 'tabler-icons-react';
+import { MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { formList, useForm } from '@mantine/form';
+import { CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_TYPE } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '../../components/DateTimePickerBase';
-import { PATHS } from 'apps/shipper-dashboard/utils/constants';
+import { numericId, PATHS } from 'apps/shipper-dashboard/utils/constants';
 import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
 import { generateShipment } from '../../utils/functions';
-import { Month } from '@mantine/dates';
+import { NewBooking } from '../../utils/bookings/types';
+import { createBooking } from '../../store/features/bookingsSlice';
 
-const create = () => {
+export async function getServerSideProps(context) {
+	return {
+		props: {
+			bookingID: context.query?.bookingId || ''
+		} // will be passed to the page component as props
+	};
+}
+
+const create = props => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const locations = useSelector(state => state['locations']);
+	const { locations, bookings } = useSelector(state => ({locations: state['locations'], bookings: state['bookings']}));
 	const [isFTL, setFTL] = useState(false);
+
+	const booking = useMemo(() => {
+		return bookings.find((booking: NewBooking) => booking.id === props.bookingID)
+	}, [bookings])
 
 	const form = useForm({
 		initialValues: {
-			createdAt: moment().unix(),
-			serviceType: '',
-			shipmentType: '',
-			schedulingType: '',
-			activitiesRequired: formList([]),
-			internalPONumber: '',
-			customerPONumber: '',
-			weight: 0,
-			quantity: 1,
-			height: 1,
-			length: 1,
-			width: 1,
-			packageType: '',
-			pickupDate: null,
-			pickupLocation: '',
-			deliveryLocation: '',
-			description: '',
-			notes: ''
+			id: booking?.id || `VOY-ID${numericId(3)}`,
+			createdAt: booking?.createdAt || moment().unix(),
+			serviceType: booking?.serviceType || '',
+			shipmentType: booking?.shipmentType || '',
+			schedulingType: booking?.schedulingType || '',
+			activitiesRequired: booking?.activitiesRequired ? formList([booking?.activitiesRequired]) : formList([]),
+			internalPONumber: booking?.internalPONumber || '',
+			customerPONumber: booking?.customerPONumber || '',
+			weight: booking?.weight || 0,
+			quantity: booking?.quantity || 1,
+			height: booking?.height || 1,
+			length: booking?.length || 1,
+			width: booking?.width || 1,
+			packageType: booking?.packageType || '',
+			pickupDate: booking?.pickupDate || null,
+			pickupLocation: booking?.pickupLocation || '',
+			deliveryLocation: booking?.deliveryLocation || '',
+			description: booking?.description || '',
+			notes: booking?.notes || ''
 		}
 	});
 
@@ -51,11 +65,10 @@ const create = () => {
 		'hover:text-white': true,
 		'font-medium': true
 	});
-
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
-	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
 
+	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
 	const pickupData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:
@@ -75,6 +88,7 @@ const create = () => {
 				return locations.map(({ id, name }) => ({ value: id, label: name }));
 		}
 	}, [form.values.serviceType, locations]);
+
 	const deliveryData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:
@@ -87,7 +101,6 @@ const create = () => {
 				return locations.map(({ id, name }) => ({ value: id, label: name }));
 		}
 	}, [form.values.serviceType, locations]);
-
 	const handleFTL = (active, shipmentType) => {
 		setFTL(active);
 		form.setFieldValue('shipmentType', shipmentType);
@@ -99,6 +112,7 @@ const create = () => {
 			form.setFieldValue('weight', 0);
 			form.setFieldValue('quantity', 1);
 		}
+
 	};
 
 	const handleSubmit = useCallback(
@@ -304,7 +318,7 @@ const create = () => {
 									inputFormat={'DD-MMM-YYYY HH:mm a'}
 									value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}
 									onChange={(value: Date) => form.setFieldValue('pickupDate', moment(value).unix())}
-									classNames={{ root: 'md:w-96' }}
+									classNames={{ root: 'md:w-72' }}
 								/>
 								{form.values.schedulingType === SCHEDULING_TYPE.RECURRING && (
 									<MultiSelect
@@ -320,6 +334,7 @@ const create = () => {
 											{ value: '0', label: 'Sunday' }
 										]}
 										placeholder='Pick days of the week that apply'
+										icon={<CalendarStats />}
 									/>
 								)}
 							</div>
@@ -400,7 +415,10 @@ const create = () => {
 					<button type='submit' className='voyage-button w-auto'>
 						Book
 					</button>
-					<button type='button' className='voyage-button w-auto leading-5' onClick={() => console.log(form.values.pickupDate)}>
+					<button type='button' className='voyage-button w-auto leading-5' onClick={() => {
+						dispatch(createBooking(form.values))
+						router.back()
+					}}>
 						Save and go to Booking
 					</button>
 					<button type='button' className='voyage-button w-auto bg-transparent text-black hover:bg-stone-100' onClick={() => router.back()}>

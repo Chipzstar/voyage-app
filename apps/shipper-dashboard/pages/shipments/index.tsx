@@ -17,6 +17,7 @@ const index = () => {
 	const router = useRouter();
 	const [activeTab, setActiveTab] = useState({ index: 0, statuses: STATUSES });
 	const shipments = useSelector(state => state['shipments']);
+	shipments.sort((a, b) => b.createdAt - a.createdAt)
 
 	const rows = shipments
 		.filter(element => activeTab.statuses.includes(element.status))

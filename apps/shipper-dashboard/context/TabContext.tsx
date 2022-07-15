@@ -18,7 +18,7 @@ const TabContextProvider = ({ children }) => {
 		const hash = router.asPath.split('#');
 	}, [ router.asPath ]);
 
-	const [val, setVal] = useReducer(indexReducer, router.asPath.split('#').length, (tabIndex) => tabIndex < 1 ? 0 : Number(router.asPath.split('#').at(-1)));
+	const [val, setVal] = useReducer(indexReducer, router.asPath.split('#').length, (tabIndex) => tabIndex <= 1 ? 0 : Number(router.asPath.split('#').at(-1)));
 
 	return <TabContext.Provider value={{ index: val, dispatch: setVal }}>{children}</TabContext.Provider>;
 };

@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { Shipment } from '../utils/types';
+import { NewBooking } from '../utils/bookings/types';
 
 const Empty = () => {
 	const router = useRouter();
@@ -20,26 +21,49 @@ const Empty = () => {
 };
 
 const Bookings = () => {
-	const shipments = useSelector(state => state['shipments']);
 	const router = useRouter();
-	const rows = shipments.map((element: Shipment) => {
-		const minWindow = moment.unix(element.delivery?.window?.start).diff(moment.unix(element?.pickup?.window.end), 'hours');
-		const maxWindow = moment.unix(element.delivery?.window?.end).diff(moment.unix(element.pickup?.window.start), 'hours');
-		return (
+	const { bookings, shipments } = useSelector(state => ({
+		bookings: state['bookings'],
+		shipments: state['shipments']
+	}));
+	bookings.sort((a, b) => b.createdAt - a.createdAt);
+	shipments.sort((a, b) => b.createdAt - a.createdAt);
+
+	const rows = bookings
+		.map((element: NewBooking) => (
 			<tr key={element.id}>
 				<td>{element.id}</td>
-				<td>{element.bookingStatus}</td>
-				<td>£{element.rate}</td>
-				{[minWindow, maxWindow].includes(NaN) ? <td>Estimating</td> : <td>{`${minWindow} - ${maxWindow} hours`}</td>}
-				<td>{element.carrier?.name}</td>
+				<td>Incomplete</td>
+				<td>-</td>
+				<td>-</td>
+				<td>-</td>
 				<td role='button'>
-					<span className='text-secondary' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.id}`)}>
-						View in shipments
+					<span className='text-secondary' onClick={() => router.push(`${PATHS.CREATE_BOOKING}/?bookingId=${element.id}`)}>
+						Finish booking
 					</span>
 				</td>
 			</tr>
+		))
+		.concat(
+			shipments.map((element: Shipment) => {
+				const minWindow = moment.unix(element.delivery?.window?.start).diff(moment.unix(element?.pickup?.window.end), 'hours');
+				const maxWindow = moment.unix(element.delivery?.window?.end).diff(moment.unix(element.pickup?.window.start), 'hours');
+				return (
+					<tr key={element.id}>
+						<td>{element.id}</td>
+						<td>{element.bookingStatus}</td>
+						<td>£{element.rate}</td>
+						{[minWindow, maxWindow].includes(NaN) ? <td>Estimating</td> : <td>{`${minWindow} - ${maxWindow} hours`}</td>}
+						<td>{element.carrier?.name}</td>
+						<td role='button'>
+							<span className='text-secondary' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.id}`)}>
+								View in shipments
+							</span>
+						</td>
+					</tr>
+				);
+			})
 		);
-	});
 
 	return (
 		<div className='py-5 booking-container'>

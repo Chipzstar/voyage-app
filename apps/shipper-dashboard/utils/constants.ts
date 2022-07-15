@@ -11,8 +11,9 @@ import {
 	STATUS
 } from './types';
 import { customAlphabet } from 'nanoid';
-
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
+
+export const numericId = customAlphabet('1234567890');
 
 export const PATHS = {
 	HOME: '/',
