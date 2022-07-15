@@ -20,7 +20,7 @@ const create = () => {
 
 	const form = useForm({
 		initialValues: {
-			createdAt: Date.now(),
+			createdAt: moment().unix(),
 			serviceType: '',
 			shipmentType: '',
 			schedulingType: '',
@@ -97,7 +97,7 @@ const create = () => {
 		const pickupLocation = locations.find(({id}) => id === values.pickupLocation)
 		const deliveryLocation = locations.find(({id}) => id === values.deliveryLocation)
 		// update the createdAt timestamp
-		values.createdAt = Date.now()
+		values.createdAt = moment().unix()
 		const shipment = generateShipment(values, pickupLocation, deliveryLocation)
 		console.log(shipment)
 		dispatch(createShipment(shipment))

@@ -13,11 +13,12 @@ const ShipmentOverview = ({ interval }) => {
 	}, [interval, shipments]);
 
 	const data = useMemo(() => {
-		const labels = ['Completed', 'Pending'];
+		const dataPoints = getOverviewDetails()
+		const labels = [`Completed\t\t${dataPoints[0]}`, `Pending\t\t\t\t\t\t${dataPoints[1]}`];
 		const datasets = [
 			{
 				label: 'Shipment Overview',
-				data: getOverviewDetails(),
+				data: dataPoints,
 				hoverBackgroundColor: ['rgba(101, 188, 85, 1)', 'rgba(255, 105, 57, 1)'],
 				hoverBorderColor: ['rgba(101, 188, 85, 1)', 'rgba(255, 105, 57, 1)'],
 				borderColor: ['#43CB2B', '#FF6939'],
@@ -40,12 +41,16 @@ const ShipmentOverview = ({ interval }) => {
 					maintainAspectRatio: false,
 					plugins: {
 						legend: {
+							fullSize: true,
+							align: 'start',
 							labels: {
+								color: 'black',
 								boxWidth: 5,
 								usePointStyle: true,
 								pointStyle: 'circle'
 							},
 							position: 'right'
+
 						}
 					}
 				}}

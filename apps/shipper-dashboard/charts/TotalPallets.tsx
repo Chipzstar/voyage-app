@@ -7,7 +7,7 @@ import { filterByTimeRange } from '../utils/functions';
 
 const TotalPallets = ({ range, genLabels }) => {
 	const shipments = useSelector(state => state['shipments']);
-	const filter = useCallback(filterByTimeRange, [range]);
+	const filter = useCallback(filterByTimeRange, [range, shipments]);
 
 	const generateDataPoints = useCallback((timestamps) => {
 		const filteredShipments = filter(shipments, range);
@@ -21,12 +21,14 @@ const TotalPallets = ({ range, genLabels }) => {
 		})
 	}, [shipments, range]);
 
-	const data = useMemo(() => {
-		const { values, labels } = genLabels(range)
+	const { data, total } = useMemo(() => {
+		const { values, labels } = genLabels(range);
+		const dataPoints = generateDataPoints(values)
+		const total = dataPoints.reduce((prev, curr) => prev + curr)
 		const datasets = [
 			{
-				label: '# of Pallets',
-				data: generateDataPoints(values),
+				label: `# of Pallets ${total}`,
+				data: dataPoints,
 				hoverBackgroundColor: ['rgba(54, 70, 245, 0.9)'],
 				hoverBorderColor: ['rgba(54, 70, 245, 0.9)'],
 				borderColor: ['rgba(54, 70, 245, 1)'],
@@ -34,11 +36,13 @@ const TotalPallets = ({ range, genLabels }) => {
 				borderWidth: 1
 			}
 		];
-		return {
+		const data ={
 			labels,
 			datasets
-		};
-	},  [range])
+		}
+		console.log(total)
+		return { data, total} ;
+	}, [range]);
 
 	return (
 		<div className='h-32 flex'>
@@ -49,11 +53,15 @@ const TotalPallets = ({ range, genLabels }) => {
 					plugins: {
 						legend: {
 							labels: {
+								color: 'black',
 								boxWidth: 5,
 								usePointStyle: true,
 								pointStyle: 'circle'
 							},
-							position: 'right'
+							position: 'right',
+							title: {
+								text: `${total}`
+							}
 						}
 					}
 				}}

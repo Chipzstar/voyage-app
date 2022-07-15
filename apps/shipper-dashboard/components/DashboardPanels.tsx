@@ -10,7 +10,7 @@ import { DateRange } from '../utils/types';
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Legend, Tooltip);
 
 const data = {
-	labels: ['On Time Pickup (%)', 'On Time Dropoff (%)'],
+	labels: ['On Time Pickup\t\t\t\t\t(16%)', 'On Time Dropoff\t\t\t\t(19%)'],
 	datasets: [
 		{
 			label: '# of Votes',
@@ -58,12 +58,16 @@ const DashboardPanels = ({ dateRange }) => {
 									maintainAspectRatio: false,
 									plugins: {
 										legend: {
+											fullSize: true,
+											align: 'start',
 											labels: {
+												color: 'black',
 												boxWidth: 5,
 												usePointStyle: true,
 												pointStyle: 'circle'
 											},
 											position: 'right'
+
 										}
 									}
 								}}

@@ -12,8 +12,9 @@ type InputProps = {
 }
 
 const TotalNumberBookings = ({ range, genLabels }: InputProps) => {
-	const filter = useCallback(filterByTimeRange, [range]);
 	const shipments = useSelector(state => state['shipments']);
+
+	const filter = useCallback(filterByTimeRange, [range, shipments]);
 
 	const generateDataPoints = useCallback((timestamps) => {
 		const filteredShipments = filter(shipments, range);
@@ -26,12 +27,12 @@ const TotalNumberBookings = ({ range, genLabels }: InputProps) => {
 
 	const data = useMemo(() => {
 		let { values, labels } = genLabels(range);
-		let data = generateDataPoints(values)
-		console.log(data)
+		let dataPoints = generateDataPoints(values)
+		const total = dataPoints.reduce((prev, curr) => prev + curr)
 		let datasets = [
 			{
-				label: '# of Bookings',
-				data,
+				label: `# of Bookings ${total}`,
+				data: dataPoints,
 				borderColor: ['#43CB2B'],
 				backgroundColor: ['#43CB2B']
 			}
@@ -40,7 +41,7 @@ const TotalNumberBookings = ({ range, genLabels }: InputProps) => {
 			labels,
 			datasets
 		};
-	}, [range, shipments]);
+	}, [range]);
 
 	return (
 		<div className='h-32 flex'>
@@ -51,6 +52,7 @@ const TotalNumberBookings = ({ range, genLabels }: InputProps) => {
 					plugins: {
 						legend: {
 							labels: {
+								color: 'black',
 								boxWidth: 5,
 								usePointStyle: true,
 								pointStyle: 'circle'
