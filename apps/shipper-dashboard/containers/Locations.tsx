@@ -1,16 +1,16 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LocationType } from '../utils/types';
-import NewLocation from './NewLocation';
+import { Location, LocationType } from '../utils/types';
 import { useRouter } from 'next/router';
 import { createLocation, deleteLocation, updateLocation } from '../store/features/locationSlice';
 import { useModals } from '@mantine/modals';
 import { Text } from '@mantine/core';
+import { PATHS } from '../utils/constants';
 
 const Locations = props => {
 	const modals = useModals();
-	const dispatch = useDispatch();
 	const router = useRouter();
+	const dispatch = useDispatch();
 	const locations = useSelector(state => state['locations']);
 	// state
 	const [locationForm, showLocationForm] = useState({ show: false, id: '', defaultValues: null });
@@ -29,47 +29,36 @@ const Locations = props => {
 		[locationForm]
 	);
 
-	const openConfirmModal = (id, name) => modals.openConfirmModal({
-		title: 'Delete Location',
-		children: (
-			<Text size="md">
-				You have selected <strong>{name}</strong><br/>
-				Are you sure you want to delete this location?
-			</Text>
-		),
-		labels: { confirm: 'Delete', cancel: 'Cancel' },
-		onConfirm: () => dispatch(deleteLocation(id)),
-		onCancel: () => console.log('Cancel'),
-		classNames: {
-			title: 'modal-header'
-		},
-		confirmProps: {
-			color: 'red',
+	const openConfirmModal = (id, name) =>
+		modals.openConfirmModal({
+			title: 'Delete Location',
+			children: (
+				<Text size='md'>
+					You have selected <strong>{name}</strong>
+					<br />
+					Are you sure you want to delete this location?
+				</Text>
+			),
+			labels: { confirm: 'Delete', cancel: 'Cancel' },
+			onConfirm: () => dispatch(deleteLocation(id)),
+			onCancel: () => console.log('Cancel'),
 			classNames: {
-				root: 'bg-red-500'
-			}
-		},
-		closeOnCancel: true,
-		closeOnConfirm: true
-	});
+				title: 'modal-header'
+			},
+			confirmProps: {
+				color: 'red',
+				classNames: {
+					root: 'bg-red-500'
+				}
+			},
+			closeOnCancel: true,
+			closeOnConfirm: true
+		});
 
-	return locationForm.show ? (
-		<NewLocation
-			locationID={locationForm.id}
-			location={locationForm.defaultValues}
-			onCancel={() =>
-				showLocationForm(prevState => ({
-					show: false,
-					id: '',
-					defaultValues: null
-				}))
-			}
-			onSubmit={handleSubmit}
-		/>
-	) : (
+	return (
 		<div className='py-5 workflows-container'>
 			<header className='flex justify-end'>
-				<button className='voyage-button w-56' onClick={() => showLocationForm(prevState => ({ ...prevState, show: true }))}>
+				<button className='voyage-button w-56' onClick={() => router.push(PATHS.NEW_LOCATION)}>
 					Create new location
 				</button>
 			</header>
@@ -85,13 +74,7 @@ const Locations = props => {
 								<div className='space-x-4'>
 									<button
 										className='capitalize voyage-button md:w-20 h-8'
-										onClick={() =>
-											showLocationForm(prevState => ({
-												show: true,
-												id: location.id,
-												defaultValues: location
-											}))
-										}
+										onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.id}`)}
 									>
 										edit
 									</button>
@@ -114,13 +97,7 @@ const Locations = props => {
 								<div className='space-x-4'>
 									<button
 										className='capitalize voyage-button md:w-20 h-8'
-										onClick={() =>
-											showLocationForm(prevState => ({
-												show: true,
-												id: location.id,
-												defaultValues: location
-											}))
-										}
+										onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.id}`)}
 									>
 										edit
 									</button>
@@ -137,20 +114,11 @@ const Locations = props => {
 						<header>Final Mile Carriers</header>
 					</div>
 					<ul>
-						{carriers?.map((location, index) => (
+						{carriers?.map((location: Location, index) => (
 							<li key={index} className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
 								<span className='text-medium text-xl'>{location.name}</span>
 								<div className='space-x-4'>
-									<button
-										className='capitalize voyage-button md:w-20 h-8'
-										onClick={() =>
-											showLocationForm(prevState => ({
-												show: true,
-												id: location.id,
-												defaultValues: location
-											}))
-										}
-									>
+									<button className='capitalize voyage-button md:w-20 h-8' onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.id}`)}>
 										edit
 									</button>
 									<button className='capitalize delete-button md:w-20 h-8' onClick={() => openConfirmModal(location.id, location.name)}>

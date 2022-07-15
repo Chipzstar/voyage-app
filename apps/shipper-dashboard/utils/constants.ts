@@ -21,7 +21,8 @@ export const PATHS = {
 	BOOKING_CALENDAR: '/bookings/calendar',
 	SHIPMENTS: '/shipments',
 	WORKFLOWS: '/workflows',
-	BILLING: '/billing'
+	BILLING: '/billing',
+	NEW_LOCATION: '/location'
 };
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];

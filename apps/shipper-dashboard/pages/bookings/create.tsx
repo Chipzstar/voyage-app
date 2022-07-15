@@ -99,7 +99,6 @@ const create = () => {
 		// update the createdAt timestamp
 		values.createdAt = moment().unix()
 		const shipment = generateShipment(values, pickupLocation, deliveryLocation)
-		console.log(shipment)
 		dispatch(createShipment(shipment))
 		router.push(PATHS.SHIPMENTS).then(() => console.log("Navigated to shipments page"))
 	}, [locations]);
@@ -233,7 +232,7 @@ const create = () => {
 									searchable
 									creatable
 									getCreateLabel={query => `+ Create ${query}`}
-									onCreate={query => router.push(PATHS.WORKFLOWS)}
+									onCreate={query => router.push(`${PATHS.NEW_LOCATION}?locationName=${query}`)}
 									required
 									rightSection={<ChevronDown size={14} />}
 									rightSectionWidth={30}

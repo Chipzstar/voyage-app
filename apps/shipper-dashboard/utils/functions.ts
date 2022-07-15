@@ -64,14 +64,8 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 export function filterByTimeRange(data: [], range: [Date, Date]){
 	const startDate = moment(range[0]).startOf('day')
 	const endDate = moment(range[1]).endOf('day')
-	return data.filter(({createdAt}, index) => {
-		console.log(createdAt)
+	return data.filter(({createdAt}) => {
 		const curr = moment.unix(createdAt);
-		if (index === 6) {
-			console.log("CURR", curr.format())
-			console.log("END", endDate.format())
-			console.log(curr.isBefore(endDate))
-		}
 		return curr.isBefore(endDate) && curr.isAfter(startDate)
 	})
 }
