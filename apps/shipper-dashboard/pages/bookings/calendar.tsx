@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
@@ -6,12 +6,20 @@ import moment from 'moment';
 import CustomWeekView from '../../containers/CustomWeekView';
 import { useSelector } from 'react-redux';
 import { Shipment } from '../../utils/types';
+import { PATHS } from '../../utils/constants';
 
 const localizer = momentLocalizer(moment);
 
 const calendar = () => {
 	const router = useRouter();
 	const shipments = useSelector(state => state['shipments']);
+
+	const handleSelectEvent = useCallback(
+		(event) => {
+			router.push(`${PATHS.SHIPMENTS}/${event.id}`)
+		},
+		[]
+	);
 
 	const {views, ...otherProps} = useMemo(() => ({
 		views: {
@@ -29,7 +37,7 @@ const calendar = () => {
 			<Calendar
 				components={{
 					eventWrapper: (value) => (
-						<div className="flex flex-col bg-secondary-100 rounded-lg px-1 border border-2 border-gray-400">
+						<div role="button" className="flex flex-col bg-secondary-100 rounded-lg px-1 border border-2 border-gray-400" onClick={() =>router.push(`${PATHS.SHIPMENTS}/${value.event.id}`)}>
 							<span className="text-xs font-semibold text-secondary">{value.event.id}</span>
 							<span className="text-sm">{value.event.title}</span>
 						</div>
