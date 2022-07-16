@@ -4,9 +4,10 @@ import VehicleOptions from '../modals/VehicleOptions';
 
 const CarrierPreferences = () => {
 	const [optionsForm, showOptions] = useState(false);
+	const [title, setTitle] = useState("");
 	return (
 		<div className='py-5 workflows-container'>
-			<VehicleOptions opened={optionsForm} onClose={() => showOptions(false)} onSave={undefined} />
+			<VehicleOptions opened={optionsForm} onClose={() => showOptions(false)} onSave={() => showOptions(false)} title={title.replace(/-/g, " ")} />
 			<div className='grid grid-cols-1 gap-8'>
 				<div className='flex flex-col space-y-4'>
 					<div className='flex flex-col space-y-2'>
@@ -36,10 +37,22 @@ const CarrierPreferences = () => {
 					</div>
 					<div>
 						<RadioGroup required orientation='vertical' color='gray'>
-							<Radio value='cargo-van' label='Cargo Van' onClick={() => showOptions(true)} />
-							<Radio value='tail-lift-truck' label='Tail-lift truck' onClick={() => showOptions(true)} />
-							<Radio value='jumbo-trailer' label='Jumbo trailer (mega trailer) trucks' onClick={() => showOptions(true)} />
-							<Radio value='semi-trailer-truck' label='Semi-trailer truck' onClick={() => showOptions(true)} />
+							<Radio value='cargo-van' label='Cargo Van' onClick={() => {
+								setTitle('cargo-van')
+								showOptions(true)
+							}} />
+							<Radio value='tail-lift-truck' label='Tail-lift truck' onClick={() => {
+								setTitle('tail-lift-truck')
+								showOptions(true)
+							}} />
+							<Radio value='jumbo-trailer' label='Jumbo trailer (mega trailer) trucks' onClick={() => {
+								setTitle('jumbo-trailer')
+								showOptions(true)
+							}} />
+							<Radio value='semi-trailer-truck' label='Semi-trailer truck' onClick={() => {
+								setTitle('semi-trailer-truck')
+								showOptions(true)
+							}} />
 						</RadioGroup>
 					</div>
 				</div>

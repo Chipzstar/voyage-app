@@ -4,7 +4,14 @@ import { formList, useForm } from '@mantine/form';
 import { CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
-import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_TYPE } from '../../utils/types';
+import {
+	LocationType,
+	PACKAGE_TYPE,
+	SCHEDULING_TYPE,
+	SERVICE_TYPE,
+	SHIPMENT_ACTIVITY,
+	SHIPMENT_TYPE
+} from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '../../components/DateTimePickerBase';
 import { numericId, PATHS } from 'apps/shipper-dashboard/utils/constants';
@@ -344,21 +351,24 @@ const create = props => {
 						<div className='flex flex-col space-y-6'>
 							<header className='quote-header'>Activities/Equipment Required</header>
 							<div className='py-4 grid grid-cols-1 lg:grid-cols-4 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
-								<button
-									type='button'
-									className={`${inputButton} ${form.values.activitiesRequired.includes('No Preference') && 'bg-secondary text-white'}`}
-									onClick={() => {
-										if (!form.values.activitiesRequired.includes('No Preference')) {
-											form.addListItem('activitiesRequired', 'No Preference');
-										} else {
-											const index = form.values.activitiesRequired.indexOf('No Preference');
-											form.removeListItem('activitiesRequired', index);
-										}
-									}}
-								>
-									No Preference
-								</button>
-								<button
+								{Object.values(SHIPMENT_ACTIVITY).map((item, index) => (
+									<button
+										key={index}
+										type='button'
+										className={`${inputButton} ${form.values.activitiesRequired.includes(item) && 'bg-secondary text-white'}`}
+										onClick={() => {
+											if (!form.values.activitiesRequired.includes(item)) {
+												form.addListItem('activitiesRequired', item);
+											} else {
+												const index = form.values.activitiesRequired.indexOf(item);
+												form.removeListItem('activitiesRequired', index);
+											}
+										}}
+									>
+										<span className="capitalize">{item.replace("-", " ")}</span>
+									</button>
+								))}
+								{/*<button
 									type='button'
 									className={`${inputButton} ${form.values.activitiesRequired.includes('Flatbed Trailer') && 'bg-secondary text-white'}`}
 									onClick={() => {
@@ -374,7 +384,7 @@ const create = props => {
 								</button>
 								<button
 									type='button'
-									className={`${inputButton} ${form.values.activitiesRequired.includes('Luton Van') && 'bg-secondary text-white'}`}
+									className={`${inputButton} ${form.values.activitiesRequired.includes('') && 'bg-secondary text-white'}`}
 									onClick={() => {
 										if (!form.values.activitiesRequired.includes('Luton Van')) {
 											form.addListItem('activitiesRequired', 'Luton Van');
@@ -399,7 +409,7 @@ const create = props => {
 									}}
 								>
 									Tail lift
-								</button>
+								</button>*/}
 							</div>
 						</div>
 					</div>
@@ -415,10 +425,14 @@ const create = props => {
 					<button type='submit' className='voyage-button w-auto'>
 						Book
 					</button>
-					<button type='button' className='voyage-button w-auto leading-5' onClick={() => {
-						dispatch(createBooking(form.values))
-						router.back()
-					}}>
+					<button
+						type='button'
+						className='voyage-button w-auto leading-5'
+						onClick={() => {
+							dispatch(createBooking(form.values));
+							router.back();
+						}}
+					>
 						Save and go to Booking
 					</button>
 					<button type='button' className='voyage-button w-auto bg-transparent text-black hover:bg-stone-100' onClick={() => router.back()}>

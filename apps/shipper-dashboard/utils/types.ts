@@ -85,8 +85,9 @@ export enum SCHEDULING_TYPE {
 }
 
 export enum SHIPMENT_ACTIVITY {
+	NO_PREFERENCE="no-preference",
 	TAIL_LIFT = 'tail-lift',
-	LUTON_VAN = 'luton-van',
+	JUMBO_TRAILER = 'jumbo-trailer',
 	FLATBED_TRAILER = 'flatbed-trailer'
 }
 
