@@ -104,8 +104,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(1, "d").set("h", 8).unix(),
+				end: moment().add(1, "d").set("h", 9).unix(),
 			}
 		},
 		delivery: {
@@ -113,8 +113,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(1, "d").set("h", 18).unix(),
+				end: moment().add(1, "d").set("h", 20).unix(),
 			}
 		}
 	},
@@ -152,8 +152,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(2, "d").set("h", 8).unix(),
+				end: moment().add(2, "d").set("h", 9).unix(),
 			}
 		},
 		delivery: {
@@ -161,8 +161,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(2, "d").set("h", 18).unix(),
+				end: moment().add(2, "d").set("h", 20).unix(),
 			}
 		}
 	},
@@ -200,8 +200,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(3, "d").set("h", 8).unix(),
+				end: moment().add(3, "d").set("h", 9).unix(),
 			}
 		},
 		delivery: {
@@ -209,8 +209,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(3, "d").set("h", 18).unix(),
+				end: moment().add(3, "d").set("h", 20).unix(),
 			}
 		}
 	},
@@ -248,8 +248,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(4, "d").set("h", 8).unix(),
+				end: moment().add(4, "d").set("h", 9).unix(),
 			}
 		},
 		delivery: {
@@ -257,8 +257,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(4, "d").set("h", 18).unix(),
+				end: moment().add(4, "d").set("h", 20).unix(),
 			}
 		}
 	},
@@ -296,8 +296,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(5, "d").set("h", 8).unix(),
+				end: moment().add(5, "d").set("h", 9).unix(),
 			}
 		},
 		delivery: {
@@ -305,8 +305,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(5, "d").set("h", 18).unix(),
+				end: moment().add(5, "d").set("h", 20).unix(),
 			}
 		}
 	},
@@ -344,8 +344,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
-				start: moment('22/07/22 08:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 09:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(6, "d").set("h", 8).unix(),
+				end: moment().add(6, "d").set("h", 9).unix(),
 			}
 		},
 		delivery: {
@@ -353,8 +353,8 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
-				start: moment('22/07/22 18:00', 'DD/MM/YY HH:mm').unix(),
-				end: moment('22/07/22 20:00', 'DD/MM/YY HH:mm').unix()
+				start: moment().add(6, "d").set("h", 18).unix(),
+				end: moment().add(6, "d").set("h", 20).unix(),
 			}
 		}
 	}

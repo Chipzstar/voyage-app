@@ -74,7 +74,6 @@ const create = props => {
 	});
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
-
 	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
 	const pickupData = useMemo(() => {
 		switch (form.values.serviceType) {
@@ -95,7 +94,6 @@ const create = props => {
 				return locations.map(({ id, name }) => ({ value: id, label: name }));
 		}
 	}, [form.values.serviceType, locations]);
-
 	const deliveryData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:
@@ -108,6 +106,7 @@ const create = props => {
 				return locations.map(({ id, name }) => ({ value: id, label: name }));
 		}
 	}, [form.values.serviceType, locations]);
+
 	const handleFTL = (active, shipmentType) => {
 		setFTL(active);
 		form.setFieldValue('shipmentType', shipmentType);
@@ -368,48 +367,6 @@ const create = props => {
 										<span className="capitalize">{item.replace("-", " ")}</span>
 									</button>
 								))}
-								{/*<button
-									type='button'
-									className={`${inputButton} ${form.values.activitiesRequired.includes('Flatbed Trailer') && 'bg-secondary text-white'}`}
-									onClick={() => {
-										if (!form.values.activitiesRequired.includes('Flatbed Trailer')) {
-											form.addListItem('activitiesRequired', 'Flatbed Trailer');
-										} else {
-											const index = form.values.activitiesRequired.indexOf('Flatbed Trailer');
-											form.removeListItem('activitiesRequired', index);
-										}
-									}}
-								>
-									Flatbed Trailer
-								</button>
-								<button
-									type='button'
-									className={`${inputButton} ${form.values.activitiesRequired.includes('') && 'bg-secondary text-white'}`}
-									onClick={() => {
-										if (!form.values.activitiesRequired.includes('Luton Van')) {
-											form.addListItem('activitiesRequired', 'Luton Van');
-										} else {
-											const index = form.values.activitiesRequired.indexOf('Luton Van');
-											form.removeListItem('activitiesRequired', index);
-										}
-									}}
-								>
-									Luton Van
-								</button>
-								<button
-									type='button'
-									className={`${inputButton} ${form.values.activitiesRequired.includes('Tail lift') && 'bg-secondary text-white'}`}
-									onClick={() => {
-										if (!form.values.activitiesRequired.includes('Tail lift')) {
-											form.addListItem('activitiesRequired', 'Tail lift');
-										} else {
-											const index = form.values.activitiesRequired.indexOf('Tail lift');
-											form.removeListItem('activitiesRequired', index);
-										}
-									}}
-								>
-									Tail lift
-								</button>*/}
 							</div>
 						</div>
 					</div>

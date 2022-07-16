@@ -35,10 +35,10 @@ CustomWeekView.range = (date, { localizer }) => {
 CustomWeekView.navigate = (date, action, { localizer }) => {
 	switch (action) {
 		case Navigate.PREVIOUS:
-			return localizer.add(date, -6, 'day');
+			return localizer.add(date, -7, 'day');
 
 		case Navigate.NEXT:
-			return localizer.add(date, 6, 'day');
+			return localizer.add(date, 7, 'day');
 
 		default:
 			return date;
