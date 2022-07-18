@@ -46,11 +46,8 @@ const Sidebar = () => {
 			<div
 				role='button'
 				className='flex items-center p-4 text-base font-normal text-gray-900 hover:bg-secondary-100'
-				onClick={() => {
-					dispatch({ type: 'RESET' });
-					// @ts-ignore
-					// router.reload(window.location.pathname);
-				}}
+				onClick={() => router.push(PATHS.LOGIN)}
+					// dispatch({ type: 'RESET' });}
 			>
 				<Logout size={30} strokeWidth={1} color={'black'} />
 				<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>

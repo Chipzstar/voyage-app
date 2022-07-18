@@ -23,7 +23,9 @@
 			"defaultConfiguration": "development",
 			"options": {
 				"buildTarget": "shipper-dashboard:build",
-				"dev": true
+				"dev": true,
+				"hmr": true,
+				"proxyConfig": "apps/shipper-dashboard/proxy.conf.json"
 			},
 			"configurations": {
 				"development": {
@@ -32,7 +34,8 @@
 				},
 				"production": {
 					"buildTarget": "shipper-dashboard:build:production",
-					"dev": false
+					"dev": false,
+					"hmr": false
 				}
 			}
 		},

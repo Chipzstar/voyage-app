@@ -2,13 +2,15 @@ import { combineReducers } from '@reduxjs/toolkit';
 import locationsReducer from './features/locationSlice';
 import shipmentsReducer from './features/shipmentsSlice';
 import bookingsReducer from './features/bookingsSlice';
+import authReducer from './features/authSlice';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from 'redux-persist';
 
 const appReducer = combineReducers({
+	auth: authReducer,
 	locations: locationsReducer,
 	shipments: shipmentsReducer,
-	bookings: bookingsReducer
+	bookings: bookingsReducer,
 })
 
 const rootReducer = (state, action) => {

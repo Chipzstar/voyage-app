@@ -14,13 +14,6 @@ const calendar = () => {
 	const router = useRouter();
 	const shipments = useSelector(state => state['shipments']);
 
-	const handleSelectEvent = useCallback(
-		(event) => {
-			router.push(`${PATHS.SHIPMENTS}/${event.id}`)
-		},
-		[]
-	);
-
 	const {views, ...otherProps} = useMemo(() => ({
 		views: {
 			week: CustomWeekView,

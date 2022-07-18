@@ -13,6 +13,14 @@ import store, { persistor } from '../store';
 import { PersistGate } from 'redux-persist/integration/react';
 import TabContextProvider from '../context/TabContext';
 
+import Router from 'next/router';
+import NProgress from 'nprogress'; //nprogress module
+import 'nprogress/nprogress.css'; //styles of nprogress
+//Binding events.
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
+
 moment.tz.setDefault('Europe/London');
 moment.updateLocale('en', {
 	week: {
@@ -25,28 +33,30 @@ function App({ Component, pageProps }: AppProps) {
 	return (
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
-				<Layout>
-					<Head>
-						<Favicon />
-						<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-						<title>Shipper Dashboard</title>
-					</Head>
-					<MantineProvider
-						withGlobalStyles
-						withNormalizeCSS
-						theme={{
-							colorScheme: 'light'
-						}}
-					>
-						<ModalsProvider>
+				<MantineProvider
+					withGlobalStyles
+					withNormalizeCSS
+					theme={{
+						colorScheme: 'light'
+					}}
+				>
+					<ModalsProvider>
+						<Layout>
+							<Head>
+								<Favicon />
+								<meta name='viewport'
+									  content='minimum-scale=1, initial-scale=1, width=device-width' />
+								<title>Shipper Dashboard</title>
+							</Head>
+
 							<TabContextProvider>
 								<main className='app'>
 									<Component {...pageProps} />
 								</main>
 							</TabContextProvider>
-						</ModalsProvider>
-					</MantineProvider>
-				</Layout>
+						</Layout>
+					</ModalsProvider>
+				</MantineProvider>
 			</PersistGate>
 		</Provider>
 	);

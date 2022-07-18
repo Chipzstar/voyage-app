@@ -23,7 +23,8 @@ export const PATHS = {
 	SHIPMENTS: '/shipments',
 	WORKFLOWS: '/workflows',
 	BILLING: '/billing',
-	NEW_LOCATION: '/location'
+	NEW_LOCATION: '/location',
+	LOGIN: '/login'
 };
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];
@@ -836,6 +837,17 @@ export const SAMPLE_LOCATIONS: Location[] = [
 		deliveryInstructions: '',
 		operatingHours: DEFAULT_OPERATING_HOURS
 	}
+];
+
+interface User {
+	email: string,
+	password: string
+}
+
+export const users: User[] = [
+	{ email: 'chisom@usevoyage.com', password: 'admin' },
+	{ email: 'ola@usevoyage.com', password: 'admin' },
+	{ email: 'rayan@usevoyage.com', password: 'admin' }
 ];
 
 /**

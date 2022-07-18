@@ -3,8 +3,10 @@ import CalendarFilter from '../components/CalendarFilter';
 import DashboardPanels from '../components/DashboardPanels';
 import Map from '../components/Map';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
 
 export function Index() {
+	const dispatch = useDispatch();
 	const [dateRange, setRange] = useState([
 		moment().startOf('day').toDate(),
 		moment().startOf('day').add(1, 'day').toDate()]
@@ -16,7 +18,6 @@ export function Index() {
 				<div className='flex flex-col justify-center'>
 					<span className='text-4xl font-medium'>Home</span>
 				</div>
-				{/*<CalendarPicker opened={calendar} onClose={() => showCalendar(false)} value={active.date} setValue={value => setActive(prevState => ({ date: moment(new Date(value)).format('DD.MM.YYYY') }))} />*/}
 				<CalendarFilter current={dateRange} setCurrent={setRange} />
 			</div>
 			<DashboardPanels dateRange={dateRange} />
@@ -27,4 +28,4 @@ export function Index() {
 	);
 }
 
-export default Index;
+export default Index
