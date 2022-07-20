@@ -25,7 +25,7 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 		},
 		validate: (values) => ({
 			email: !props.users.find(item => item.email === values.email) ? 'No user found with that email address' : null,
-			password: values.password !== 'admin' ? 'Wrong password' : null
+			password: !props.users.find(item => item.password === values.password && item.email === values.email) ? 'Wrong password' : null
 		})
 	});
 
