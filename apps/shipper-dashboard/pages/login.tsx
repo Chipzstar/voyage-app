@@ -1,13 +1,20 @@
-import React, { useCallback } from 'react';
-import { useForm } from '@mantine/form';
-import { Text, TextInput, PasswordInput, Button } from '@mantine/core';
-import { Mail, Lock } from 'tabler-icons-react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
-import { users, PATHS } from '../utils/constants';
-import { useRouter } from 'next/router';
+import {InferGetServerSidePropsType} from 'next';
+import React, {useCallback} from 'react';
+import {useForm} from '@mantine/form';
+import {Button, PasswordInput, Text, TextInput} from '@mantine/core';
+import {Lock, Mail} from 'tabler-icons-react';
+import {useDispatch} from 'react-redux';
+import {AppDispatch} from '../store';
+import {PATHS, users} from '../utils/constants';
+import {useRouter} from 'next/router';
+import {getCsrfToken, getProviders, getSession, signIn} from 'next-auth/react';
 
-const login = () => {
+interface SignInPageProps {
+	providers: Awaited<ReturnType<typeof getProviders>> | null;
+	csrfToken: Awaited<ReturnType<typeof getCsrfToken>> | null;
+}
+
+const login = ({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const form = useForm({
@@ -21,25 +28,50 @@ const login = () => {
 		})
 	});
 
-	const handleSubmit = useCallback((values) => {
-		// login
-		// @ts-ignore
-		router.push(PATHS.HOME);
-	}, [form.values]);
+	const handleSignIn = useCallback(async (values) => {
+		try {
+			const { ok, error } = await signIn('credentials', {
+				email: values.email,
+				password: values.password,
+				redirect: false,
+				callbackUrl: PATHS.HOME,
+			});
+			if (ok) {
+				console.log("Login Success")
+				await router.replace('/');
+				return;
+			}
+			// Something went wrong
+			if (error) {
+				return null;
+			}
+		} catch(error) {
+			// handle error here (eg. display message to user)
+			console.log(error.error)
+		}
+	}, []);
 
+	// @ts-ignore
 	return (
 		<div className='flex flex-row'>
 			<div className='flex'>
 				<img src='/static/images/login-wallpaper.svg' alt='' className='object-cover h-screen' />
 			</div>
 			<div className='grow flex my-auto justify-center'>
-				<form onSubmit={form.onSubmit(handleSubmit)} action='' className='flex flex-col space-y-8 w-196'>
+				<form onSubmit={form.onSubmit(handleSignIn)} action='' className='flex flex-col space-y-8 w-196'>
 					<figure className='flex flex-row justify-center space-x-4 items-center'>
 						<img src={'/static/images/favicon.svg'} alt='' />
 						<span className='text-2xl font-bold mb-1'>voyage</span>
 					</figure>
 					<div>
 						<TextInput
+							name="csrfToken"
+							//@ts-ignore
+							type="hidden"
+							defaultValue={csrfToken}
+						/>
+						<TextInput
+							name="email"
 							placeholder='Email'
 							icon={<Mail size={16} />}
 							radius={0}
@@ -49,6 +81,7 @@ const login = () => {
 					</div>
 					<div>
 						<PasswordInput
+							name="password"
 							placeholder='Password'
 							icon={<Lock size={16} />}
 							radius={0}
@@ -76,5 +109,41 @@ const login = () => {
 		</div>
 	);
 };
+
+export async function getServerSideProps(context) {
+	const session = await getSession({req: context.req});
+	if (session?.user){
+		return {
+			redirect: {
+				destination: PATHS.HOME,
+                permanent: false,
+			}
+		}
+	}
+	const csrfToken = await getCsrfToken();
+	return {
+		props: {
+			csrfToken: csrfToken ?? null,
+		},
+	};
+}
+
+/*export const getServerSideProps: GetServerSideProps<SignInPageProps> = async ({ req, res }: GetServerSidePropsContext) => {
+	const session = await getServerSession(req, res, nextAuthOptions);
+	if (session?.user) {
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false
+			}
+		};
+	}
+	const providers = await getProviders();
+	const csrfToken = await getCsrfToken();
+	console.log({csrfToken, session})
+	return {
+		props: { providers, csrfToken: csrfToken ?? null }
+	};
+};*/
 
 export default login;

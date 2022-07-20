@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import CalendarFilter from '../components/CalendarFilter';
 import DashboardPanels from '../components/DashboardPanels';
 import Map from '../components/Map';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
+import {useSession} from "next-auth/react";
 
 export function Index() {
 	const dispatch = useDispatch();
+	const { data:session, status} = useSession();
 	const [dateRange, setRange] = useState([
 		moment().startOf('day').toDate(),
 		moment().startOf('day').add(1, 'day').toDate()]
 	);
 
+	console.log(session, status)
 	return (
 		<div className='p-4 h-full'>
 			<div className='flex items-center justify-between pl-4 py-3'>

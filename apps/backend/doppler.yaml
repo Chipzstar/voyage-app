@@ -1,0 +1,3 @@
+setup:
+  project: voyage-backend
+  config: dev

@@ -1,7 +1,8 @@
 import moment from 'moment';
 import {
 	Location,
-	LocationType, OperatingHoursState,
+	LocationType,
+	OperatingHoursState,
 	PACKAGE_TYPE,
 	SCHEDULING_TYPE,
 	SERVICE_TYPE,
@@ -15,6 +16,10 @@ const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW
 
 export const numericId = customAlphabet('1234567890');
 
+export const PUBLIC_PATHS = {
+	LOGIN: '/login'
+}
+
 export const PATHS = {
 	HOME: '/',
 	BOOKINGS: '/bookings',
@@ -23,8 +28,7 @@ export const PATHS = {
 	SHIPMENTS: '/shipments',
 	WORKFLOWS: '/workflows',
 	BILLING: '/billing',
-	NEW_LOCATION: '/location',
-	LOGIN: '/login'
+	NEW_LOCATION: '/location'
 };
 
 export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];

@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import store, { persistor } from '../store';
 import { PersistGate } from 'redux-persist/integration/react';
 import TabContextProvider from '../context/TabContext';
+import { SessionProvider as AuthProvider } from 'next-auth/react';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
@@ -29,34 +30,36 @@ moment.updateLocale('en', {
 });
 moment.locale('en');
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps: {session, ...pageProps} }: AppProps) {
 	return (
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
-				<MantineProvider
-					withGlobalStyles
-					withNormalizeCSS
-					theme={{
-						colorScheme: 'light'
-					}}
-				>
-					<ModalsProvider>
-						<Layout>
-							<Head>
-								<Favicon />
-								<meta name='viewport'
-									  content='minimum-scale=1, initial-scale=1, width=device-width' />
-								<title>Shipper Dashboard</title>
-							</Head>
+				<AuthProvider session={session}>
+					<MantineProvider
+						withGlobalStyles
+						withNormalizeCSS
+						theme={{
+							colorScheme: 'light'
+						}}
+					>
+						<ModalsProvider>
+							<Layout>
+								<Head>
+									<Favicon />
+									<meta name='viewport'
+										  content='minimum-scale=1, initial-scale=1, width=device-width' />
+									<title>Shipper Dashboard</title>
+								</Head>
 
-							<TabContextProvider>
-								<main className='app'>
-									<Component {...pageProps} />
-								</main>
-							</TabContextProvider>
-						</Layout>
-					</ModalsProvider>
-				</MantineProvider>
+								<TabContextProvider>
+									<main className='app'>
+										<Component {...pageProps} />
+									</main>
+								</TabContextProvider>
+							</Layout>
+						</ModalsProvider>
+					</MantineProvider>
+				</AuthProvider>
 			</PersistGate>
 		</Provider>
 	);
