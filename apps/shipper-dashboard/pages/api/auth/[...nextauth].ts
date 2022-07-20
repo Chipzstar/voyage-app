@@ -37,14 +37,12 @@ export const authOptions = {
 	},
 	callbacks: {
 		async jwt({token, user, account, profile, isNewUser }) {
-			console.log(user)
 			if (user) {
 				token.id = user.id;
 			}
 			return token;
 		},
 		async session({ session, token }) {
-			console.log(session)
 			if (token){
 				session.id = token.id
 			}
@@ -55,9 +53,9 @@ export const authOptions = {
 		// Set to jwt in order to CredentialsProvider works properly
 		strategy: 'jwt'
 	},
-	secret: process.env.JWT_SCERET || "voyage",
+	secret: process.env.NEXTAUTH_SCERET || "voyage",
 	jwt: {
-		secret: process.env.JWT_SECRET || "voyage",
+		secret: process.env.NEXTAUTH_SECRET || "voyage",
 		encryption: true
 	},
 	debug: process.env.NODE_ENV === 'development'

@@ -5,16 +5,17 @@ import {Button, PasswordInput, Text, TextInput} from '@mantine/core';
 import {Lock, Mail} from 'tabler-icons-react';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../store';
-import {PATHS, users} from '../utils/constants';
+import {PATHS} from '../utils/constants';
 import {useRouter} from 'next/router';
 import {getCsrfToken, getProviders, getSession, signIn} from 'next-auth/react';
+import prisma from '../db';
 
 interface SignInPageProps {
 	providers: Awaited<ReturnType<typeof getProviders>> | null;
 	csrfToken: Awaited<ReturnType<typeof getCsrfToken>> | null;
 }
 
-const login = ({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const form = useForm({
@@ -23,7 +24,7 @@ const login = ({ csrfToken }: InferGetServerSidePropsType<typeof getServerSidePr
 			password: ''
 		},
 		validate: (values) => ({
-			email: !users.find(item => item.email === values.email) ? 'No user found with that email address' : null,
+			email: !props.users.find(item => item.email === values.email) ? 'No user found with that email address' : null,
 			password: values.password !== 'admin' ? 'Wrong password' : null
 		})
 	});
@@ -121,29 +122,14 @@ export async function getServerSideProps(context) {
 		}
 	}
 	const csrfToken = await getCsrfToken();
+	const users = await prisma.user.findMany({})
+	console.log("USERS:", users)
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,
+			users
 		},
 	};
 }
-
-/*export const getServerSideProps: GetServerSideProps<SignInPageProps> = async ({ req, res }: GetServerSidePropsContext) => {
-	const session = await getServerSession(req, res, nextAuthOptions);
-	if (session?.user) {
-		return {
-			redirect: {
-				destination: '/',
-				permanent: false
-			}
-		};
-	}
-	const providers = await getProviders();
-	const csrfToken = await getCsrfToken();
-	console.log({csrfToken, session})
-	return {
-		props: { providers, csrfToken: csrfToken ?? null }
-	};
-};*/
 
 export default login;

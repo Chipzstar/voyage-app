@@ -4,17 +4,17 @@ import DashboardPanels from '../components/DashboardPanels';
 import Map from '../components/Map';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
-import {useSession} from "next-auth/react";
+import { PUBLIC_PATHS } from '../utils/constants';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
-export function Index() {
+export function Index(props) {
 	const dispatch = useDispatch();
-	const { data:session, status} = useSession();
 	const [dateRange, setRange] = useState([
 		moment().startOf('day').toDate(),
 		moment().startOf('day').add(1, 'day').toDate()]
 	);
 
-	console.log(session, status)
 	return (
 		<div className='p-4 h-full'>
 			<div className='flex items-center justify-between pl-4 py-3'>
@@ -29,6 +29,26 @@ export function Index() {
 			</div>
 		</div>
 	);
+}
+
+
+export async function getServerSideProps({ req, res }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions)
+	console.log("SESSION", session)
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false,
+			},
+		}
+	}
+	return {
+		props: {
+			session,
+		},
+	}
 }
 
 export default Index
