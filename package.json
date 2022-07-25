@@ -19,6 +19,7 @@
 		"nx:shipper:serve:prod": "nx serve shipper-dashboard --prod --hostname 0.0.0.0",
 		"nx:carrier:serve": "doppler run -p carrier-dashboard -c dev -- nx serve carrier-dashboard",
 		"nx:carrier:build": "nx build carrier-dashboard",
+		"nx:carrier:build:prod": "nx build carrier-dashboard --prod",
 		"nx:carrier:serve:local": "doppler run -p carrier-dashboard -c dev -- nx serve carrier-dashboard --prod",
 		"nx:carrier:serve:prod": "nx serve carrier-dashboard --prod --hostname 0.0.0.0",
 		"nx:carrier:build:prod:verbose": "nx build carrier-dashboard --prod --verbose",
