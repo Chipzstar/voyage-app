@@ -108,14 +108,14 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 
 export async function getServerSideProps(context) {
 	const session = await getSession({req: context.req});
-	if (session?.user){
+	/*if (session?.user){
 		return {
 			redirect: {
 				destination: PATHS.HOME,
                 permanent: false,
 			}
 		}
-	}
+	}*/
 	const csrfToken = await getCsrfToken();
 	const users = await prisma.user.findMany({})
 	console.log("USERS:", users)
