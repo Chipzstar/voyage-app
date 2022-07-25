@@ -58,7 +58,7 @@ export const authOptions = {
 		secret: process.env.NEXTAUTH_SECRET || "voyage",
 		encryption: true
 	},
-	debug: process.env.NODE_ENV === 'development'
+	debug: true
 };
 
 // @ts-ignore
