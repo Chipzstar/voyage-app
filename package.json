@@ -17,6 +17,7 @@
 		"nx:backend:serve": "doppler run -p voyage-backend -c dev -- nx serve backend",
 		"nx:shipper:build:prod": "nx build shipper-dashboard --prod",
 		"nx:shipper:build:prod:verbose": "nx build shipper-dashboard --prod --verbose",
+		"nx:shipper:serve:local": "doppler run -p shipper-dashboard -c dev -- nx serve shipper-dashboard --prod",
 		"nx:shipper:serve:prod": "nx serve shipper-dashboard --prod --hostname 0.0.0.0",
 		"nx:cache-clean": "nx clear-cache",
 		"prisma:generate": "npx prismerge -i prismerge.json && npx prisma generate"

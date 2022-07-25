@@ -39,14 +39,6 @@ export function Index(props) {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions)
-	if (!session) {
-		return {
-			redirect: {
-				destination: PUBLIC_PATHS.LOGIN,
-				permanent: false,
-			},
-		}
-	}
 	let shipments = await prisma.shipment.findMany({
 		where: {
 			userId: {
