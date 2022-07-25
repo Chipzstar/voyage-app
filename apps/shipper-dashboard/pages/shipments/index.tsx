@@ -10,7 +10,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { selectAllShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useSelector } from 'react-redux';
-import getStore from '../../store';
+import { store } from '../../store';
 import { prisma } from '@voyage-app/prisma-utils';
 
 const Empty = ({ message }) => (
@@ -123,24 +123,25 @@ const index = ({ initialState }) => {
 export async function getServerSideProps ({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions)
-	const store = getStore();
-	let shipments = await prisma.shipment.findMany({
-		where: {
-			userId: {
-				equals: session.id
+	if (session.id) {
+		let shipments = await prisma.shipment.findMany({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
-		},
-		orderBy: {
-			createdAt: 'desc'
-		}
-	})
-	shipments = shipments.map(shipment => ({
-		...shipment,
-		createdAt: moment(shipment.createdAt).unix(),
-		updatedAt: moment(shipment.updatedAt).unix()
-	}))
-	console.log(shipments)
-	store.dispatch(setShipments(shipments))
+		})
+		shipments = shipments.map(shipment => ({
+			...shipment,
+			createdAt: moment(shipment.createdAt).unix(),
+			updatedAt: moment(shipment.updatedAt).unix()
+		}))
+		console.log(shipments)
+		store.dispatch(setShipments(shipments))
+	}
 	return {
 		props: {
 			initialState: store.getState()

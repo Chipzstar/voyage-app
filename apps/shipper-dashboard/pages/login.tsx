@@ -118,7 +118,6 @@ export async function getServerSideProps(context) {
 	}*/
 	const csrfToken = await getCsrfToken();
 	const users = await prisma.user.findMany({})
-	console.log("USERS:", users)
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

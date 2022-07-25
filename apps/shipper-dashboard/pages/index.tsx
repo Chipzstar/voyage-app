@@ -4,7 +4,6 @@ import DashboardPanels from '../components/DashboardPanels';
 import Map from '../components/Map';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
-import { PUBLIC_PATHS } from '../utils/constants';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { store } from '../store';
@@ -39,22 +38,24 @@ export function Index(props) {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions)
-	let shipments = await prisma.shipment.findMany({
-		where: {
-			userId: {
-				equals: session.id
+	if (session.id) {
+		let shipments = await prisma.shipment.findMany({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
-		},
-		orderBy: {
-			createdAt: 'desc'
-		}
-	})
-	shipments = shipments.map(shipment => ({
-		...shipment,
-		createdAt: moment(shipment.createdAt).unix(),
-		updatedAt: moment(shipment.updatedAt).unix()
-	}))
-	store.dispatch(setShipments(shipments))
+		})
+		shipments = shipments.map(shipment => ({
+			...shipment,
+			createdAt: moment(shipment.createdAt).unix(),
+			updatedAt: moment(shipment.updatedAt).unix()
+		}))
+		store.dispatch(setShipments(shipments))
+	}
 	return {
 		props: {
 			session,

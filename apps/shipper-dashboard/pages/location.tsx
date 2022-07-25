@@ -18,22 +18,24 @@ export async function getServerSideProps({ req, res, query }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const store = getStore();
-	let locations = await prisma.location.findMany({
-		where: {
-			userId: {
-				equals: session.id
+	if (session.id) {
+		let locations = await prisma.location.findMany({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
-		},
-		orderBy: {
-			createdAt: 'desc'
-		}
-	});
-	locations = locations.map(location => ({
-		...location,
-		createdAt: moment(location.createdAt).unix(),
-		updatedAt: moment(location.updatedAt).unix()
-	}));
-	store.dispatch(setLocations(locations));
+		});
+		locations = locations.map(location => ({
+			...location,
+			createdAt: moment(location.createdAt).unix(),
+			updatedAt: moment(location.updatedAt).unix()
+		}));
+		store.dispatch(setLocations(locations));
+	}
 	return {
 		props: {
 			locationId: query?.locationId || '',

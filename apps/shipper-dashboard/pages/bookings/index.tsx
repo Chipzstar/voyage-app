@@ -35,22 +35,24 @@ export async function getServerSideProps ({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions)
 	const store = getStore();
-	let shipments = await prisma.shipment.findMany({
-		where: {
-			userId: {
-				equals: session.id
+	if (session.id) {
+		let shipments = await prisma.shipment.findMany({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
-		},
-		orderBy: {
-			createdAt: 'desc'
-		}
-	})
-	shipments = shipments.map(shipment => ({
-		...shipment,
-		createdAt: moment(shipment.createdAt).unix(),
-		updatedAt: moment(shipment.updatedAt).unix()
-	}))
-	store.dispatch(setShipments(shipments))
+		})
+		shipments = shipments.map(shipment => ({
+			...shipment,
+			createdAt: moment(shipment.createdAt).unix(),
+			updatedAt: moment(shipment.updatedAt).unix()
+		}))
+		store.dispatch(setShipments(shipments))
+	}
 	return {
 		props: {
 			initialState: store.getState()
