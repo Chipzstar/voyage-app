@@ -1,7 +1,20 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Shipment } from '../../utils/types';
+import axios from 'axios';
 
 const initialState = [];
+
+export const createShipment = createAsyncThunk('shipment/createShipment', async (payload : Omit<Shipment, "id">, thunkAPI) => {
+	try {
+		console.log(payload)
+		const result = (await axios.post(`/api/shipment/${payload.shipmentId}`, payload)).data
+		console.log(result)
+		return result
+	} catch (err) {
+	    console.error(err)
+		thunkAPI.rejectWithValue(err.message)
+	}
+})
 
 export const shipmentSlice = createSlice({
 	name: 'shipments',
@@ -11,7 +24,7 @@ export const shipmentSlice = createSlice({
 		setShipments: (state, action: PayloadAction<Shipment[]>) => {
 			return action.payload
 		},
-		createShipment: (state, action: PayloadAction<Shipment>) => {
+		addShipment: (state, action: PayloadAction<Shipment>) => {
 			return [...state, action.payload];
 		}
 	}
@@ -19,6 +32,6 @@ export const shipmentSlice = createSlice({
 
 export const selectAllShipments = state => state['shipments']
 
-export const { setShipments, createShipment } = shipmentSlice.actions;
+export const { setShipments, addShipment } = shipmentSlice.actions;
 
 export default shipmentSlice.reducer;

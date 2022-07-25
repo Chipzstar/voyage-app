@@ -11,7 +11,7 @@ function calculateRate (weight, numPallets, miles=300){
 	return Number((sum / 3).toPrecision(2))
 }
 
-export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Shipment {
+export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Omit<Shipment, "id"> {
 	const pickup: Pickup = {
 		facilityId: pickupLocation.id,
 		facilityName: pickupLocation.name,
@@ -27,7 +27,7 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 		location: `${deliveryLocation.addressLine1} ${deliveryLocation.postcode}`
 	}
 	return {
-		id: `VOY-ID${nanoIdNumber(3)}`,
+		shipmentId: `VOY-ID${nanoIdNumber(3)}`,
 		createdAt: values.createdAt,
 		bookingStatus: 'Booked',
 		status: STATUS.NEW,

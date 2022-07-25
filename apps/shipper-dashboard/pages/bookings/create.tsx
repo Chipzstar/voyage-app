@@ -20,6 +20,7 @@ import moment from 'moment';
 import { generateShipment } from '../../utils/functions';
 import { NewBooking } from '../../utils/bookings/types';
 import { createBooking } from '../../store/features/bookingsSlice';
+import { AppDispatch } from 'apps/shipper-dashboard/store';
 
 export async function getServerSideProps(context) {
 	return {
@@ -31,7 +32,7 @@ export async function getServerSideProps(context) {
 
 const create = props => {
 	const router = useRouter();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const { locations, bookings } = useSelector(state => ({locations: state['locations'], bookings: state['bookings']}));
 	const [isFTL, setFTL] = useState(false);
 
@@ -364,7 +365,7 @@ const create = props => {
 											}
 										}}
 									>
-										<span className="capitalize">{item.replace("-", " ")}</span>
+										<span className="capitalize">{item.toLowerCase().replace("_", " ")}</span>
 									</button>
 								))}
 							</div>
