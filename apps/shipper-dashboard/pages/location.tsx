@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import OperatingHoursForm from '../modals/OperatingHoursForm';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { Location, LocationTimeWindow, LocationType, OperatingHoursState } from '../utils/types';
@@ -7,36 +7,56 @@ import { formList, useForm } from '@mantine/form';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_OPERATING_HOURS, PATHS } from '../utils/constants';
 import { nanoid } from 'nanoid';
-import { createLocation, updateLocation } from '../store/features/locationSlice';
+import { createLocation, setLocations, updateLocation } from '../store/features/locationSlice';
 import { useRouter } from 'next/router';
+import getStore, { AppDispatch } from '../store';
+import prisma from '../db';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
-export async function getServerSideProps(context) {
-	console.log(context);
+export async function getServerSideProps({ req, res, query }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const store = getStore();
+	let locations = await prisma.location.findMany({
+		where: {
+			userId: {
+				equals: session.id
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+	locations = locations.map(location => ({
+		...location,
+		createdAt: moment(location.createdAt).unix(),
+		updatedAt: moment(location.updatedAt).unix()
+	}));
+	store.dispatch(setLocations(locations));
 	return {
 		props: {
-			locationID: context.query?.locationId || '',
-			locationName: context.query?.locationName || ''
+			locationId: query?.locationId || '',
+			locationName: query?.locationName || '',
+			initialState: store.getState()
 		} // will be passed to the page component as props
 	};
 }
 
-const location = props => {
+const location = ({ locationId, locationName }) => {
 	const router = useRouter();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const locations = useSelector(state => state['locations']);
 	const [operatingHoursForm, toggleOperatingHoursForm] = useState(false);
 
 	const location = useMemo(() => {
-		if (props.locationID) {
-			return locations.find((loc: Location) => loc.id === props.locationID);
-		}
-		return null;
-	}, []);
+		return locationId ? locations.find((loc: Location) => loc.locationId === locationId) : null;
+	}, [locations]);
 
 	const form = useForm({
 		initialValues: {
-			id: props.locationID || `location_${nanoid(16)}`,
-			name: props.locationName || location?.name || '',
+			locationId: locationId || `location_${nanoid(16)}`,
+			name: locationName || location?.name || '',
 			type: location ? location.type : LocationType.WAREHOUSE,
 			addressLine1: location?.addressLine1 || '',
 			addressLine2: location?.addressLine2 || '',
@@ -50,12 +70,33 @@ const location = props => {
 		}
 	});
 
-	const handleSubmit = useCallback(values => {
+	const handleSubmit = useCallback((values) => {
 		console.log(values);
 		// if location already exists, perform location UPDATE, otherwise perform location CREATE
-		props.locationID ? dispatch(updateLocation(values)) : dispatch(createLocation(values));
-		router.push(`${PATHS.WORKFLOWS}#1`);
-	}, [props.locationID]);
+		if (locationId) {
+			dispatch(updateLocation(values))
+				.unwrap()
+				.then(res => {
+					console.log('RESULT', res);
+					router.push(`${PATHS.WORKFLOWS}#1`);
+				})
+				.catch(err => {
+					console.error(err);
+					alert(err.message);
+				});
+		} else {
+			dispatch(createLocation(values))
+				.unwrap()
+				.then(res => {
+					console.log('RESULT', res);
+					router.push(`${PATHS.WORKFLOWS}#1`);
+				})
+				.catch(err => {
+					console.error(err);
+					alert(err.message);
+				});
+		}
+	}, [locationId]);
 
 	const saveOperatingHours = useCallback(values => {
 		form.setFieldValue('operatingHours', values.operatingHours);
@@ -65,8 +106,14 @@ const location = props => {
 	return (
 		<div className='p-4 min-h-screen'>
 			<div className='p-4 h-full'>
-				<OperatingHoursForm opened={operatingHoursForm} onClose={() => toggleOperatingHoursForm(false)} onSave={saveOperatingHours} operatingHours={location?.operatingHours} />
-				<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-y-10 lg:gap-x-20'>
+				<OperatingHoursForm
+					opened={operatingHoursForm}
+					onClose={() => toggleOperatingHoursForm(false)}
+					onSave={saveOperatingHours}
+					operatingHours={location?.operatingHours}
+				/>
+				<form onSubmit={form.onSubmit(handleSubmit)}
+					  className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-y-10 lg:gap-x-20'>
 					<div id='address-form-container' className='grid grid-cols-1 lg:grid-cols-2 gap-5 col-span-1'>
 						<header className='quote-header col-span-2'>Address</header>
 						<div className='col-span-2'>
@@ -91,7 +138,7 @@ const location = props => {
 								data={[
 									{ value: LocationType.WAREHOUSE, label: 'Warehouse' },
 									{ value: LocationType.STORE, label: 'Store' },
-									{ value: LocationType.LASTMILE_COURIER, label: 'Final Mile Courier' }
+									{ value: LocationType.LASTMILE_CARRIER, label: 'Final Mile Courier' }
 								]}
 								{...form.getInputProps('type')}
 							/>
@@ -166,50 +213,56 @@ const location = props => {
 					<div id='driving-form-container' className='grid grid-cols-1 col-span-1 space-y-5'>
 						<header className='quote-header'>Driver Instructions</header>
 						<p>
-							Please note: You are responsible for making appointments at pickup and delivery facilities. Appointment information added here will not be noted. Please add appointment information to fields included during
+							Please note: You are responsible for making appointments at pickup and delivery facilities.
+							Appointment information added here will not be noted. Please add appointment information to
+							fields included during
 							shipment creation.
 						</p>
 						<div>
-							<Textarea minRows={3} maxRows={6} size='md' radius={0} placeholder='Pickup Instructions' {...form.getInputProps('pickupInstructions')} />
+							<Textarea minRows={3} maxRows={6} size='md' radius={0}
+									  placeholder='Pickup Instructions' {...form.getInputProps('pickupInstructions')} />
 						</div>
 						<div>
-							<Textarea minRows={3} maxRows={6} size='md' radius={0} placeholder='Delivery Instructions' {...form.getInputProps('deliveryInstructions')} />
+							<Textarea minRows={3} maxRows={6} size='md' radius={0}
+									  placeholder='Delivery Instructions' {...form.getInputProps('deliveryInstructions')} />
 						</div>
 					</div>
 					<div id='operating-hours' className='col-span-1 space-y-8'>
 						<header className='quote-header'>Operating hours</header>
 						<div className='relative px-8 py-4 border border-gray-300 w-auto'>
-							<button type='button' className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent' onClick={() => toggleOperatingHoursForm(true)}>
+							<button type='button'
+									className='text-secondary rounded w-12 absolute right-4 top-5 bg-transparent'
+									onClick={() => toggleOperatingHoursForm(true)}>
 								Edit
 							</button>
 							<div className='flex flex-col space-y-4'>
 								<h4 className='text-3xl font-normal'>Facility hours</h4>
 								<table className='table-auto border-none'>
 									<tbody>
-										{form.values.operatingHours.map((item: OperatingHoursState, index) => {
-											const openFormat: LocationTimeWindow = {
-												h: item.facility.open['h'],
-												m: item.facility.open['m']
-											};
-											const closeFormat: LocationTimeWindow = {
-												h: item.facility.close['h'],
-												m: item.facility.close['m']
-											};
-											return (
-												<tr key={index}>
-													<td>{moment().day(index).format('dddd')}</td>
-													{item.facility.isActive ? (
-														<td>
-															{moment(openFormat).format('HH:mm')}
-															&nbsp;-&nbsp;
-															{moment(closeFormat).format('HH:mm')}
-														</td>
-													) : (
-														<td>Closed</td>
-													)}
-												</tr>
-											);
-										})}
+									{form.values.operatingHours.map((item: OperatingHoursState, index) => {
+										const openFormat: LocationTimeWindow = {
+											h: item.facility.open['h'],
+											m: item.facility.open['m']
+										};
+										const closeFormat: LocationTimeWindow = {
+											h: item.facility.close['h'],
+											m: item.facility.close['m']
+										};
+										return (
+											<tr key={index}>
+												<td>{moment().day(index).format('dddd')}</td>
+												{item.facility.isActive ? (
+													<td>
+														{moment(openFormat).format('HH:mm')}
+														&nbsp;-&nbsp;
+														{moment(closeFormat).format('HH:mm')}
+													</td>
+												) : (
+													<td>Closed</td>
+												)}
+											</tr>
+										);
+									})}
 									</tbody>
 								</table>
 							</div>
@@ -219,7 +272,9 @@ const location = props => {
 						<button type='submit' className='voyage-button w-64 h-14 text-lg'>
 							Save
 						</button>
-						<button type='button' className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100' onClick={() => router.back()}>
+						<button type='button'
+								className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100'
+								onClick={() => router.back()}>
 							Cancel
 						</button>
 					</div>

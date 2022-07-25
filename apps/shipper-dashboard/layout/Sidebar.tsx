@@ -5,6 +5,7 @@ import Link from 'next/link';
 import classNames from 'classnames';
 import {useRouter} from 'next/router';
 import {signOut, useSession} from "next-auth/react";
+import { useDispatch } from 'react-redux';
 
 const SideMenuItem = ({title, icon, href, isActive}) => {
     const wrapperStyles = classNames({
@@ -26,6 +27,7 @@ const SideMenuItem = ({title, icon, href, isActive}) => {
 
 const Sidebar = () => {
     const router = useRouter();
+    const dispatch = useDispatch();
     const {data: session, status} = useSession()
 
     return (
@@ -52,8 +54,10 @@ const Sidebar = () => {
             <div
                 role='button'
                 className='flex items-center p-4 text-base font-normal text-gray-900 hover:bg-secondary-100'
-                onClick={() => signOut({callbackUrl: `${window.location.origin}/login`})}
-                // dispatch({ type: 'RESET' });}
+                onClick={() => {
+                    dispatch({ type: 'RESET' })
+                    signOut({ callbackUrl: `${window.location.origin}/login` }).then(r  => console.log("Sign Out Success!"))
+                }}
             >
                 <Logout size={30} strokeWidth={1} color={'black'}/>
                 <span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>

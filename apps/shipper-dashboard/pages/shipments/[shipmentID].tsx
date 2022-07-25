@@ -3,22 +3,67 @@ import { Timeline, Text, Button } from '@mantine/core';
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { PATHS, SAMPLE_HISTORY } from '../../utils/constants';
-import { SAMPLE_SHIPMENTS } from '../../utils/constants';
+import { PATHS } from '../../utils/constants';
 import moment from 'moment';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import prisma from '../../db';
+import { useSelector } from 'react-redux';
+import { store } from '../../store';
+import { setShipments } from '../../store/features/shipmentsSlice';
+import { Shipment } from '../../utils/types';
 
-export async function getServerSideProps(context) {
-	const index = SAMPLE_SHIPMENTS.findIndex(shipment => shipment.id === context.params.shipmentID);
+export async function getServerSideProps({ req, res, params }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions)
+	let pageIndex = 0;
+	// fetch all shipments for the current user
+	let shipments = await prisma.shipment.findMany({
+		where: {
+			userId: {
+				equals: session.id
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	})
+	shipments = shipments.map(shipment => ({
+		...shipment,
+		createdAt: moment(shipment.createdAt).unix(),
+		updatedAt: moment(shipment.updatedAt).unix()
+	}))
+	// set them in memory
+	store.dispatch(setShipments(shipments))
+	// find the first shipment with matching shipment ID
+	const shipment = await prisma.shipment.findFirst({
+		where: {
+			userId: {
+				equals: session.id
+			},
+			shipmentId: {
+				equals: params.shipmentID
+			}
+		}
+	})
+	if (shipment) {
+		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID)
+		console.table({pageIndex})
+	}
 	return {
 		props: {
-			shipmentID: context.params.shipmentID,
-			pageIndex: index
+			initialState: store.getState(),
+			shipmentId: params.shipmentID,
+			pageIndex
 		} // will be passed to the page component as props
 	};
 }
 
-const viewShipment = props => {
+
+const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 	const router = useRouter();
+	const shipments: Shipment[] = useSelector(state => state['shipments'])
+
 	return (
 		<div className='p-4 h-screen'>
 			<div className='px-4 flex flex-col h-full'>
@@ -27,32 +72,32 @@ const viewShipment = props => {
 					<span className='page-header'>Shipments</span>
 				</section>
 				<header className='flex flex-row items-center justify-between mb-8 py-3'>
-					<h2 className='text-2xl uppercase'>{props.shipmentID}</h2>
+					<h2 className='text-2xl uppercase'>{shipmentId}</h2>
 					<div className='flex flex-row justify-between space-x-8'>
 						<Button
-							disabled={!props.pageIndex}
+							disabled={!pageIndex}
 							variant='outline'
 							color='gray'
 							radius={0}
 							leftIcon={<ChevronLeft size={24} strokeWidth={1} />}
 							className='h-12'
 							onClick={() => {
-								const prevIndex = props.pageIndex - 1;
-								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[prevIndex].id}`);
+								const prevIndex = pageIndex - 1;
+								router.push(`${PATHS.SHIPMENTS}/${shipments[prevIndex].id}`);
 							}}
 						>
 							<span className='text-lg'>Prev</span>
 						</Button>
 						<Button
-							disabled={props.pageIndex === SAMPLE_SHIPMENTS.length - 1}
+							disabled={pageIndex === shipments.length - 1}
 							variant='outline'
 							color='gray'
 							radius={0}
 							rightIcon={<ChevronRight size={24} strokeWidth={1} />}
 							className='h-12'
 							onClick={() => {
-								const nextIndex = props.pageIndex + 1;
-								router.push(`${PATHS.SHIPMENTS}/${SAMPLE_SHIPMENTS[nextIndex].id}`);
+								const nextIndex = pageIndex + 1;
+								router.push(`${PATHS.SHIPMENTS}/${shipments[nextIndex].id}`);
 							}}
 						>
 							<span className='text-lg'>Next</span>
@@ -68,50 +113,29 @@ const viewShipment = props => {
 								</div>
 								<div className='space-y-2'>
 									<span className='text-2xl font-medium'>Carrier</span>
-									<p className='text-lg'>HBCS Logistics LTD</p>
-									<p className='text-lg'>Manchester, England</p>
+									<p className='text-lg'>{shipments[pageIndex]?.carrier?.name}</p>
+									<p className='text-lg'>{shipments[pageIndex]?.carrier?.location}</p>
 								</div>
 								<div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
 									<div className='space-y-2'>
-										<span className='text-2xl font-medium'>PIC</span>
-										<p className='text-lg'>James Currier</p>
-										<p className='text-lg'>+44 5687665433</p>
+										<span className='text-2xl font-medium'>Contact</span>
+										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverName}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverPhone}</p>
 									</div>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Driver</span>
-										<p className='text-lg'>Tony Soprano</p>
-										<p className='text-lg'>Ford Trailer Truck</p>
-										<p className='text-lg'>NX12 5TY</p>
-										<p className='text-lg'>+44 5687215433</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverName}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverPhone}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrier?.vehicle}</p>
 									</div>
 								</div>
 							</aside>
 							<aside className='border border-voyage-grey p-5'>
 								<header className='shipment-header'>Summary</header>
-								{/*<div className='px-8 pt-8'>
-									<ul className='-pb-11'>
-										{SAMPLE_HISTORY.map(event => (
-											<li>
-												<div className='relative pb-8'>
-													<span className='absolute top-2 left-2 -ml-px h-full w-0.5 bg-secondary' aria-hidden='true'></span>
-													<div className='relative flex space-x-3'>
-														<div>
-															<span className='flex h-4 w-4 items-center rounded-full bg-secondary '></span>
-														</div>
-														<div className='flex flex-col text-md text-gray-800'>
-															<div className='text-xl font-medium'>{event.status}</div>
-															<div>{event.description}</div>
-														</div>
-													</div>
-												</div>
-											</li>
-										))}
-									</ul>
-								</div>*/}
 								<div className='pt-8'>
 									<Timeline active={1} bulletSize={24} lineWidth={2}>
-										{SAMPLE_HISTORY.map((event, index) => (
-											<Timeline.Item key={index} title={event.status} active={index === SAMPLE_HISTORY.length - 1}>
+										{[].map((event, index) => (
+											<Timeline.Item key={index} title={event.status} active={index === 0}>
 												<Text color='dimmed' size='sm'>
 													{event.description}
 												</Text>

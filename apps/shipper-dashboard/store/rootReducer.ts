@@ -2,12 +2,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import locationsReducer from './features/locationSlice';
 import shipmentsReducer from './features/shipmentsSlice';
 import bookingsReducer from './features/bookingsSlice';
-import authReducer from './features/authSlice';
-import storage from 'redux-persist/lib/storage';
-import { persistReducer } from 'redux-persist';
 
 const appReducer = combineReducers({
-	auth: authReducer,
 	locations: locationsReducer,
 	shipments: shipmentsReducer,
 	bookings: bookingsReducer,
@@ -20,12 +16,6 @@ const rootReducer = (state, action) => {
 	return appReducer(state, action);
 }
 
-const persistConfig = {
-	key: 'root',
-	version: 1,
-	storage,
-}
-
 export type RootState = ReturnType<typeof rootReducer>
 
-export default persistReducer(persistConfig, rootReducer);
+export default rootReducer;

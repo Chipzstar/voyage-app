@@ -1,0 +1,102 @@
+enum STATUS {
+    NEW
+    PENDING
+    DISPATCHED
+    EN_ROUTE
+    COMPLETED
+    CANCELLED
+}
+
+enum SERVICE_TYPE {
+    W2W
+    D2S
+    D2C
+}
+
+enum SHIPMENT_TYPE {
+    FTL
+    LTL
+    LPS
+}
+
+enum SCHEDULING_TYPE {
+    ONE_TIME
+    RECURRING
+}
+
+enum SHIPMENT_ACTIVITY {
+	NO_PREFERENCE
+	TAIL_LIFT
+	JUMBO_TRAILER
+	FLATBED_TRAILER
+}
+
+enum PACKAGE_TYPE {
+	PALLET
+	CRATE
+	BOX
+	CONTAINER
+	SKIDS
+}
+
+type TimeWindow {
+    start Int
+    end Int
+}
+
+type Dimensions {
+    length Int
+    width Int
+    height Int
+}
+
+type Pickup {
+    facilityId String
+    facilityName String
+    location String
+    window TimeWindow
+}
+
+type Delivery {
+    facilityId String
+    facilityName String
+    location String
+    window TimeWindow?
+}
+
+type Package {
+	weight Int
+	quantity Int
+	dimensions Dimensions
+	packageType PACKAGE_TYPE
+	description String
+}
+
+type Carrier {
+	name String
+	driverName String
+	driverPhone String
+	location Float[]
+	vehicle String?
+}
+
+model Shipment {
+    id  String @id @default(auto()) @map("_id") @db.ObjectId
+    shipmentId String  @unique
+    user User   @relation(fields: [userId], references: [id])
+    userId String @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    bookingStatus String @default("Booked")
+    status STATUS
+    serviceType SERVICE_TYPE
+    schedulingType SCHEDULING_TYPE
+    activitiesRequired SHIPMENT_ACTIVITY[]
+    internalPONumber String? @default("")
+    customerPONumber String? @default("")
+    rate Int
+    pickup Pickup
+    delivery Delivery
+    package Package
+    carrier Carrier?
+}

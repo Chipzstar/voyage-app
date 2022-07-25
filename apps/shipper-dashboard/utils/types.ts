@@ -59,12 +59,15 @@ export type DateRange = [Date, Date]
 //ENUMS
 
 export enum STATUS {
-	NEW = 'new',
-	PENDING = 'pending',
-	DISPATCHED = 'dispatched',
-	EN_ROUTE = 'en-route',
-	COMPLETED = 'completed',
-	CANCELLED = 'cancelled'
+	NEW = 'NEW',
+	PENDING = 'PENDING',
+	DISPATCHED = 'DISPATCHED',
+	AT_PICKUP = 'AT_PICKUP',
+	LOADING = 'LOADING',
+	EN_ROUTE = 'EN-ROUTE',
+	AT_DROPOFF = 'AT_DROPOFF',
+	COMPLETED = 'COMPLETED',
+	CANCELLED = 'CANCELLED'
 }
 
 export enum SERVICE_TYPE {
@@ -80,23 +83,23 @@ export enum SHIPMENT_TYPE {
 }
 
 export enum SCHEDULING_TYPE {
-	ONE_TIME = 'one-time',
-	RECURRING = 'recurring'
+	ONE_TIME = 'ONE_TIME',
+	RECURRING = 'RECURRING'
 }
 
 export enum SHIPMENT_ACTIVITY {
-	NO_PREFERENCE="no-preference",
-	TAIL_LIFT = 'tail-lift',
-	JUMBO_TRAILER = 'jumbo-trailer',
-	FLATBED_TRAILER = 'flatbed-trailer'
+	NO_PREFERENCE= 'NO_PREFERENCE',
+	TAIL_LIFT = 'TAIL_LIFT',
+	JUMBO_TRAILER = 'JUMBO_TRAILER',
+	FLATBED_TRAILER = 'FLATBED_TRAILER'
 }
 
 export enum PACKAGE_TYPE {
-	PALLET = 'pallet',
-	CRATE = 'crate',
-	BOX = 'box',
-	CONTAINER = 'container',
-	SKIDS = 'skid',
+	PALLET = 'PALLET',
+	CRATE = 'CRATE',
+	BOX = 'BOX',
+	CONTAINER = 'CONTAINER',
+	SKIDS = 'SKID',
 }
 
 export interface Carrier {
@@ -109,7 +112,7 @@ export interface Carrier {
 
 export interface Shipment {
 	id: string;
-	createdAt: UnixTimestamp,
+	createdAt: UnixTimestamp;
 	bookingStatus: string;
 	status: STATUS;
 	serviceType: SERVICE_TYPE;
@@ -121,8 +124,8 @@ export interface Shipment {
 	rate: number;
 	pickup: Pickup;
 	delivery: Delivery;
-	package: Package
-	carrier: Carrier,
+	package: Package;
+	carrier: Carrier;
 }
 
 export interface LocationTimeWindow {
@@ -136,17 +139,16 @@ interface OperatingProps {
 	close: LocationTimeWindow;
 }
 
-export enum LocationType { WAREHOUSE= 'WAREHOUSE', STORE='STORE', LASTMILE_COURIER='LASTMILE_COURIER' }
+export enum LocationType { WAREHOUSE= 'WAREHOUSE', STORE='STORE', LASTMILE_CARRIER='LASTMILE_CARRIER' }
 
 // Define a type for the slice state
 export interface OperatingHoursState {
-	shipping: OperatingProps
-	receiving: OperatingProps
 	facility: OperatingProps
 }
 
 export interface Location {
 	id: string,
+	locationId: string,
 	name: string,
 	type: LocationType,
 	addressLine1: string,

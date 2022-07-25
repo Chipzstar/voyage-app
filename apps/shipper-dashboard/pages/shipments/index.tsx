@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
-import { PATHS, STATUSES } from '../../utils/constants';
+import { PATHS } from '../../utils/constants';
+import { STATUS } from '../../utils/types';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import prisma from '../../db';
+import { selectAllShipments, setShipments } from '../../store/features/shipmentsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import getStore from '../../store';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
@@ -13,11 +19,11 @@ const Empty = ({ message }) => (
 	</div>
 );
 
-const index = () => {
+const index = ({ initialState }) => {
 	const router = useRouter();
-	const [activeTab, setActiveTab] = useState({ index: 0, statuses: STATUSES });
-	const shipments = useSelector(state => state['shipments']);
-	shipments.sort((a, b) => b.createdAt - a.createdAt)
+	const dispatch = useDispatch();
+	const shipments = useSelector(selectAllShipments)
+	const [activeTab, setActiveTab] = useState({ index: 0, statuses: Object.values(STATUS) });
 
 	const rows = shipments
 		.filter(element => activeTab.statuses.includes(element.status))
@@ -30,21 +36,21 @@ const index = () => {
 				capitalize: true,
 				'text-white': true,
 				'text-lg': true,
-				'bg-new': element.status === 'new',
-				'bg-pending-400': element.status === 'pending',
-				'bg-dispatched-400': element.status === 'dispatched',
-				'bg-en-route-400': element.status === 'en-route',
-				'bg-completed-300': element.status === 'completed',
-				'bg-cancelled-300': element.status === 'cancelled'
+				'bg-new': element.status === STATUS.NEW,
+				'bg-pending-400': element.status === STATUS.PENDING,
+				'bg-dispatched-400': element.status === STATUS.DISPATCHED,
+				'bg-en-route-400': element.status === STATUS.EN_ROUTE,
+				'bg-completed-300': element.status === STATUS.COMPLETED,
+				'bg-cancelled-300': element.status === STATUS.CANCELLED
 			});
 			return (
 				<tr key={index}>
 					<td colSpan={1}>
-						<span className='text-secondary font-semibold text-lg'>{element.id}</span>
+						<span className='text-secondary font-semibold text-lg'>{element.shipmentId}</span>
 					</td>
 					<td colSpan={1}>
 						<div className={statusClass}>
-							<span>{element.status}</span>
+							<span className="lowercase capitalize">{element.status}</span>
 						</div>
 					</td>
 					<td colSpan={1}>
@@ -70,7 +76,7 @@ const index = () => {
 						</div>
 					</td>
 					<td role='button' colSpan={2}>
-						<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.id}`)}>
+						<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.shipmentId}`)}>
 							<span className='text-secondary font-semibold text-lg'>View</span>
 						</button>
 					</td>
@@ -89,6 +95,7 @@ const index = () => {
 					active={activeTab.index}
 					onTabChange={(value, key) => {
 						console.log(key);
+						// @ts-ignore
 						setActiveTab(prevState => ({
 							...prevState,
 							index: value,
@@ -96,16 +103,16 @@ const index = () => {
 						}));
 					}}
 				>
-					<Tabs.Tab label='All' tabKey={STATUSES.join(' ')} className='text-lg'>
+					<Tabs.Tab label='All' tabKey={Object.values(STATUS).join(' ')} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments created' />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='Pending' tabKey='new pending' className='text-lg'>
+					<Tabs.Tab label='Pending' tabKey={[STATUS.NEW, STATUS.PENDING].join(' ')} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments pending' />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='In Progress' tabKey='dispatched en-route' className='text-lg'>
+					<Tabs.Tab label='In Progress' tabKey={[STATUS.EN_ROUTE, STATUS.AT_PICKUP, STATUS.DISPATCHED, STATUS.AT_DROPOFF].join(' ')} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments in -transit' />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='Completed' tabKey='completed' className='text-lg'>
+					<Tabs.Tab label='Completed' tabKey={[STATUS.COMPLETED].join(' ')} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message={'No shipments completed'} />} />
 					</Tabs.Tab>
 				</Tabs>
@@ -113,5 +120,32 @@ const index = () => {
 		</div>
 	);
 };
+
+export async function getServerSideProps ({ req, res }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions)
+	const store = getStore();
+	let shipments = await prisma.shipment.findMany({
+		where: {
+			userId: {
+				equals: session.id
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	})
+	shipments = shipments.map(shipment => ({
+		...shipment,
+		createdAt: moment(shipment.createdAt).unix(),
+		updatedAt: moment(shipment.updatedAt).unix()
+	}))
+	store.dispatch(setShipments(shipments))
+	return {
+		props: {
+			initialState: store.getState()
+		},
+	};
+}
 
 export default index;

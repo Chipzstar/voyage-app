@@ -1,35 +1,45 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Location, LocationType } from '../utils/types';
 import { useRouter } from 'next/router';
-import { createLocation, deleteLocation, updateLocation } from '../store/features/locationSlice';
+import { deleteLocation } from '../store/features/locationSlice';
 import { useModals } from '@mantine/modals';
 import { Text } from '@mantine/core';
 import { PATHS } from '../utils/constants';
+import PropTypes from 'prop-types';
+import { AppDispatch } from '../store';
+
+const LocationItem = ({ name, onDelete, onEdit }) => {
+	return (
+		<li className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
+			<span className='text-medium text-xl'>{name}</span>
+			<div className='space-x-4'>
+				<button
+					className='capitalize voyage-button md:w-20 h-8'
+					onClick={onEdit}
+				>
+					edit
+				</button>
+				<button className='capitalize delete-button md:w-20 h-8'
+						onClick={onDelete}>
+					delete
+				</button>
+			</div>
+		</li>
+	);
+};
 
 const Locations = props => {
 	const modals = useModals();
 	const router = useRouter();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const locations = useSelector(state => state['locations']);
-	// state
-	const [locationForm, showLocationForm] = useState({ show: false, id: '', defaultValues: null });
 
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
-	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
+	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_CARRIER), [locations]);
 
-	const handleSubmit = useCallback(
-		values => {
-			console.log(values);
-			// if location already exists, perform location UPDATE, otherwise perform location CREATE
-			locationForm.id ? dispatch(updateLocation(values)) : dispatch(createLocation(values));
-			showLocationForm(prevState => ({ ...prevState, show: false, id: '', defaultValues: null }));
-		},
-		[locationForm]
-	);
-
-	const openConfirmModal = (id, name) =>
+	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
 			title: 'Delete Location',
 			children: (
@@ -40,7 +50,7 @@ const Locations = props => {
 				</Text>
 			),
 			labels: { confirm: 'Delete', cancel: 'Cancel' },
-			onConfirm: () => dispatch(deleteLocation(id)),
+			onConfirm: () => dispatch(deleteLocation(id)).unwrap().then(() => alert('Location has been removed!')),
 			onCancel: () => console.log('Cancel'),
 			classNames: {
 				title: 'modal-header'
@@ -68,21 +78,13 @@ const Locations = props => {
 						<header>Warehouses</header>
 					</div>
 					<ul>
-						{warehouses?.map((location, index) => (
-							<li key={index} className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
-								<span className='text-medium text-xl'>{location.name}</span>
-								<div className='space-x-4'>
-									<button
-										className='capitalize voyage-button md:w-20 h-8'
-										onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.id}`)}
-									>
-										edit
-									</button>
-									<button className='capitalize delete-button md:w-20 h-8' onClick={() => openConfirmModal(location.id, location.name)}>
-										delete
-									</button>
-								</div>
-							</li>
+						{warehouses?.map((location: Location, index) => (
+							<LocationItem
+								key={index}
+								name={location.name}
+								onEdit={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.locationId}`)}
+								onDelete={() => openConfirmModal(location.id, location.name)}
+							/>
 						))}
 					</ul>
 				</div>
@@ -91,17 +93,19 @@ const Locations = props => {
 						<header>Stores</header>
 					</div>
 					<ul>
-						{stores?.map((location, index) => (
-							<li key={index} className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
+						{stores?.map((location: Location, index) => (
+							<li key={index}
+								className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
 								<span className='text-medium text-xl'>{location.name}</span>
 								<div className='space-x-4'>
 									<button
 										className='capitalize voyage-button md:w-20 h-8'
-										onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.id}`)}
+										onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.locationId}`)}
 									>
 										edit
 									</button>
-									<button className='capitalize delete-button md:w-20 h-8' onClick={() => openConfirmModal(location.id, location.name)}>
+									<button className='capitalize delete-button md:w-20 h-8'
+											onClick={() => openConfirmModal(location.id, location.name)}>
 										delete
 									</button>
 								</div>
@@ -115,13 +119,16 @@ const Locations = props => {
 					</div>
 					<ul>
 						{carriers?.map((location: Location, index) => (
-							<li key={index} className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
+							<li key={index}
+								className='grid grid-cols-2 gap-x-8 w-128 my-3 place-content-evenly flex items-center'>
 								<span className='text-medium text-xl'>{location.name}</span>
 								<div className='space-x-4'>
-									<button className='capitalize voyage-button md:w-20 h-8' onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.id}`)}>
+									<button className='capitalize voyage-button md:w-20 h-8'
+											onClick={() => router.push(`${PATHS.NEW_LOCATION}?locationId=${location.locationId}`)}>
 										edit
 									</button>
-									<button className='capitalize delete-button md:w-20 h-8' onClick={() => openConfirmModal(location.id, location.name)}>
+									<button className='capitalize delete-button md:w-20 h-8'
+											onClick={() => openConfirmModal(location.id, location.name)}>
 										delete
 									</button>
 								</div>
@@ -134,6 +141,8 @@ const Locations = props => {
 	);
 };
 
-Locations.propTypes = {};
+Locations.propTypes = {
+	locations: PropTypes.array
+};
 
 export default Locations;

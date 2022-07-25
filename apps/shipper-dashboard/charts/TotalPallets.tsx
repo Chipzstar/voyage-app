@@ -36,12 +36,11 @@ const TotalPallets = ({ range, genLabels }) => {
 				borderWidth: 1
 			}
 		];
-		const data ={
+		const data = {
 			labels,
 			datasets
 		}
-		console.log(total)
-		return { data, total} ;
+		return { data, total }
 	}, [range]);
 
 	return (

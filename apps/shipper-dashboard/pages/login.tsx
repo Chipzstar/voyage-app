@@ -7,13 +7,8 @@ import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../store';
 import {PATHS} from '../utils/constants';
 import {useRouter} from 'next/router';
-import {getCsrfToken, getProviders, getSession, signIn} from 'next-auth/react';
+import {getCsrfToken, getSession, signIn} from 'next-auth/react';
 import prisma from '../db';
-
-interface SignInPageProps {
-	providers: Awaited<ReturnType<typeof getProviders>> | null;
-	csrfToken: Awaited<ReturnType<typeof getCsrfToken>> | null;
-}
 
 const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const dispatch = useDispatch<AppDispatch>();

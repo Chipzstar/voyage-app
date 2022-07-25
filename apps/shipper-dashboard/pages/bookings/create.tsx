@@ -74,7 +74,7 @@ const create = props => {
 	});
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
-	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_COURIER), [locations]);
+	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_CARRIER), [locations]);
 	const pickupData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:

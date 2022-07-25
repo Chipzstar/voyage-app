@@ -31,8 +31,6 @@ export const PATHS = {
 	NEW_LOCATION: '/location'
 };
 
-export const STATUSES = ['new', 'pending', 'dispatched', 'en-route', 'completed', 'cancelled'];
-
 export const SAMPLE_QUOTES = [
 	{
 		quoteID: 'QTE123',
@@ -496,28 +494,6 @@ export const SAMPLE_EVENTS = [
 
 export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 	{
-		shipping: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
-		receiving: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
 		facility: {
 			isActive: true,
 			open: {
@@ -531,28 +507,6 @@ export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 		}
 	},
 	{
-		shipping: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
-		receiving: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
 		facility: {
 			isActive: true,
 			open: {
@@ -566,28 +520,6 @@ export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 		}
 	},
 	{
-		shipping: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
-		receiving: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
 		facility: {
 			isActive: true,
 			open: {
@@ -601,28 +533,6 @@ export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 		}
 	},
 	{
-		shipping: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
-		receiving: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
 		facility: {
 			isActive: true,
 			open: {
@@ -636,28 +546,6 @@ export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 		}
 	},
 	{
-		shipping: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
-		receiving: {
-			isActive: true,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
 		facility: {
 			isActive: true,
 			open: {
@@ -671,28 +559,6 @@ export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 		}
 	},
 	{
-		shipping: {
-			isActive: false,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
-		receiving: {
-			isActive: false,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
 		facility: {
 			isActive: false,
 			open: {
@@ -706,28 +572,6 @@ export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 		}
 	},
 	{
-		shipping: {
-			isActive: false,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
-		receiving: {
-			isActive: false,
-			open: {
-				h: 8,
-				m: 0
-			},
-			close: {
-				h: 18,
-				m: 0
-			}
-		},
 		facility: {
 			isActive: false,
 			open: {
