@@ -9,7 +9,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { store } from '../store';
 // @ts-ignore
-import prisma from '../db';
+import { prisma } from '@voyage-app/prisma-utils';
 import { setShipments } from '../store/features/shipmentsSlice';
 
 export function Index(props) {

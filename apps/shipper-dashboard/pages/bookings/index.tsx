@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { PATHS } from '../../utils/constants';
 import Bookings from '../../containers/Bookings';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import getStore from '../../store';
+import { prisma } from '@voyage-app/prisma-utils';
+import moment from 'moment';
+import { setShipments } from '../../store/features/shipmentsSlice';
 
 const bookings = () => {
 	const router = useRouter();
@@ -24,5 +30,32 @@ const bookings = () => {
 		</div>
 	);
 };
+
+export async function getServerSideProps ({ req, res }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions)
+	const store = getStore();
+	let shipments = await prisma.shipment.findMany({
+		where: {
+			userId: {
+				equals: session.id
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	})
+	shipments = shipments.map(shipment => ({
+		...shipment,
+		createdAt: moment(shipment.createdAt).unix(),
+		updatedAt: moment(shipment.updatedAt).unix()
+	}))
+	store.dispatch(setShipments(shipments))
+	return {
+		props: {
+			initialState: store.getState()
+		},
+	};
+}
 
 export default bookings;

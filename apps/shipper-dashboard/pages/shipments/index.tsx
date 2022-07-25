@@ -9,10 +9,9 @@ import moment from 'moment';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { selectAllShipments, setShipments } from '../../store/features/shipmentsSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import getStore from '../../store';
-// @ts-ignore
-import prisma from '../../db';
+import { prisma } from '@voyage-app/prisma-utils';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
@@ -22,7 +21,6 @@ const Empty = ({ message }) => (
 
 const index = ({ initialState }) => {
 	const router = useRouter();
-	const dispatch = useDispatch();
 	const shipments = useSelector(selectAllShipments)
 	const [activeTab, setActiveTab] = useState({ index: 0, statuses: Object.values(STATUS) });
 

@@ -70,7 +70,7 @@ export const SAMPLE_QUOTES = [
 	{ quoteID: 'QTE123', quantity: 2, price: 140.12, rate: '#', timeWindow: '#', carrier: 'Cerium' }
 ];
 
-export const SAMPLE_SHIPMENTS: Shipment[] = [
+/*export const SAMPLE_SHIPMENTS: Shipment[] = [
 	{
 		id: 'VOY-ID123',
 		createdAt: moment().unix(),
@@ -359,7 +359,7 @@ export const SAMPLE_SHIPMENTS: Shipment[] = [
 			}
 		}
 	}
-];
+];*/
 
 export const SAMPLE_HISTORY = [
 	{

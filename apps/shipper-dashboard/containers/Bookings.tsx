@@ -1,6 +1,6 @@
 import React from 'react';
 import DataGrid from '../components/DataGrid';
-import { PATHS, SAMPLE_SHIPMENTS } from '../utils/constants';
+import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -50,13 +50,13 @@ const Bookings = () => {
 				const maxWindow = moment.unix(element.delivery?.window?.end).diff(moment.unix(element.pickup?.window.start), 'hours');
 				return (
 					<tr key={element.id}>
-						<td>{element.id}</td>
+						<td>{element.shipmentId}</td>
 						<td>{element.bookingStatus}</td>
 						<td>£{element.rate}</td>
 						{[minWindow, maxWindow].includes(NaN) ? <td>Estimating</td> : <td>{`${minWindow} - ${maxWindow} hours`}</td>}
-						<td>{element.carrier?.name}</td>
+						<td>{element.carrier?.name || "-"}</td>
 						<td role='button'>
-							<span className='text-secondary' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.id}`)}>
+							<span className='text-secondary' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.shipmentId}`)}>
 								View in shipments
 							</span>
 						</td>
