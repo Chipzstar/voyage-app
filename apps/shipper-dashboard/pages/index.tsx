@@ -10,6 +10,7 @@ import { store } from '../store';
 // @ts-ignore
 import { prisma } from '@voyage-app/prisma-utils';
 import { setShipments } from '../store/features/shipmentsSlice';
+import { PUBLIC_PATHS } from '../utils/constants';
 
 export function Index(props) {
 	const dispatch = useDispatch();
@@ -34,10 +35,17 @@ export function Index(props) {
 	);
 }
 
-
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions)
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false,
+			},
+		}
+	}
 	if (session.id) {
 		let shipments = await prisma.shipment.findMany({
 			where: {

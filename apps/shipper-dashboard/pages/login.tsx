@@ -9,6 +9,8 @@ import {PATHS} from '../utils/constants';
 import {useRouter} from 'next/router';
 import {getCsrfToken, getSession, signIn} from 'next-auth/react';
 import prisma from '../db';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
 const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -106,16 +108,17 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 	);
 };
 
-export async function getServerSideProps(context) {
-	const session = await getSession({req: context.req});
-	/*if (session?.user){
+export async function getServerSideProps({ req, res }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	if (session?.user){
 		return {
 			redirect: {
 				destination: PATHS.HOME,
                 permanent: false,
 			}
 		}
-	}*/
+	}
 	const csrfToken = await getCsrfToken();
 	const users = await prisma.user.findMany({})
 	return {
