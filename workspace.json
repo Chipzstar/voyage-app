@@ -7,6 +7,7 @@
 		"carrier-dashboard-e2e": "apps/carrier-dashboard-e2e",
 		"prisma-utils": "libs/prisma-utils",
 		"shared-types": "libs/shared-types",
+		"shared-ui-components": "libs/shared-ui/components",
 		"shipper-dashboard": "apps/shipper-dashboard",
 		"shipper-dashboard-e2e": "apps/shipper-dashboard-e2e"
 	}

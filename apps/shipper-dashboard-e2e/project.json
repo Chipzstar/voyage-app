@@ -1,28 +1,28 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/shipper-dashboard-e2e/src",
-  "projectType": "application",
-  "targets": {
-    "e2e": {
-      "executor": "@nrwl/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/shipper-dashboard-e2e/cypress.json",
-        "devServerTarget": "shipper-dashboard:serve:development"
-      },
-      "configurations": {
-        "production": {
-          "devServerTarget": "shipper-dashboard:serve:production"
-        }
-      }
-    },
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/shipper-dashboard-e2e/**/*.{js,ts}"]
-      }
-    }
-  },
-  "tags": [],
-  "implicitDependencies": ["shipper-dashboard"]
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "apps/shipper-dashboard-e2e/src",
+	"projectType": "application",
+	"targets": {
+		"e2e": {
+			"executor": "@nrwl/cypress:cypress",
+			"options": {
+				"cypressConfig": "apps/shipper-dashboard-e2e/cypress.json",
+				"devServerTarget": "shipper-dashboard:serve:development"
+			},
+			"configurations": {
+				"production": {
+					"devServerTarget": "shipper-dashboard:serve:production"
+				}
+			}
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"outputs": ["{options.outputFile}"],
+			"options": {
+				"lintFilePatterns": ["apps/shipper-dashboard-e2e/**/*.{js,ts}"]
+			}
+		}
+	},
+	"tags": [],
+	"implicitDependencies": ["shipper-dashboard"]
 }

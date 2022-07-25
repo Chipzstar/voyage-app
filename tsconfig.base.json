@@ -16,7 +16,8 @@
 		"baseUrl": ".",
 		"paths": {
 			"@voyage-app/prisma-utils": ["libs/prisma-utils/src/index.ts"],
-			"@voyage-app/shared-types": ["libs/shared-types/src/index.ts"]
+			"@voyage-app/shared-types": ["libs/shared-types/src/index.ts"],
+			"@voyage-app/shared-ui-components": ["libs/shared-ui/components/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]
