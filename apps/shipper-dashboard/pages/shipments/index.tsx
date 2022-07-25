@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
 import { PATHS } from '../../utils/constants';
@@ -8,10 +8,11 @@ import { useRouter } from 'next/router';
 import moment from 'moment';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
-import prisma from '../../db';
 import { selectAllShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import getStore from '../../store';
+// @ts-ignore
+import prisma from '../../db';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
@@ -140,6 +141,7 @@ export async function getServerSideProps ({ req, res }) {
 		createdAt: moment(shipment.createdAt).unix(),
 		updatedAt: moment(shipment.updatedAt).unix()
 	}))
+	console.log(shipments)
 	store.dispatch(setShipments(shipments))
 	return {
 		props: {

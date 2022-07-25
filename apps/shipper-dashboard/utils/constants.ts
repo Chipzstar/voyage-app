@@ -1,7 +1,5 @@
 import moment from 'moment';
 import {
-	Location,
-	LocationType,
 	OperatingHoursState,
 	PACKAGE_TYPE,
 	SCHEDULING_TYPE,
@@ -586,7 +584,7 @@ export let DEFAULT_OPERATING_HOURS : OperatingHoursState[] = [
 	}
 ];
 
-export const SAMPLE_LOCATIONS: Location[] = [
+/*export const SAMPLE_LOCATIONS: Location[] = [
 	{
 		id: `location_${nanoid(16)}`,
 		name: 'John Lewis Warehouse',
@@ -685,7 +683,7 @@ export const SAMPLE_LOCATIONS: Location[] = [
 		deliveryInstructions: '',
 		operatingHours: DEFAULT_OPERATING_HOURS
 	}
-];
+];*/
 
 interface User {
 	email: string,

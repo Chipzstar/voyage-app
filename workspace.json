@@ -5,6 +5,7 @@
 		"backend": "apps/backend",
 		"carrier-dashboard": "apps/carrier-dashboard",
 		"carrier-dashboard-e2e": "apps/carrier-dashboard-e2e",
+		"prisma-utils": "libs/prisma-utils",
 		"shared-types": "libs/shared-types",
 		"shipper-dashboard": "apps/shipper-dashboard",
 		"shipper-dashboard-e2e": "apps/shipper-dashboard-e2e"
