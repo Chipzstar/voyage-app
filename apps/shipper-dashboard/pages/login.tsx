@@ -9,8 +9,6 @@ import {PATHS} from '../utils/constants';
 import {useRouter} from 'next/router';
 import {getCsrfToken, getSession, signIn} from 'next-auth/react';
 import prisma from '../db';
-import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]';
 
 const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const dispatch = useDispatch<AppDispatch>();

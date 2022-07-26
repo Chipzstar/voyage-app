@@ -5,7 +5,7 @@ import Bookings from '../../containers/Bookings';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import getStore from '../../store';
-import { prisma } from '@voyage-app/shared-utils';
+import prisma from '../../db';
 import moment from 'moment';
 import { setShipments } from '../../store/features/shipmentsSlice';
 

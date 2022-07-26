@@ -8,7 +8,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { store } from '../store';
 // @ts-ignore
-import { prisma } from '@voyage-app/shared-utils';
+import prisma from '../db';
 import { setShipments } from '../store/features/shipmentsSlice';
 import { PUBLIC_PATHS } from '../utils/constants';
 
