@@ -1,36 +1,22 @@
 import { CalendarFilter, DateRange } from '@voyage-app/shared-ui-components';
 import React, { useState } from 'react';
 import moment from 'moment';
-import {
-	Chart as ChartJS,
-	RadialLinearScale,
-	PointElement,
-	LineElement,
-	Filler,
-	Tooltip,
-	Legend,
-} from 'chart.js';
+import Map from '../components/Map';
+import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 
-ChartJS.register(
-	RadialLinearScale,
-	PointElement,
-	LineElement,
-	Filler,
-	Tooltip,
-	Legend
-);
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 export function Index() {
-	const [dateRange, setRange] = useState([
-		moment().startOf('day').toDate(),
-		moment().startOf('day').add(1, 'day').toDate()]
-	);
+	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
 	return (
-		<div className='py-4 px-8 page-container'>
+		<div className='py-4 px-8 h-full'>
 			<div className='flex justify-end mb-5'>
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
 			</div>
-			<div className='grid grid-cols-1 lg:grid-cols-2 gap-8 h-fit'>
+			<div>
+				<Map height={160} />
+			</div>
+			{/*<div className='grid grid-cols-1 lg:grid-cols-2 gap-8 h-fit'>
 				<div className='border border-voyage-grey p-4'>
 					<header className='chart-header'>
 						Overall Performance
@@ -54,9 +40,9 @@ export function Index() {
 					</header>
 					<div></div>
 				</div>
-			</div>
+			</div>*/}
 		</div>
 	);
 }
 
-export default Index;
+export default Index

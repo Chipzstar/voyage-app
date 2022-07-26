@@ -11,7 +11,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { selectAllShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useSelector } from 'react-redux';
 import { store } from '../../store';
-import { prisma } from '@voyage-app/prisma-utils';
+import { prisma } from '@voyage-app/shared-utils';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
@@ -21,7 +21,7 @@ const Empty = ({ message }) => (
 
 const index = ({ initialState }) => {
 	const router = useRouter();
-	const shipments = useSelector(selectAllShipments)
+	const shipments = useSelector(selectAllShipments);
 	const [activeTab, setActiveTab] = useState({ index: 0, statuses: Object.values(STATUS) });
 
 	const rows = shipments
@@ -49,7 +49,7 @@ const index = ({ initialState }) => {
 					</td>
 					<td colSpan={1}>
 						<div className={statusClass}>
-							<span className="lowercase capitalize">{element.status}</span>
+							<span className='lowercase capitalize'>{element.status}</span>
 						</div>
 					</td>
 					<td colSpan={1}>
@@ -120,9 +120,9 @@ const index = ({ initialState }) => {
 	);
 };
 
-export async function getServerSideProps ({ req, res }) {
+export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions)
+	const session = await unstable_getServerSession(req, res, authOptions);
 	if (session.id) {
 		let shipments = await prisma.shipment.findMany({
 			where: {
@@ -133,19 +133,19 @@ export async function getServerSideProps ({ req, res }) {
 			orderBy: {
 				createdAt: 'desc'
 			}
-		})
+		});
 		shipments = shipments.map(shipment => ({
 			...shipment,
 			createdAt: moment(shipment.createdAt).unix(),
 			updatedAt: moment(shipment.updatedAt).unix()
-		}))
-		console.log(shipments)
-		store.dispatch(setShipments(shipments))
+		}));
+		console.log(shipments);
+		store.dispatch(setShipments(shipments));
 	}
 	return {
 		props: {
 			initialState: store.getState()
-		},
+		}
 	};
 }
 

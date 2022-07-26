@@ -1,20 +1,20 @@
 {
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "libs/prisma-utils/src",
+	"sourceRoot": "libs/shared-utils/src",
 	"projectType": "library",
 	"targets": {
 		"lint": {
 			"executor": "@nrwl/linter:eslint",
 			"outputs": ["{options.outputFile}"],
 			"options": {
-				"lintFilePatterns": ["libs/prisma-utils/**/*.ts"]
+				"lintFilePatterns": ["libs/shared-utils/**/*.ts"]
 			}
 		},
 		"test": {
 			"executor": "@nrwl/jest:jest",
-			"outputs": ["coverage/libs/prisma-utils"],
+			"outputs": ["coverage/libs/shared-utils"],
 			"options": {
-				"jestConfig": "libs/prisma-utils/jest.config.ts",
+				"jestConfig": "libs/shared-utils/jest.config.ts",
 				"passWithNoTests": true
 			}
 		}

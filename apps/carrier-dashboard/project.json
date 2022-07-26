@@ -21,7 +21,8 @@
 			"defaultConfiguration": "development",
 			"options": {
 				"buildTarget": "carrier-dashboard:build",
-				"dev": true
+				"dev": true,
+				"port": 4201
 			},
 			"configurations": {
 				"development": {

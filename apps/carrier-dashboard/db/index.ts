@@ -1,19 +1,3 @@
-/*import { PrismaClient } from '@prisma/client'
-
-declare global {
-	// allow global `var` declarations
-	// eslint-disable-next-line no-var
-	let prisma: PrismaClient | undefined
-}
-
-export const prisma =
-	global.prisma ||
-	new PrismaClient({
-		log: ['query'],
-	})
-
-if (process.env.NODE_ENV !== 'production') global.prisma = prisma*/
-
 import { PrismaClient } from '@prisma/client'
 import { fieldEncryptionMiddleware } from 'prisma-field-encryption'
 
@@ -25,7 +9,7 @@ declare global {
 	}
 }
 
-export let prisma;
+let prisma
 if (process.env.NODE_ENV === 'production') {
 	prisma = new PrismaClient()
 	prisma.$use(fieldEncryptionMiddleware())
@@ -36,5 +20,4 @@ if (process.env.NODE_ENV === 'production') {
 	prisma = global.prisma
 	prisma.$use(fieldEncryptionMiddleware())
 }
-
-
+export default prisma

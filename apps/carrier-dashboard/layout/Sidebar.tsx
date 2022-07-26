@@ -8,14 +8,17 @@ import { signOut } from 'next-auth/react';
 import { useDispatch } from 'react-redux';
 
 interface NavMenuItem {
-	title: string
+	title: string;
+	href: string;
+	isActive: boolean;
 }
 
 interface NavMenu {
-	title: string
-	href: string,
-	submenu?: boolean
-	menuItems?: NavMenuItem[]
+	title: string;
+	href: string;
+	isActive: boolean;
+	submenu?: boolean;
+	menuItems?: NavMenuItem[];
 }
 
 const SideMenuItem = ({ title, href, isActive }) => {
@@ -34,32 +37,44 @@ const SideMenuItem = ({ title, href, isActive }) => {
 	);
 };
 
-const SideMenuDropdown = ({ title, href, isActive, options }) => {
-	const [dropdownOpen, setDropdownOpen] = useState(false)
+interface SideMenuDropdownProps {
+	title: string;
+	isActive: boolean;
+	options: NavMenuItem[];
+}
+
+const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) => {
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const wrapperStyles = classNames({
 		'hover:bg-secondary-100': true,
 		'bg-secondary-100': isActive
 	});
-	const dropdownStyles = classNames({})
+
 	return (
-		<li onClick={() => setDropdownOpen(!dropdownOpen)}>
-			<div role='button' className={`${wrapperStyles} p-4 flex items-center text-base font-normal text-gray-900`}>
+		<li>
+			<div role='button' className={`${wrapperStyles} p-4 flex items-center text-base font-normal text-gray-900`} onClick={() => setDropdownOpen(!dropdownOpen)}>
 				<span className='ml-3 mr-1 text-base md:text-lg'>{title}</span>
-				<svg sidebar-toggle-item className='w-6 h-6' fill='currentColor' viewBox='0 0 20 20'
-					 xmlns='http://www.w3.org/2000/svg'>
-					<path fillRule='evenodd'
-						  d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-						  clipRule='evenodd'></path>
+				<svg className='w-6 h-6' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
+					<path fillRule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clipRule='evenodd'></path>
 				</svg>
 			</div>
-			{dropdownOpen && <ul id='dropdown-example' className='py-2 space-y-2 transition ease-in-out delay-150 duration-300'>
-				{options.map(option => (
-					<li>
-						<a href='#'
-						   className='flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 rounded-lg group hover:bg-gray-100 pl-11'>{option.title}</a>
-					</li>
-				))}
-			</ul>}
+			{dropdownOpen && (
+				<ul id='dropdown-example' className='py-2 space-y-2 transition ease-in-out delay-150 duration-300'>
+					{options.map(option => {
+						const dropdownStyles = classNames({
+							'hover:bg-gray-200': true,
+							'bg-gray-200': option.isActive
+						});
+						return (
+							<li role='button' className={`${dropdownStyles}`}>
+								<Link href={option.href}>
+									<div className='flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 group pl-11'>{option.title}</div>
+								</Link>
+							</li>
+						);
+					})}
+				</ul>
+			)}
 		</li>
 	);
 };
@@ -67,38 +82,51 @@ const SideMenuDropdown = ({ title, href, isActive, options }) => {
 const Sidebar = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const Menu: NavMenu[]  = [
+	const Menu: NavMenu[] = [
 		{
 			title: 'Operations',
+			isActive: router.pathname.includes(PATHS.HOME),
 			href: PATHS.HOME,
 			submenu: true,
 			menuItems: [
-				{ title: 'Truck Board' },
-				{ title: 'Live Trips' }
+				{ title: 'Truck Board', href: PATHS.HOME, isActive: router.pathname === PATHS.HOME },
+				{ title: 'Live Trips', href: PATHS.TRIPS, isActive: router.pathname === PATHS.TRIPS }
 			]
 		},
-		{ title: 'Marketplace', href: PATHS.MARKETPLACE },
+		{ title: 'Marketplace', href: PATHS.MARKETPLACE, isActive: router.pathname.includes(PATHS.MARKETPLACE) },
 		{
-			title: 'Fleets', href: PATHS.FLEETS, submenu: true, menuItems: [
-				{ title: 'Drivers' },
-				{ title: 'Team' },
-				{ title: 'Vehicles' }
-			]
-		},
-		{
-			title: 'Accounts',href: PATHS.ACCOUNTS, submenu: true, menuItems: [
-				{ title: 'Customers' },
-				{ title: 'Invoice' },
-				{ title: 'Payment' }
+			title: 'Fleets',
+			href: PATHS.FLEETS,
+			isActive: router.pathname.includes(PATHS.FLEETS),
+			submenu: true,
+			menuItems: [
+				{ title: 'Drivers', href: PATHS.DRIVERS, isActive: router.pathname === PATHS.DRIVERS },
+				{ title: 'Team', href: PATHS.TEAM, isActive: router.pathname === PATHS.TEAM },
+				{ title: 'Vehicles', href: PATHS.VEHICLES, isActive: router.pathname === PATHS.VEHICLES }
 			]
 		},
 		{
-			title: 'Reporting', href: PATHS.REPORTING, submenu: true, menuItems: [
-				{ title: 'Basic Reports' },
-				{ title: 'Fuel' }
+			title: 'Accounts',
+			href: PATHS.ACCOUNTS,
+			isActive: router.pathname.includes(PATHS.ACCOUNTS),
+			submenu: true,
+			menuItems: [
+				{ title: 'Customers', href: PATHS.CUSTOMERS, isActive: router.pathname === PATHS.CUSTOMERS },
+				{ title: 'Invoice', href: PATHS.INVOICE, isActive: router.pathname === PATHS.INVOICE },
+				{ title: 'Payment', href: PATHS.PAYMENTS, isActive: router.pathname === PATHS.PAYMENTS }
 			]
 		},
-		{ title: 'Settings', href: PATHS.SETTINGS }
+		{
+			title: 'Reporting',
+			href: PATHS.REPORTING,
+			submenu: true,
+			isActive: router.pathname.includes(PATHS.REPORTING),
+			menuItems: [
+				{ title: 'Basic Reports', href: PATHS.BASIC_REPORT, isActive: router.pathname === PATHS.BASIC_REPORT },
+				{ title: 'Fuel', href: PATHS.FUEL_REPORT, isActive: router.pathname === PATHS.FUEL_REPORT }
+			]
+		},
+		{ title: 'Settings', href: PATHS.SETTINGS, isActive: router.pathname.includes(PATHS.SETTINGS) }
 	];
 
 	return (
@@ -110,17 +138,9 @@ const Sidebar = () => {
 				</div>
 			</Link>
 			<ul className='grow space-y-4'>
-				{Menu.map((item, index) => (
-					item?.submenu ?
-						<SideMenuDropdown
-							key={index}
-							title={item.title}
-							href={item.href}
-							isActive={false}
-							options={item.menuItems}
-						/> :
-						<SideMenuItem key={index} title={item.title} href={item.href} isActive={false} />
-				))}
+				{Menu.map((item, index) =>
+					item?.submenu ? <SideMenuDropdown key={index} title={item.title} isActive={item.isActive} options={item.menuItems} /> : <SideMenuItem key={index} title={item.title} href={item.href} isActive={false} />
+				)}
 			</ul>
 
 			<div

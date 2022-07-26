@@ -15,7 +15,7 @@ import { Shipment } from '../../utils/types';
 
 export async function getServerSideProps({ req, res, params }) {
 	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions)
+	const session = await unstable_getServerSession(req, res, authOptions);
 	let pageIndex = 0;
 	// fetch all shipments for the current user
 	let shipments = await prisma.shipment.findMany({
@@ -27,14 +27,14 @@ export async function getServerSideProps({ req, res, params }) {
 		orderBy: {
 			createdAt: 'desc'
 		}
-	})
+	});
 	shipments = shipments.map(shipment => ({
 		...shipment,
 		createdAt: moment(shipment.createdAt).unix(),
 		updatedAt: moment(shipment.updatedAt).unix()
-	}))
+	}));
 	// set them in memory
-	store.dispatch(setShipments(shipments))
+	store.dispatch(setShipments(shipments));
 	// find the first shipment with matching shipment ID
 	const shipment = await prisma.shipment.findFirst({
 		where: {
@@ -45,10 +45,10 @@ export async function getServerSideProps({ req, res, params }) {
 				equals: params.shipmentID
 			}
 		}
-	})
+	});
 	if (shipment) {
-		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID)
-		console.table({pageIndex})
+		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
+		console.table({ pageIndex });
 	}
 	return {
 		props: {
@@ -59,10 +59,9 @@ export async function getServerSideProps({ req, res, params }) {
 	};
 }
 
-
 const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 	const router = useRouter();
-	const shipments: Shipment[] = useSelector(state => state['shipments'])
+	const shipments: Shipment[] = useSelector(state => state['shipments']);
 
 	return (
 		<div className='p-4 h-screen'>
