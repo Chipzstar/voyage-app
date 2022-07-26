@@ -1,7 +1,6 @@
 import { CalendarFilter, DateRange } from '@voyage-app/shared-ui-components';
 import React, { useState } from 'react';
 import moment from 'moment';
-import OverallPerformance from '../charts/OverallPerformance';
 import {
 	Chart as ChartJS,
 	RadialLinearScale,

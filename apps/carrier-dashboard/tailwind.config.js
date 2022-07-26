@@ -5,7 +5,7 @@ module.exports = {
 	content: [
 		join(
 			__dirname,
-			'{src,pages,components,containers,layout,modals,node_modules/flowbite-react}/**/*!(*.stories|*.spec).{ts,tsx,html}',
+			'{src,pages,components,containers,layout,modals}/**/*!(*.stories|*.spec).{ts,tsx,html}'
 		),
 		...createGlobPatternsForDependencies(__dirname),
 	],
@@ -116,7 +116,5 @@ module.exports = {
 			}
 		},
 	},
-	plugins: [
-		require('flowbite/plugin')
-	],
+	plugins: [],
 };

@@ -9,7 +9,7 @@
 			"defaultConfiguration": "production",
 			"options": {
 				"root": "apps/carrier-dashboard",
-				"outputPath": "dist/apps/carrier-dashboard"
+				"outputPath": "build/apps/carrier-dashboard"
 			},
 			"configurations": {
 				"development": {},
