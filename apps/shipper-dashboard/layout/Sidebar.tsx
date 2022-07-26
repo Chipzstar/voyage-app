@@ -4,7 +4,7 @@ import {PATHS} from '../utils/constants';
 import Link from 'next/link';
 import classNames from 'classnames';
 import {useRouter} from 'next/router';
-import {signOut, useSession} from "next-auth/react";
+import {signOut} from "next-auth/react";
 import { useDispatch } from 'react-redux';
 
 const SideMenuItem = ({title, icon, href, isActive}) => {
@@ -28,7 +28,6 @@ const SideMenuItem = ({title, icon, href, isActive}) => {
 const Sidebar = () => {
     const router = useRouter();
     const dispatch = useDispatch();
-    const {data: session, status} = useSession()
 
     return (
         <div className='w-48 lg:w-64 h-full overflow-y-auto py-4 bg-gray-50 flex flex-col border-r-2 border-gray-300'>

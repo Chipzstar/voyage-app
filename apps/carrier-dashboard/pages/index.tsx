@@ -36,9 +36,6 @@ export function Index() {
 					<header className='chart-header'>
 						Overall Performance
 					</header>
-					<div className='flex grow'>
-						<OverallPerformance />
-					</div>
 				</div>
 				<div className='border border-voyage-grey p-4 flex'>
 					<header className='chart-header'>
