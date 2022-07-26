@@ -1,29 +1,22 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
-import Trips from '../containers/Trips'
+import Trips from '../containers/Trips';
+import { STATUS } from '@voyage-app/shared-types';
 
 const trips = () => {
-	const [activeTab, setActiveTab] = useState('upcoming');
+	const [activeTab, setActiveTab] = useState(0);
 	return (
 		<div className='py-5 h-screen'>
-			<Tabs value={activeTab} onTabChange={setActiveTab}>
-				<Tabs.List grow>
-					<Tabs.Tab value="upcoming">Upcoming</Tabs.Tab>
-					<Tabs.Tab value="in-transit">In Transit</Tabs.Tab>
-					<Tabs.Tab value="completed">Completed</Tabs.Tab>
-				</Tabs.List>
-
-				<Tabs.Panel value="upcoming" pt="xs">
-					<Trips/>
-				</Tabs.Panel>
-
-				<Tabs.Panel value="in-transit" pt="xs">
-					<Trips/>
-				</Tabs.Panel>
-
-				<Tabs.Panel value="completed" pt="xs">
-					<Trips/>
-				</Tabs.Panel>
+			<Tabs active={activeTab} onTabChange={setActiveTab} grow>
+				<Tabs.Tab label='Upcoming' tabKey={[STATUS.NEW, STATUS.PENDING].join(' ')} >
+					<Trips />
+				</Tabs.Tab>
+				<Tabs.Tab label='In Transit' tabKey={[STATUS.DISPATCHED, STATUS.EN_ROUTE].join(' ')} >
+					<Trips />
+				</Tabs.Tab>
+				<Tabs.Tab label='Completed' tabKey={[STATUS.COMPLETED].join(' ')} >
+					<Trips />
+				</Tabs.Tab>
 			</Tabs>
 		</div>
 	);

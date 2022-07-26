@@ -6,7 +6,7 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-export function Index() {
+export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
 	return (
 		<div className='py-4 px-8 h-full'>

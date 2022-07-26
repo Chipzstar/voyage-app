@@ -7,6 +7,7 @@ import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment'
 import { PATHS, SAMPLE_SHIPMENTS } from '../utils/constants'
 import { useRouter } from 'next/router';
+// @ts-ignore
 import { capitalize } from '@voyage-app/shared-utils';
 
 const Empty = ({ message }) => (

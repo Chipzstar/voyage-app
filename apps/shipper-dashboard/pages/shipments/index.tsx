@@ -11,7 +11,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { selectAllShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useSelector } from 'react-redux';
 import { store } from '../../store';
-import { prisma } from '@voyage-app/shared-utils';
+import prisma from '../../db';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
