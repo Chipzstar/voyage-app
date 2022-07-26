@@ -100,15 +100,15 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
-	//const session = await unstable_getServerSession(req, res, authOptions);
-	/*if (session?.user) {
+	const session = await unstable_getServerSession(req, res, authOptions);
+	if (session?.user) {
 		return {
 			redirect: {
 				destination: PATHS.HOME,
 				permanent: false
 			}
 		};
-	}*/
+	}
 	const csrfToken = await getCsrfToken();
 	const users = await prisma.user.findMany({});
 	return {
