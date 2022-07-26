@@ -108,9 +108,8 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 	);
 };
 
-export async function getServerSideProps({ req, res }) {
-	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions);
+export async function getServerSideProps(context) {
+	const session = await getSession({req: context.req});
 	if (session?.user){
 		return {
 			redirect: {
