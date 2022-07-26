@@ -35,8 +35,6 @@ export function Index(props) {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
-	console.log(req)
-	console.log(res)
 	/*if (!session) {
 		return {
 			redirect: {
