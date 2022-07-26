@@ -38,10 +38,6 @@ export const authOptions = {
 		signIn: '/login'
 	},
 	callbacks: {
-		async redirect({ url, baseUrl }) {
-			console.log("redirectURL", url)
-			return baseUrl
-		},
 		async jwt({token, user, account, profile, isNewUser }) {
 			if (user) {
 				token.id = user.id;
