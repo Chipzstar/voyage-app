@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
 import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
-import { getCsrfToken, getSession, signIn } from 'next-auth/react';
+import { getCsrfToken, signIn } from 'next-auth/react';
 import prisma from '../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
@@ -31,8 +31,7 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 			const { ok, error } = await signIn('credentials', {
 				email: values.email,
 				password: values.password,
-				redirect: false,
-				callbackUrl: window.location.origin + '/'
+				redirect: false
 			});
 			if (ok) {
 				console.log('Login Success');
