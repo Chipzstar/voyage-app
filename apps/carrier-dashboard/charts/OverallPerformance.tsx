@@ -1,56 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import { Radar } from 'react-chartjs-2';
 
-const data = [
-	{
-		subject: 'Math',
-		A: 120,
-		B: 110,
-		fullMark: 150,
-	},
-	{
-		subject: 'Chinese',
-		A: 98,
-		B: 130,
-		fullMark: 150,
-	},
-	{
-		subject: 'English',
-		A: 86,
-		B: 130,
-		fullMark: 150,
-	},
-	{
-		subject: 'Geography',
-		A: 99,
-		B: 100,
-		fullMark: 150,
-	},
-	{
-		subject: 'Physics',
-		A: 85,
-		B: 90,
-		fullMark: 150,
-	},
-	{
-		subject: 'History',
-		A: 65,
-		B: 85,
-		fullMark: 150,
-	},
-];
+export const data = {
+	labels: ['On Time Trips', 'Loads Accepted', 'Final Quotations', 'Average Driver Ratings', 'Fleet Utilization'],
+	datasets: [
+		{
+			label: 'Overall Performance',
+			data: [92.3, 73, 89, 80, 64],
+			backgroundColor: 'rgba(255, 99, 132, 0.2)',
+			borderColor: 'rgba(255, 99, 132, 1)',
+			borderWidth: 0,
+		},
+	],
+};
 
 const OverallPerformance = props => {
 	return (
-		<ResponsiveContainer width={400} height={200}>
-			<RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-				<PolarGrid />
-				<PolarAngleAxis dataKey="subject" />
-				<PolarRadiusAxis />
-				<Radar name="Mike" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-			</RadarChart>
-		</ResponsiveContainer>
+		<Radar data={data} options={{
+			maintainAspectRatio: false,
+			plugins: {
+				legend: {
+					position: 'left'
+				}
+			}
+		}}/>
 	);
 };
 

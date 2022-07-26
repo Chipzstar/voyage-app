@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
 			{!router.pathname.includes(PUBLIC_PATHS.LOGIN) && <aside className='sticky top-0 relative' aria-label='Sidebar'>
 				<Navbar />
 			</aside>}
-			<main className='h-screen overflow-y-auto grow'>{children}</main>
+			<main className='h-screen overflow-y-auto grow	'>{children}</main>
 		</div>
 	);
 };
