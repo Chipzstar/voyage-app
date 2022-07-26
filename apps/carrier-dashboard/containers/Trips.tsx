@@ -19,7 +19,8 @@ const Trips = ({ statuses=Object.values(STATUS), message="" }) => {
 	const router = useRouter()
 	const rows = SAMPLE_SHIPMENTS.filter(element => statuses.includes(element.status)).map((element, index) => {
 		const statusClass = classNames({
-			'py-1.5': true,
+			'my-2': true,
+			'py-1': true,
 			'w-28': true,
 			rounded: true,
 			'text-center': true,
@@ -35,7 +36,7 @@ const Trips = ({ statuses=Object.values(STATUS), message="" }) => {
 		});
 
 		return (
-			<tr key={index}>
+			<tr key={index} >
 				<td colSpan={1}>
 					<span className='text-secondary font-semibold text-lg'>{element.shipmentId}</span>
 				</td>
