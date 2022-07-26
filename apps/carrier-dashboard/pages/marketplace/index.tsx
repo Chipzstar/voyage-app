@@ -1,11 +1,9 @@
 import React from 'react'
 
-const index = () => {
+const marketplace = () => {
 	return (
-		<div className='container py-5'>
-			
-		</div>
+		<div className='container py-5'/>
 	)
 }
 
-export default index
+export default marketplace

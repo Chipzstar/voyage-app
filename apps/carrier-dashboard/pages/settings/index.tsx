@@ -1,9 +1,9 @@
 import React from 'react'
 
-const payments = () => {
+const settings = () => {
 	return (
 		<div className='container py-5'/>
 	)
 }
 
-export default payments
+export default settings
