@@ -31,7 +31,8 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 			const { ok, error } = await signIn('credentials', {
 				email: values.email,
 				password: values.password,
-				redirect: false
+				redirect: false,
+				callbackUrl: window.location.origin + '/'
 			});
 			if (ok) {
 				console.log('Login Success');
