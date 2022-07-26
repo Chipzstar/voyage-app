@@ -7,7 +7,7 @@ import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
-import getStore from '../store';
+import { store } from '../store'
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
@@ -25,8 +25,7 @@ moment.updateLocale('en', {
 });
 moment.locale('en');
 
-function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-	const store = getStore(pageProps.initialState);
+function App({ Component, pageProps }: AppProps) {
 	return (
 		<Provider store={store}>
 			<MantineProvider

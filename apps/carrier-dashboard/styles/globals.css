@@ -9,7 +9,7 @@
         font-family: "Helvetica";
         font-weight: 500;
         font-style: normal;
-        src: url('/apps/shipper-dashboard/public/static/fonts/Helvetica/Helvetica.ttf') format('truetype');
+        src: url('/apps/carrier-dashboard/public/static/fonts/Helvetica/Helvetica.ttf') format('truetype');
     }
 }
 

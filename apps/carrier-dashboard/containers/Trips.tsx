@@ -4,10 +4,10 @@ import { Search } from 'tabler-icons-react';
 import DataGrid from '../components/DataGrid'
 import classNames from 'classnames'
 import { STATUS } from '@voyage-app/shared-types';
-import { capitalize } from '@voyage-app/shared-utils';
 import moment from 'moment/moment'
 import { PATHS, SAMPLE_SHIPMENTS } from '../utils/constants'
 import { useRouter } from 'next/router';
+import { capitalize } from '@voyage-app/shared-utils';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>

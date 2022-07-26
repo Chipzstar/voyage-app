@@ -3,7 +3,7 @@ import rootReducer from './rootReducer';
 
 export let store = configureStore({
 	reducer: rootReducer,
-	devTools: true
+	devTools: process.env.NODE_ENV !== 'production'
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
@@ -14,7 +14,7 @@ export type AppDispatch = typeof store.dispatch
 export default function getStore(incomingPreloadState?: RootState) {
 	store = configureStore({
 		reducer: rootReducer,
-		devTools: true,
+		devTools: process.env.NODE_ENV !== 'production',
 		preloadedState: incomingPreloadState
 	});
 	return store;
