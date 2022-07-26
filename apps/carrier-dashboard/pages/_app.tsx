@@ -1,6 +1,6 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Favicon } from '@voyage-app/shared-ui-components';
+import Favicon from '../components/Favicon';
 import '../styles/globals.css';
 // import 'antd/dist/antd.css';
 // import 'react-big-calendar/lib/sass/styles.scss';
@@ -42,8 +42,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 					<Layout>
 						<Head>
 							<Favicon />
-							<meta name='viewport'
-								  content='minimum-scale=1, initial-scale=1, width=device-width' />
+							<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 							<title>Carrier Dashboard</title>
 						</Head>
 						<main className='app'>
