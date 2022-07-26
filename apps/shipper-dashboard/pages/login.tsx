@@ -1,14 +1,16 @@
-import {InferGetServerSidePropsType} from 'next';
-import React, {useCallback} from 'react';
-import {useForm} from '@mantine/form';
-import {Button, PasswordInput, Text, TextInput} from '@mantine/core';
-import {Lock, Mail} from 'tabler-icons-react';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../store';
-import {PATHS} from '../utils/constants';
-import {useRouter} from 'next/router';
-import {getCsrfToken, getSession, signIn} from 'next-auth/react';
+import { InferGetServerSidePropsType } from 'next';
+import React, { useCallback } from 'react';
+import { useForm } from '@mantine/form';
+import { Button, PasswordInput, Text, TextInput } from '@mantine/core';
+import { Lock, Mail } from 'tabler-icons-react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store';
+import { PATHS } from '../utils/constants';
+import { useRouter } from 'next/router';
+import { getCsrfToken, getSession, signIn } from 'next-auth/react';
 import prisma from '../db';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
 const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -18,22 +20,21 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 			email: '',
 			password: ''
 		},
-		validate: (values) => ({
+		validate: values => ({
 			email: !props.users.find(item => item.email === values.email) ? 'No user found with that email address' : null,
 			password: !props.users.find(item => item.password === values.password && item.email === values.email) ? 'Wrong password' : null
 		})
 	});
 
-	const handleSignIn = useCallback(async (values) => {
+	const handleSignIn = useCallback(async values => {
 		try {
 			const { ok, error } = await signIn('credentials', {
 				email: values.email,
 				password: values.password,
-				redirect: false,
-				callbackUrl: PATHS.HOME,
+				redirect: false
 			});
 			if (ok) {
-				console.log("Login Success")
+				console.log('Login Success');
 				await router.replace('/');
 				return;
 			}
@@ -41,9 +42,9 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 			if (error) {
 				return null;
 			}
-		} catch(error) {
+		} catch (error) {
 			// handle error here (eg. display message to user)
-			console.log(error.error)
+			console.log(error.error);
 		}
 	}, []);
 
@@ -61,29 +62,15 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 					</figure>
 					<div>
 						<TextInput
-							name="csrfToken"
+							name='csrfToken'
 							//@ts-ignore
-							type="hidden"
+							type='hidden'
 							defaultValue={csrfToken}
 						/>
-						<TextInput
-							name="email"
-							placeholder='Email'
-							icon={<Mail size={16} />}
-							radius={0}
-							size='md'
-							{...form.getInputProps('email')}
-						/>
+						<TextInput name='email' placeholder='Email' icon={<Mail size={16} />} radius={0} size='md' {...form.getInputProps('email')} />
 					</div>
 					<div>
-						<PasswordInput
-							name="password"
-							placeholder='Password'
-							icon={<Lock size={16} />}
-							radius={0}
-							size='md'
-							{...form.getInputProps('password')}
-						/>
+						<PasswordInput name='password' placeholder='Password' icon={<Lock size={16} />} radius={0} size='md' {...form.getInputProps('password')} />
 					</div>
 					<div className='flex flex-col items-center space-y-4'>
 						<Button
@@ -96,9 +83,13 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 							}}
 							className='text-normal text-white text-center w-full h-12'
 						>
-							<Text color='white' size='lg'>Log in</Text>
+							<Text color='white' size='lg'>
+								Log in
+							</Text>
 						</Button>
-						<span role='button' className='text-secondary hover:underline'>Forgot password?</span>
+						<span role='button' className='text-secondary hover:underline'>
+							Forgot password?
+						</span>
 					</div>
 				</form>
 			</div>
@@ -106,23 +97,24 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 	);
 };
 
-export async function getServerSideProps(context) {
-	const session = await getSession({req: context.req});
-	if (session?.user){
+export async function getServerSideProps({ req, res }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	if (session?.user) {
 		return {
 			redirect: {
 				destination: PATHS.HOME,
-                permanent: false,
+				permanent: false
 			}
-		}
+		};
 	}
 	const csrfToken = await getCsrfToken();
-	const users = await prisma.user.findMany({})
+	const users = await prisma.user.findMany({});
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,
 			users
-		},
+		}
 	};
 }
 
