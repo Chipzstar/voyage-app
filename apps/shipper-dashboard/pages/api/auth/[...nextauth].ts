@@ -38,13 +38,8 @@ export const authOptions = {
 		signIn: '/login'
 	},
 	callbacks: {
-		async signIn({ user, account, profile, email, credentials }) {
-			console.log(credentials)
-			return !!user
-		},
 		async redirect({ url, baseUrl }) {
 			console.log("redirectURL", url)
-			console.log("BaseURL", baseUrl)
 			return baseUrl
 		},
 		async jwt({token, user, account, profile, isNewUser }) {
