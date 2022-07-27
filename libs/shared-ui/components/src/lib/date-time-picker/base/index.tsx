@@ -77,7 +77,7 @@ const useStyles = createStyles((t, { size, invalid }) => ({
 	arrow: { borderColor: t.colors.gray[2], background: t.white }
 }));
 
-const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
+const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 	(
 		{
 			classNames,
@@ -135,8 +135,10 @@ const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 		const focusTrapRef = useFocusTrap(dropdownOpened);
 		const inputRef = useRef<HTMLElement>(null);
 
+		// @ts-ignore
 		const closeDropdown = () => setDropdownOpened(false);
 
+		// @ts-ignore
 		const closeOnEscape = e => {
 			if (e.nativeEvent.code === 'Escape') {
 				closeDropdown();
@@ -144,22 +146,28 @@ const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 			}
 		};
 
+		// @ts-ignore
 		useClickOutside(() => dropdownType === 'popover' && closeDropdown(), null, [dropdownElement, rootElement]);
 
 		useWindowEvent('scroll', () => closeDropdownOnScroll && closeDropdown());
 
 		const rightSection = clearable ? <CloseButton variant='transparent' aria-label={clearButtonLabel} onClick={onClear} size={size} /> : null;
 
+		// @ts-ignore
 		const handleClick = () => setDropdownOpened(!dropdownOpened);
 
+		// @ts-ignore
 		const handleInputBlur = e => typeof onBlur === 'function' && onBlur(e);
 
+		// @ts-ignore
 		const handleInputFocus = e => typeof onFocus === 'function' && onFocus(e);
 
+		// @ts-ignore
 		const handleKeyDown = e => {
 			typeof onKeyDown === 'function' && onKeyDown(e);
 			if (e.code === 'Space' || e.code === 'Enter') {
 				e.preventDefault();
+				// @ts-ignore
 				setDropdownOpened(true);
 			}
 		};
@@ -181,6 +189,7 @@ const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 				{...margins}
 				{...wrapperProps}
 			>
+				{/*@ts-ignore*/}
 				<div ref={setRootElement}>
 					<div className={classes.wrapper}>
 						<Input
@@ -192,6 +201,7 @@ const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 							styles={styles}
 							onClick={handleClick}
 							onKeyDown={handleKeyDown}
+							//@ts-ignore
 							ref={useMergedRef(ref, inputRef)}
 							__staticSelector={__staticSelector}
 							radius={radius}
@@ -216,11 +226,13 @@ const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 					</div>
 
 					<Popper
+						//@ts-ignore
 						referenceElement={referenceElement}
 						transitionDuration={transitionDuration}
 						transitionTimingFunction={transitionTimingFunction}
 						forceUpdateDependencies={positionDependencies}
 						transition={transition}
+						//@ts-ignore
 						mounted={dropdownOpened}
 						position='bottom'
 						placement='start'
@@ -231,6 +243,7 @@ const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 						zIndex={zIndex}
 						arrowClassName={classes.arrow}
 					>
+						{/*@ts-ignore*/}
 						<div className={classes.dropdownWrapper} ref={setDropdownElement} data-mantine-stop-propagation={dropdownOpened} onKeyDownCapture={closeOnEscape} aria-hidden={undefined}>
 							<Paper className={classes.dropdown} shadow={shadow} ref={focusTrapRef}>
 								{children}
@@ -243,4 +256,4 @@ const Index = forwardRef<HTMLInputElement, DateTimePickerBaseProps>(
 	}
 );
 
-export default Index
+export default DateTimePickerBase

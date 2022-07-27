@@ -3,7 +3,7 @@ import { CSSProperties, forwardRef, useEffect, useRef, useState } from 'react';
 import { Anchor, Button, Group, MantineSize, useMantineTheme } from '@mantine/core';
 import { upperFirst, useMergedRef } from '@mantine/hooks';
 import moment from 'moment/moment';
-import Index from './base';
+import DateTimePickerBase from './base';
 import { Calendar, DayModifiers, TimeInput } from '@mantine/dates';
 import { Clock } from 'tabler-icons-react';
 import { CalendarSharedProps } from '@mantine/dates/lib/components/CalendarBase/CalendarBase';
@@ -208,7 +208,7 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 		};
 
 		return (
-			<Index
+			<DateTimePickerBase
 				dropdownOpened={dropdownOpened}
 				setDropdownOpened={setDropdownOpened}
 				shadow={shadow}
@@ -281,7 +281,7 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 						</Button>
 					)}
 				</Group>
-			</Index>
+			</DateTimePickerBase>
 		);
 	}
 );

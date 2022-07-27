@@ -1,22 +1,19 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store';
 import { useForm } from '@mantine/form';
 import { numericId } from '@voyage-app/shared-utils';
 import moment from 'moment/moment';
 import classNames from 'classnames';
-import { PACKAGE_TYPE, SCHEDULING_TYPE, SHIPMENT_ACTIVITY } from '@voyage-app/shared-types';
+import { PACKAGE_TYPE, SHIPMENT_ACTIVITY } from '@voyage-app/shared-types';
 // import { createShipment } from '../../store/features/shipmentsSlice';
-import { CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
-import { MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { ChevronDown } from 'tabler-icons-react';
+import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
+import Link from 'next/link';
 // import { createBooking } from '../../../shipper-dashboard/store/features/bookingsSlice';
 
 const book = props => {
 	const router = useRouter();
-	const dispatch = useDispatch<AppDispatch>();
-
 	const form = useForm({
 		initialValues: {
 			id: `VOY-ID${numericId(3)}`,
@@ -42,15 +39,15 @@ const book = props => {
 		}
 	});
 
-	const inputButton = classNames({
-		'h-16': true,
-		'px-3': true,
-		border: true,
-		'border-gray-300': true,
-		'hover:bg-secondary': true,
-		'hover:text-white': true,
-		'font-medium': true
-	});
+	const items = [
+		{ title: 'Home', href: '/' },
+		{ title: 'Trips', href: '/trips' },
+		{ title: 'Book', href: '/trips/book' }
+	].map((item, index) => (
+		<Anchor component={Link} href={item.href} key={index}>
+			<span className="hover:text-secondary hover:underline">{item.title}</span>
+		</Anchor>
+	));
 
 	const handleSubmit = useCallback(values => {
 		// update the createdAt timestamp
@@ -59,8 +56,8 @@ const book = props => {
 
 	return (
 		<div className='pb-4 px-8'>
-			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button' onClick={() => router.back()}>
-				<span className=''>Trips / Book</span>
+			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button'>
+				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 lg:grid-cols-4 gap-20'>
 				<div id='quote-form-container' className='flex flex-col space-y-5 col-span-3'>
@@ -201,7 +198,7 @@ const book = props => {
 					<div className='grid grid-cols-2 gap-6'>
 						<div id='col-1'>
 							<div className='flex flex-col space-y-4'>
-								<header className='min-h-16 space-y-4'>
+								<header className='space-y-4'>
 									<h1 className='quote-header'>Select Driver</h1>
 									<p className='font-normal'>Select the driver who should carry out the load</p>
 								</header>
@@ -225,7 +222,7 @@ const book = props => {
 						</div>
 						<div>
 							<div className='flex flex-col space-y-4'>
-								<header className='min-h-16 space-y-4'>
+								<header className='space-y-4'>
 									<h1 className='quote-header'>Select Controller</h1>
 									<p className='font-normal'>Select a controller from your team to oversee this load</p>
 								</header>

@@ -27,7 +27,7 @@ export const PATHS = {
 	FUEL_REPORT: '/report#fuel'
 };
 
-export const SAMPLE_SHIPMENTS: Shipment[] = [
+export const SAMPLE_LOADS: Shipment[] = [
 	{
 		id: '',
 		source: 'Voyage',

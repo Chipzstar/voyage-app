@@ -5,7 +5,7 @@ import DataGrid from '../components/DataGrid';
 import classNames from 'classnames';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
-import { PATHS, SAMPLE_SHIPMENTS } from '../utils/constants';
+import { PATHS, SAMPLE_LOADS } from '../utils/constants';
 import { useRouter } from 'next/router';
 // @ts-ignore
 import { capitalize } from '@voyage-app/shared-utils';
@@ -18,7 +18,7 @@ const Empty = ({ message }) => (
 
 const Trips = ({ statuses = Object.values(STATUS), message = '' }) => {
 	const router = useRouter();
-	const rows = SAMPLE_SHIPMENTS.filter(element => statuses.includes(element.status)).map((element, index) => {
+	const rows = SAMPLE_LOADS.filter(element => statuses.includes(element.status)).map((element, index) => {
 		const statusClass = classNames({
 			'my-2': true,
 			'py-1': true,
