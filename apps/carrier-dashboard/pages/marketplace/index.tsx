@@ -1,13 +1,17 @@
-import React from 'react';
-import { ActionIcon, Anchor, Breadcrumbs } from '@mantine/core'
+import React, { useMemo, useState } from 'react'
+import { ActionIcon, Anchor, Breadcrumbs, Button, NumberInput, Select, SimpleGrid, Text } from '@mantine/core'
 import Link from 'next/link';
 import moment from 'moment/moment';
-import { SimpleGrid } from '@mantine/core';
 import { SAMPLE_LOADS } from '../../utils/constants';
-import { Shipment } from '@voyage-app/shared-types';
-import { ArrowRight, Message } from 'tabler-icons-react';
+import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types'
+import { ArrowRight, Calendar, Message } from 'tabler-icons-react'
+import { capitalize, uniqueArray } from '@voyage-app/shared-utils'
+import { DateRangePicker } from '@mantine/dates'
 
 const marketplace = () => {
+	const [value, setValue] = useState<[Date | null, Date | null]>([
+		null, null
+	]);
 	const items = [
 		{ title: 'Home', href: '/' },
 		{ title: 'Marketplace', href: '/marketplace' }
@@ -17,14 +21,60 @@ const marketplace = () => {
 		</Anchor>
 	));
 
+	const uniquePickupLocations = useMemo(() => {
+		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({ value: item.pickup.facilityId, label: item.pickup.facilityName }));
+		return uniqueArray(labels, 'value');
+	}, []);
+
+	const uniqueDeliveryLocations = useMemo(() => {
+		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({ value: item.delivery.facilityId, label: item.delivery.facilityName }));
+		return uniqueArray(labels, 'value');
+	}, []);
+
 	return (
-		<div className='pb-4 px-8'>
-			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button'>
+		<div className='pb-4 px-8 min-h-screen'>
+			<header className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
-			</section>
+			</header>
+			<form className='flex flex-row pb-8 space-x-3'>
+				<div className='flex'>
+					<Select radius={0} size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />
+					<Select radius={0} size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} />
+				</div>
+				<Select
+					defaultValue={'100mi'}
+					radius={0}
+					classNames={{
+						root: 'w-32'
+					}}
+					size="sm"
+					data={['10mi', '20mi', '50mi', '100mi', '200mi', '300mi']}
+				/>
+				<DateRangePicker
+					placeholder="Select dates"
+					classNames={{
+						root: 'grow'
+					}}
+					radius={0}
+					icon={<Calendar size={16}/>}
+					value={value}
+					onChange={setValue}
+				/>
+				<Select
+					radius={0}
+					placeholder="All equipments"
+					data={Object.values(EQUIPMENT_TYPES).map((item):SelectInputData => ({
+						value: item,
+						label: capitalize(item.replace(/_/g, ' '))
+					}))}
+				/>
+				<Button variant="outline">
+					<Text size="sm">Clear</Text>
+				</Button>
+			</form>
 			<div className='space-y-3 mb-5'>
 				<header className='page-subheading'>{SAMPLE_LOADS.length} Loads available for you</header>
-				<p className="font-medium text-gray-500">{moment().format('dddd, MMM D')}</p>
+				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
 				{SAMPLE_LOADS.map((shipment: Shipment, index) => (

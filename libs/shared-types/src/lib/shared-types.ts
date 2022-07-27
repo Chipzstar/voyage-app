@@ -1,3 +1,8 @@
+export interface SelectInputData {
+	value: string;
+	label: string
+}
+
 export type UnixTimestamp = number
 
 export interface ShipmentTimeWindow {
@@ -69,6 +74,13 @@ export enum SCHEDULING_TYPE {
 }
 
 export enum SHIPMENT_ACTIVITY {
+	NO_PREFERENCE= 'NO_PREFERENCE',
+	TAIL_LIFT = 'TAIL_LIFT',
+	JUMBO_TRAILER = 'JUMBO_TRAILER',
+	FLATBED_TRAILER = 'FLATBED_TRAILER'
+}
+
+export enum EQUIPMENT_TYPES {
 	NO_PREFERENCE= 'NO_PREFERENCE',
 	TAIL_LIFT = 'TAIL_LIFT',
 	JUMBO_TRAILER = 'JUMBO_TRAILER',

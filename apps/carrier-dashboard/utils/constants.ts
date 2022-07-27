@@ -27,6 +27,9 @@ export const PATHS = {
 	FUEL_REPORT: '/report#fuel'
 };
 
+const pickupFacilityId = `facility_${nanoid(24)}`
+const deliveryFacilityId = `facility_${nanoid(24)}`
+
 export const SAMPLE_LOADS: Shipment[] = [
 	{
 		id: '',
@@ -64,7 +67,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: pickupFacilityId,
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
@@ -73,7 +76,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			}
 		},
 		delivery: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: deliveryFacilityId,
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
@@ -118,7 +121,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: pickupFacilityId,
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
@@ -127,7 +130,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			}
 		},
 		delivery: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: deliveryFacilityId,
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
@@ -172,7 +175,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: pickupFacilityId,
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
@@ -181,7 +184,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			}
 		},
 		delivery: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: deliveryFacilityId,
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
@@ -226,7 +229,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: pickupFacilityId,
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
@@ -235,7 +238,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			}
 		},
 		delivery: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: deliveryFacilityId,
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
@@ -280,7 +283,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: pickupFacilityId,
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
@@ -289,7 +292,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			}
 		},
 		delivery: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: deliveryFacilityId,
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
@@ -334,7 +337,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: pickupFacilityId,
 			facilityName: 'Moved HQ',
 			location: 'Solihull, Birmingham',
 			window: {
@@ -343,7 +346,7 @@ export const SAMPLE_LOADS: Shipment[] = [
 			}
 		},
 		delivery: {
-			facilityId: `facility_${nanoid(24)}`,
+			facilityId: deliveryFacilityId,
 			facilityName: 'Packfleet',
 			location: 'South London',
 			window: {
