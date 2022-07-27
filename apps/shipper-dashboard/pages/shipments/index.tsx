@@ -147,7 +147,6 @@ export async function getServerSideProps({ req, res }) {
 			createdAt: moment(shipment.createdAt).unix(),
 			updatedAt: moment(shipment.updatedAt).unix()
 		}));
-		console.log(shipments);
 		store.dispatch(setShipments(shipments));
 	}
 	return {
