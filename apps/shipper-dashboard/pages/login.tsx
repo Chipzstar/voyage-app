@@ -1,16 +1,17 @@
 import { InferGetServerSidePropsType } from 'next';
-import React, { useCallback } from 'react';
+import React, { useCallback } from 'react'
 import { useForm } from '@mantine/form';
 import { Button, PasswordInput, Text, TextInput } from '@mantine/core';
 import { Lock, Mail } from 'tabler-icons-react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
-import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
-import { getCsrfToken, signIn } from 'next-auth/react';
+import { getCsrfToken, signIn, getSession } from 'next-auth/react';
+import { PATHS } from '../utils/constants'
 import prisma from '../db';
-import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt'
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from './api/auth/[...nextauth]'
 
 const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -31,7 +32,8 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 			const { ok, error } = await signIn('credentials', {
 				email: values.email,
 				password: values.password,
-				redirect: false
+				redirect: false,
+				callbackUrl: process.env.NEXT_PUBLIC_HOST
 			});
 			if (ok) {
 				console.log('Login Success');
@@ -100,15 +102,18 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req })
+	console.log("\nLOGIN")
 	console.log(session)
-	/*if (session?.user) {
+	console.log(token)
+	if (session?.user) {
 		return {
 			redirect: {
 				destination: PATHS.HOME,
 				permanent: false
 			}
 		};
-	}*/
+	}
 	const csrfToken = await getCsrfToken();
 	const users = await prisma.user.findMany({});
 	return {

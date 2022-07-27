@@ -7,10 +7,11 @@ import { useDispatch } from 'react-redux';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { store } from '../store';
-// @ts-ignore
 import prisma from '../db';
 import { setShipments } from '../store/features/shipmentsSlice';
 import { PUBLIC_PATHS } from '../utils/constants';
+import { getSession } from 'next-auth/react'
+import { getToken } from 'next-auth/jwt'
 
 export function Index(props) {
 	const dispatch = useDispatch();
@@ -35,14 +36,18 @@ export function Index(props) {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
-	/*if (!session) {
+	const token = await getToken({ req })
+	console.log("\nHOMEPAGE")
+	console.log(session)
+	console.log(token)
+	if (!session) {
 		return {
 			redirect: {
 				destination: PUBLIC_PATHS.LOGIN,
 				permanent: false
 			}
 		};
-	}*/
+	}
 	if (session.id) {
 		let shipments = await prisma.shipment.findMany({
 			where: {

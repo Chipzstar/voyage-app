@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
-import { PATHS } from '../../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../../utils/constants'
 import { STATUS } from '../../utils/types';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
@@ -123,6 +123,14 @@ const index = ({ initialState }) => {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
 	if (session.id) {
 		let shipments = await prisma.shipment.findMany({
 			where: {

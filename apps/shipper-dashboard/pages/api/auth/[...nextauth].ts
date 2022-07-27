@@ -54,11 +54,10 @@ export const authOptions = {
 	},
 	session: {
 		// Set to jwt in order to CredentialsProvider works properly
-		strategy: 'jwt'
+		strategy: 'jwt',
+		maxAge: 30 * 24 * 60 * 60 // 30 days
 	},
-	secret: process.env.NEXTAUTH_SCERET || "voyage",
 	jwt: {
-		secret: process.env.NEXTAUTH_SECRET || "voyage",
 		encryption: true
 	},
 	debug: true
