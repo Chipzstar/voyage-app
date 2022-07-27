@@ -1,11 +1,11 @@
 import React from 'react';
 import { TextInput } from '@mantine/core';
 import { Search } from 'tabler-icons-react';
-import DataGrid from '../components/DataGrid'
-import classNames from 'classnames'
+import DataGrid from '../components/DataGrid';
+import classNames from 'classnames';
 import { STATUS } from '@voyage-app/shared-types';
-import moment from 'moment/moment'
-import { PATHS, SAMPLE_SHIPMENTS } from '../utils/constants'
+import moment from 'moment/moment';
+import { PATHS, SAMPLE_SHIPMENTS } from '../utils/constants';
 import { useRouter } from 'next/router';
 // @ts-ignore
 import { capitalize } from '@voyage-app/shared-utils';
@@ -16,8 +16,8 @@ const Empty = ({ message }) => (
 	</div>
 );
 
-const Trips = ({ statuses=Object.values(STATUS), message="" }) => {
-	const router = useRouter()
+const Trips = ({ statuses = Object.values(STATUS), message = '' }) => {
+	const router = useRouter();
 	const rows = SAMPLE_SHIPMENTS.filter(element => statuses.includes(element.status)).map((element, index) => {
 		const statusClass = classNames({
 			'my-2': true,
@@ -37,7 +37,7 @@ const Trips = ({ statuses=Object.values(STATUS), message="" }) => {
 		});
 
 		return (
-			<tr key={index} >
+			<tr key={index}>
 				<td colSpan={1}>
 					<span className='text-secondary font-semibold text-lg'>{element.shipmentId}</span>
 				</td>
@@ -58,7 +58,7 @@ const Trips = ({ statuses=Object.values(STATUS), message="" }) => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span>{element.updatedAt ? moment.unix(element?.updatedAt).fromNow() : "-"}</span>
+						<span>{element.updatedAt ? moment.unix(element?.updatedAt).fromNow() : '-'}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
@@ -78,13 +78,17 @@ const Trips = ({ statuses=Object.values(STATUS), message="" }) => {
 		<div className='container px-6'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search by ID, location, driver..' />
-				<button className='voyage-button'>Book</button>
+				<button className='voyage-button' onClick={() => router.push(PATHS.BOOK).then(() => console.log("navigating to booking page..."))}>
+					<span className='text-base'>
+						<span className='text-lg'>+&nbsp;</span>New Load
+					</span>
+				</button>
 			</div>
 			<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
 		</div>
 	);
 };
 
-Trips.propTypes = {};
+Trips.propTypes = {}
 
 export default Trips

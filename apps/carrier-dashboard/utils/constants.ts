@@ -16,6 +16,7 @@ export const PATHS = {
 	REPORTING: '/report',
 	SETTINGS: '/settings',
 	TRIPS: '/trips',
+	BOOK: '/trips/book',
 	DRIVERS: '/fleets/#drivers',
 	TEAM: '/fleets/#team',
 	VEHICLES: '/fleets/#vehicles',

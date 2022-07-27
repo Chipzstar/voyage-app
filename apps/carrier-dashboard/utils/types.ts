@@ -1,4 +1,11 @@
-import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, UnixTimestamp } from '../types';
+import {
+	PACKAGE_TYPE,
+	SCHEDULING_TYPE,
+	SERVICE_TYPE,
+	SHIPMENT_ACTIVITY,
+	SHIPMENT_TYPE,
+	UnixTimestamp,
+} from '@voyage-app/shared-types';
 
 export interface NewBooking {
 	id: string,

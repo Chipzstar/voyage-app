@@ -90,10 +90,10 @@ const Sidebar = () => {
 			submenu: true,
 			menuItems: [
 				{ title: 'Truck Board', href: PATHS.HOME, isActive: router.pathname === PATHS.HOME },
-				{ title: 'Live Trips', href: PATHS.TRIPS, isActive: router.pathname === PATHS.TRIPS }
+				{ title: 'Live Trips', href: PATHS.TRIPS, isActive: router.pathname === PATHS.TRIPS },
+				{ title: 'Marketplace', href: PATHS.MARKETPLACE, isActive: router.pathname ===PATHS.MARKETPLACE },
 			]
 		},
-		{ title: 'Marketplace', href: PATHS.MARKETPLACE, isActive: router.pathname.includes(PATHS.MARKETPLACE) },
 		{
 			title: 'Fleets',
 			href: PATHS.FLEETS,

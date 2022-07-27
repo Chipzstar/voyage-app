@@ -6,13 +6,13 @@ import { PUBLIC_PATHS } from '../utils/constants';
 const Layout = ({ children }) => {
 	const router = useRouter();
 	return (
-		<div className='min-h-screen flex relative overflow-hidden'>
+		<div className='min-h-screen flex relative'>
 			{!router.pathname.includes(PUBLIC_PATHS.LOGIN) && (
-				<aside className='sticky top-0 relative' aria-label='Sidebar'>
+				<aside className='h-screen sticky top-0 relative' aria-label='Sidebar'>
 					<Sidebar />
 				</aside>
 			)}
-			<main className='h-screen overflow-y-auto grow'>{children}</main>
+			<main className='min-h-screen grow overflow-hidden'>{children}</main>
 		</div>
 	);
 };

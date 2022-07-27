@@ -4,8 +4,7 @@ import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { Shipment } from '../utils/types';
-import { NewBooking } from '../utils/bookings/types';
+import { NewBooking, Shipment } from '../utils/types'
 
 const Empty = () => {
 	const router = useRouter();

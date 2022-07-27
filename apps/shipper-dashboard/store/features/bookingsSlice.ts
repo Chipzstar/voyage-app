@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NewBooking } from '../../utils/bookings/types';
+import { NewBooking } from '../../utils/types'
 
 const initialState = [];
 

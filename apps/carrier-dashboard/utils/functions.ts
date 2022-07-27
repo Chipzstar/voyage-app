@@ -1,8 +1,9 @@
-import { Delivery, Location, NewBooking, Pickup, Shipment, STATUS } from './types'
-import moment from 'moment';
-import { numericId, calculateRate } from '@voyage-app/shared-utils'
+import { NewBooking } from './types';
+import { Delivery, Pickup, Shipment, STATUS } from '@voyage-app/shared-types';
+import moment from 'moment/moment'
+import { calculateRate, numericId } from '@voyage-app/shared-utils'
 
-export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Omit<Shipment, "id"> {
+export function generateShipment(values: NewBooking, pickupLocation, deliveryLocation) : Omit<Shipment, "id"> {
 	const pickup: Pickup = {
 		facilityId: pickupLocation.id,
 		facilityName: pickupLocation.name,
@@ -18,6 +19,7 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 		location: `${deliveryLocation.addressLine1} ${deliveryLocation.postcode}`
 	}
 	return {
+		source: 'Voyage',
 		shipmentId: `VOY-ID${numericId(3)}`,
 		createdAt: values.createdAt,
 		bookingStatus: 'Booked',
@@ -48,15 +50,10 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 			driverPhone: '+447592136042',
 			vehicle: 'Ford Trailer Truck',
 			location: [-1.778197, 52.412811]
+		},
+		controller: {
+			name: "",
+			phone: ""
 		}
 	};
-}
-
-export function filterByTimeRange(data: [], range: [Date, Date]){
-	const startDate = moment(range[0]).startOf('day')
-	const endDate = moment(range[1]).endOf('day')
-	return data.filter(({createdAt}) => {
-		const curr = moment.unix(createdAt);
-		return curr.isBefore(endDate) && curr.isAfter(startDate)
-	})
 }

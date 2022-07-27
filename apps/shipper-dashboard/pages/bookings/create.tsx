@@ -5,20 +5,20 @@ import { CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import {
-	LocationType,
 	PACKAGE_TYPE,
 	SCHEDULING_TYPE,
 	SERVICE_TYPE,
 	SHIPMENT_ACTIVITY,
 	SHIPMENT_TYPE
-} from '../../utils/types';
+} from '@voyage-app/shared-types';
+import { numericId } from '@voyage-app/shared-utils'
+import { LocationType, NewBooking } from '../../utils/types'
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '../../components/DateTimePickerBase';
-import { numericId, PATHS } from 'apps/shipper-dashboard/utils/constants';
+import { PATHS } from 'apps/shipper-dashboard/utils/constants';
 import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
 import { generateShipment } from '../../utils/functions';
-import { NewBooking } from '../../utils/bookings/types';
 import { createBooking } from '../../store/features/bookingsSlice';
 import { AppDispatch } from 'apps/shipper-dashboard/store';
 

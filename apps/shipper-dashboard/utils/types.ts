@@ -148,17 +148,39 @@ export interface OperatingHoursState {
 }
 
 export interface Location {
-	id: string,
-	locationId: string,
-	name: string,
-	type: LocationType,
-	addressLine1: string,
-	addressLine2: string,
-	city: string,
-	postcode: string,
-	region: string,
-	country: string,
-	pickupInstructions: string,
-	deliveryInstructions: string,
-	operatingHours: OperatingHoursState[]
+	id: string;
+	locationId: string;
+	name: string;
+	type: LocationType;
+	addressLine1: string;
+	addressLine2: string;
+	city: string;
+	postcode: string;
+	region: string;
+	country: string;
+	pickupInstructions: string;
+	deliveryInstructions: string;
+	operatingHours: OperatingHoursState[];
+}
+
+export interface NewBooking {
+	id: string;
+	createdAt: UnixTimestamp;
+	serviceType: SERVICE_TYPE;
+	shipmentType: SHIPMENT_TYPE;
+	schedulingType: SCHEDULING_TYPE;
+	activitiesRequired: SHIPMENT_ACTIVITY[];
+	internalPONumber: string;
+	customerPONumber: string;
+	weight: number;
+	quantity: number;
+	height: number;
+	length: number;
+	width: number;
+	packageType: PACKAGE_TYPE;
+	pickupDate?: any;
+	pickupLocation: string;
+	deliveryLocation: string;
+	description: string;
+	notes: string;
 }

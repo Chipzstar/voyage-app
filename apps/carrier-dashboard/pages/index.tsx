@@ -10,7 +10,8 @@ export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
 	return (
 		<div className='py-4 px-8 h-full'>
-			<div className='flex justify-end mb-5'>
+			<div className='flex justify-between mb-5'>
+				<header className="page-header">Truck board</header>
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
 			</div>
 			<div>
