@@ -61,13 +61,14 @@ const marketplace = () => {
 								<ActionIcon
 									size='md'
 									variant='filled'
-									radius='xl'
+									radius='lg'
 									classNames={{
 										root: 'bg-gray-400'
 									}}
 								>
 									<Message size={20} />
 								</ActionIcon>
+								<button className='voyage-button md:w-32 h-10'>Book</button>
 							</div>
 						</section>
 					</main>
