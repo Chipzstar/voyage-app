@@ -23,43 +23,50 @@ const marketplace = () => {
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
 			<div className='space-y-3 mb-5'>
-				<header className='page-subheading'>327 Loads available for you</header>
-				<p>{moment().format('dddd, MMM D')}</p>
+				<header className='page-subheading'>{SAMPLE_LOADS.length} Loads available for you</header>
+				<p className="font-medium text-gray-500">{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
 				{SAMPLE_LOADS.map((shipment: Shipment, index) => (
 					<main key={index} className='border border-voyage-grey p-3 space-y-3'>
 						<section className='flex space-x-8'>
 							<div className='flex flex-col space-y-1'>
-								<span className="font-medium">{shipment.pickup.facilityName}</span>
+								<span className='font-medium'>{shipment.pickup.facilityName}</span>
 								<span>{shipment.pickup.location}</span>
-								<span className="text-sm">{moment.unix(shipment.pickup.window.start).format('HH:mm') + " - " + moment.unix(shipment.pickup.window.end).format('HH:mm')}</span>
+								<span className='text-sm'>{moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}</span>
 							</div>
-							<div className="flex items-center">
-								<ArrowRight size={20}/>
+							<div className='flex items-center'>
+								<ArrowRight size={20} />
 							</div>
 							<div className='flex flex-col space-y-1'>
-								<span className="font-medium">{shipment.pickup.facilityName}</span>
-								<span>{shipment.pickup.location}</span>
-								<span className="text-sm">{moment.unix(shipment.pickup.window.start).format('HH:mm') + " - " + moment.unix(shipment.pickup.window.end).format('HH:mm')}</span>
+								<span className='font-medium'>{shipment.delivery.facilityName}</span>
+								<span>{shipment.delivery.location}</span>
+								<span className='text-sm'>{moment.unix(shipment.delivery.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery.window.end).format('HH:mm')}</span>
 							</div>
 						</section>
 						<section className='flex justify-between items-center'>
 							<div className='flex items-center'>
 								<div className='flex items-center space-x-3'>
 									<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
-									<span className="font-medium">{shipment.carrier.vehicle}</span>
+									<span className='font-medium'>{shipment.carrier.vehicle}</span>
 								</div>
 								<div>
-									<span className="lowercase">{shipment.package.weight} kg of {shipment.package.packageType}</span>
+									<span className='lowercase'>
+										{shipment.package.weight} kg of {shipment.package.packageType}
+									</span>
 								</div>
 							</div>
 							<div className='flex items-center space-x-3'>
-								<span className="font-semibold text-2xl">{`£${shipment.rate}`}</span>
-								<ActionIcon size="md" variant="filled" radius="xl" classNames={{
-									root: 'bg-gray-400'
-								}}>
-									<Message size={20}/>
+								<span className='font-semibold text-2xl'>{`£${shipment.rate}`}</span>
+								<ActionIcon
+									size='md'
+									variant='filled'
+									radius='xl'
+									classNames={{
+										root: 'bg-gray-400'
+									}}
+								>
+									<Message size={20} />
 								</ActionIcon>
 							</div>
 						</section>
