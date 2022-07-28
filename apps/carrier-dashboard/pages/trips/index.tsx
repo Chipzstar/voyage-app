@@ -7,6 +7,7 @@ const trips = () => {
 	const [activeTab, setActiveTab] = useState(0);
 	return (
 		<div className='py-5 h-screen'>
+			<header className="page-header px-5 mb-5">Live Trips</header>
 			<Tabs active={activeTab} onTabChange={setActiveTab} grow>
 				<Tabs.Tab label='Upcoming' tabKey={[STATUS.NEW, STATUS.PENDING].join(' ')} >
 					<Trips statuses={[STATUS.NEW, STATUS.PENDING]} />

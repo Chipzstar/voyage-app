@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Logout } from 'tabler-icons-react';
 import { PATHS } from '../utils/constants';
 import Link from 'next/link';
@@ -82,16 +82,18 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 const Sidebar = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
+
+	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
 	const Menu: NavMenu[] = [
 		{
 			title: 'Operations',
-			isActive: router.pathname.includes(PATHS.HOME),
+			isActive: operationsRoute,
 			href: PATHS.HOME,
 			submenu: true,
 			menuItems: [
 				{ title: 'Truck Board', href: PATHS.HOME, isActive: router.pathname === PATHS.HOME },
 				{ title: 'Live Trips', href: PATHS.TRIPS, isActive: router.pathname === PATHS.TRIPS },
-				{ title: 'Marketplace', href: PATHS.MARKETPLACE, isActive: router.pathname ===PATHS.MARKETPLACE },
+				{ title: 'Marketplace', href: PATHS.MARKETPLACE, isActive: router.pathname === PATHS.MARKETPLACE }
 			]
 		},
 		{
@@ -130,32 +132,34 @@ const Sidebar = () => {
 	];
 
 	return (
-		<div className='w-48 lg:w-64 h-full overflow-y-auto py-4 bg-gray-50 flex flex-col border-r-2 border-gray-300'>
+		<div className='w-48 lg:w-64 h-full py-4 bg-gray-50 flex flex-col border-r-2 border-gray-300'>
 			<Link href={PATHS.HOME}>
 				<div role='button' className='flex flex-row items-center pl-6 mb-7'>
 					<img src='/static/images/favicon.svg' className='mr-3 h-6 sm:h-7' alt='Voyage Logo' />
 					<span className='self-center text-2xl font-semibold whitespace-nowrap mb-0.5'>voyage</span>
 				</div>
 			</Link>
-			<ul className='grow space-y-4'>
-				{Menu.map((item, index) =>
-					item?.submenu ? <SideMenuDropdown key={index} title={item.title} isActive={item.isActive} options={item.menuItems} /> : <SideMenuItem key={index} title={item.title} href={item.href} isActive={false} />
-				)}
-			</ul>
+			<div className="grow flex flex-col overflow-y-auto">
+				<ul className='grow space-y-4'>
+					{Menu.map((item, index) =>
+						item?.submenu ? <SideMenuDropdown key={index} title={item.title} isActive={item.isActive} options={item.menuItems} /> : <SideMenuItem key={index} title={item.title} href={item.href} isActive={false} />
+					)}
+				</ul>
 
-			<div
-				role='button'
-				className='flex items-center p-4 text-base font-normal text-gray-900 hover:bg-secondary-100'
-				onClick={() => {
-					dispatch({ type: 'RESET' });
-					signOut({ callbackUrl: `${window.location.origin}/login` }).then(r => console.log('Sign Out Success!'));
-				}}
-			>
-				<Logout size={30} strokeWidth={1} color={'black'} />
-				<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
+				<div
+					role='button'
+					className='flex items-center p-4 text-base font-normal text-gray-900 hover:bg-secondary-100'
+					onClick={() => {
+						dispatch({ type: 'RESET' });
+						signOut({ callbackUrl: `${window.location.origin}/login` }).then(r => console.log('Sign Out Success!'));
+					}}
+				>
+					<Logout size={30} strokeWidth={1} color={'black'} />
+					<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
+				</div>
 			</div>
 		</div>
 	);
 };
 
-export default Sidebar;
+export default Sidebar

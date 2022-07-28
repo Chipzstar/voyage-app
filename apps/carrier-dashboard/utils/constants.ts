@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { Shipment, STATUS, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE } from '@voyage-app/shared-types';
 import { customAlphabet } from 'nanoid'
+import { Driver, DRIVER_STATUS } from './types'
+import { alphanumericId } from '@voyage-app/shared-utils'
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
 
@@ -17,9 +19,9 @@ export const PATHS = {
 	SETTINGS: '/settings',
 	TRIPS: '/trips',
 	BOOK: '/trips/book',
-	DRIVERS: '/fleets/#drivers',
-	TEAM: '/fleets/#team',
-	VEHICLES: '/fleets/#vehicles',
+	DRIVERS: '/fleets/drivers',
+	TEAM: '/fleets/team',
+	VEHICLES: '/fleets/vehicles',
 	CUSTOMERS: '/accounts#customers',
 	PAYMENTS: '/accounts#payments',
 	INVOICE: '/accounts#invoice',
@@ -356,3 +358,86 @@ export const SAMPLE_LOADS: Shipment[] = [
 		}
 	}
 ];
+
+export const SAMPLE_DRIVERS: Driver[] = [
+	{
+		id: '',
+		createdAt: moment().unix(),
+		driverId: `driver_${alphanumericId(16)}`,
+		status: DRIVER_STATUS.OFFLINE,
+		isActive: false,
+		firstname: 'Chisom',
+		lastname: 'Oguibe',
+		email: 'chisom.oguibe@googlemail.com',
+		defaultPhone: '+447523958055',
+		primaryPhone: '+447523958055',
+		secondaryPhone: '+447507210809',
+		dob: 884505600,
+		addressLine1: '250 Reede Road',
+		addressLine2: '',
+		city: 'Dagenham',
+		postcode: 'RM10 8EH',
+		companyName: 'HBCS Logistics',
+		hireDate: moment().unix(),
+	},
+	{
+		id: '',
+		createdAt: moment().unix(),
+		driverId: `driver_${alphanumericId(16)}`,
+		status: DRIVER_STATUS.OFFLINE,
+		isActive: false,
+		firstname: 'Ola',
+		lastname: 'Oladapo',
+		email: 'ola.oladapo7@gmail.com',
+		defaultPhone: '+447523958055',
+		primaryPhone: '+447523958055',
+		secondaryPhone: '+447507210809',
+		dob: 884505600,
+		addressLine1: '250 Reede Road',
+		addressLine2: '',
+		city: 'Dagenham',
+		postcode: 'RM10 8EH',
+		companyName: 'HBCS Logistics',
+		hireDate: moment().unix(),
+	},
+	{
+		id: '',
+		createdAt: moment().unix(),
+		driverId: `driver_${alphanumericId(16)}`,
+		status: DRIVER_STATUS.OFFLINE,
+		isActive: false,
+		firstname: 'Rayan',
+		lastname: 'Bannai',
+		email: 'rayan.bannai@googlemail.com',
+		defaultPhone: '+447523958055',
+		primaryPhone: '+447523958055',
+		secondaryPhone: '+447507210809',
+		dob: 884505600,
+		addressLine1: '250 Reede Road',
+		addressLine2: '',
+		city: 'Dagenham',
+		postcode: 'RM10 8EH',
+		companyName: 'HBCS Logistics',
+		hireDate: moment().unix(),
+	},
+	{
+		id: '',
+		createdAt: moment().unix(),
+		driverId: `driver_${alphanumericId(16)}`,
+		status: DRIVER_STATUS.OFFLINE,
+		isActive: false,
+		firstname: 'Oscar',
+		lastname: 'Sanz',
+		email: 'oscar_sanz@hotmail.com',
+		defaultPhone: '+447523958055',
+		primaryPhone: '+447523958055',
+		secondaryPhone: '+447507210809',
+		dob: 884505600,
+		addressLine1: '250 Reede Road',
+		addressLine2: '',
+		city: 'Dagenham',
+		postcode: 'RM10 8EH',
+		companyName: 'HBCS Logistics',
+		hireDate: moment().unix(),
+	}
+]

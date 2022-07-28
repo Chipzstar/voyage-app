@@ -1,20 +1,16 @@
 import { InferGetServerSidePropsType } from 'next';
-import React, { useCallback } from 'react'
+import React, { useCallback } from 'react';
 import { useForm } from '@mantine/form';
 import { Button, PasswordInput, Text, TextInput } from '@mantine/core';
 import { Lock, Mail } from 'tabler-icons-react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
 import { useRouter } from 'next/router';
-import { getCsrfToken, signIn, getSession } from 'next-auth/react';
-import { PATHS } from '../utils/constants'
+import { getCsrfToken, signIn } from 'next-auth/react';
+import { PATHS } from '../utils/constants';
 import prisma from '../db';
-import { getToken } from 'next-auth/jwt'
-import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from './api/auth/[...nextauth]'
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
 const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const form = useForm({
 		initialValues: {
@@ -102,10 +98,6 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
-	const token = await getToken({ req })
-	console.log("\nLOGIN")
-	console.log(session)
-	console.log(token)
 	if (session?.user) {
 		return {
 			redirect: {

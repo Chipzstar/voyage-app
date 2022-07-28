@@ -1,15 +1,15 @@
-import React, { useCallback } from 'react';
-import { useRouter } from 'next/router';
-import { useForm } from '@mantine/form';
-import { numericId } from '@voyage-app/shared-utils';
-import moment from 'moment/moment';
-import classNames from 'classnames';
-import { PACKAGE_TYPE, SHIPMENT_ACTIVITY } from '@voyage-app/shared-types';
+import React, { useCallback } from 'react'
+import { useRouter } from 'next/router'
+import { useForm } from '@mantine/form'
+import { numericId } from '@voyage-app/shared-utils'
+import moment from 'moment/moment'
+import { PACKAGE_TYPE, SHIPMENT_ACTIVITY } from '@voyage-app/shared-types'
 // import { createShipment } from '../../store/features/shipmentsSlice';
-import { ChevronDown } from 'tabler-icons-react';
-import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
-import { DateTimePicker } from '@voyage-app/shared-ui-components';
-import Link from 'next/link';
+import { ChevronDown } from 'tabler-icons-react'
+import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core'
+import { DateTimePicker } from '@voyage-app/shared-ui-components'
+import Link from 'next/link'
+import Container from '../../layout/Container'
 // import { createBooking } from '../../../shipper-dashboard/store/features/bookingsSlice';
 
 const book = props => {
@@ -55,7 +55,7 @@ const book = props => {
 	}, []);
 
 	return (
-		<div className='pb-4 px-8'>
+		<Container>
 			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
@@ -256,7 +256,7 @@ const book = props => {
 					</button>
 				</div>
 			</form>
-		</div>
+		</Container>
 	);
 };
 

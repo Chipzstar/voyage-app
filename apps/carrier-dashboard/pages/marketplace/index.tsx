@@ -1,17 +1,16 @@
-import React, { useMemo, useState } from 'react'
-import { ActionIcon, Anchor, Breadcrumbs, Button, NumberInput, Select, SimpleGrid, Text } from '@mantine/core'
+import React, { useMemo, useState } from 'react';
+import { ActionIcon, Anchor, Breadcrumbs, Button, Select, SimpleGrid, Text } from '@mantine/core';
 import Link from 'next/link';
 import moment from 'moment/moment';
 import { SAMPLE_LOADS } from '../../utils/constants';
-import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types'
-import { ArrowRight, Calendar, Message } from 'tabler-icons-react'
-import { capitalize, uniqueArray } from '@voyage-app/shared-utils'
-import { DateRangePicker } from '@mantine/dates'
+import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types';
+import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
+import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
+import { DateRangePicker } from '@mantine/dates';
+import Container from '../../layout/Container'
 
 const marketplace = () => {
-	const [value, setValue] = useState<[Date | null, Date | null]>([
-		null, null
-	]);
+	const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
 	const items = [
 		{ title: 'Home', href: '/' },
 		{ title: 'Marketplace', href: '/marketplace' }
@@ -22,54 +21,59 @@ const marketplace = () => {
 	));
 
 	const uniquePickupLocations = useMemo(() => {
-		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({ value: item.pickup.facilityId, label: item.pickup.facilityName }));
+		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({
+			value: item.pickup.facilityId,
+			label: item.pickup.facilityName
+		}));
 		return uniqueArray(labels, 'value');
 	}, []);
 
 	const uniqueDeliveryLocations = useMemo(() => {
-		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({ value: item.delivery.facilityId, label: item.delivery.facilityName }));
+		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({
+			value: item.delivery.facilityId,
+			label: item.delivery.facilityName
+		}));
 		return uniqueArray(labels, 'value');
 	}, []);
 
 	return (
-		<div className='pb-4 px-8 min-h-screen'>
+		<Container>
 			<header className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</header>
 			<form className='flex flex-row pb-8 space-x-3'>
 				<div className='flex'>
-					<Select radius={0} size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />
-					<Select radius={0} size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} />
+					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />
+					<Select size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} />
 				</div>
 				<Select
 					defaultValue={'100mi'}
-					radius={0}
 					classNames={{
 						root: 'w-32'
 					}}
-					size="sm"
+					size='sm'
 					data={['10mi', '20mi', '50mi', '100mi', '200mi', '300mi']}
 				/>
 				<DateRangePicker
-					placeholder="Select dates"
+					placeholder='Select dates'
 					classNames={{
 						root: 'grow'
 					}}
-					radius={0}
-					icon={<Calendar size={16}/>}
+					icon={<Calendar size={16} />}
 					value={value}
 					onChange={setValue}
 				/>
 				<Select
-					radius={0}
-					placeholder="All equipments"
-					data={Object.values(EQUIPMENT_TYPES).map((item):SelectInputData => ({
-						value: item,
-						label: capitalize(item.replace(/_/g, ' '))
-					}))}
+					placeholder='All equipments'
+					data={Object.values(EQUIPMENT_TYPES).map(
+						(item): SelectInputData => ({
+							value: item,
+							label: capitalize(item.replace(/_/g, ' '))
+						})
+					)}
 				/>
-				<Button variant="outline">
-					<Text size="sm">Clear</Text>
+				<Button variant='outline'>
+					<Text size='sm'>Clear</Text>
 				</Button>
 			</form>
 			<div className='space-y-3 mb-5'>
@@ -80,7 +84,7 @@ const marketplace = () => {
 				{SAMPLE_LOADS.map((shipment: Shipment, index) => (
 					<main key={index} className='border border-voyage-grey p-3 space-y-3'>
 						<section className='flex space-x-8'>
-							<div className='flex flex-col space-y-1'>
+							<div className='flex flex-col space-y-1 flex-wrap'>
 								<span className='font-medium'>{shipment.pickup.facilityName}</span>
 								<span>{shipment.pickup.location}</span>
 								<span className='text-sm'>{moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}</span>
@@ -88,7 +92,7 @@ const marketplace = () => {
 							<div className='flex items-center'>
 								<ArrowRight size={20} />
 							</div>
-							<div className='flex flex-col space-y-1'>
+							<div className='flex flex-col space-y-1 flex-wrap'>
 								<span className='font-medium'>{shipment.delivery.facilityName}</span>
 								<span>{shipment.delivery.location}</span>
 								<span className='text-sm'>{moment.unix(shipment.delivery.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery.window.end).format('HH:mm')}</span>
@@ -124,9 +128,7 @@ const marketplace = () => {
 					</main>
 				))}
 			</SimpleGrid>
-
-			<div className='border'></div>
-		</div>
+		</Container>
 	);
 };
 

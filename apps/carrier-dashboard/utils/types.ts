@@ -28,3 +28,34 @@ export interface NewBooking {
 	description: string;
 	notes: string;
 }
+
+export interface Driver {
+	id: string;
+	createdAt: UnixTimestamp;
+	isActive: boolean;
+	status: string;
+	driverId: string;
+	vehicleId?: string;
+	dob?: UnixTimestamp;
+	firstname: string;
+	lastname: string;
+	email: string;
+	companyName: string;
+	defaultPhone: string;
+	primaryPhone: string;
+	secondaryPhone?: string;
+	hireDate: UnixTimestamp;
+	addressLine1: string;
+	addressLine2: string;
+	city: string;
+   postcode: string;
+	fleetId?: string;
+	notes?: string;
+}
+
+export enum DRIVER_STATUS {
+	OFFLINE="OFFLINE",
+	AVAILABLE="AVAILABLE",
+	BUSY="BUSY",
+	UNVERIFIED="UNVERIFIED",
+}
