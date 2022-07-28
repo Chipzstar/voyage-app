@@ -8,6 +8,7 @@ import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
 import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
 import { DateRangePicker } from '@mantine/dates';
 import Container from '../../layout/Container'
+import PageNav from '../../layout/PageNav'
 
 const marketplace = () => {
 	const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
@@ -38,9 +39,7 @@ const marketplace = () => {
 
 	return (
 		<Container>
-			<header className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button'>
-				<Breadcrumbs>{items}</Breadcrumbs>
-			</header>
+			<PageNav items={items}/>
 			<form className='flex flex-row pb-8 space-x-3'>
 				<div className='flex'>
 					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />

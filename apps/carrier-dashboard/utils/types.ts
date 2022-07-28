@@ -53,6 +53,25 @@ export interface Driver {
 	notes?: string;
 }
 
+export interface Team {
+	id: string;
+	memberId: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+   phone: string;
+	role: TeamRole;
+	isActive: boolean;
+}
+
+export enum TeamRole {
+	ADMIN="admin",
+	CONTROLLER="controller",
+	SECRETARY="secretary",
+	FLEET_MANAGEER="fleet manager",
+	COORDINATOR="coordinator"
+}
+
 export enum DRIVER_STATUS {
 	OFFLINE="OFFLINE",
 	AVAILABLE="AVAILABLE",

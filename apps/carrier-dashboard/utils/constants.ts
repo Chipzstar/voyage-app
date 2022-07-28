@@ -1,10 +1,10 @@
 import moment from 'moment';
-import { Shipment, STATUS, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE } from '@voyage-app/shared-types';
-import { customAlphabet } from 'nanoid'
-import { Driver, DRIVER_STATUS } from './types'
-import { alphanumericId } from '@voyage-app/shared-utils'
+import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, Shipment, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from '@voyage-app/shared-types';
+import { alphanumericId } from '@voyage-app/shared-utils';
+import { customAlphabet } from 'nanoid';
+import { Driver, DRIVER_STATUS, Team, TeamRole } from './types';
 
-const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
 
 export const PUBLIC_PATHS = {
 	LOGIN: '/login'
@@ -20,6 +20,7 @@ export const PATHS = {
 	TRIPS: '/trips',
 	BOOK: '/trips/book',
 	DRIVERS: '/fleets/drivers',
+	NEW_DRIVER: '/fleets/drivers/create',
 	TEAM: '/fleets/team',
 	VEHICLES: '/fleets/vehicles',
 	CUSTOMERS: '/accounts#customers',
@@ -29,8 +30,8 @@ export const PATHS = {
 	FUEL_REPORT: '/report#fuel'
 };
 
-const pickupFacilityId = `facility_${nanoid(24)}`
-const deliveryFacilityId = `facility_${nanoid(24)}`
+const pickupFacilityId = `facility_${nanoid(24)}`;
+const deliveryFacilityId = `facility_${nanoid(24)}`;
 
 export const SAMPLE_LOADS: Shipment[] = [
 	{
@@ -378,7 +379,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 		city: 'Dagenham',
 		postcode: 'RM10 8EH',
 		companyName: 'HBCS Logistics',
-		hireDate: moment().unix(),
+		hireDate: moment().unix()
 	},
 	{
 		id: '',
@@ -398,7 +399,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 		city: 'Dagenham',
 		postcode: 'RM10 8EH',
 		companyName: 'HBCS Logistics',
-		hireDate: moment().unix(),
+		hireDate: moment().unix()
 	},
 	{
 		id: '',
@@ -418,7 +419,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 		city: 'Dagenham',
 		postcode: 'RM10 8EH',
 		companyName: 'HBCS Logistics',
-		hireDate: moment().unix(),
+		hireDate: moment().unix()
 	},
 	{
 		id: '',
@@ -438,6 +439,69 @@ export const SAMPLE_DRIVERS: Driver[] = [
 		city: 'Dagenham',
 		postcode: 'RM10 8EH',
 		companyName: 'HBCS Logistics',
-		hireDate: moment().unix(),
+		hireDate: moment().unix()
 	}
-]
+];
+
+export const SAMPLE_TEAM: Team[] = [
+	{
+		id: '',
+		memberId: `userId_${alphanumericId(16)}`,
+		firstname: 'Omari',
+		lastname: 'Obrian',
+		email: 'daniel.obrian@gmail.com',
+		phone: '+447523958055',
+		role: TeamRole.ADMIN,
+		isActive: true
+	},
+	{
+		id: '',
+		memberId: `userId_${alphanumericId(16)}`,
+		firstname: 'Kendrick',
+		lastname: 'Lamar',
+		email: 'kendrick.lamar@hotmail.com',
+		phone: '+447523958055',
+		role: TeamRole.COORDINATOR,
+		isActive: true
+	},
+	{
+		id: '',
+		memberId: `userId_${alphanumericId(16)}`,
+		firstname: 'Andy',
+		lastname: 'Mineo',
+		email: 'andy.mineo@gmail.com',
+		phone: '+447523958052',
+		role: TeamRole.SECRETARY,
+		isActive: true
+	},
+	{
+		id: '',
+		memberId: `userId_${alphanumericId(16)}`,
+		firstname: 'Trip',
+		lastname: 'Lee',
+		email: 'trip.leeboi@hotmail.com',
+		phone: '+447523958056',
+		role: TeamRole.FLEET_MANAGEER,
+		isActive: true
+	},
+	{
+		id: '',
+		memberId: `userId_${alphanumericId(16)}`,
+		firstname: 'Kanye',
+		lastname: 'West',
+		email: 'kanye.west@starlink.com',
+		phone: '+447523923057',
+		role: TeamRole.ADMIN,
+		isActive: true
+	},
+	{
+		id: '',
+		memberId: `userId_${alphanumericId(16)}`,
+		firstname: 'Drake',
+		lastname: 'Aubrey',
+		email: 'aubrey.graham@hiphopstudios.com',
+		phone: '+44752392331',
+		role: TeamRole.COORDINATOR,
+		isActive: true
+	}
+];

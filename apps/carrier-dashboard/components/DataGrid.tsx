@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table } from '@mantine/core';
+import { MantineNumberSize, Table } from '@mantine/core'
 import EmptyTable from './EmptyTable';
 
-const DataGrid = ({ rows, headings = [], emptyContent }) => {
+export interface DataGridProps {
+	rows: JSX.Element[],
+	headings: string[]
+	emptyContent: JSX.Element,
+	spacingY?: MantineNumberSize
+}
+
+const DataGrid = ({ rows, headings = [], emptyContent, spacingY="sm" }: DataGridProps) => {
 	return rows?.length ? (
-		<Table verticalSpacing='sm' fontSize='md'>
+		<Table verticalSpacing={spacingY} fontSize='md'>
 			<thead>
 			<tr>
 				{headings?.map((name, index) => (

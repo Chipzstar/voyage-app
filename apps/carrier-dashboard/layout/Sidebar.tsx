@@ -102,8 +102,8 @@ const Sidebar = () => {
 			isActive: router.pathname.includes(PATHS.FLEETS),
 			submenu: true,
 			menuItems: [
-				{ title: 'Drivers', href: PATHS.DRIVERS, isActive: router.pathname === PATHS.DRIVERS },
-				{ title: 'Team', href: PATHS.TEAM, isActive: router.pathname === PATHS.TEAM },
+				{ title: 'Drivers', href: PATHS.DRIVERS, isActive: router.pathname.includes(PATHS.DRIVERS) },
+				{ title: 'Team', href: PATHS.TEAM, isActive: router.pathname.includes(PATHS.TEAM) },
 				{ title: 'Vehicles', href: PATHS.VEHICLES, isActive: router.pathname === PATHS.VEHICLES }
 			]
 		},
