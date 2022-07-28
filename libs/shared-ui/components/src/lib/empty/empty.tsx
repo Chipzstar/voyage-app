@@ -3,13 +3,13 @@ import React from 'react'
 
 /* eslint-disable-next-line */
 export interface EmptyProps {
-	message: string
+	message: JSX.Element
 }
 
 export function Empty(props: EmptyProps) {
 	return (
-		<div className='mx-auto my-auto'>
-			<span className='text-center text-3xl my-auto mx-auto'>{props.message}</span>
+		<div className='text-center leading-loose'>
+			{props.message}
 		</div>
 	);
 }

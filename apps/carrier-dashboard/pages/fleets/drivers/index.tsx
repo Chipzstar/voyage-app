@@ -53,14 +53,18 @@ const drivers = () => {
 		);
 	});
 	return (
-		<Container classNames='py-4 px-8 min-h-screen'>
+		<Container classNames='py-4 px-8 h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' size="md" radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_DRIVER)}>
 					<span className='text-base'>Add Driver</span>
 				</button>
 			</div>
-			<DataGrid rows={rows} headings={['Driver Name', 'Email', 'Phone', 'City', 'Postcode', 'Status', 'Actions']} emptyContent={<Empty message={`You have no drivers\nClick the 'Add Driver' button to add your first driver`} />} />
+			<DataGrid
+				rows={rows}
+				spacingY='md'
+				headings={['Driver Name', 'Email', 'Phone', 'City', 'Postcode', 'Status', 'Actions']}
+				emptyContent={<Empty message={<span className="text-center text-2xl">You have no drivers<br/>Click the 'Add Driver' button to add one</span>}/>} />
 		</Container>
 	);
 };

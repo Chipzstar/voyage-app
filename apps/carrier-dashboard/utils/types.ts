@@ -7,6 +7,41 @@ import {
 	UnixTimestamp,
 } from '@voyage-app/shared-types';
 
+export enum TeamRole {
+	ADMIN="admin",
+	CONTROLLER="controller",
+	SECRETARY="secretary",
+	FLEET_MANAGER="fleet manager",
+	COORDINATOR="coordinator"
+}
+
+export enum VEHICLE_STATUS {
+	IDLE = "idle",
+	OCCUPIED = "occupied",
+	ON_THE_ROAD = "on-the-road",
+	FULL_CAPACITY = "full-capacity",
+}
+
+export enum FuelType {
+	PETROL="PETROL",
+	DIESEL="DIESEL",
+	ELECTRIC="ELECTRIC",
+	HYBRID="HYBRID",
+	ALTERNATIVE="ALTERNATIVE",
+}
+
+export enum FuelMeasurementUnit {
+	LITRE="LITRE",
+	GALLON="GALLON",
+}
+
+export enum DRIVER_STATUS {
+	OFFLINE="OFFLINE",
+	AVAILABLE="AVAILABLE",
+	BUSY="BUSY",
+	UNVERIFIED="UNVERIFIED",
+}
+
 export interface NewBooking {
 	id: string,
 	createdAt: UnixTimestamp,
@@ -64,17 +99,27 @@ export interface Team {
 	isActive: boolean;
 }
 
-export enum TeamRole {
-	ADMIN="admin",
-	CONTROLLER="controller",
-	SECRETARY="secretary",
-	FLEET_MANAGEER="fleet manager",
-	COORDINATOR="coordinator"
-}
-
-export enum DRIVER_STATUS {
-	OFFLINE="OFFLINE",
-	AVAILABLE="AVAILABLE",
-	BUSY="BUSY",
-	UNVERIFIED="UNVERIFIED",
+export interface Vehicle {
+	id: string;
+	driverId: string;
+	vehicleId: string;
+	vehicleType: string;
+   vehicleName: string;
+	regNumber: string;
+	vin: string;
+	engineNumber: string;
+	yearOfManufacture: number;
+	colour: string;
+	fuelType: FuelType;
+	fuelMeasurementUnit: FuelMeasurementUnit
+	image: string;
+	dimensions: {
+		length: number;
+		width: number;
+		height: number;
+	}
+	make: string;
+	model: string;
+	notes?: string;
+	status: VEHICLE_STATUS;
 }

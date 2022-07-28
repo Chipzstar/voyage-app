@@ -1,8 +1,8 @@
 import moment from 'moment';
-import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, Shipment, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from '@voyage-app/shared-types';
+import { EQUIPMENT_TYPES, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, Shipment, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
 import { customAlphabet } from 'nanoid';
-import { Driver, DRIVER_STATUS, Team, TeamRole } from './types';
+import { Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, Team, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
 
@@ -24,11 +24,13 @@ export const PATHS = {
 	TEAM: '/fleets/team',
 	NEW_MEMBER: '/fleets/team/create',
 	VEHICLES: '/fleets/vehicles',
+	NEW_VEHICLE: '/fleets/vehicles/create',
 	CUSTOMERS: '/accounts#customers',
 	PAYMENTS: '/accounts#payments',
 	INVOICE: '/accounts#invoice',
 	BASIC_REPORT: '/report#basic',
 	FUEL_REPORT: '/report#fuel',
+
 };
 
 const pickupFacilityId = `facility_${nanoid(24)}`;
@@ -447,7 +449,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 export const SAMPLE_TEAM: Team[] = [
 	{
 		id: '',
-		memberId: `userId_${alphanumericId(16)}`,
+		memberId: `user_${alphanumericId(16)}`,
 		firstname: 'Omari',
 		lastname: 'Obrian',
 		email: 'daniel.obrian@gmail.com',
@@ -457,7 +459,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `userId_${alphanumericId(16)}`,
+		memberId: `user_${alphanumericId(16)}`,
 		firstname: 'Kendrick',
 		lastname: 'Lamar',
 		email: 'kendrick.lamar@hotmail.com',
@@ -467,7 +469,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `userId_${alphanumericId(16)}`,
+		memberId: `user_${alphanumericId(16)}`,
 		firstname: 'Andy',
 		lastname: 'Mineo',
 		email: 'andy.mineo@gmail.com',
@@ -477,27 +479,27 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `userId_${alphanumericId(16)}`,
+		memberId: `user_${alphanumericId(16)}`,
 		firstname: 'Trip',
 		lastname: 'Lee',
 		email: 'trip.leeboi@hotmail.com',
 		phone: '+447523958056',
-		role: TeamRole.FLEET_MANAGEER,
+		role: TeamRole.FLEET_MANAGER,
 		isActive: true
 	},
 	{
 		id: '',
-		memberId: `userId_${alphanumericId(16)}`,
+		memberId: `user_${alphanumericId(16)}`,
 		firstname: 'Kanye',
 		lastname: 'West',
 		email: 'kanye.west@starlink.com',
 		phone: '+447523923057',
-		role: TeamRole.ADMIN,
+		role: TeamRole.CONTROLLER,
 		isActive: true
 	},
 	{
 		id: '',
-		memberId: `userId_${alphanumericId(16)}`,
+		memberId: `user_${alphanumericId(16)}`,
 		firstname: 'Drake',
 		lastname: 'Aubrey',
 		email: 'aubrey.graham@hiphopstudios.com',
@@ -506,3 +508,102 @@ export const SAMPLE_TEAM: Team[] = [
 		isActive: true
 	}
 ];
+
+export const SAMPLE_VEHICLES: Vehicle[] = [
+	{
+		id: '',
+		driverId: `driver_${alphanumericId(16)}`,
+		regNumber: 'BD5I SMR',
+		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleName: 'Merceded Axor',
+		make: 'Mercedes-Benz',
+		model: 'Axor',
+		dimensions: {
+			length: 6867,
+			width: 2487,
+			height: 1440,
+		},
+		vin: '1G1YZ23J9P5803427',
+		colour: 'Silver',
+		fuelType: FuelType.PETROL,
+		fuelMeasurementUnit: FuelMeasurementUnit.LITRE,
+		engineNumber: '52WVC10338',
+		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
+		notes: '',
+		yearOfManufacture: 2011,
+		status: VEHICLE_STATUS.FULL_CAPACITY
+	},
+	{
+		id: '',
+		driverId: `driver_${alphanumericId(16)}`,
+		regNumber: 'BD5I SMR',
+		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleName: 'Merceded Axor',
+		make: 'Mercedes-Benz',
+		model: 'Axor',
+		dimensions: {
+			length: 6867,
+			width: 2487,
+			height: 1440,
+		},
+		vin: '1G1YZ23J9P5803427',
+		colour: 'Silver',
+		fuelType: FuelType.PETROL,
+		fuelMeasurementUnit: FuelMeasurementUnit.LITRE,
+		engineNumber: '52WVC10338',
+		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
+		notes: '',
+		yearOfManufacture: 2011,
+		status: VEHICLE_STATUS.IDLE
+	},
+	{
+		id: '',
+		driverId: `driver_${alphanumericId(16)}`,
+		regNumber: 'BD5I SMR',
+		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleName: 'Merceded Axor',
+		make: 'Mercedes-Benz',
+		model: 'Actros L',
+		dimensions: {
+			length: 6867,
+			width: 2487,
+			height: 1440,
+		},
+		vin: '1G1YZ23J9P5803427',
+		colour: 'Silver',
+		fuelType: FuelType.PETROL,
+		fuelMeasurementUnit: FuelMeasurementUnit.LITRE,
+		engineNumber: '52WVC10338',
+		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
+		notes: '',
+		yearOfManufacture: 2011,
+		status: VEHICLE_STATUS.OCCUPIED
+	},
+	{
+		id: '',
+		driverId: `driver_${alphanumericId(16)}`,
+		regNumber: 'BD5I SMR',
+		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleName: 'Merceded Axor',
+		make: 'Mercedes-Benz',
+		model: 'Axor',
+		dimensions: {
+			length: 6867,
+			width: 2487,
+			height: 1440,
+		},
+		vin: '1G1YZ23J9P5803427',
+		colour: 'Silver',
+		fuelType: FuelType.PETROL,
+		fuelMeasurementUnit: FuelMeasurementUnit.LITRE,
+		engineNumber: '52WVC10338',
+		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
+		notes: '',
+		yearOfManufacture: 2011,
+		status: VEHICLE_STATUS.ON_THE_ROAD
+	}
+]
