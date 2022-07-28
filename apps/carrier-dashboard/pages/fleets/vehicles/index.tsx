@@ -38,9 +38,6 @@ const vehicles = () => {
 					<button className='bg-transparent hover:underline text-sm' onClick={() => router.push(`${PATHS.TEAM}/${element.vehicleId}`)}>
 						<span className='text-secondary font-semibold'>Update</span>
 					</button>
-					<button className='bg-transparent hover:underline text-sm' onClick={() => router.push(`${PATHS.TEAM}/${element.vehicleId}`)}>
-						<span className='text-red-500 font-semibold'>Deactivate</span>
-					</button>
 				</td>
 			</tr>
 		);
