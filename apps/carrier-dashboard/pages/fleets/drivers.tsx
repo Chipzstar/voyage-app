@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from '../../layout/Container';
-import { TextInput } from '@mantine/core';
+import { Switch, TextInput } from '@mantine/core'
 import { Search } from 'tabler-icons-react';
 import { PATHS, SAMPLE_DRIVERS } from '../../utils/constants';
 import { useRouter } from 'next/router';
@@ -40,7 +40,9 @@ const drivers = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span>{element.isActive}</span>
+						<Switch
+							checked={element.isActive}
+						/>
 					</div>
 				</td>
 				<td role='button' className="flex space-x-3" colSpan={2}>
