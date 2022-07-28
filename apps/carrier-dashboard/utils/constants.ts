@@ -22,12 +22,13 @@ export const PATHS = {
 	DRIVERS: '/fleets/drivers',
 	NEW_DRIVER: '/fleets/drivers/create',
 	TEAM: '/fleets/team',
+	NEW_MEMBER: '/fleets/team/create',
 	VEHICLES: '/fleets/vehicles',
 	CUSTOMERS: '/accounts#customers',
 	PAYMENTS: '/accounts#payments',
 	INVOICE: '/accounts#invoice',
 	BASIC_REPORT: '/report#basic',
-	FUEL_REPORT: '/report#fuel'
+	FUEL_REPORT: '/report#fuel',
 };
 
 const pickupFacilityId = `facility_${nanoid(24)}`;

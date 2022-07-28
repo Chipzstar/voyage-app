@@ -41,7 +41,7 @@ const drivers = () => {
 						/>
 					</div>
 				</td>
-				<td className="space-x-4" colSpan={2}>
+				<td className="space-x-8" colSpan={2}>
 					<button className='bg-transparent hover:underline text-sm' onClick={() => router.push(`${PATHS.DRIVERS}/${element.driverId}`)}>
 						<span className='text-secondary font-semibold'>Update</span>
 					</button>
@@ -56,7 +56,7 @@ const drivers = () => {
 		<Container classNames='py-4 px-8 min-h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' size="md" radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' />
-				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_DRIVER).then(() => console.log('navigating to booking page...'))}>
+				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_DRIVER)}>
 					<span className='text-base'>Add Driver</span>
 				</button>
 			</div>
