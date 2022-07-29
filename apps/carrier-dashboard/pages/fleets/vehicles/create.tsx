@@ -126,7 +126,7 @@ const create = () => {
 							/>
 						</div>
 						<div>
-							<TextInput label='Registration Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('regNumber')} />
+							<TextInput label='Vehicle Image' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('image')} />
 						</div>
 						<div className='col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
 							<NumberInput label='Vehicle Length' radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions')} />
