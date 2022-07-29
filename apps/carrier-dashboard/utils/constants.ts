@@ -1,8 +1,28 @@
-import moment from 'moment';
-import { EQUIPMENT_TYPES, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, Shipment, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from '@voyage-app/shared-types';
-import { alphanumericId } from '@voyage-app/shared-utils';
-import { customAlphabet } from 'nanoid';
-import { Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, Team, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
+import moment from 'moment'
+import {
+	EQUIPMENT_TYPES,
+	PACKAGE_TYPE,
+	SCHEDULING_TYPE,
+	SERVICE_TYPE,
+	Shipment,
+	SHIPMENT_ACTIVITY,
+	SHIPMENT_TYPE,
+	STATUS,
+} from '@voyage-app/shared-types'
+import { alphanumericId } from '@voyage-app/shared-utils'
+import { customAlphabet } from 'nanoid'
+import {
+	AccountType,
+	Customer,
+	Driver,
+	DRIVER_STATUS,
+	FuelMeasurementUnit,
+	FuelType,
+	Team,
+	TeamRole,
+	Vehicle,
+	VEHICLE_STATUS,
+} from './types'
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
 
@@ -21,15 +41,17 @@ export const PATHS = {
 	BOOK: '/trips/book',
 	DRIVERS: '/fleets/drivers',
 	NEW_DRIVER: '/fleets/drivers/create',
+	FUEL_REPORT: '/report#fuel',
 	TEAM: '/fleets/team',
 	NEW_MEMBER: '/fleets/team/create',
 	VEHICLES: '/fleets/vehicles',
 	NEW_VEHICLE: '/fleets/vehicles/create',
-	CUSTOMERS: '/accounts#customers',
-	PAYMENTS: '/accounts#payments',
-	INVOICE: '/accounts#invoice',
+	CUSTOMERS: '/accounts/customers',
+	NEW_ACCOUNT: '/accounts/customers/create',
+	PAYMENTS: '/accounts/payments',
+	INVOICE: '/accounts/invoice',
 	BASIC_REPORT: '/report#basic',
-	FUEL_REPORT: '/report#fuel',
+
 
 };
 
@@ -605,5 +627,161 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		notes: '',
 		yearOfManufacture: 2011,
 		status: VEHICLE_STATUS.ON_THE_ROAD
+	}
+]
+
+export const SAMPLE_CUSTOMERS: Customer[] = [
+	{
+		id: '',
+		customerId: `customer_${alphanumericId(16)}`,
+		companyName: 'Marvel Cinematic Universe',
+		fullName: 'Black Adam',
+		firstname: 'Black',
+		lastname: 'Adam',
+		email: 'black.adam@example.com',
+		phone: '+447523958055',
+		addressLine1: 'Frank G. Wells Building',
+		addressLine2: '2nd Floor 500 South Buena Vista Street',
+		city: 'Burbank',
+		postcode: '91521',
+		region: 'California',
+		country: 'US',
+		accountType: AccountType.LARGE_SHIPPER,
+		billingEmail: 'onlinesupport@marvel.com.',
+		extraContacts: [
+
+		],
+		taxIDNumber: '322-82-0578'
+	},
+	{
+		id: '',
+		customerId: `customer_${alphanumericId(16)}`,
+		companyName: 'Marvel Cinematic Universe',
+		fullName: 'Black Adam',
+		firstname: 'Black',
+		lastname: 'Adam',
+		email: 'black.adam@example.com',
+		phone: '+447523958055',
+		addressLine1: 'Frank G. Wells Building',
+		addressLine2: '2nd Floor 500 South Buena Vista Street',
+		city: 'Burbank',
+		postcode: '91521',
+		region: 'California',
+		country: 'US',
+		accountType: AccountType.LARGE_SHIPPER,
+		billingEmail: 'onlinesupport@marvel.com.',
+		extraContacts: [
+
+		],
+		taxIDNumber: '322-82-0578'
+	},{
+		id: '',
+		customerId: `customer_${alphanumericId(16)}`,
+		companyName: 'Marvel Cinematic Universe',
+		fullName: 'Black Adam',
+		firstname: 'Black',
+		lastname: 'Adam',
+		email: 'black.adam@example.com',
+		phone: '+447523958055',
+		addressLine1: 'Frank G. Wells Building',
+		addressLine2: '2nd Floor 500 South Buena Vista Street',
+		city: 'Burbank',
+		postcode: '91521',
+		region: 'California',
+		country: 'US',
+		accountType: AccountType.SMALL_SHIPPER,
+		billingEmail: 'onlinesupport@marvel.com.',
+		extraContacts: [
+
+		],
+		taxIDNumber: '322-82-0578'
+	},
+	{
+		id: '',
+		customerId: `customer_${alphanumericId(16)}`,
+		companyName: 'Marvel Cinematic Universe',
+		fullName: 'Black Adam',
+		firstname: 'Black',
+		lastname: 'Adam',
+		email: 'black.adam@example.com',
+		phone: '+447523958055',
+		addressLine1: 'Frank G. Wells Building',
+		addressLine2: '2nd Floor 500 South Buena Vista Street',
+		city: 'Burbank',
+		postcode: '91521',
+		region: 'California',
+		country: 'US',
+		accountType: AccountType.LARGE_SHIPPER,
+		billingEmail: 'onlinesupport@marvel.com.',
+		extraContacts: [
+
+		],
+		taxIDNumber: '322-82-0578'
+	},
+	{
+		id: '',
+		customerId: `customer_${alphanumericId(16)}`,
+		companyName: 'Marvel Cinematic Universe',
+		fullName: 'Black Adam',
+		firstname: 'Black',
+		lastname: 'Adam',
+		email: 'black.adam@example.com',
+		phone: '+447523958055',
+		addressLine1: 'Frank G. Wells Building',
+		addressLine2: '2nd Floor 500 South Buena Vista Street',
+		city: 'Burbank',
+		postcode: '91521',
+		region: 'California',
+		country: 'US',
+		accountType: AccountType.LARGE_SHIPPER,
+		billingEmail: 'onlinesupport@marvel.com.',
+		extraContacts: [
+
+		],
+		taxIDNumber: '322-82-0578'
+	},
+	{
+		id: '',
+		customerId: `customer_${alphanumericId(16)}`,
+		companyName: 'Marvel Cinematic Universe',
+		fullName: 'Black Adam',
+		firstname: 'Black',
+		lastname: 'Adam',
+		email: 'black.adam@example.com',
+		phone: '+447523958055',
+		addressLine1: 'Frank G. Wells Building',
+		addressLine2: '2nd Floor 500 South Buena Vista Street',
+		city: 'Burbank',
+		postcode: '91521',
+		region: 'California',
+		country: 'US',
+		accountType: AccountType.SMALL_SHIPPER,
+		billingEmail: 'onlinesupport@marvel.com.',
+		extraContacts: [
+
+		],
+		taxIDNumber: '322-82-0578'
+	},
+	{
+		id: '',
+		customerId: `customer_${alphanumericId(16)}`,
+		companyName: 'Marvel Cinematic Universe',
+		fullName: 'Black Adam',
+		firstname: 'Black',
+		lastname: 'Adam',
+		email: 'black.adam@example.com',
+		phone: '+447523958055',
+		addressLine1: 'Frank G. Wells Building',
+		addressLine2: '2nd Floor 500 South Buena Vista Street',
+		city: 'Burbank',
+		postcode: '91521',
+		region: 'California',
+		country: 'US',
+		accountType: AccountType.MEDIUM_SHIPPER,
+		billingEmail: 'onlinesupport@marvel.com.',
+		extraContacts: [
+
+		],
+		taxIDNumber: '322-82-0578'
 	}
 ]

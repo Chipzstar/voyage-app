@@ -1,10 +1,10 @@
 {
 	"app": {
 		"inputs": [
-			"./libs/shared-utils/src/lib/prisma/*.prisma"
+			"./prisma/schemas/*.prisma"
 		],
 		"fragments": {
-			"id": "./libs/shared-utils/src/lib/prisma/fragments/id.prisma.fragment"
+			"id": "./prisma/schemas/fragments/id.prisma.fragment"
 		},
 		"output": "./prisma/schema.prisma"
 	}

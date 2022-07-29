@@ -41,7 +41,6 @@ export interface Package {
 //types
 export type Coordinates = [longitude: number, latitude: number]
 
-export type DateRange = [Date, Date]
 //ENUMS
 
 export enum STATUS {

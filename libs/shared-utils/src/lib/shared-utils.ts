@@ -1,4 +1,5 @@
 import { customAlphabet } from 'nanoid'
+import moment from 'moment'
 
 interface selectInput {
 	value: string;
@@ -9,6 +10,10 @@ export function capitalize(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
+export function sanitize(str: string): string {
+	return str.replace(/[_-]/g, ' ').toLowerCase()
+}
+
 export function calculateRate (weight, numPallets, miles=300){
 	const sum = (weight * 0.02) + (numPallets * 25.7) + (miles * 4.5)
 	return Number((sum / 3).toPrecision(2))
@@ -16,6 +21,10 @@ export function calculateRate (weight, numPallets, miles=300){
 
 export function uniqueArray(array: selectInput[], key) {
 	return [...new Map(array.map(item => [item[key], item])).values()];
+}
+
+export function getYears(amount: number) : string[]{
+	return [...Array(amount).keys()].map(pos => moment().subtract(pos, "y").year().toString())
 }
 
 export const alphanumericId = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');

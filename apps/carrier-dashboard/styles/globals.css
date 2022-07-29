@@ -20,9 +20,6 @@
     .quote-header {
         @apply text-4xl font-light
     }
-    .shipment-header {
-        @apply text-3xl font-semibold
-    }
     .chart-header {
         @apply font-semibold text-xl
     }

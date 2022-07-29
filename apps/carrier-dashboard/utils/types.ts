@@ -42,6 +42,12 @@ export enum DRIVER_STATUS {
 	UNVERIFIED="UNVERIFIED",
 }
 
+export enum AccountType {
+	SMALL_SHIPPER="SMALL_SHIPPER",
+	MEDIUM_SHIPPER="MEDIUM_SHIPPER",
+	LARGE_SHIPPER="LARGE_SHIPPER",
+}
+
 export interface NewBooking {
 	id: string,
 	createdAt: UnixTimestamp,
@@ -122,4 +128,33 @@ export interface Vehicle {
 	model: string;
 	notes?: string;
 	status: VEHICLE_STATUS;
+}
+
+interface Contact {
+	name: string;
+	email: string;
+   phone: string;
+	notes?: string;
+}
+
+export interface Customer {
+	id: string;
+   customerId: string;
+	accountType: AccountType;
+	companyName: string;
+	fullName: string;
+	firstname?: string;
+	lastname?: string;
+   email: string;
+	phone: string;
+	billingEmail: string;
+	addressLine1: string;
+	addressLine2?: string;
+	city: string;
+	region: string;
+	postcode: string;
+	country: string;
+	taxIDNumber: string;
+	extraContacts: Contact[];
+	notes?: string;
 }
