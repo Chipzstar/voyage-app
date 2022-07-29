@@ -9,14 +9,14 @@ import { PATHS, SAMPLE_LOADS } from '../utils/constants';
 import { useRouter } from 'next/router';
 // @ts-ignore
 import { capitalize } from '@voyage-app/shared-utils';
+import { Empty } from '@voyage-app/shared-ui-components';
 
-const Empty = ({ message }) => (
-	<div className='mx-auto my-auto'>
-		<span className='text-3xl my-auto mx-auto'>{message}</span>
-	</div>
-);
+interface TripsProps {
+	statuses: STATUS[],
+	message: JSX.Element
+}
 
-const Trips = ({ statuses = Object.values(STATUS), message = '' }) => {
+const Trips = ({ statuses = Object.values(STATUS), message }: TripsProps) => {
 	const router = useRouter();
 	const rows = SAMPLE_LOADS.filter(element => statuses.includes(element.status)).map((element, index) => {
 		const statusClass = classNames({

@@ -93,7 +93,7 @@ const Sidebar = () => {
 			menuItems: [
 				{ title: 'Truck Board', href: PATHS.HOME, isActive: router.pathname === PATHS.HOME },
 				{ title: 'Live Trips', href: PATHS.TRIPS, isActive: router.pathname === PATHS.TRIPS },
-				{ title: 'Marketplace', href: PATHS.MARKETPLACE, isActive: router.pathname === PATHS.MARKETPLACE }
+				{ title: 'Marketplace', href: PATHS.MARKETPLACE, isActive: router.pathname.includes(PATHS.MARKETPLACE) }
 			]
 		},
 		{
@@ -104,7 +104,7 @@ const Sidebar = () => {
 			menuItems: [
 				{ title: 'Drivers', href: PATHS.DRIVERS, isActive: router.pathname.includes(PATHS.DRIVERS) },
 				{ title: 'Team', href: PATHS.TEAM, isActive: router.pathname.includes(PATHS.TEAM) },
-				{ title: 'Vehicles', href: PATHS.VEHICLES, isActive: router.pathname === PATHS.VEHICLES }
+				{ title: 'Vehicles', href: PATHS.VEHICLES, isActive: router.pathname.includes(PATHS.VEHICLES) }
 			]
 		},
 		{
@@ -113,9 +113,9 @@ const Sidebar = () => {
 			isActive: router.pathname.includes(PATHS.ACCOUNTS),
 			submenu: true,
 			menuItems: [
-				{ title: 'Customers', href: PATHS.CUSTOMERS, isActive: router.pathname === PATHS.CUSTOMERS },
-				{ title: 'Invoice', href: PATHS.INVOICE, isActive: router.pathname === PATHS.INVOICE },
-				{ title: 'Payment', href: PATHS.PAYMENTS, isActive: router.pathname === PATHS.PAYMENTS }
+				{ title: 'Customers', href: PATHS.CUSTOMERS, isActive: router.pathname.includes(PATHS.CUSTOMERS) },
+				{ title: 'Invoice', href: PATHS.INVOICES, isActive: router.pathname.includes(PATHS.INVOICES) },
+				{ title: 'Payment', href: PATHS.PAYMENTS, isActive: router.pathname.includes(PATHS.PAYMENTS) }
 			]
 		},
 		{

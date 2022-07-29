@@ -17,11 +17,8 @@
     .page-container{
         height: calc(100vh - 80px);
     }
-    .quote-header {
-        @apply text-4xl font-light
-    }
-    .chart-header {
-        @apply font-semibold text-xl
+    .display-1 {
+        @apply text-8xl font-medium
     }
     .nav-text {
         @apply font-light text-2xl

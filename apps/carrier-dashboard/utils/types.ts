@@ -42,6 +42,13 @@ export enum DRIVER_STATUS {
 	UNVERIFIED="UNVERIFIED",
 }
 
+export enum INVOICE_STATUS {
+	PAID="paid",
+	OVERDUE="overdue",
+	INVOICED="invoiced",
+	SHORT_PAID="short-paid",
+}
+
 export enum AccountType {
 	SMALL_SHIPPER="SMALL_SHIPPER",
 	MEDIUM_SHIPPER="MEDIUM_SHIPPER",

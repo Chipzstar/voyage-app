@@ -1,28 +1,9 @@
-import moment from 'moment'
-import {
-	EQUIPMENT_TYPES,
-	PACKAGE_TYPE,
-	SCHEDULING_TYPE,
-	SERVICE_TYPE,
-	Shipment,
-	SHIPMENT_ACTIVITY,
-	SHIPMENT_TYPE,
-	STATUS,
-} from '@voyage-app/shared-types'
-import { alphanumericId } from '@voyage-app/shared-utils'
-import { customAlphabet } from 'nanoid'
-import {
-	AccountType,
-	Customer,
-	Driver,
-	DRIVER_STATUS,
-	FuelMeasurementUnit,
-	FuelType,
-	Team,
-	TeamRole,
-	Vehicle,
-	VEHICLE_STATUS,
-} from './types'
+import moment from 'moment';
+import { EQUIPMENT_TYPES, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, Shipment, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from '@voyage-app/shared-types';
+import { alphanumericId } from '@voyage-app/shared-utils';
+import { customAlphabet } from 'nanoid';
+import { AccountType, Customer, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Team, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
+import orderId from 'order-id';
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
 
@@ -49,7 +30,7 @@ export const PATHS = {
 	CUSTOMERS: '/accounts/customers',
 	NEW_ACCOUNT: '/accounts/customers/create',
 	PAYMENTS: '/accounts/payments',
-	INVOICE: '/accounts/invoice',
+	INVOICES: '/accounts/invoices',
 	BASIC_REPORT: '/report#basic',
 
 
@@ -783,5 +764,92 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 
 		],
 		taxIDNumber: '322-82-0578'
+	}
+]
+
+export const SAMPLE_INVOICES = [
+	{
+		id: '',
+		customerId: '',
+		invoiceId: 'INV-ID2819',
+		createdAt: moment().unix(),
+		reference: orderId(process.env.SECRET).generate(),
+		amountDue: 3412500,
+		currency: 'GBP',
+		dueDate: 1659098961,
+		periodStart: 1661777361,
+		periodEnd: 1661777361,
+		total: 3412500,
+		status: INVOICE_STATUS.PAID,
+	},
+	{
+		id: '',
+		customerId: '',
+		invoiceId: 'INV-ID2820',
+		createdAt: moment().unix(),
+		reference: orderId(process.env.SECRET).generate(),
+		amountDue: 3412500,
+		currency: 'GBP',
+		dueDate: 1659098961,
+		periodStart: 1661777361,
+		periodEnd: 1661777361,
+		total: 3412500,
+		status: INVOICE_STATUS.OVERDUE,
+	},
+	{
+		id: '',
+		customerId: '',
+		invoiceId: 'INV-ID2821',
+		createdAt: moment().unix(),
+		reference: orderId(process.env.SECRET).generate(),
+		amountDue: 3412500,
+		currency: 'GBP',
+		dueDate: 1659098961,
+		periodStart: 1661777361,
+		periodEnd: 1661777361,
+		total: 3412500,
+		status: INVOICE_STATUS.PAID,
+	},
+	{
+		id: '',
+		customerId: '',
+		invoiceId: 'INV-ID2819',
+		createdAt: moment().unix(),
+		reference: orderId(process.env.SECRET).generate(),
+		amountDue: 3412500,
+		currency: 'GBP',
+		dueDate: 1659098961,
+		periodStart: 1661777361,
+		periodEnd: 1661777361,
+		total: 3412500,
+		status: INVOICE_STATUS.PAID,
+	},
+	{
+		id: '',
+		customerId: '',
+		invoiceId: 'INV-ID2823',
+		createdAt: moment().unix(),
+		reference: orderId(process.env.SECRET).generate(),
+		amountDue: 3412500,
+		currency: 'GBP',
+		dueDate: 1659098961,
+		periodStart: 1661777361,
+		periodEnd: 1661777361,
+		total: 3412500,
+		status: INVOICE_STATUS.SHORT_PAID,
+	},
+	{
+		id: '',
+		customerId: '',
+		invoiceId: 'INV-ID2824',
+		createdAt: moment().unix(),
+		reference: orderId(process.env.SECRET).generate(),
+		amountDue: 3412500,
+		currency: 'GBP',
+		dueDate: 1659098961,
+		periodStart: 1661777361,
+		periodEnd: 1661777361,
+		total: 3412500,
+		status: INVOICE_STATUS.INVOICED,
 	}
 ]
