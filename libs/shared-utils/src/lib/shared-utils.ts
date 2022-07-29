@@ -27,6 +27,5 @@ export function getYears(amount: number) : string[]{
 	return [...Array(amount).keys()].map(pos => moment().subtract(pos, "y").year().toString())
 }
 
-export const alphanumericId = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
-
+export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 export const numericId = customAlphabet('1234567890');

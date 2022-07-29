@@ -370,7 +370,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 	{
 		id: '',
 		createdAt: moment().unix(),
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		status: DRIVER_STATUS.OFFLINE,
 		isActive: false,
 		firstname: 'Chisom',
@@ -390,7 +390,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 	{
 		id: '',
 		createdAt: moment().unix(),
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		status: DRIVER_STATUS.OFFLINE,
 		isActive: false,
 		firstname: 'Ola',
@@ -410,7 +410,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 	{
 		id: '',
 		createdAt: moment().unix(),
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		status: DRIVER_STATUS.OFFLINE,
 		isActive: false,
 		firstname: 'Rayan',
@@ -430,7 +430,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 	{
 		id: '',
 		createdAt: moment().unix(),
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		status: DRIVER_STATUS.OFFLINE,
 		isActive: false,
 		firstname: 'Oscar',
@@ -452,7 +452,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 export const SAMPLE_TEAM: Team[] = [
 	{
 		id: '',
-		memberId: `user_${alphanumericId(16)}`,
+		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Omari',
 		lastname: 'Obrian',
 		email: 'daniel.obrian@gmail.com',
@@ -462,7 +462,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `user_${alphanumericId(16)}`,
+		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Kendrick',
 		lastname: 'Lamar',
 		email: 'kendrick.lamar@hotmail.com',
@@ -472,7 +472,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `user_${alphanumericId(16)}`,
+		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Andy',
 		lastname: 'Mineo',
 		email: 'andy.mineo@gmail.com',
@@ -482,7 +482,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `user_${alphanumericId(16)}`,
+		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Trip',
 		lastname: 'Lee',
 		email: 'trip.leeboi@hotmail.com',
@@ -492,7 +492,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `user_${alphanumericId(16)}`,
+		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Kanye',
 		lastname: 'West',
 		email: 'kanye.west@starlink.com',
@@ -502,7 +502,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
-		memberId: `user_${alphanumericId(16)}`,
+		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Drake',
 		lastname: 'Aubrey',
 		email: 'aubrey.graham@hiphopstudios.com',
@@ -515,11 +515,11 @@ export const SAMPLE_TEAM: Team[] = [
 export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
-		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleId: `VEH-ID${alphanumericId(8)}`,
 		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
-		vehicleName: 'Merceded Axor',
+		vehicleName: 'Mercedes Axor',
 		make: 'Mercedes-Benz',
 		model: 'Axor',
 		dimensions: {
@@ -539,9 +539,9 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
-		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleId: `VEH-ID${alphanumericId(8)}`,
 		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
 		vehicleName: 'Merceded Axor',
 		make: 'Mercedes-Benz',
@@ -563,9 +563,9 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
-		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleId: `VEH-ID${alphanumericId(8)}`,
 		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
 		vehicleName: 'Merceded Axor',
 		make: 'Mercedes-Benz',
@@ -587,9 +587,9 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
-		driverId: `driver_${alphanumericId(16)}`,
+		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
-		vehicleId: `vehicle_${alphanumericId(16)}`,
+		vehicleId: `VEH-ID${alphanumericId(8)}`,
 		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
 		vehicleName: 'Merceded Axor',
 		make: 'Mercedes-Benz',
@@ -614,7 +614,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 export const SAMPLE_CUSTOMERS: Customer[] = [
 	{
 		id: '',
-		customerId: `customer_${alphanumericId(16)}`,
+		customerId: `customer_${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
 		firstname: 'Black',
@@ -636,7 +636,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		customerId: `customer_${alphanumericId(16)}`,
+		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
 		firstname: 'Black',
@@ -657,7 +657,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 		taxIDNumber: '322-82-0578'
 	},{
 		id: '',
-		customerId: `customer_${alphanumericId(16)}`,
+		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
 		firstname: 'Black',
@@ -679,7 +679,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		customerId: `customer_${alphanumericId(16)}`,
+		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
 		firstname: 'Black',
@@ -701,7 +701,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		customerId: `customer_${alphanumericId(16)}`,
+		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
 		firstname: 'Black',
@@ -723,7 +723,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		customerId: `customer_${alphanumericId(16)}`,
+		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
 		firstname: 'Black',
@@ -745,7 +745,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		customerId: `customer_${alphanumericId(16)}`,
+		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
 		firstname: 'Black',

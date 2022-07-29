@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, TextInput } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Search } from 'tabler-icons-react';
 import { PATHS, SAMPLE_VEHICLES } from '../../../utils/constants';
@@ -35,7 +35,7 @@ const vehicles = () => {
 					</div>
 				</td>
 				<td className='space-x-8' colSpan={2}>
-					<button className='bg-transparent hover:underline text-sm' onClick={() => router.push(`${PATHS.TEAM}/${element.vehicleId}`)}>
+					<button className='bg-transparent hover:underline text-sm' onClick={() => router.push(`${PATHS.VEHICLES}/${element.vehicleId}`)}>
 						<span className='text-secondary font-semibold'>Update</span>
 					</button>
 				</td>
