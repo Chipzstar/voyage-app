@@ -4,15 +4,9 @@ import { formList, useForm } from '@mantine/form';
 import { CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
-import {
-	PACKAGE_TYPE,
-	SCHEDULING_TYPE,
-	SERVICE_TYPE,
-	SHIPMENT_ACTIVITY,
-	SHIPMENT_TYPE
-} from '@voyage-app/shared-types';
-import { numericId } from '@voyage-app/shared-utils'
-import { LocationType, NewBooking } from '../../utils/types'
+import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
+import { numericId } from '@voyage-app/shared-utils';
+import { LocationType, NewBooking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '../../components/DateTimePickerBase';
 import { PATHS } from 'apps/shipper-dashboard/utils/constants';
@@ -33,12 +27,15 @@ export async function getServerSideProps(context) {
 const create = props => {
 	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
-	const { locations, bookings } = useSelector(state => ({locations: state['locations'], bookings: state['bookings']}));
+	const { locations, bookings } = useSelector(state => ({
+		locations: state['locations'],
+		bookings: state['bookings']
+	}));
 	const [isFTL, setFTL] = useState(false);
 
 	const booking = useMemo(() => {
-		return bookings.find((booking: NewBooking) => booking.id === props.bookingID)
-	}, [bookings])
+		return bookings.find((booking: NewBooking) => booking.id === props.bookingID);
+	}, [bookings]);
 
 	const form = useForm({
 		initialValues: {
@@ -119,7 +116,6 @@ const create = props => {
 			form.setFieldValue('weight', 0);
 			form.setFieldValue('quantity', 1);
 		}
-
 	};
 
 	const handleSubmit = useCallback(
@@ -365,7 +361,7 @@ const create = props => {
 											}
 										}}
 									>
-										<span className="capitalize">{item.toLowerCase().replace("_", " ")}</span>
+										<span className='capitalize'>{item.toLowerCase().replace('_', ' ')}</span>
 									</button>
 								))}
 							</div>
@@ -402,4 +398,4 @@ const create = props => {
 	);
 };
 
-export default create;
+export default create

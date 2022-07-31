@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 // @ts-ignore
 import { capitalize } from '@voyage-app/shared-utils';
 import { Empty } from '@voyage-app/shared-ui-components';
+import Container from '../layout/Container'
 
 interface TripsProps {
 	statuses: STATUS[],
@@ -75,17 +76,17 @@ const Trips = ({ statuses = Object.values(STATUS), message }: TripsProps) => {
 		);
 	});
 	return (
-		<div className='container px-6'>
+		<Container classNames="px-6 py-2">
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search by ID, location, driver..' />
-				<button className='voyage-button' onClick={() => router.push(PATHS.BOOK).then(() => console.log("navigating to booking page..."))}>
+				<button className='voyage-button h-11' onClick={() => router.push(PATHS.BOOK).then(() => console.log("navigating to booking page..."))}>
 					<span className='text-base'>
 						<span className='text-lg'>+&nbsp;</span>New Load
 					</span>
 				</button>
 			</div>
 			<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
-		</div>
+		</Container>
 	);
 };
 

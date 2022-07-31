@@ -1,7 +1,26 @@
 import React, { forwardRef, useRef, useState } from 'react';
-import { CloseButton, createStyles, Input, INPUT_SIZES, InputWrapper, Paper, Popper, extractSystemStyles, MantineSize, MantineTransition } from '@mantine/core';
-import { useClickOutside, useFocusTrap, useMergedRef, useWindowEvent } from '@mantine/hooks';
+import {
+	CloseButton,
+	createStyles,
+	Input,
+	INPUT_SIZES,
+	extractSystemStyles,
+	MantineSize,
+	MantineTransition,
+	Popover,
+	Modal,
+	ModalProps,
+	MantineShadow,
+	InputSharedProps,
+	InputWrapperBaseProps,
+	DefaultProps,
+	Selectors,
+	InputStylesNames,
+	InputWrapperStylesNames
+} from '@mantine/core';
+import { useClickOutside, useFocusTrap, useId, useMergedRef, useWindowEvent } from '@mantine/hooks';
 import { Calendar } from 'tabler-icons-react';
+import { CalendarBaseStylesNames } from '@mantine/dates';
 
 const RIGHT_SECTION_WIDTH = {
 	xs: 24,
@@ -11,44 +30,119 @@ const RIGHT_SECTION_WIDTH = {
 	xl: 44
 };
 
-interface DateTimePickerBaseProps {
+const defaultTransition: MantineTransition = {
+	in: { opacity: 1, transform: 'translateY(0) scale(1)' },
+	out: { opacity: 0, transform: 'translateY(-25px) scale(0.93)' },
+	common: { transformOrigin: 'top left' },
+	transitionProperty: 'opacity, transform'
+};
+
+export type DatePickerStylesNames = Selectors<typeof useStyles> | CalendarBaseStylesNames | InputStylesNames | InputWrapperStylesNames | 'dropdown';
+
+export interface DatePickerBaseSharedProps extends InputSharedProps, InputWrapperBaseProps, DefaultProps<DatePickerStylesNames>, Omit<React.ComponentPropsWithoutRef<'input'>, 'value' | 'defaultValue' | 'placeholder' | 'size'> {
+	/** Props spread to root element */
+	wrapperProps?: React.ComponentPropsWithoutRef<'div'>;
+
+	/** Placeholder, displayed when date is not selected */
+	placeholder?: string;
+
+	/** Dropdown appear/disappear transition */
+	transition?: MantineTransition;
+
+	/** Dropdown appear/disappear transition duration */
+	transitionDuration?: number;
+
+	/** Dropdown appear/disappear transition timing function, defaults to theme.transitionTimingFunction */
+	transitionTimingFunction?: string;
+
+	/** Dropdown shadow from theme or css value for custom box-shadow */
+	shadow?: MantineShadow;
+
+	/** Input name, useful fon uncontrolled variant to capture data with native form */
+	name?: string;
+
+	/** Input size */
+	size?: MantineSize;
+
+	/** Where to show calendar in modal or popover */
+	dropdownType?: 'popover' | 'modal';
+
+	/** Dropdown positioning behavior */
+	dropdownPosition?: 'bottom-start' | 'top-start' | 'flip';
+
+	/** Allow to clear value */
+	clearable?: boolean;
+
+	/** aria-label for clear button */
+	clearButtonLabel?: string;
+
+	/** useEffect dependencies to force update dropdown position */
+	positionDependencies?: any[];
+
+	/** Dropdown zIndex */
+	zIndex?: React.CSSProperties['zIndex'];
+
+	/** call onChange with last valid value onBlur */
+	fixOnBlur?: boolean;
+
+	/** Whether to render the dropdown in a Portal */
+	withinPortal?: boolean;
+
+	/** Called when dropdown opens */
+	onDropdownOpen?(): void;
+
+	/** Called when dropdown closes */
+	onDropdownClose?(): void;
+
+	/** Events that should trigger outside clicks */
+	clickOutsideEvents?: string[];
+
+	/** Props spread to Modal component */
+	modalProps?: Partial<ModalProps>;
+
+	/** Modal z-index */
+	modalZIndex?: React.CSSProperties['zIndex'];
+
+	/** Set the clear button tab index to disabled or default after input field */
+	clearButtonTabIndex?: -1 | 0;
+}
+
+interface DateTimePickerBaseProps extends DatePickerBaseSharedProps {
 	classNames?: any;
 	className?: string;
 	style?: any;
 	styles?: any;
 	wrapperProps?: Object;
 	required?: boolean;
-	label?: string;
-	error?: React.ReactNode;
 	id?: string;
-	description?: string;
-	placeholder?: string;
 	shadow?: string;
 	transition?: MantineTransition;
 	transitionDuration?: number;
 	transitionTimingFunction?: string;
 	closeDropdownOnScroll?: boolean;
-	radius?: number;
 	size?: MantineSize;
-	children?: React.ReactNode;
 	inputLabel?: string;
 	__staticSelector?: string;
-	dropdownOpened?: boolean;
-	setDropdownOpened?: Function;
-	dropdownType?: string;
+	dropdownOpened: boolean;
+
+	setDropdownOpened(opened: boolean): void;
+
 	clearable?: boolean;
 	clearButtonLabel?: string;
-	onClear?: React.MouseEventHandler<HTMLButtonElement>;
+
+	onClear(): void;
+
+	/** Allow free input */
+	allowFreeInput?: boolean;
+	/** Amount of months */
+	amountOfMonths?: number;
 	positionDependencies?: any[];
-	zIndex?: number;
 	withinPortal?: boolean;
 	disabled?: boolean;
 	onBlur?: React.ChangeEventHandler<HTMLInputElement>;
 	onFocus?: React.ChangeEventHandler<HTMLInputElement>;
 	onChange?: React.ChangeEventHandler<HTMLInputElement>;
-	onKeyDown?: Function;
 	name?: string;
-	sx?: Object;
 	others?: any;
 }
 
@@ -86,6 +180,7 @@ const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>
 			styles,
 			wrapperProps,
 			required,
+			allowFreeInput = false,
 			label,
 			error,
 			id,
@@ -96,7 +191,6 @@ const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>
 			transitionDuration = 200,
 			transitionTimingFunction,
 			closeDropdownOnScroll = false,
-			radius,
 			size = 'sm',
 			children,
 			inputLabel,
@@ -104,6 +198,7 @@ const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>
 			dropdownOpened,
 			setDropdownOpened,
 			dropdownType = 'popover',
+			dropdownPosition = 'flip',
 			clearable = true,
 			clearButtonLabel,
 			onClear,
@@ -114,6 +209,12 @@ const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>
 			onFocus,
 			onChange,
 			onKeyDown,
+			onDropdownClose,
+			onDropdownOpen,
+			clickOutsideEvents = ['mousedown', 'touchstart'],
+			modalZIndex,
+			modalProps,
+			amountOfMonths = 1,
 			disabled = false,
 			name = 'date',
 			sx,
@@ -127,20 +228,25 @@ const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>
 			{ classNames, styles, name: __staticSelector }
 		);
 		//@ts-ignore
-		const { margins, rest } = extractSystemStyles(others);
+		const { systemStyles, rest } = extractSystemStyles(others);
+		const uuid = useId(id);
+		const inputRef = useRef<HTMLButtonElement>();
+
 		const [dropdownElement, setDropdownElement] = useState(null);
 		const [rootElement, setRootElement] = useState(null);
-		const [referenceElement, setReferenceElement] = useState(null);
 
-		const focusTrapRef = useFocusTrap(dropdownOpened);
-		const inputRef = useRef<HTMLElement>(null);
+		const closeDropdown = () => {
+			setDropdownOpened(false);
+			onDropdownClose?.();
+		};
 
-		// @ts-ignore
-		const closeDropdown = () => setDropdownOpened(false);
+		const openDropdown = () => {
+			setDropdownOpened(true);
+			onDropdownOpen?.();
+		};
 
-		// @ts-ignore
-		const closeOnEscape = e => {
-			if (e.nativeEvent.code === 'Escape') {
+		const closeOnEscape = (e: React.KeyboardEvent<HTMLDivElement>) => {
+			if (e.key === 'Escape') {
 				closeDropdown();
 				window.setTimeout(() => inputRef.current?.focus(), 0);
 			}
@@ -154,26 +260,35 @@ const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>
 		const rightSection = clearable ? <CloseButton variant='transparent' aria-label={clearButtonLabel} onClick={onClear} size={size} /> : null;
 
 		// @ts-ignore
-		const handleClick = () => setDropdownOpened(!dropdownOpened);
+		const toggleDropdown = () => {
+			setDropdownOpened(!dropdownOpened);
+			!dropdownOpened ? onDropdownOpen?.() : onDropdownOpen?.();
+		};
 
-		// @ts-ignore
-		const handleInputBlur = e => typeof onBlur === 'function' && onBlur(e);
+		const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+			typeof onBlur === 'function' && onBlur(event);
+			if (allowFreeInput) {
+				closeDropdown();
+			}
+		};
 
-		// @ts-ignore
-		const handleInputFocus = e => typeof onFocus === 'function' && onFocus(e);
+		const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+			typeof onFocus === 'function' && onFocus(event);
+			if (allowFreeInput) {
+				openDropdown();
+			}
+		};
 
-		// @ts-ignore
-		const handleKeyDown = e => {
-			typeof onKeyDown === 'function' && onKeyDown(e);
-			if (e.code === 'Space' || e.code === 'Enter') {
-				e.preventDefault();
-				// @ts-ignore
-				setDropdownOpened(true);
+		const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+			typeof onKeyDown === 'function' && onKeyDown(event);
+			if ((event.key === 'Space' || event.key === 'Enter') && !allowFreeInput) {
+				event.preventDefault();
+				openDropdown();
 			}
 		};
 
 		return (
-			<InputWrapper
+			<Input.Wrapper
 				required={required}
 				label={label}
 				error={error}
@@ -185,75 +300,76 @@ const DateTimePickerBase = forwardRef<HTMLInputElement, DateTimePickerBaseProps>
 				size={size}
 				__staticSelector={__staticSelector}
 				sx={sx}
-				ref={setReferenceElement}
-				{...margins}
+				{...systemStyles}
 				{...wrapperProps}
 			>
-				{/*@ts-ignore*/}
-				<div ref={setRootElement}>
-					<div className={classes.wrapper}>
-						<Input
-							icon={<Calendar />}
-							classNames={{
-								...classNames,
-								input: cx(classes.input, classNames?.input)
-							}}
-							styles={styles}
-							onClick={handleClick}
-							onKeyDown={handleKeyDown}
-							//@ts-ignore
-							ref={useMergedRef(ref, inputRef)}
-							__staticSelector={__staticSelector}
-							radius={radius}
-							size={size}
-							name={name}
-							placeholder={placeholder}
-							value={inputLabel}
-							required={required}
-							invalid={!!error}
-							readOnly={true}
-							rightSection={rightSection}
-							rightSectionWidth={theme.fn.size({
-								size,
-								sizes: RIGHT_SECTION_WIDTH
-							})}
-							onBlur={handleInputBlur}
-							onFocus={handleInputFocus}
-							onChange={onChange}
-							autoComplete='off'
-							{...rest}
-						/>
-					</div>
-
-					<Popper
-						//@ts-ignore
-						referenceElement={referenceElement}
-						transitionDuration={transitionDuration}
-						transitionTimingFunction={transitionTimingFunction}
-						forceUpdateDependencies={positionDependencies}
-						transition={transition}
-						//@ts-ignore
-						mounted={dropdownOpened}
-						position='bottom'
-						placement='start'
-						gutter={10}
-						withinPortal={withinPortal}
-						withArrow
-						arrowSize={3}
-						zIndex={zIndex}
-						arrowClassName={classes.arrow}
-					>
-						{/*@ts-ignore*/}
-						<div className={classes.dropdownWrapper} ref={setDropdownElement} data-mantine-stop-propagation={dropdownOpened} onKeyDownCapture={closeOnEscape} aria-hidden={undefined}>
-							<Paper className={classes.dropdown} shadow={shadow} ref={focusTrapRef}>
-								{children}
-							</Paper>
+				<Popover
+					__staticSelector={__staticSelector}
+					withinPortal={withinPortal}
+					offset={10}
+					opened={dropdownOpened}
+					transitionDuration={transitionDuration}
+					transition={transition}
+					positionDependencies={positionDependencies}
+					middlewares={{ flip: dropdownPosition === 'flip', shift: false }}
+					position={dropdownPosition === 'flip' ? 'bottom-start' : dropdownPosition}
+					shadow={shadow}
+					onClose={closeDropdown}
+					trapFocus={!allowFreeInput}
+					withRoles={false}
+					clickOutsideEvents={clickOutsideEvents}
+					zIndex={zIndex}
+					classNames={classNames}
+					styles={styles}
+				>
+					<Popover.Target>
+						<div className={classes.wrapper}>
+							<Input<'input'>
+								classNames={{
+									...classNames,
+									input: cx(classes.input, classNames?.input)
+								}}
+								data-free-input={allowFreeInput || undefined}
+								styles={styles}
+								onClick={() => (!allowFreeInput ? toggleDropdown() : openDropdown())}
+								onKeyDown={handleKeyDown}
+								id={uuid}
+								// @ts-ignore
+								ref={useMergedRef(ref, inputRef)}
+								__staticSelector={__staticSelector}
+								size={size}
+								name={name}
+								placeholder={placeholder}
+								value={inputLabel}
+								required={required}
+								invalid={!!error}
+								readOnly={!allowFreeInput}
+								rightSection={rightSection}
+								rightSectionWidth={theme.fn.size({ size, sizes: RIGHT_SECTION_WIDTH })}
+								onBlur={handleInputBlur}
+								onFocus={handleInputFocus}
+								onChange={onChange}
+								autoComplete='off'
+								{...rest}
+							/>
 						</div>
-					</Popper>
-				</div>
-			</InputWrapper>
+					</Popover.Target>
+
+					{dropdownType === 'popover' ? (
+						<Popover.Dropdown>
+							<div data-mantine-stop-propagation={dropdownOpened} onKeyDownCapture={closeOnEscape} aria-hidden={allowFreeInput || undefined}>
+								{children}
+							</div>
+						</Popover.Dropdown>
+					) : (
+						<Modal {...modalProps} opened={dropdownOpened} onClose={closeDropdown} withCloseButton={false} size={amountOfMonths * 400} zIndex={modalZIndex}>
+							{children}
+						</Modal>
+					)}
+				</Popover>
+			</Input.Wrapper>
 		);
 	}
 );
 
-export default DateTimePickerBase
+export default DateTimePickerBase;

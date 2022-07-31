@@ -31,7 +31,7 @@ const team = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<Switch checked={element.isActive} />
+						<Switch checked={element.isActive} onChange={() => console.log("switching...")} />
 					</div>
 				</td>
 				<td className='space-x-8' colSpan={2}>

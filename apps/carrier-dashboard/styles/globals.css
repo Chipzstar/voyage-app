@@ -9,7 +9,7 @@
         font-family: "Helvetica";
         font-weight: 500;
         font-style: normal;
-        src: url('/apps/carrier-dashboard/public/static/fonts/Helvetica/Helvetica.ttf') format('truetype');
+        src: url('apps/carrier-dashboard/public/static/fonts/Helvetica/Helvetica.ttf') format('truetype');
     }
 }
 
@@ -22,6 +22,9 @@
     }
     .nav-text {
         @apply font-light text-2xl
+    }
+    .form-header {
+        @apply text-4xl font-light
     }
     .page-header {
         @apply text-3xl font-semibold

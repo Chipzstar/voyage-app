@@ -3,21 +3,27 @@ import { Tabs } from '@mantine/core';
 import Trips from '../../containers/Trips';
 import { STATUS } from '@voyage-app/shared-types';
 
+const TAB_LABELS = {
+	UPCOMING: 'upcoming',
+	IN_TRANSIT: 'in-transit',
+	COMPLETED: 'completed',
+}
+
 const trips = () => {
-	const [activeTab, setActiveTab] = useState(0);
+	const [activeTab, setActiveTab] = useState<string | null>(TAB_LABELS.UPCOMING);
 	return (
 		<div className='py-5 h-screen'>
 			<header className="page-header px-5 mb-5">Live Trips</header>
-			<Tabs active={activeTab} onTabChange={setActiveTab} grow>
-				<Tabs.Tab label='Upcoming' tabKey={[STATUS.NEW, STATUS.PENDING].join(' ')} >
-					<Trips statuses={[STATUS.NEW, STATUS.PENDING]} message={<span className="text-center text-2xl">You have no upcoming loads!"</span>} />
-				</Tabs.Tab>
-				<Tabs.Tab label='In Transit' tabKey={[STATUS.DISPATCHED, STATUS.EN_ROUTE].join(' ')} >
-					<Trips statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]} message={<span className="text-center text-2xl">You have no loads in-transit</span>} />
-				</Tabs.Tab>
-				<Tabs.Tab label='Completed' tabKey={[STATUS.COMPLETED].join(' ')}>
-					<Trips statuses={[STATUS.COMPLETED]} message={<span className="text-center text-2xl">You have no completed trips</span>}/>
-				</Tabs.Tab>
+			<Tabs value={activeTab} onTabChange={setActiveTab}>
+				<Tabs.List grow>
+					<Tabs.Tab value={TAB_LABELS.UPCOMING}>Upcoming</Tabs.Tab>
+					<Tabs.Tab value={TAB_LABELS.IN_TRANSIT}>In Transit</Tabs.Tab>
+					<Tabs.Tab value={TAB_LABELS.COMPLETED}>Completed</Tabs.Tab>
+				</Tabs.List>
+
+				<Tabs.Panel value={TAB_LABELS.UPCOMING}><Trips statuses={[STATUS.NEW, STATUS.PENDING]} message={<span className="text-center text-2xl">You have no upcoming loads!"</span>} /></Tabs.Panel>
+				<Tabs.Panel value={TAB_LABELS.IN_TRANSIT}><Trips statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]} message={<span className="text-center text-2xl">You have no loads in-transit</span>} /></Tabs.Panel>
+				<Tabs.Panel value={TAB_LABELS.COMPLETED}><Trips statuses={[STATUS.COMPLETED]} message={<span className="text-center text-2xl">You have no completed trips</span>}/></Tabs.Panel>
 			</Tabs>
 		</div>
 	);

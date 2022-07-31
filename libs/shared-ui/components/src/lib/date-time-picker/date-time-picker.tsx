@@ -1,29 +1,63 @@
 import styles from './date-time-picker.module.css';
-import { CSSProperties, forwardRef, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, forwardRef, useEffect, useRef, useState } from 'react'
 import { Anchor, Button, Group, MantineSize, useMantineTheme } from '@mantine/core';
 import { upperFirst, useMergedRef } from '@mantine/hooks';
 import moment from 'moment/moment';
-import DateTimePickerBase from './base';
+import DateTimePickerBase, { DatePickerBaseSharedProps } from './base'
 import { Calendar, DayModifiers, TimeInput } from '@mantine/dates';
 import { Clock } from 'tabler-icons-react';
 import { CalendarSharedProps } from '@mantine/dates/lib/components/CalendarBase/CalendarBase';
 import { FirstDayOfWeek } from '@mantine/dates/lib/types';
 
+export interface DatePickerProps
+	extends Omit<DatePickerBaseSharedProps, 'onChange'>,
+		Omit<CalendarSharedProps, 'size' | 'classNames' | 'styles' | 'onMonthChange' | 'onChange'> {
+	/** Selected date, required with controlled input */
+	value?: Date | null;
+
+	/** Called when date changes */
+	onChange?(value: Date | null): void;
+
+	/** Default value for uncontrolled input */
+	defaultValue?: Date | null;
+
+	/** Set to false to force dropdown to stay open after date was selected */
+	closeCalendarOnChange?: boolean;
+
+	/** Set to true to open dropdown on clear */
+	openDropdownOnClear?: boolean;
+
+	/** dayjs input format */
+	inputFormat?: string;
+
+	/** Control initial dropdown opened state */
+	initiallyOpened?: boolean;
+
+	/** Parser function for date provided by input typing */
+	dateParser?: (value: string) => Date;
+
+	/** Input name, useful for uncontrolled variant to capture data with native form */
+	name?: string;
+
+	/** Set first day of the week */
+	firstDayOfWeek?: FirstDayOfWeek;
+
+	/** Allow free input */
+	allowFreeInput?: boolean;
+
+	/** Render day based on the date */
+	renderDay?(date: Date): React.ReactNode;
+}
+
 /* eslint-disable-next-line */
-export interface DateTimePickerProps extends CalendarSharedProps {
-	value: Date;
-	radius?: number;
+export interface DateTimePickerProps extends  DatePickerProps {
 	classNames?: any;
 	styles?: any;
-	defaultValue?: string;
 	shadow?: string;
 	locale?: string;
-	inputFormat?: string;
 	transitionDuration?: number;
-	transitionTimingFunction?: Function;
 	nextMonthLabel?: string;
 	previousMonthLabel?: string;
-	closeCalendarOnChange?: Boolean;
 	labelFormat?: string;
 	dayClassName?: (date: Date, modifiers: DayModifiers) => string;
 	dayStyle?: (date: Date, modifiers: DayModifiers) => CSSProperties;
@@ -35,17 +69,13 @@ export interface DateTimePickerProps extends CalendarSharedProps {
 	initiallyOpened?: boolean;
 	name?: string;
 	size?: MantineSize;
-	dropdownType?: string;
+	dropdownType?: 'popover' | 'modal';
 	clearable?: boolean;
 	placeholder?: string;
 	disabled?: boolean;
 	clearButtonLabel?: string;
 	fixOnBlur?: boolean;
 	withinPortal?: true;
-	dateParser?: Function;
-	firstDayOfWeek?: FirstDayOfWeek;
-	onFocus?: Function;
-	onBlur?: Function;
 	amountOfMonths?: number;
 	allowLevelChange?: boolean;
 	initialLevel?: 'date' | 'month' | 'year';
@@ -57,10 +87,8 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 		{
 			value,
 			onChange,
-			placeholder: string,
 			defaultValue,
 			classNames,
-			radius,
 			styles,
 			shadow = 'sm',
 			locale,
@@ -150,21 +178,17 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 			setInputState('');
 			setDropdownOpened(true);
 			inputRef.current?.focus();
-			// @ts-ignore
-			onChange(null);
 		};
 
-		const parseDate = (date: Date) => (dateParser ? dateParser(date) : moment(date, dateFormat, finalLocale).toDate());
+		const parseDate = (date: string) => (dateParser ? dateParser(date) : moment(date, dateFormat, finalLocale).toDate());
 
-		// @ts-ignore
-		const handleInputBlur = e => {
-			typeof onBlur === 'function' && onBlur(e);
+		const handleInputBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+			typeof onBlur === 'function' && onBlur(event);
 			setFocused(false);
 		};
 
-		// @ts-ignore
-		const handleInputFocus = e => {
-			typeof onFocus === 'function' && onFocus(e);
+		const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+			typeof onFocus === 'function' && onFocus(event);
 			setFocused(true);
 		};
 
@@ -215,7 +239,6 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 				transitionDuration={transitionDuration}
 				// @ts-ignore
 				ref={useMergedRef(ref, inputRef)}
-				radius={radius}
 				size={size}
 				styles={styles}
 				classNames={classNames}
@@ -266,7 +289,7 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 					<Anchor ml='xs' component='button' color='blue' onClick={handleNow}>
 						Now
 					</Anchor>
-					<TimeInput sx={t => ({ flexGrow: 1 })} icon={<Clock />} styles={{ controls: { justifyContent: 'center', marginLeft: -20 } }} disabled={!_value} value={_value} onChange={handleTimeChange} />
+					<TimeInput sx={t => ({ flexGrow: 1 })} icon={<Clock size={16} />} styles={{ controls: { justifyContent: 'center', marginLeft: -20 } }} disabled={!_value} value={_value} onChange={handleTimeChange} />
 					{!closeCalendarOnChange && (
 						<Button
 							mr='xs'

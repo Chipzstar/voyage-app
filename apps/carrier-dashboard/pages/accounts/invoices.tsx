@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
 import Container from '../../layout/Container'
 import { Tabs } from '@mantine/core'
-import { STATUS } from '@voyage-app/shared-types'
 import Invoices from '../../containers/Invoices'
 
+const TAB_LABELS = {
+	ALL: 'all',
+	INVOICED: 'invoiced',
+	PAID: 'paid',
+	OVERDUE: 'overdue'
+}
+
 const invoices = () => {
-	const [activeTab, setActiveTab] = useState(0);
+	const [activeTab, setActiveTab] = useState(TAB_LABELS.ALL);
 	return (
 		<Container classNames='py-4 px-8 h-screen'>
 			<div className='flex flex-col justify-evenly h-full'>
@@ -25,19 +31,25 @@ const invoices = () => {
 				</section>
 				<section>
 					<header className='page-subheading py-4'>Invoice History</header>
-					<Tabs active={activeTab} onTabChange={setActiveTab} grow>
-						<Tabs.Tab label='All'>
-							<Invoices message={<span className="text-center text-2xl">There are no upcoming Loads!"</span>}/>
-						</Tabs.Tab>
-						<Tabs.Tab label='Invoiced' >
-							<Invoices message={<span className="text-center text-2xl">There are no upcoming Loads!"</span>}/>
-						</Tabs.Tab>
-						<Tabs.Tab label='Paid'>
-							<Invoices message={<span className="text-center text-2xl">There are no upcoming Loads!"</span>}/>
-						</Tabs.Tab>
-						<Tabs.Tab label='Over Due'>
-							<Invoices message={<span className="text-center text-2xl">There are no upcoming Loads!"</span>}/>
-						</Tabs.Tab>
+					<Tabs value={activeTab} onTabChange={setActiveTab}>
+						<Tabs.List grow>
+							<Tabs.Tab value={TAB_LABELS.ALL}>All</Tabs.Tab>
+							<Tabs.Tab value={TAB_LABELS.INVOICED}>Invoiced</Tabs.Tab>
+							<Tabs.Tab value={TAB_LABELS.PAID}>Paid</Tabs.Tab>
+							<Tabs.Tab value={TAB_LABELS.OVERDUE}>Overdue</Tabs.Tab>
+						</Tabs.List>
+						<Tabs.Panel value={TAB_LABELS.ALL}>
+							<Invoices message={<span className="text-center text-2xl">You have no invoices</span>}/>
+						</Tabs.Panel>
+						<Tabs.Panel value={TAB_LABELS.INVOICED}>
+							<Invoices message={<span className="text-center text-2xl">You have no invoices</span>}/>
+						</Tabs.Panel>
+						<Tabs.Panel value={TAB_LABELS.PAID}>
+							<Invoices message={<span className="text-center text-2xl">You have no invoices</span>}/>
+						</Tabs.Panel>
+						<Tabs.Panel value={TAB_LABELS.OVERDUE}>
+							<Invoices message={<span className="text-center text-2xl">You have no invoices</span>}/>
+						</Tabs.Panel>
 					</Tabs>
 				</section>
 			</div>

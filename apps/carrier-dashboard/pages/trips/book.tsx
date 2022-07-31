@@ -1,15 +1,15 @@
-import React, { useCallback } from 'react'
-import { useRouter } from 'next/router'
-import { useForm } from '@mantine/form'
-import { numericId } from '@voyage-app/shared-utils'
-import moment from 'moment/moment'
-import { PACKAGE_TYPE, SHIPMENT_ACTIVITY } from '@voyage-app/shared-types'
+import React, { useCallback, useEffect } from 'react'
+import { useRouter } from 'next/router';
+import { useForm } from '@mantine/form';
+import { numericId } from '@voyage-app/shared-utils';
+import moment from 'moment/moment';
+import { PACKAGE_TYPE, SHIPMENT_ACTIVITY } from '@voyage-app/shared-types';
 // import { createShipment } from '../../store/features/shipmentsSlice';
-import { ChevronDown } from 'tabler-icons-react'
-import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core'
-import { DateTimePicker } from '@voyage-app/shared-ui-components'
-import Link from 'next/link'
-import Container from '../../layout/Container'
+import { Calendar, ChevronDown } from 'tabler-icons-react'
+import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { DateTimePicker } from '@voyage-app/shared-ui-components';
+import Link from 'next/link';
+import Container from '../../layout/Container';
 // import { createBooking } from '../../../shipper-dashboard/store/features/bookingsSlice';
 
 const book = props => {
@@ -45,7 +45,7 @@ const book = props => {
 		{ title: 'Book', href: '/trips/book' }
 	].map((item, index) => (
 		<Anchor component={Link} href={item.href} key={index}>
-			<span className="hover:text-secondary hover:underline">{item.title}</span>
+			<span className='hover:text-secondary hover:underline'>{item.title}</span>
 		</Anchor>
 	));
 
@@ -62,7 +62,7 @@ const book = props => {
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 lg:grid-cols-4 gap-20'>
 				<div id='quote-form-container' className='flex flex-col space-y-5 col-span-3'>
 					<div className='grid grid-cols-1 gap-6'>
-						<header className='quote-header'>Load Type</header>
+						<header className='form-header'>Load Type</header>
 						<div className='border border-gray-300 p-4 grid grid-cols-4 lg:grid-cols-12 lg:row-span-3 gap-y-4 gap-x-12 pb-12'>
 							<div className='lg:row-span-1 col-span-4'>
 								<TextInput
@@ -131,7 +131,7 @@ const book = props => {
 					</div>
 					<div className='grid grid-cols-2 gap-5'>
 						<div className='flex flex-col space-y-6'>
-							<header className='quote-header'>Pickup</header>
+							<header className='form-header'>Pickup</header>
 							<div className=''>
 								<TextInput size='md' radius={0} placeholder='Location name or Postal Code' {...form.getInputProps('pickupLocation')} />
 							</div>
@@ -140,7 +140,7 @@ const book = props => {
 							</div>
 						</div>
 						<div className='flex flex-col space-y-6'>
-							<header className='quote-header'>Delivery</header>
+							<header className='form-header'>Delivery</header>
 							<div className=''>
 								<TextInput size='md' radius={0} placeholder='Location name or Postal Code' {...form.getInputProps('deliveryLocation')} />
 							</div>
@@ -151,29 +151,31 @@ const book = props => {
 					</div>
 					<div className='grid grid-cols-2 gap-6'>
 						<div id='col-1'>
-							<div className='flex flex-col space-y-4'>
-								<header className='h-24 space-y-4'>
-									<h1 className='quote-header'>Scheduling</h1>
+							<div className='flex flex-col space-y-4 h-48'>
+								<header className='space-y-3 md:h-28'>
+									<h1 className='form-header'>Scheduling</h1>
 									<p className='font-normal'>Select a pickup date, and we’ll calculate a delivery date based on transit time.</p>
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<DateTimePicker
+										allowLevelChange={false}
 										radius={0}
+										icon={<Calendar size={16}/>}
 										size='md'
 										placeholder='Pickup Date'
 										inputFormat={'DD-MMM-YYYY HH:mm a'}
 										value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}
-										onChange={(value: Date) => form.setFieldValue('pickupDate', moment(value).unix())}
+										onChange={(value: Date) => form.setFieldValue('pickupDate', value ? moment(value).unix() : null)}
 										classNames={{ root: 'md:w-72' }}
 									/>
 								</div>
 							</div>
 						</div>
 						<div>
-							<div className='flex flex-col space-y-4'>
-								<header className='h-24 space-y-4'>
-									<h1 className='quote-header'>Select Vehicle</h1>
-									<p className='font-normal'>Select equipment Type</p>
+							<div className='flex flex-col space-y-4 h-48'>
+								<header className='space-y-3 md:h-28'>
+									<h1 className='form-header'>Select Vehicle</h1>
+									<p className='font-normal'>Select the type of vehicle required for this load</p>
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<Select
@@ -199,7 +201,7 @@ const book = props => {
 						<div id='col-1'>
 							<div className='flex flex-col space-y-4'>
 								<header className='space-y-4'>
-									<h1 className='quote-header'>Select Driver</h1>
+									<h1 className='form-header'>Select Driver</h1>
 									<p className='font-normal'>Select the driver who should carry out the load</p>
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
@@ -223,7 +225,7 @@ const book = props => {
 						<div>
 							<div className='flex flex-col space-y-4'>
 								<header className='space-y-4'>
-									<h1 className='quote-header'>Select Controller</h1>
+									<h1 className='form-header'>Select Controller</h1>
 									<p className='font-normal'>Select a controller from your team to oversee this load</p>
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
@@ -247,7 +249,6 @@ const book = props => {
 					</div>
 				</div>
 				<div id='button-container' className='flex flex-col flex-wrap justify-center space-y-8'>
-					{!!form.values.weight && !!form.values.pickupDate && <span className='text-4xl text-center w-auto'>£345.00</span>}
 					<button type='submit' className='voyage-button w-auto'>
 						Book
 					</button>
