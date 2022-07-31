@@ -2,24 +2,23 @@ import React, { forwardRef, useRef, useState } from 'react';
 import {
 	CloseButton,
 	createStyles,
+	DefaultProps,
+	extractSystemStyles,
 	Input,
 	INPUT_SIZES,
-	extractSystemStyles,
+	InputSharedProps,
+	InputStylesNames,
+	InputWrapperBaseProps,
+	InputWrapperStylesNames,
+	MantineShadow,
 	MantineSize,
 	MantineTransition,
-	Popover,
 	Modal,
 	ModalProps,
-	MantineShadow,
-	InputSharedProps,
-	InputWrapperBaseProps,
-	DefaultProps,
-	Selectors,
-	InputStylesNames,
-	InputWrapperStylesNames
+	Popover,
+	Selectors
 } from '@mantine/core';
-import { useClickOutside, useFocusTrap, useId, useMergedRef, useWindowEvent } from '@mantine/hooks';
-import { Calendar } from 'tabler-icons-react';
+import { useClickOutside, useId, useMergedRef, useWindowEvent } from '@mantine/hooks';
 import { CalendarBaseStylesNames } from '@mantine/dates';
 
 const RIGHT_SECTION_WIDTH = {
