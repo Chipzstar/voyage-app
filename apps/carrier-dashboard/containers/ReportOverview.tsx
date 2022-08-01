@@ -92,7 +92,7 @@ const ReportOverview = () => {
 				<Grid.Col md={6}>
 					<Card p='lg' radius='xs' shadow='sm' className='flex flex-wrap grow h-full'>
 						<Card.Section className="w-full" p="lg">
-							<header className='chart-header'>Fleet Utilization</header>
+							<header className='chart-header'>Dispatcher Scoreboard</header>
 							<DispatcherScoreboard/>
 						</Card.Section>
 					</Card>
