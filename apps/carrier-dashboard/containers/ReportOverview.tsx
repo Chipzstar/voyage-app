@@ -6,7 +6,7 @@ import moment from 'moment/moment';
 import OverviewPieChart from '../charts/OverviewPieChart';
 import InvoiceReport from '../charts/InvoiceReport'
 import DowntimeReport from '../charts/DowntimeReport'
-import AvailableTrucks from '../charts/AvailableTrucks'
+import DispatcherScoreboard from '../charts/DispatcherScoreboard'
 
 const ReportOverview = () => {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
@@ -92,8 +92,8 @@ const ReportOverview = () => {
 				<Grid.Col md={6}>
 					<Card p='lg' radius='xs' shadow='sm' className='flex flex-wrap grow h-full'>
 						<Card.Section className="w-full" p="lg">
-							<header className='chart-header'>Documents</header>
-							<AvailableTrucks/>
+							<header className='chart-header'>Fleet Utilization</header>
+							<DispatcherScoreboard/>
 						</Card.Section>
 					</Card>
 				</Grid.Col>

@@ -616,7 +616,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 		id: '',
 		customerId: `customer_${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
-		fullName: 'Black Adam',
+		fullName: 'John Smith',
 		firstname: 'Black',
 		lastname: 'Adam',
 		email: 'black.adam@example.com',
@@ -638,7 +638,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 		id: '',
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
-		fullName: 'Black Adam',
+		fullName: 'Michael Jackson',
 		firstname: 'Black',
 		lastname: 'Adam',
 		email: 'black.adam@example.com',
@@ -655,11 +655,12 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 
 		],
 		taxIDNumber: '322-82-0578'
-	},{
+	},
+	{
 		id: '',
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
-		fullName: 'Black Adam',
+		fullName: 'Mr Bean',
 		firstname: 'Black',
 		lastname: 'Adam',
 		email: 'black.adam@example.com',
@@ -681,7 +682,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 		id: '',
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
-		fullName: 'Black Adam',
+		fullName: 'Daniel Craig',
 		firstname: 'Black',
 		lastname: 'Adam',
 		email: 'black.adam@example.com',

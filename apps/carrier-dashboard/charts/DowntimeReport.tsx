@@ -42,7 +42,6 @@ const useStyles = createStyles(theme => ({
 
 const DowntimeReport = props => {
 	const { classes, theme } = useStyles();
-	const [scrolled, setScrolled] = useState(false);
 
 	return (
 		<Card p='xl' radius='md' className={classes.card}>
@@ -93,7 +92,7 @@ const DowntimeReport = props => {
 									{((2 / 4) * 100).toFixed(0)}%
 								</Text>
 								<Text align='center' size='xs' color='dimmed'>
-									Fleet Utilization
+									Driver Utilization
 								</Text>
 							</div>
 						}

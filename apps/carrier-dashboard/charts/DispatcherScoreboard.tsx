@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { createStyles, ScrollArea, Table } from '@mantine/core'
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { createStyles, ScrollArea, Table } from '@mantine/core';
+import { SAMPLE_CUSTOMERS } from '../utils/constants';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(theme => ({
 	header: {
 		position: 'sticky',
 		top: 0,
@@ -39,28 +40,47 @@ const useStyles = createStyles((theme) => ({
 	}
 }));
 
-const AvailableTrucks = props => {
+const DispatcherScoreboard = props => {
 	const { classes, cx } = useStyles();
 	const [scrolled, setScrolled] = useState(false);
+	const rows = SAMPLE_CUSTOMERS.map((element, index) => (
+		<tr key={index}>
+			<td className='flex items-center'>
+				<div className='p-2 bg-voyage-grey h-2 w-2'>
+					<span>{index + 1}</span>
+				</div>
+				<span>
+					{element.fullName}
+				</span>
+			</td>
+			<td>
+				<span>100</span>
+			</td>
+			<td>
+				<span>£2000</span>
+			</td>
+			<td>
+				<span>£500</span>
+			</td>
+		</tr>
+	));
 	return (
 		<ScrollArea sx={{ height: 250 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
-			<Table>
+			<Table verticalSpacing={8}>
 				<thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
-				<tr>
-					<th>Load ID</th>
-					<th>BOL</th>
-					<th>Original BOL</th>
-					<th>Signed BOL</th>
-					<th>Rate Confirmation</th>
-				</tr>
+					<tr>
+						<th>Ranking</th>
+						<th>No. of loads</th>
+						<th>Total Revenue</th>
+						<th>Avg RPM</th>
+					</tr>
 				</thead>
+				<tbody>{rows}</tbody>
 			</Table>
 		</ScrollArea>
-	)
-}
+	);
+};
 
-AvailableTrucks.propTypes = {
-	
-}
+DispatcherScoreboard.propTypes = {}
 
-export default AvailableTrucks
+export default DispatcherScoreboard
