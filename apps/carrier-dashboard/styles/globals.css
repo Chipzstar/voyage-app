@@ -32,6 +32,9 @@
     .page-subheading {
         @apply text-2xl font-medium
     }
+    .chart-header {
+        @apply text-2xl
+    }
     .voyage-button {
         @apply bg-secondary-500 hover:bg-secondary-700 text-white font-semibold h-12 md:w-48
     }

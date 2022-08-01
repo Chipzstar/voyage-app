@@ -60,13 +60,13 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 			</div>
 			{dropdownOpen && (
 				<ul id='dropdown-example' className='py-2 space-y-2 transition ease-in-out delay-150 duration-300'>
-					{options.map(option => {
+					{options.map((option, index) => {
 						const dropdownStyles = classNames({
 							'hover:bg-gray-200': true,
 							'bg-gray-200': option.isActive
 						});
 						return (
-							<li role='button' className={`${dropdownStyles}`}>
+							<li key={index} role='button' className={`${dropdownStyles}`}>
 								<Link href={option.href}>
 									<div className='flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 group pl-11'>{option.title}</div>
 								</Link>

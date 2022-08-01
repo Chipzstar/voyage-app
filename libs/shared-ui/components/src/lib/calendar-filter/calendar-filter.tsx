@@ -8,11 +8,13 @@ export type DateRange = [Date | null, Date | null];
 export interface CalendarFilterProps {
 	current: DateRange;
 	setCurrent: (date: DateRange | null) => void;
+	amountOfMonths?: number;
 }
 
-export function CalendarFilter({ current, setCurrent }: CalendarFilterProps) {
+export function CalendarFilter({ current, setCurrent, amountOfMonths=1 }: CalendarFilterProps) {
 	return (
 		<DateRangePicker
+			amountOfMonths={amountOfMonths}
 			size='md'
 			radius={0}
 			inputFormat='DD.MM.YYYY'
