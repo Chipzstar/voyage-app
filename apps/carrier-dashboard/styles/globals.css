@@ -14,8 +14,8 @@
 }
 
 @layer components {
-    .page-container{
-        height: calc(100vh - 80px);
+    .tab-container{
+        height: calc(100vh - 36px);
     }
     .display-1 {
         @apply text-8xl font-medium

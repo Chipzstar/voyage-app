@@ -22,6 +22,9 @@ module.exports = {
 				'voyage-grey': {
 					DEFAULT: '#CCCCCC'
 				},
+				'voyage-background': {
+					DEFAULT: '#F6F7F9'
+				},
 				'secondary': {
 					DEFAULT: '#3646F5',
 					'50': '#E5E7FE',

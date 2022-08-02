@@ -31,10 +31,31 @@ export const PATHS = {
 	PAYMENTS: '/accounts/payments',
 	INVOICES: '/accounts/invoices',
 	BASIC_REPORT: '/reports',
-	FUEL_REPORT: '/reports/fuel',
-
-
+	FUEL_REPORT: '/reports/fuel'
 };
+
+export const SETTINGS_TABS = [
+	{
+		value: 'organisation',
+		label: 'Organisation'
+	},
+	{
+		value: 'financial',
+		label: 'Financial'
+	},
+	{
+		value: 'accounting',
+		label: 'Accounting'
+	},
+	{
+		value: 'document-types',
+		label: 'Document Types	'
+	},
+	{
+		value: 'bulk-import',
+		label: 'Bulk Import'
+	},
+]
 
 const pickupFacilityId = `facility_${nanoid(24)}`;
 const deliveryFacilityId = `facility_${nanoid(24)}`;
