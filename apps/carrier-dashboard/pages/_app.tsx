@@ -7,7 +7,6 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
 import { store } from '../store'
-import Favicon from '../components/Favicon'
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
@@ -38,7 +37,6 @@ function App({ Component, pageProps }: AppProps) {
 				<ModalsProvider>
 					<Layout>
 						<Head>
-							<Favicon />
 							<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 							<title>Carrier Dashboard</title>
 						</Head>

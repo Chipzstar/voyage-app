@@ -1,8 +1,11 @@
 import React from 'react'
+import PageContainer from '../../layout/PageContainer'
 
 const settings = () => {
 	return (
-		<div className='container py-5'/>
+		<PageContainer>
+
+		</PageContainer>
 	)
 }
 
