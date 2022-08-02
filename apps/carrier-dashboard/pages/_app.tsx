@@ -7,7 +7,7 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
 import { store } from '../store'
-import { Favicon } from '../components/Favicon'
+import Favicon from '../components/Favicon'
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
