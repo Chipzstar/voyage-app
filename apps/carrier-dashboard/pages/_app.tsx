@@ -1,6 +1,5 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import Favicon from '../components/Favicon';
 import '../styles/globals.css';
 import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
@@ -8,10 +7,11 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
 import { store } from '../store'
+import { Favicon } from '@voyage-app/shared-ui-components'
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
-import 'nprogress/nprogress.css'; //styles of nprogress
+import 'nprogress/nprogress.css';
 //Binding events.
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());

@@ -1,6 +1,6 @@
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import Favicon from '../components/Favicon';
+import { Favicon } from '@voyage-app/shared-ui-components'
 
 const getInitialProps = createGetInitialProps();
 

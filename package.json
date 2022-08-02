@@ -25,6 +25,7 @@
     "nx:carrier:serve:local": "doppler run -p carrier-dashboard -c loc -- nx serve carrier-dashboard --prod",
     "nx:carrier:serve:prod": "nx serve carrier-dashboard --prod --hostname 0.0.0.0",
     "nx:carrier:build:prod:verbose": "nx build carrier-dashboard --prod --verbose",
+    "nx:carrier:test:prod": "nx build carrier-dashboard --prod && doppler run -p carrier-dashboard -c loc -- nx serve carrier-dashboard --prod",
     "nx:cache-clean": "nx clear-cache",
     "prisma:generate": "npx prismerge -i prismerge.json && npx prisma generate"
   },
