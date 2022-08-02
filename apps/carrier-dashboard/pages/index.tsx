@@ -17,31 +17,6 @@ export function Index(props) {
 			<div>
 				<Map height={160} />
 			</div>
-			{/*<div className='grid grid-cols-1 lg:grid-cols-2 gap-8 h-fit'>
-				<div className='border border-voyage-grey p-4'>
-					<header className='chart-header'>
-						Overall Performance
-					</header>
-				</div>
-				<div className='border border-voyage-grey p-4 flex'>
-					<header className='chart-header'>
-						Business
-					</header>
-					<div></div>
-				</div>
-				<div className='border border-voyage-grey p-4 flex'>
-					<header className='chart-header'>
-						Trips Overview
-					</header>
-					<div></div>
-				</div>
-				<div className='border border-voyage-grey p-4 flex'>
-					<header className='chart-header'>
-						Available Loads
-					</header>
-					<div></div>
-				</div>
-			</div>*/}
 		</div>
 	);
 }

@@ -1,6 +1,7 @@
 {
     "name": "Voyage",
     "short_name": "Voyage",
+    "description": "Voyage all-in-one tech platform optimizes your entire middle mile operations with a broad network of carriers and cross-docks facilities.",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

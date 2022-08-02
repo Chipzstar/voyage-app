@@ -11,6 +11,7 @@ import { store } from '../store'
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css';
+import Favicon from '../components/Favicon'
 //Binding events.
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -38,6 +39,7 @@ function App({ Component, pageProps }: AppProps) {
 					<Layout>
 						<Head>
 							<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+							<Favicon/>
 							<title>Carrier Dashboard</title>
 						</Head>
 						<main className='app'>
