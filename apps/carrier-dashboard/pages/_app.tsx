@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/globals.css';
+import Favicon from '../components/Favicon'
 import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
@@ -11,7 +12,6 @@ import { store } from '../store'
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css';
-import Favicon from '../components/Favicon'
 //Binding events.
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
