@@ -3,7 +3,7 @@ import PageNav from '../../../layout/PageNav';
 import { Anchor, NumberInput, Select, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
-import Container from '../../../layout/Container';
+import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
 import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_TYPES } from '../../../utils/types';
 import dayjs from 'dayjs';
@@ -50,7 +50,7 @@ const create = () => {
 	));
 
 	return (
-		<Container classNames='px-8 h-screen flex flex-col'>
+		<ContentContainer classNames='px-8 h-screen flex flex-col'>
 			<PageNav items={items} />
 			<div className='flex flex-col items-center justify-center h-full'>
 				<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -139,7 +139,7 @@ const create = () => {
 					<button className='voyage-button'>Save</button>
 				</div>
 			</div>
-		</Container>
+		</ContentContainer>
 	);
 };
 

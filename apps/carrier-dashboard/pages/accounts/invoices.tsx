@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Container from '../../layout/Container'
+import ContentContainer from '../../layout/ContentContainer'
 import { Tabs } from '@mantine/core'
 import Invoices from '../../containers/Invoices'
 
@@ -13,7 +13,7 @@ const TAB_LABELS = {
 const invoices = () => {
 	const [activeTab, setActiveTab] = useState(TAB_LABELS.ALL);
 	return (
-		<Container classNames='py-4 px-8 h-screen'>
+		<ContentContainer classNames='py-4 px-8 h-screen'>
 			<div className='flex flex-col justify-evenly h-full'>
 				<section className='border border-voyage-grey py-10 px-20 flex justify-around'>
 					<div className="flex flex-col items-center space-y-4">
@@ -53,7 +53,7 @@ const invoices = () => {
 					</Tabs>
 				</section>
 			</div>
-		</Container>
+		</ContentContainer>
 	)
 }
 

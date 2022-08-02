@@ -1,7 +1,7 @@
 import React from 'react'
 import { PATHS, SAMPLE_CUSTOMERS } from '../../../utils/constants'
 import { useRouter } from 'next/router';
-import Container from '../../../layout/Container'
+import ContentContainer from '../../../layout/ContentContainer'
 import { TextInput } from '@mantine/core'
 import { Search } from 'tabler-icons-react'
 import DataGrid from '../../../components/DataGrid'
@@ -40,7 +40,7 @@ const customers = () => {
 		);
 	});
 	return (
-		<Container classNames='py-4 px-8 min-h-screen'>
+		<ContentContainer classNames='py-4 px-8 min-h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' size="md"/>
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_ACCOUNT)}>
@@ -53,7 +53,7 @@ const customers = () => {
 				emptyContent={<Empty message={<span className="text-center text-2xl">You have no team members<br/>Click the 'Add Member' button to add a new member</span>}/>}
 				spacingY='md'
 			/>
-		</Container>
+		</ContentContainer>
 	);
 };
 

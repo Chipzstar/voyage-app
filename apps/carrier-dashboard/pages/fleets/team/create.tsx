@@ -3,7 +3,7 @@ import PageNav from '../../../layout/PageNav';
 import { Anchor, Select, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
-import Container from '../../../layout/Container';
+import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
 import { Team, TeamRole } from '../../../utils/types';
 import { alphanumericId, capitalize } from '@voyage-app/shared-utils'
@@ -39,7 +39,7 @@ const create = () => {
 	}, []);
 
 	return (
-		<Container classNames='px-8 h-screen flex flex-col'>
+		<ContentContainer classNames='px-8 h-screen flex flex-col'>
 			<PageNav items={items} />
 			<div className='flex flex-col items-center justify-center h-full'>
 				<form onSubmit={form.onSubmit(handleSubmit)}>
@@ -76,7 +76,7 @@ const create = () => {
 					</div>
 				</form>
 			</div>
-		</Container>
+		</ContentContainer>
 	);
 };
 

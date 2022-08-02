@@ -9,7 +9,7 @@ import { Calendar, ChevronDown } from 'tabler-icons-react'
 import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
 import Link from 'next/link';
-import Container from '../../layout/Container';
+import ContentContainer from '../../layout/ContentContainer';
 // import { createBooking } from '../../../shipper-dashboard/store/features/bookingsSlice';
 
 const book = props => {
@@ -55,7 +55,7 @@ const book = props => {
 	}, []);
 
 	return (
-		<Container>
+		<ContentContainer>
 			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
@@ -257,7 +257,7 @@ const book = props => {
 					</button>
 				</div>
 			</form>
-		</Container>
+		</ContentContainer>
 	);
 };
 

@@ -1,6 +1,6 @@
 import { Tabs } from '@mantine/core';
 import React from 'react';
-import Container from '../../layout/Container';
+import ContentContainer from '../../layout/ContentContainer';
 import { capitalize } from '@voyage-app/shared-utils';
 import ReportOverview from '../../containers/ReportOverview'
 
@@ -14,7 +14,7 @@ const TAB_LABELS = {
 
 const reporting = () => {
 	return (
-		<Container classNames="pb-4 min-h-screen">
+		<ContentContainer classNames="pb-4 min-h-screen">
 			<Tabs defaultValue={TAB_LABELS.OVERVIEW}>
 				<Tabs.List>
 					{Object.values(TAB_LABELS).map((label, index) => (
@@ -25,7 +25,7 @@ const reporting = () => {
 					<ReportOverview/>
 				</Tabs.Panel>
 			</Tabs>
-		</Container>
+		</ContentContainer>
 	);
 };
 

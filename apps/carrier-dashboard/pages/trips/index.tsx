@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import Trips from '../../containers/Trips';
 import { STATUS } from '@voyage-app/shared-types';
+import PageContainer from '../../layout/PageContainer'
 
 const TAB_LABELS = {
 	UPCOMING: 'upcoming',
@@ -12,7 +13,7 @@ const TAB_LABELS = {
 const trips = () => {
 	const [activeTab, setActiveTab] = useState<string | null>(TAB_LABELS.UPCOMING);
 	return (
-		<div className='py-5 h-screen'>
+		<PageContainer>
 			<header className="page-header px-5 mb-5">Live Trips</header>
 			<Tabs value={activeTab} onTabChange={setActiveTab}>
 				<Tabs.List grow>
@@ -25,7 +26,7 @@ const trips = () => {
 				<Tabs.Panel value={TAB_LABELS.IN_TRANSIT}><Trips statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]} message={<span className="text-center text-2xl">You have no loads in-transit</span>} /></Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.COMPLETED}><Trips statuses={[STATUS.COMPLETED]} message={<span className="text-center text-2xl">You have no completed trips</span>}/></Tabs.Panel>
 			</Tabs>
-		</div>
+		</PageContainer>
 	);
 };
 

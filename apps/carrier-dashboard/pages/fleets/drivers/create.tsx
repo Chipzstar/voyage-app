@@ -3,7 +3,7 @@ import PageNav from '../../../layout/PageNav'
 import { Anchor } from '@mantine/core'
 import Link from 'next/link'
 import { PATHS } from '../../../utils/constants'
-import Container from '../../../layout/Container'
+import ContentContainer from '../../../layout/ContentContainer'
 
 const create = () => {
 	const items = [
@@ -16,9 +16,9 @@ const create = () => {
 		</Anchor>
 	));
 	return (
-		<Container>
+		<ContentContainer>
 			<PageNav items={items}/>
-		</Container>
+		</ContentContainer>
 	)
 }
 

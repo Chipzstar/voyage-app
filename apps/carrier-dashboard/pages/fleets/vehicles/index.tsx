@@ -4,7 +4,7 @@ import { Empty } from '@voyage-app/shared-ui-components';
 import { Search } from 'tabler-icons-react';
 import { PATHS, SAMPLE_VEHICLES } from '../../../utils/constants';
 import DataGrid from '../../../components/DataGrid';
-import Container from '../../../layout/Container';
+import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 
 const vehicles = () => {
@@ -43,7 +43,7 @@ const vehicles = () => {
 		);
 	});
 	return (
-		<Container classNames='py-4 px-8 h-screen flex flex-col'>
+		<ContentContainer classNames='py-4 px-8 h-screen flex flex-col'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' size="md"/>
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_VEHICLE)}>
@@ -56,7 +56,7 @@ const vehicles = () => {
 				emptyContent={<Empty message={<span className="text-center text-2xl">You have no vehicles<br/>Click the 'Add Vehicle' button to add one</span>}/>}
 				spacingY='md'
 			/>
-		</Container>
+		</ContentContainer>
 	);
 };
 

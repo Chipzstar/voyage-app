@@ -5,7 +5,7 @@ import { PATHS } from '../../../utils/constants';
 import { Anchor, Button, Card, Select, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import PageNav from '../../../layout/PageNav';
-import Container from '../../../layout/Container';
+import ContentContainer from '../../../layout/ContentContainer';
 import { Trash, User } from 'tabler-icons-react'
 import { SelectInputData } from '@voyage-app/shared-types';
 import { capitalize, sanitize } from '@voyage-app/shared-utils';
@@ -48,7 +48,7 @@ const create = () => {
 	));
 
 	return (
-		<Container classNames='px-8 h-screen flex flex-col overflow-y-auto pb-5'>
+		<ContentContainer classNames='px-8 h-screen flex flex-col overflow-y-auto pb-5'>
 			<PageNav items={items} />
 			<form onSubmit={form.onSubmit(handleSubmit)} className='flex flex-col h-full'>
 				<main className='grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8'>
@@ -139,7 +139,7 @@ const create = () => {
 					<button className='voyage-button'>Save</button>
 				</div>
 			</form>
-		</Container>
+		</ContentContainer>
 	);
 };
 

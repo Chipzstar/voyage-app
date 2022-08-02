@@ -7,7 +7,7 @@ import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-t
 import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
 import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
 import { DateRangePicker } from '@mantine/dates';
-import Container from '../../layout/Container'
+import ContentContainer from '../../layout/ContentContainer'
 import PageNav from '../../layout/PageNav'
 
 const marketplace = () => {
@@ -38,7 +38,7 @@ const marketplace = () => {
 	}, []);
 
 	return (
-		<Container>
+		<ContentContainer>
 			<PageNav items={items}/>
 			<form className='flex flex-row pb-8 space-x-3'>
 				<div className='flex'>
@@ -127,7 +127,7 @@ const marketplace = () => {
 					</main>
 				))}
 			</SimpleGrid>
-		</Container>
+		</ContentContainer>
 	);
 };
 
