@@ -10,7 +10,7 @@ ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
 	return (
-		<div className='py-4 px-8 h-full'>
+		<div className='py-4 px-8 h-full overflow-y-auto'>
 			<div className='flex justify-between mb-5'>
 				<header className="page-header">Truck board</header>
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
