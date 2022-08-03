@@ -82,7 +82,7 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 							className='h-12'
 							onClick={() => {
 								const prevIndex = pageIndex - 1;
-								router.push(`${PATHS.SHIPMENTS}/${shipments[prevIndex].id}`);
+								router.push(`${PATHS.SHIPMENTS}/${shipments[prevIndex].shipmentId}`);
 							}}
 						>
 							<span className='text-lg'>Prev</span>
@@ -96,7 +96,7 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 							className='h-12'
 							onClick={() => {
 								const nextIndex = pageIndex + 1;
-								router.push(`${PATHS.SHIPMENTS}/${shipments[nextIndex].id}`);
+								router.push(`${PATHS.SHIPMENTS}/${shipments[nextIndex].shipmentId}`);
 							}}
 						>
 							<span className='text-lg'>Next</span>

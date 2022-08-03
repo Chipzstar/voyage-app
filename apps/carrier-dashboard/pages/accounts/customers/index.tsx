@@ -17,7 +17,7 @@ const customers = () => {
 					<span>{element.companyName}</span>
 				</td>
 				<td colSpan={1}>
-					<span>{element.firstname} {element.lastname}</span>
+					<span>{element.fullName}</span>
 				</td>
 				<td colSpan={1} className="w-64">
 					<div className='flex flex-col flex-shrink flex-wrap'>
