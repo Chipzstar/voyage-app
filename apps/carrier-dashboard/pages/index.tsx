@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import Map from '../components/Map';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
+import TruckLoadTimeline from '../components/TruckLoadTimeline'
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -14,9 +15,8 @@ export function Index(props) {
 				<header className="page-header">Truck board</header>
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
 			</div>
-			<div>
-				<Map height={160} />
-			</div>
+			<Map height={250} />
+			<TruckLoadTimeline/>
 		</div>
 	);
 }

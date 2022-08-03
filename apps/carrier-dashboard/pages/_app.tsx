@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/globals.css';
+import 'react-big-calendar/lib/sass/styles.scss';
 import Favicon from '../components/Favicon'
 import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
