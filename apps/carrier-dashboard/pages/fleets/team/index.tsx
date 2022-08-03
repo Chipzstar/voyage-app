@@ -2,14 +2,17 @@ import React from 'react';
 import { Switch, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Search } from 'tabler-icons-react';
-import { PATHS, SAMPLE_TEAM } from '../../../utils/constants';
+import { PATHS } from '../../../utils/constants';
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux'
+import { useMembers } from '../../../store/feature/memberSlice'
 
 const team = () => {
 	const router = useRouter();
-	const rows = SAMPLE_TEAM.map((element, index) => {
+	const team = useSelector(useMembers)
+	const rows = team.map((element, index) => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>

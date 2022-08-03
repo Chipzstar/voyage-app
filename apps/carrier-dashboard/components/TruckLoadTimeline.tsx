@@ -25,7 +25,7 @@ const TruckLoadTimeline = props => {
 						return (
 							<div role='button' style={{
 								backgroundColor: value.event.bgColor,
-							}} className='flex flex-col px-1' onClick={() => router.push(`${PATHS.TRIPS}/${value.event.id}`)}>
+							}} className='flex flex-col px-1 rounded-lg shadow-md p-1 border border-1' onClick={() => router.push(`${PATHS.TRIPS}/${value.event.id}`)}>
 								<span className='text-xs font-semibold text-secondary'>{value.event.id}</span>
 								<span className='text-sm'>{value.event.title}</span>
 							</div>

@@ -94,6 +94,7 @@ export interface Driver {
 	driverId: string;
 	vehicleId?: string;
 	dob?: UnixTimestamp;
+	fullName: string;
 	firstname: string;
 	lastname: string;
 	email: string;
@@ -105,6 +106,7 @@ export interface Driver {
 	addressLine1: string;
 	addressLine2: string;
 	city: string;
+	region?: string;
    postcode: string;
 	fleetId?: string;
 	notes?: string;

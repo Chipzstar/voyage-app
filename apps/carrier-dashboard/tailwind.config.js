@@ -20,10 +20,20 @@ module.exports = {
 			},
 			colors:{
 				'voyage-grey': {
-					DEFAULT: '#CCCCCC'
+					DEFAULT: '#CCCCCC',
+					'50': '#FFFFFF',
+					'100': '#FFFFFF',
+					'200': '#FFFFFF',
+					'300': '#F5F5F5',
+					'400': '#E0E0E0',
+					'500': '#CCCCCC',
+					'600': '#B0B0B0',
+					'700': '#949494',
+					'800': '#787878',
+					'900': '#5C5C5C'
 				},
 				'voyage-background': {
-					DEFAULT: '#F6F7F9'
+					DEFAULT: '#F6F7F9',
 				},
 				'secondary': {
 					DEFAULT: '#3646F5',

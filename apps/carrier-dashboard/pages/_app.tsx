@@ -2,13 +2,14 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/globals.css';
 import 'react-big-calendar/lib/sass/styles.scss';
-import Favicon from '../components/Favicon'
+import Favicon from '../components/Favicon';
 import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
-import { store } from '../store'
+import { NotificationsProvider } from '@mantine/notifications'
+import { store } from '../store';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
@@ -36,21 +37,23 @@ function App({ Component, pageProps }: AppProps) {
 					colorScheme: 'light'
 				}}
 			>
-				<ModalsProvider>
-					<Layout>
-						<Head>
-							<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-							<Favicon/>
-							<title>Carrier Dashboard</title>
-						</Head>
-						<main className='app'>
-							<Component {...pageProps} />
-						</main>
-					</Layout>
-				</ModalsProvider>
+				<NotificationsProvider position="top-right">
+					<ModalsProvider>
+						<Layout>
+							<Head>
+								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+								<Favicon />
+								<title>Carrier Dashboard</title>
+							</Head>
+							<main className='app'>
+								<Component {...pageProps} />
+							</main>
+						</Layout>
+					</ModalsProvider>
+				</NotificationsProvider>
 			</MantineProvider>
 		</Provider>
 	);
 }
 
-export default App;
+export default App

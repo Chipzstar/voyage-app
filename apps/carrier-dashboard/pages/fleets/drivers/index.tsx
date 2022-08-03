@@ -6,11 +6,14 @@ import { PATHS, SAMPLE_DRIVERS } from '../../../utils/constants';
 import { useRouter } from 'next/router';
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components'
+import { useSelector } from 'react-redux'
+import { useDrivers } from '../../../store/feature/driverSlice'
 
 
 const drivers = () => {
 	const router = useRouter();
-	const rows = SAMPLE_DRIVERS.map((element, index) => {
+	const drivers = useSelector(useDrivers)
+	const rows = drivers.map((element, index) => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>

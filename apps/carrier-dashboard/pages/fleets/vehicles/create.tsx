@@ -76,10 +76,10 @@ const create = () => {
 							<TextInput label='Registration Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('regNumber')} />
 						</div>
 						<div>
-							<TextInput type='email' label='Vehicle Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('vehicleName')} />
+							<TextInput label='Vehicle Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('vehicleName')} />
 						</div>
 						<div>
-							<TextInput type='tel' label='Engine Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('engineNumber')} />
+							<TextInput label='Engine Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('engineNumber')} />
 						</div>
 						<div className='col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
 							<TextInput label='Make' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('make')} />

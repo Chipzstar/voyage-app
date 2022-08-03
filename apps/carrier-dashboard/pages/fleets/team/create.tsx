@@ -8,11 +8,19 @@ import { useForm } from '@mantine/form';
 import { Team, TeamRole } from '../../../utils/types';
 import { alphanumericId, capitalize } from '@voyage-app/shared-utils'
 import { SelectInputData } from '@voyage-app/shared-types';
+import { addMember } from '../../../store/feature/memberSlice'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '../../../store'
+import { useRouter } from 'next/router'
+import { showNotification } from '@mantine/notifications';
+import { Check } from 'tabler-icons-react';
 
 const create = () => {
+	const dispatch = useDispatch<AppDispatch>()
+	const router = useRouter()
 	const initialValues: Team = {
 		id: '',
-		memberId: `user_${alphanumericId(16)}`,
+		memberId: `MEMBER-ID${alphanumericId(8)}`,
 		role: TeamRole.ADMIN,
 		firstname: '',
 		lastname: '',
@@ -36,6 +44,20 @@ const create = () => {
 
 	const handleSubmit = useCallback(values => {
 		console.log(values);
+		dispatch(addMember(values))
+		showNotification({
+			id: 'new-member-success',
+			disallowClose: true,
+			onClose: () => console.log('unmounted'),
+			onOpen: () => console.log('mounted'),
+			autoClose: 5000,
+			title: "Success",
+			message: 'A new member has been added to your team!',
+			color: 'green',
+			icon: <Check size={20}/>,
+			loading: false,
+		});
+		setTimeout(() => router.push(PATHS.TEAM), 1000)
 	}, []);
 
 	return (
@@ -45,19 +67,20 @@ const create = () => {
 				<form onSubmit={form.onSubmit(handleSubmit)}>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-10'>
 						<div>
-							<TextInput className="w-96" label='First Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('firstname')} />
+							<TextInput required className="w-96" label='First Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('firstname')} />
 						</div>
 						<div>
-							<TextInput className="w-96" label='Last Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('lastname')} />
+							<TextInput required className="w-96" label='Last Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('lastname')} />
 						</div>
 						<div>
-							<TextInput type="email" className="w-96" label='Email Address' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('email')} />
+							<TextInput required type="email" className="w-96" label='Email Address' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('email')} />
 						</div>
 						<div>
-							<TextInput type="tel" className="w-96" label='Phone Number' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('phone')} />
+							<TextInput required type="tel" className="w-96" label='Phone Number' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('phone')} />
 						</div>
 						<div>
 							<Select
+								required
 								className="w-96" label='Role'
 								radius={0}
 								autoCapitalize='on'
@@ -70,7 +93,7 @@ const create = () => {
 						</div>
 					</div>
 					<div>
-						<button className='voyage-button'>
+						<button type="submit" className='voyage-button'>
 							Save
 						</button>
 					</div>

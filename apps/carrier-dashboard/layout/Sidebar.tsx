@@ -124,7 +124,11 @@ const Sidebar = () => {
 			submenu: true,
 			isActive: router.pathname.includes(PATHS.REPORTING),
 			menuItems: [
-				{ title: 'Basic Reports', href: PATHS.BASIC_REPORT, isActive: router.pathname.includes(PATHS.BASIC_REPORT) },
+				{
+					title: 'Basic Reports',
+					href: PATHS.BASIC_REPORT,
+					isActive: router.pathname.includes(PATHS.BASIC_REPORT)
+				},
 				{ title: 'Fuel', href: PATHS.FUEL_REPORT, isActive: router.pathname === PATHS.FUEL_REPORT }
 			]
 		},
@@ -139,7 +143,7 @@ const Sidebar = () => {
 					<span className='self-center text-2xl font-semibold whitespace-nowrap mb-0.5'>voyage</span>
 				</div>
 			</Link>
-			<div className="grow flex flex-col overflow-y-auto">
+			<div className='grow flex flex-col overflow-y-auto'>
 				<ul className='grow space-y-4'>
 					{Menu.map((item, index) =>
 						item?.submenu ? <SideMenuDropdown key={index} title={item.title} isActive={item.isActive} options={item.menuItems} /> : <SideMenuItem key={index} title={item.title} href={item.href} isActive={false} />
