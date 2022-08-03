@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
 import { useDispatch } from 'react-redux';
+import { ScrollArea } from '@mantine/core';
 
 interface NavMenuItem {
 	title: string;
@@ -124,7 +125,11 @@ const Sidebar = () => {
 			submenu: true,
 			isActive: router.pathname.includes(PATHS.REPORTING),
 			menuItems: [
-				{ title: 'Basic Reports', href: PATHS.BASIC_REPORT, isActive: router.pathname.includes(PATHS.BASIC_REPORT) },
+				{
+					title: 'Basic Reports',
+					href: PATHS.BASIC_REPORT,
+					isActive: router.pathname.includes(PATHS.BASIC_REPORT)
+				},
 				{ title: 'Fuel', href: PATHS.FUEL_REPORT, isActive: router.pathname === PATHS.FUEL_REPORT }
 			]
 		},
@@ -139,7 +144,7 @@ const Sidebar = () => {
 					<span className='self-center text-2xl font-semibold whitespace-nowrap mb-0.5'>voyage</span>
 				</div>
 			</Link>
-			<div className="grow flex flex-col overflow-y-auto">
+			<ScrollArea style={{ width: '100%', height: '100%' }}>
 				<ul className='grow space-y-4'>
 					{Menu.map((item, index) =>
 						item?.submenu ? <SideMenuDropdown key={index} title={item.title} isActive={item.isActive} options={item.menuItems} /> : <SideMenuItem key={index} title={item.title} href={item.href} isActive={false} />
@@ -157,7 +162,7 @@ const Sidebar = () => {
 					<Logout size={30} strokeWidth={1} color={'black'} />
 					<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
 				</div>
-			</div>
+			</ScrollArea>
 		</div>
 	);
 };
