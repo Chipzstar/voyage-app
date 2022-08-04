@@ -25,7 +25,12 @@ export const memberSlice = createSlice({
 	}
 })
 
-export const useMembers = state => state['members']
+// export const useMembers = state => state['members']
+
+export const useMembers = state => {
+	let team: Team[] = state['members'];
+	return [...team].sort((a, b) => b.createdAt - a.createdAt)
+};
 
 export const { addMember } = memberSlice.actions;
 

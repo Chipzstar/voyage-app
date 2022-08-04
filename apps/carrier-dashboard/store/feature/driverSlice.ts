@@ -26,13 +26,12 @@ export const driverSlice = createSlice({
 	}
 })
 
-export const useDrivers = (state) : Driver[] => state['drivers']
+/*export const useDrivers = (state) : Driver[] => state['drivers']*/
 
-/*export const useDrivers = (state) : Driver[] => {
+export const useDrivers = (state) : Driver[] => {
 	let drivers: Driver[] = state['drivers'];
-	drivers.sort((a, b) => b.createdAt - a.createdAt)
-	return drivers
-}*/
+	return [...drivers].sort((a, b) => b.createdAt - a.createdAt)
+}
 
 export const { addDriver } = driverSlice.actions;
 

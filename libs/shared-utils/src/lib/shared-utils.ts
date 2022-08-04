@@ -27,5 +27,10 @@ export function getYears(amount: number) : string[]{
 	return [...Array(amount).keys()].map(pos => moment().subtract(pos, "y").year().toString())
 }
 
+export function sortByDate(data, order="desc") {
+	order === "desc" ? data.sort((a, b) => b['createdAt'] - a['createdAt']) : data.sort((a, b) => a['createdAt'] - b['createdAt'])
+	return data
+}
+
 export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 export const numericId = customAlphabet('1234567890');

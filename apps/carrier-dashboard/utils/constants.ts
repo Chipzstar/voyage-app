@@ -649,7 +649,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 export const SAMPLE_CUSTOMERS: Customer[] = [
 	{
 		id: '',
-		createdAt: moment().subtract(1, 'day').unix(),
+		createdAt: moment().subtract(7, 'day').unix(),
 		customerId: `customer_${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'John Smith',
@@ -672,7 +672,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		createdAt: moment().subtract(1, 'day').unix(),
+		createdAt: moment().subtract(6, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Michael Jackson',
@@ -695,7 +695,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		createdAt: moment().subtract(1, 'day').unix(),
+		createdAt: moment().subtract(5, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Mr Bean',
@@ -718,7 +718,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		createdAt: moment().subtract(1, 'day').unix(),
+		createdAt: moment().subtract(4, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Daniel Craig',
@@ -741,7 +741,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		createdAt: moment().subtract(1, 'day').unix(),
+		createdAt: moment().subtract(3, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
@@ -764,7 +764,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
-		createdAt: moment().subtract(1, 'day').unix(),
+		createdAt: moment().subtract(2, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
