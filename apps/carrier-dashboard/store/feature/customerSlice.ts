@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SAMPLE_CUSTOMERS } from '../../utils/constants'
+import { SAMPLE_CUSTOMERS } from '../../utils/constants';
 import { Customer } from '../../utils/types';
 import axios from 'axios';
 
@@ -25,13 +25,12 @@ export const customerSlice = createSlice({
 	}
 });
 
-/*export const useCustomers = (state) : Customer[] => {
+export const useCustomers = (state) : Customer[] => {
 	let customers: Customer[] = state['customers'];
-	customers.sort((a, b) => b.createdAt - a.createdAt)
-	return customers
-}*/
+	return [...customers].sort((a, b) => b.createdAt - a.createdAt);
+}
 
-export const useCustomers = (state) : Customer[] => state['customers']
+/*export const useCustomers = (state) : Customer[] => state['customers']*/
 
 export const { addCustomer } = customerSlice.actions;
 

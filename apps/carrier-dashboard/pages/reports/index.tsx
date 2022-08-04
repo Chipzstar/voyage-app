@@ -1,31 +1,101 @@
-import { Tabs } from '@mantine/core';
-import React from 'react';
+import { Card, Center, Container, Grid, Group, Stack, Tabs } from '@mantine/core'
+import React, { useMemo, useState } from 'react'
 import ContentContainer from '../../layout/ContentContainer';
 import { capitalize } from '@voyage-app/shared-utils';
-import ReportOverview from '../../containers/ReportOverview'
-
-const TAB_LABELS = {
-	OVERVIEW: 'overview',
-	DRIVERS: 'drivers',
-	DISPATCHERS: 'dispatchers',
-	DOWNTIME: 'downtime',
-	DOCUMENTS: 'documents'
-};
+import moment from 'moment'
+import { CalendarFilter, DateRange } from '@voyage-app/shared-ui-components'
+import OverviewPieChart from '../../charts/OverviewPieChart'
+import InvoiceReport from '../../charts/InvoiceReport'
+import DowntimeReport from '../../charts/DowntimeReport'
+import DispatcherScoreboard from '../../charts/DispatcherScoreboard'
 
 const reporting = () => {
+	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
+	const data = useMemo(() => {
+		return [
+			{
+				id: 'assigned',
+				label: 'Assigned',
+				value: '5',
+				color: 'hsl(52, 70%, 50%)'
+			},
+			{
+				id: 'unassigned',
+				label: 'Unassigned',
+				value: '1',
+				color: 'hsl(198, 93.2%, 59.6%)'
+			}
+		];
+	}, []);
+
 	return (
-		<ContentContainer classNames="pb-4 min-h-screen">
-			<Tabs defaultValue={TAB_LABELS.OVERVIEW}>
-				<Tabs.List>
-					{Object.values(TAB_LABELS).map((label, index) => (
-						<Tabs.Tab key={index} value={label}>{capitalize(label)}</Tabs.Tab>
-					))}
-				</Tabs.List>
-				<Tabs.Panel value={TAB_LABELS.OVERVIEW}>
-					<ReportOverview/>
-				</Tabs.Panel>
-			</Tabs>
-		</ContentContainer>
+		<Container fluid className="bg-stone-100" py={0}>
+			<div className='flex justify-between items-center pt-4 mb-6'>
+				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} amountOfMonths={2} />
+			</div>
+			<Grid grow gutter='xl'>
+				<Grid.Col md={6}>
+					<Group className='w-full h-full' noWrap={false}>
+						<Card p='lg' radius='xs' shadow='sm' className="h-full">
+							<Card.Section p='lg' className="h-full">
+								<header className='chart-header'>Trucks</header>
+								<Center className="h-full">
+									<OverviewPieChart data={data} />
+								</Center>
+							</Card.Section>
+						</Card>
+						<Card p='lg' radius='xs' shadow='sm' className='flex flex-wrap justify-center items-center grow h-full'>
+							<Card.Section className="w-full">
+								<Stack p='md' className="w-full" align="center">
+									<div className="text-center w-full space-y-2">
+										<h3>Loads</h3>
+										<Center>
+											<div className="w-full py-1 border border-voyage-grey rounded-sm">1</div>
+										</Center>
+									</div>
+									<div className="text-center w-full space-y-2">
+										<h3>Avg Rate</h3>
+										<Center>
+											<div className="w-full py-1 border border-voyage-grey rounded-sm">£0.00</div>
+										</Center>
+									</div>
+									<div className="text-center w-full space-y-2">
+										<h3>Loaded Avg Rate</h3>
+										<Center>
+											<div className="w-full py-1 border border-voyage-grey rounded-sm">£0.00</div>
+										</Center>
+									</div>
+								</Stack>
+							</Card.Section>
+						</Card>
+					</Group>
+				</Grid.Col>
+				<Grid.Col md={6}>
+					<Card p='lg' radius='xs' shadow='sm' className='flex flex-wrap grow h-full'>
+						<Card.Section className="w-full" p="lg">
+							<header className='chart-header'>Invoiced Loads</header>
+							<InvoiceReport/>
+						</Card.Section>
+					</Card>
+				</Grid.Col>
+				<Grid.Col md={6}>
+					<Card p='lg' radius='xs' shadow='sm' className='flex flex-wrap grow h-full'>
+						<Card.Section className="w-full" p="lg">
+							<header className='chart-header'>Driver Downtime Scoreboard</header>
+							<DowntimeReport/>
+						</Card.Section>
+					</Card>
+				</Grid.Col>
+				<Grid.Col md={6}>
+					<Card p='lg' radius='xs' shadow='sm' className='flex flex-wrap grow h-full'>
+						<Card.Section className="w-full" p="lg">
+							<header className='chart-header'>Dispatcher Scoreboard</header>
+							<DispatcherScoreboard/>
+						</Card.Section>
+					</Card>
+				</Grid.Col>
+			</Grid>
+		</Container>
 	);
 };
 

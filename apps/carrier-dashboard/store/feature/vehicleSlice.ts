@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SAMPLE_VEHICLES } from '../../utils/constants'
-import { Vehicle } from '../../utils/types';
+import { Driver, Vehicle } from '../../utils/types'
 import axios from 'axios';
 
 const initialState = SAMPLE_VEHICLES;
@@ -25,7 +25,12 @@ export const vehicleSlice = createSlice({
 	}
 });
 
-export const useVehicles = (state) : Vehicle[] => state['vehicles'];
+// export const useVehicles = (state) : Vehicle[] => state['vehicles'];
+
+export const useVehicles = (state) : Vehicle[] => {
+	let vehicles: Vehicle[] = state['vehicles'];
+	return [...vehicles].sort((a, b) => b.createdAt - a.createdAt)
+};
 
 export const { addVehicle } = vehicleSlice.actions;
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, TextInput } from '@mantine/core';
+import { TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Search } from 'tabler-icons-react';
 import { PATHS } from '../../../utils/constants';
@@ -32,11 +32,6 @@ const team = () => {
 						<span className='capitalize'>{element.role}</span>
 					</div>
 				</td>
-				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
-						<Switch checked={element.isActive} onChange={() => console.log("switching...")} />
-					</div>
-				</td>
 				<td className='space-x-8' colSpan={2}>
 					<button className='bg-transparent hover:underline text-sm' onClick={() => router.push(`${PATHS.TEAM}/${element.memberId}`)}>
 						<span className='text-secondary font-semibold'>Update</span>
@@ -58,7 +53,7 @@ const team = () => {
 			</div>
 			<DataGrid
 				rows={rows}
-				headings={['First Name', 'Last Name', 'Email', 'Phone', 'Role', 'Status', 'Actions']}
+				headings={['First Name', 'Last Name', 'Email', 'Phone', 'Role', 'Actions']}
 				emptyContent={<Empty message={<span className="text-center text-2xl">You have no team members<br/>Click the 'Add Member' button to add a new member</span>}/>}
 				spacingY='md'
 			/>
