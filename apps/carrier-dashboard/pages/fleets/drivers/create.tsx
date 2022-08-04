@@ -52,8 +52,8 @@ const create = () => {
 
 	const handleSubmit = useCallback(values => {
 		values.defaultPhone = values.primaryPhone
-		values.firstname = values.fullName.split()[0]
-		values.lastname = values.fullName.split()[-1]
+		values.firstname = values.fullName.split(" ")[0]
+		values.lastname = values.fullName.split(" ")[-1]
 		dispatch(addDriver(values));
 		showNotification({
 			id: 'new-driver-success',

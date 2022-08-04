@@ -9,7 +9,6 @@ import ContentContainer from '../../../layout/ContentContainer';
 import { Check, Trash, User } from 'tabler-icons-react';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { alphanumericId, capitalize, sanitize } from '@voyage-app/shared-utils';
-import { addVehicle } from '../../../store/feature/vehicleSlice';
 import { showNotification } from '@mantine/notifications';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
@@ -24,12 +23,12 @@ const create = () => {
 		id: '',
 		createdAt: moment().unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
-		accountType: undefined,
+		accountType: null,
 		addressLine1: '',
 		billingEmail: '',
 		city: '',
 		companyName: '',
-		country: '',
+		country: 'UK',
 		email: '',
 		extraContacts: [],
 		fullName: '',
@@ -47,9 +46,9 @@ const create = () => {
 
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
-		values.firstname = values.fullName.split()[0]
-		values.lastname = values.fullName.split()[-1]
 		console.log(values);
+		values.firstname = values.fullName.split(" ")[0]
+		values.lastname = values.fullName.includes(" ") ? values.fullName.split(" ").at(-1) : "";
 		dispatch(addCustomer(values));
 		showNotification({
 			id: 'new-customer-success',
@@ -121,10 +120,10 @@ const create = () => {
 								<TextInput required label='Company Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('companyName')} />
 							</div>
 							<div>
-								<TextInput label='Tax ID Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('taxIDNumber')} />
+								<TextInput required label='POC Full Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('fullName')} />
 							</div>
 							<div>
-								<TextInput required label='POC Full Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('fullName')} />
+								<TextInput required type="tel" label='Phone Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('phone')} />
 							</div>
 							<div>
 								<TextInput required label='Contact Email' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('email')} />
@@ -139,13 +138,13 @@ const create = () => {
 								<TextInput required label='City' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('city')} />
 							</div>
 							<div>
-								<TextInput label='Region' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('region')} />
+								<TextInput required label='Region' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('region')} />
 							</div>
 							<div>
 								<TextInput required label='Postal Code' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('postcode')} />
 							</div>
 							<div>
-								<TextInput label='Country' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('country')} />
+								<TextInput label='Tax ID Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('taxIDNumber')} />
 							</div>
 							<div>
 								<TextInput label='Invoice Email' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('billingEmail')} />
