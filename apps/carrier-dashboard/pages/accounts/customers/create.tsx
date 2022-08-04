@@ -33,6 +33,8 @@ const create = () => {
 		email: '',
 		extraContacts: [],
 		fullName: '',
+		firstname: '',
+		lastname: '',
 		phone: '',
 		postcode: '',
 		region: '',
@@ -45,6 +47,8 @@ const create = () => {
 
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
+		values.firstname = values.fullName.split()[0]
+		values.lastname = values.fullName.split()[-1]
 		console.log(values);
 		dispatch(addCustomer(values));
 		showNotification({
