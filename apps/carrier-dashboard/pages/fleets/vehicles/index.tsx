@@ -6,14 +6,21 @@ import { PATHS, SAMPLE_VEHICLES } from '../../../utils/constants';
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux'
+import { useVehicles } from '../../../store/feature/vehicleSlice';
+import { useDrivers } from 'apps/carrier-dashboard/store/feature/driverSlice';
 
 const vehicles = () => {
 	const router = useRouter();
-	const rows = SAMPLE_VEHICLES.map((element, index) => {
+	const vehicles = useSelector(useVehicles)
+	const drivers = useSelector(useDrivers)
+
+	const rows = vehicles.map((element, index) => {
+		const foundDriver = drivers.find((driver) => driver.driverId === element.driverId)
 		return (
-			<tr key={index}>
+			<tr key={element.vehicleId}>
 				<td colSpan={1}>
-					<span>{element.vehicleId}</span>
+					<span>{element.vehicleName}</span>
 				</td>
 				<td colSpan={1}>
 					<span>{element.make}</span>
@@ -26,7 +33,7 @@ const vehicles = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span className="capitalize">Mo Farah</span>
+						<span className="capitalize">{foundDriver ? foundDriver.fullName : "-"}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
@@ -52,7 +59,7 @@ const vehicles = () => {
 			</div>
 			<DataGrid
 				rows={rows}
-				headings={['ID', 'Make', 'Model', 'Status', 'Current Driver', 'Reg No.', 'Actions']}
+				headings={['Vehicle Name', 'Make', 'Model', 'Status', 'Current Driver', 'Reg No.', 'Actions']}
 				emptyContent={<Empty message={<span className="text-center text-2xl">You have no vehicles<br/>Click the 'Add Vehicle' button to add one</span>}/>}
 				spacingY='md'
 			/>

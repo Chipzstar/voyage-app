@@ -2,21 +2,23 @@ import React, { useCallback } from 'react';
 import PageNav from '../../../layout/PageNav';
 import { Anchor, Select, Textarea, TextInput } from '@mantine/core';
 import Link from 'next/link';
-import { PATHS, SAMPLE_VEHICLES } from '../../../utils/constants';
+import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
-import { Driver } from '../../../utils/types';
+import { Driver, DRIVER_STATUS } from '../../../utils/types'
 import { DatePicker } from '@mantine/dates';
 import { Calendar, Check } from 'tabler-icons-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 import { addDriver } from '../../../store/feature/driverSlice';
 import { showNotification } from '@mantine/notifications';
 import Router, { useRouter } from 'next/router';
 import { alphanumericId } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
+import { useVehicles } from '../../../store/feature/vehicleSlice'
 
 const create = () => {
 	const dispatch = useDispatch();
+	const vehicles = useSelector(useVehicles)
 	const router = useRouter();
 	const initialValues: Driver = {
 		id: '',
@@ -41,7 +43,7 @@ const create = () => {
 		postcode: '',
 		primaryPhone: '',
 		secondaryPhone: '',
-		status: ''
+		status: DRIVER_STATUS.UNVERIFIED
 	};
 	const form = useForm({
 		initialValues
@@ -64,7 +66,7 @@ const create = () => {
 			icon: <Check size={20} />,
 			loading: false
 		});
-		setTimeout(() => router.push(PATHS.DRIVERS), 1000);
+		setTimeout(() => router.push(PATHS.DRIVERS), 500);
 	}, []);
 
 	const items = [
@@ -147,7 +149,7 @@ const create = () => {
 								size='sm'
 								label='Vehicle'
 								placeholder='Select a vehicle'
-								data={SAMPLE_VEHICLES.map(
+								data={vehicles.map(
 									(vehicle): SelectInputData => ({
 										label: vehicle.vehicleName,
 										value: vehicle.vehicleId

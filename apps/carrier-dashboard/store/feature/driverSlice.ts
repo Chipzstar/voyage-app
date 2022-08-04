@@ -25,7 +25,7 @@ export const driverSlice = createSlice({
 	}
 })
 
-export const useDrivers = state => state['drivers']
+export const useDrivers = (state) : Driver[] => state['drivers']
 
 export const { addDriver } = driverSlice.actions;
 

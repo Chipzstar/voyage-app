@@ -1,32 +1,42 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import PageNav from '../../../layout/PageNav';
-import { Anchor, NumberInput, Select, TextInput } from '@mantine/core';
+import { Anchor, FileInput, NumberInput, Select, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
-import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_TYPES } from '../../../utils/types';
+import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from '../../../utils/types';
 import dayjs from 'dayjs';
-import { getYears, sanitize } from '@voyage-app/shared-utils';
+import { alphanumericId, capitalize, getYears, sanitize } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
+import PageHeader from '../../../layout/PageHeader';
+import { showNotification } from '@mantine/notifications';
+import { Check, Upload } from 'tabler-icons-react';
+import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/router';
+import { addVehicle } from '../../../store/feature/vehicleSlice';
+import { Loader } from '@mantine/core';
 
-const create = () => {
+const create = ({vehicleName}) => {
+	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
+	const router = useRouter();
 	const initialValues: Vehicle = {
+		id: '',
+		vehicleId: `VEH-ID${alphanumericId(8)}`,
+		vehicleName,
+		vehicleType: '',
 		colour: '',
 		dimensions: { height: 0, length: 0, width: 0 },
 		driverId: '',
 		engineNumber: '',
-		fuelMeasurementUnit: undefined,
-		fuelType: undefined,
-		id: '',
+		fuelMeasurementUnit: null,
+		fuelType: null,
 		image: '',
 		make: '',
 		model: '',
 		regNumber: '',
-		status: undefined,
-		vehicleId: '',
-		vehicleName: '',
-		vehicleType: '',
+		status: VEHICLE_STATUS.IDLE,
 		vin: '',
 		yearOfManufacture: 0
 	};
@@ -36,7 +46,25 @@ const create = () => {
 	});
 
 	const handleSubmit = useCallback(values => {
-		console.log(values);
+		setLoading(true);
+		console.log(values)
+		dispatch(addVehicle(values));
+		showNotification({
+			id: 'new-vehicle-success',
+			disallowClose: true,
+			onClose: () => console.log('unmounted'),
+			onOpen: () => console.log('mounted'),
+			autoClose: 5000,
+			title: 'Success',
+			message: 'A new vehicle has been added to your account!',
+			color: 'green',
+			icon: <Check size={20} />,
+			loading: false
+		});
+		setTimeout(() => {
+			router.push(PATHS.VEHICLES)
+			setLoading(false);
+		}, 500);
 	}, []);
 
 	const items = [
@@ -52,20 +80,21 @@ const create = () => {
 	return (
 		<ContentContainer classNames='px-8 h-screen flex flex-col'>
 			<PageNav items={items} />
-			<div className='flex flex-col items-center justify-center h-full'>
+			<div className='container flex flex-col items-center justify-center h-full'>
 				<form onSubmit={form.onSubmit(handleSubmit)}>
+					<div className='pb-5'>
+						<PageHeader title='New Vehicle' />
+					</div>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-10'>
 						<div>
 							<Select
+								required
 								label='Vehicle Type'
 								radius={0}
-								classNames={{
-									item: 'capitalize'
-								}}
 								data={Object.values(VEHICLE_TYPES).map(
 									(item): SelectInputData => ({
 										value: item,
-										label: sanitize(item)
+										label: capitalize(sanitize(item))
 									})
 								)}
 								size='sm'
@@ -73,35 +102,33 @@ const create = () => {
 							/>
 						</div>
 						<div>
-							<TextInput label='Registration Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('regNumber')} />
+							<TextInput required label='Registration Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('regNumber')} />
 						</div>
 						<div>
-							<TextInput label='Vehicle Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('vehicleName')} />
+							<TextInput required label='Vehicle Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('vehicleName')} />
 						</div>
 						<div>
 							<TextInput label='Engine Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('engineNumber')} />
 						</div>
 						<div className='col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
-							<TextInput label='Make' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('make')} />
-							<TextInput label='Model' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('model')} />
+							<TextInput required label='Make' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('make')} />
+							<TextInput required label='Model' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('model')} />
 							<Select label='Year' radius={0} size='sm' min={dayjs().year()} max={dayjs().year()} data={getYears(50)} {...form.getInputProps('yearOfManufacture')} />
 						</div>
 						<div>
-							<TextInput label='Colour' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('engineNumber')} />
+							<TextInput label='Colour' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('colour')} />
 						</div>
 						<div>
 							<Select
+								required
 								label='Fuel Type'
 								radius={0}
 								autoCapitalize='on'
 								size='sm'
-								classNames={{
-									item: 'capitalize'
-								}}
 								data={Object.values(FuelType).map(
 									(item): SelectInputData => ({
 										value: item,
-										label: sanitize(item)
+										label: capitalize(sanitize(item))
 									})
 								)}
 								{...form.getInputProps('fuelType')}
@@ -116,31 +143,49 @@ const create = () => {
 								data={Object.values(FuelMeasurementUnit).map(
 									(item): SelectInputData => ({
 										value: item,
-										label: sanitize(item)
+										label: capitalize(sanitize(item))
 									})
 								)}
-								classNames={{
-									item: 'capitalize'
-								}}
 								{...form.getInputProps('fuelMeasurementUnit')}
 							/>
 						</div>
 						<div>
-							<TextInput label='Vehicle Image' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('image')} />
+							<FileInput
+								radius={0}
+								size='sm'
+								label='Vehicle Image'
+								placeholder='Upload image of vehicle'
+								accept='image/png,image/jpeg'
+								icon={<Upload size={16} />}
+								{...form.getInputProps('image')}
+							/>
 						</div>
 						<div className='col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
-							<NumberInput label='Vehicle Length' radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions')} />
-							<NumberInput label='Vehicle Width' radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions')} />
-							<NumberInput label='Max Vehicle Height' radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions')} />
+							<NumberInput label='Vehicle Length' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.length')} />
+							<NumberInput label='Vehicle Width' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.width')} />
+							<NumberInput label='Max Vehicle Height' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.height')} />
 						</div>
 					</div>
+					<div className="flex justify-end">
+						<button type="submit" className='flex items-center justify-center voyage-button'>
+							<Loader size="sm" className={`mr-3 ${!loading && "hidden"}`}/>
+							<span>Save</span>
+						</button>
+					</div>
 				</form>
-				<div>
-					<button className='voyage-button'>Save</button>
-				</div>
 			</div>
 		</ContentContainer>
 	);
 };
+
+export async function getServerSideProps(context) {
+	const query = context.req.query;
+	console.log(query)
+	return {
+		props: {
+			vehicleName: query?.vehicleName || ''
+		}
+	}
+}
 
 export default create;

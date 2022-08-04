@@ -4,6 +4,7 @@ import moment from 'moment';
 import Map from '../components/Map';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import TruckLoadTimeline from '../components/TruckLoadTimeline'
+import PageHeader from '../layout/PageHeader'
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -12,7 +13,7 @@ export function Index(props) {
 	return (
 		<div className='py-4 px-8 h-full overflow-y-auto'>
 			<div className='flex justify-between mb-5'>
-				<header className="page-header">Truck board</header>
+				<PageHeader title="Truck Board"/>
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
 			</div>
 			<Map height={250} />
