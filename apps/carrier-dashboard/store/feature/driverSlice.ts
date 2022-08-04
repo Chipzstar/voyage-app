@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { SAMPLE_DRIVERS } from '../../utils/constants'
 import { Driver } from '../../utils/types'
 import axios from 'axios'
+import { RootState } from '../index'
 
 const initialState = SAMPLE_DRIVERS;
 
@@ -26,6 +27,12 @@ export const driverSlice = createSlice({
 })
 
 export const useDrivers = (state) : Driver[] => state['drivers']
+
+/*export const useDrivers = (state) : Driver[] => {
+	let drivers: Driver[] = state['drivers'];
+	drivers.sort((a, b) => b.createdAt - a.createdAt)
+	return drivers
+}*/
 
 export const { addDriver } = driverSlice.actions;
 

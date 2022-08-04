@@ -15,6 +15,7 @@ import Router, { useRouter } from 'next/router';
 import { alphanumericId } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { useVehicles } from '../../../store/feature/vehicleSlice'
+import moment from 'moment';
 
 const create = () => {
 	const dispatch = useDispatch();
@@ -24,12 +25,12 @@ const create = () => {
 		id: '',
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		vehicleId: '',
+		createdAt: moment().unix(),
 		addressLine1: '',
 		addressLine2: '',
 		city: '',
 		region: '',
 		companyName: '',
-		createdAt: null,
 		defaultPhone: '',
 		dob: 0,
 		email: '',

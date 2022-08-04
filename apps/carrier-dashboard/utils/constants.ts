@@ -477,6 +477,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 export const SAMPLE_TEAM: Team[] = [
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Omari',
 		lastname: 'Obrian',
@@ -487,6 +488,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Kendrick',
 		lastname: 'Lamar',
@@ -497,6 +499,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Andy',
 		lastname: 'Mineo',
@@ -507,6 +510,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Trip',
 		lastname: 'Lee',
@@ -517,6 +521,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Kanye',
 		lastname: 'West',
@@ -527,6 +532,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		firstname: 'Drake',
 		lastname: 'Aubrey',
@@ -540,6 +546,7 @@ export const SAMPLE_TEAM: Team[] = [
 export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
@@ -564,6 +571,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
@@ -588,6 +596,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
@@ -612,6 +621,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
@@ -639,6 +649,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 export const SAMPLE_CUSTOMERS: Customer[] = [
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `customer_${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'John Smith',
@@ -661,6 +672,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Michael Jackson',
@@ -683,6 +695,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Mr Bean',
@@ -705,6 +718,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Daniel Craig',
@@ -727,6 +741,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
@@ -749,6 +764,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',
@@ -771,6 +787,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Marvel Cinematic Universe',
 		fullName: 'Black Adam',

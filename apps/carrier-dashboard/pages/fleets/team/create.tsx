@@ -14,6 +14,7 @@ import { AppDispatch } from '../../../store'
 import { useRouter } from 'next/router'
 import { showNotification } from '@mantine/notifications';
 import { Check } from 'tabler-icons-react';
+import moment from 'moment/moment'
 
 const create = () => {
 	const dispatch = useDispatch<AppDispatch>()
@@ -21,6 +22,7 @@ const create = () => {
 	const initialValues: Team = {
 		id: '',
 		memberId: `MEMBER-ID${alphanumericId(8)}`,
+		createdAt: moment().unix(),
 		role: TeamRole.ADMIN,
 		firstname: '',
 		lastname: '',

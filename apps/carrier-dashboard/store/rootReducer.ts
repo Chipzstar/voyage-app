@@ -2,11 +2,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 import teamReducer from './feature/memberSlice';
 import driverReducer from './feature/driverSlice';
 import vehicleReducer from './feature/vehicleSlice';
+import customerReducer from './feature/customerSlice';
 
 const appReducer = combineReducers({
 	members: teamReducer,
 	drivers: driverReducer,
-	vehicles: vehicleReducer
+	vehicles: vehicleReducer,
+	customers: customerReducer
 })
 
 const rootReducer = (state, action) => {

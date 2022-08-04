@@ -114,6 +114,7 @@ export interface Driver {
 
 export interface Team {
 	id: string;
+	createdAt: UnixTimestamp;
 	memberId: string;
 	firstname: string;
 	lastname: string;
@@ -125,6 +126,7 @@ export interface Team {
 
 export interface Vehicle {
 	id: string;
+	createdAt: UnixTimestamp;
 	driverId: string;
 	vehicleId: string;
 	vehicleType: string;
@@ -148,7 +150,7 @@ export interface Vehicle {
 	status: VEHICLE_STATUS;
 }
 
-interface Contact {
+export interface Contact {
 	name: string;
 	email: string;
    phone: string;
@@ -157,6 +159,7 @@ interface Contact {
 
 export interface Customer {
 	id: string;
+	createdAt: UnixTimestamp,
    customerId: string;
 	accountType: AccountType;
 	companyName: string;

@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { addVehicle } from '../../../store/feature/vehicleSlice';
 import { Loader } from '@mantine/core';
+import moment from 'moment/moment'
 
 const create = ({vehicleName}) => {
 	const [loading, setLoading] = useState(false);
@@ -24,6 +25,7 @@ const create = ({vehicleName}) => {
 	const initialValues: Vehicle = {
 		id: '',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
+		createdAt: moment().unix(),
 		vehicleName,
 		vehicleType: '',
 		colour: '',

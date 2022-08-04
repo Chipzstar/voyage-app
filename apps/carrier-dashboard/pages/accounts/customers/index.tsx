@@ -1,5 +1,5 @@
 import React from 'react'
-import { PATHS, SAMPLE_CUSTOMERS } from '../../../utils/constants'
+import { PATHS } from '../../../utils/constants'
 import { useRouter } from 'next/router';
 import ContentContainer from '../../../layout/ContentContainer'
 import { TextInput } from '@mantine/core'
@@ -7,10 +7,13 @@ import { Search } from 'tabler-icons-react'
 import DataGrid from '../../../components/DataGrid'
 import { Empty } from '@voyage-app/shared-ui-components'
 import { sanitize } from '@voyage-app/shared-utils'
+import { useSelector } from 'react-redux'
+import { useCustomers } from '../../../store/feature/customerSlice'
 
 const customers = () => {
 	const router = useRouter();
-	const rows = SAMPLE_CUSTOMERS.map((element, index) => {
+	const customers = useSelector(useCustomers)
+	const rows = customers.map((element, index) => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
