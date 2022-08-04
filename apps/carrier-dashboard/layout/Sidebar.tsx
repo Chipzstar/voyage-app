@@ -127,7 +127,7 @@ const Sidebar = () => {
 				{
 					title: 'Basic Reports',
 					href: PATHS.BASIC_REPORT,
-					isActive: router.pathname.includes(PATHS.BASIC_REPORT)
+					isActive: router.pathname === PATHS.BASIC_REPORT
 				},
 				{ title: 'Fuel', href: PATHS.FUEL_REPORT, isActive: router.pathname === PATHS.FUEL_REPORT }
 			]

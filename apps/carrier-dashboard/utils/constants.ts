@@ -42,19 +42,7 @@ export const SETTINGS_TABS = [
 	{
 		value: 'financial',
 		label: 'Financial'
-	},
-	{
-		value: 'accounting',
-		label: 'Accounting'
-	},
-	{
-		value: 'document-types',
-		label: 'Document Types	'
-	},
-	{
-		value: 'bulk-import',
-		label: 'Bulk Import'
-	},
+	}
 ]
 
 const pickupFacilityId = `facility_${nanoid(24)}`;

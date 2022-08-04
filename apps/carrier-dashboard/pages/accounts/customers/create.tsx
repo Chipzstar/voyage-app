@@ -73,10 +73,10 @@ const create = () => {
 	};
 
 	const contacts = form.values.extraContacts.map((item, index) => (
-		<Card p='lg' radius={0} withBorder mb={10}>
+		<Card key={index} p='lg' radius={0} withBorder mb={10}>
 			<Card.Section p='xl'>
 				<header className='page-subheading mb-4'>Contact {index + 1}</header>
-				<form className='flex flex-col'>
+				<section className='flex flex-col'>
 					<div className='space-y-3'>
 						<TextInput placeholder='Full Name' icon={<User size={16} />} radius='xs' {...form.getInputProps(`extraContacts.${index}.name`)} />
 						<TextInput type='email' placeholder='Email Address' icon={<User size={16} />} radius='xs' {...form.getInputProps(`extraContacts.${index}.email`)} />
@@ -88,7 +88,7 @@ const create = () => {
 							Remove contact
 						</Button>
 					</div>
-				</form>
+				</section>
 			</Card.Section>
 		</Card>
 	));
