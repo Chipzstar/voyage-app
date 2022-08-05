@@ -1,17 +1,21 @@
 import React from 'react';
-import { TextInput } from '@mantine/core';
+import { Select, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
-import { Search } from 'tabler-icons-react';
+import { Check, Search } from 'tabler-icons-react';
 import { PATHS } from '../../../utils/constants';
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux'
-import { useMembers } from '../../../store/feature/memberSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { changeRole, useMembers } from '../../../store/feature/memberSlice'
+import { Team, TeamRole } from '../../../utils/types'
+import { showNotification } from '@mantine/notifications';
+import { capitalize } from '@voyage-app/shared-utils'
 
 const team = () => {
 	const router = useRouter();
-	const team = useSelector(useMembers)
+	const dispatch = useDispatch();
+	const team = useSelector(useMembers);
 	const rows = team.map((element, index) => {
 		return (
 			<tr key={index}>
@@ -29,7 +33,30 @@ const team = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span className='capitalize'>{element.role}</span>
+						<Select
+							classNames={{
+								item: 'capitalize',
+								input: 'capitalize'
+							}}
+							data={Object.values(TeamRole)}
+							defaultValue={element.role}
+							variant='unstyled'
+							onChange={(value: TeamRole) => {
+								dispatch(changeRole({id: element.memberId, role: value}))
+								showNotification({
+									id: 'new-member-success',
+									disallowClose: true,
+									onClose: () => console.log('unmounted'),
+									onOpen: () => console.log('mounted'),
+									autoClose: 3000,
+									title: "Success",
+									message: `${element.firstname} has a new role of ${capitalize(value)}!`,
+									color: 'green',
+									icon: <Check size={20}/>,
+									loading: false,
+								});
+							}}
+						/>
 					</div>
 				</td>
 				<td className='space-x-8' colSpan={2}>
@@ -46,7 +73,7 @@ const team = () => {
 	return (
 		<ContentContainer classNames='py-4 px-8 min-h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
-				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' size="md"/>
+				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_MEMBER)}>
 					<span className='text-base'>Add member</span>
 				</button>
@@ -54,11 +81,21 @@ const team = () => {
 			<DataGrid
 				rows={rows}
 				headings={['First Name', 'Last Name', 'Email', 'Phone', 'Role', 'Actions']}
-				emptyContent={<Empty message={<span className="text-center text-2xl">You have no team members<br/>Click the 'Add Member' button to add a new member</span>}/>}
+				emptyContent={
+					<Empty
+						message={
+							<span className='text-center text-2xl'>
+								You have no team members
+								<br />
+								Click the 'Add Member' button to add a new member
+							</span>
+						}
+					/>
+				}
 				spacingY='md'
 			/>
 		</ContentContainer>
 	);
 };
 
-export default team
+export default team;

@@ -165,7 +165,7 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 				date.setHours(now.getHours());
 				date.setMinutes(now.getMinutes());
 			}
-			setValue(date);
+			setValue(date	);
 			closeCalendarOnChange && setInputState(upperFirst(moment(date).locale(finalLocale).format(dateFormat)));
 			closeCalendarOnChange && setDropdownOpened(false);
 			window.setTimeout(() => inputRef.current?.focus(), 0);

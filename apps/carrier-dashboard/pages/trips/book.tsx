@@ -1,42 +1,74 @@
-import React, { useCallback, useEffect } from 'react'
-import { useRouter } from 'next/router';
-import { useForm } from '@mantine/form';
-import { numericId } from '@voyage-app/shared-utils';
-import moment from 'moment/moment';
-import { PACKAGE_TYPE, SHIPMENT_ACTIVITY } from '@voyage-app/shared-types';
+import React, { useCallback, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useForm } from '@mantine/form'
+import moment from 'moment/moment'
+import { PACKAGE_TYPE, SelectInputData } from '@voyage-app/shared-types'
 // import { createShipment } from '../../store/features/shipmentsSlice';
-import { Calendar, ChevronDown } from 'tabler-icons-react'
-import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
-import { DateTimePicker } from '@voyage-app/shared-ui-components';
-import Link from 'next/link';
-import ContentContainer from '../../layout/ContentContainer';
+import { Calendar, Check, ChevronDown } from 'tabler-icons-react'
+import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core'
+import { DateTimePicker } from '@voyage-app/shared-ui-components'
+import Link from 'next/link'
+import ContentContainer from '../../layout/ContentContainer'
+import { useDispatch, useSelector } from 'react-redux'
+import { NewBooking, TeamRole, VEHICLE_TYPES } from '../../utils/types'
+import { generateLoad } from '../../utils/functions'
+import { useDrivers } from '../../store/feature/driverSlice'
+import { useMembers } from '../../store/feature/memberSlice'
+import { useCustomers } from '../../store/feature/customerSlice'
+import { capitalize, sanitize } from '@voyage-app/shared-utils'
+import { addLoad } from '../../store/feature/loadSlice'
+import { showNotification } from '@mantine/notifications'
+import { PATHS } from 'apps/carrier-dashboard/utils/constants'
 // import { createBooking } from '../../../shipper-dashboard/store/features/bookingsSlice';
 
 const book = props => {
+	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
 	const router = useRouter();
+	const drivers = useSelector(useDrivers)
+	const team = useSelector(useMembers)
+	const customers = useSelector(useCustomers)
+	const initialValues: NewBooking = {
+		createdAt: null,
+		customerId: '',
+		driverId: '',
+		controllerId: '',
+		vehicleType: VEHICLE_TYPES.DRY_VAN,
+		pickupLocation: {
+			street: '',
+			city: '',
+			region: '',
+			postcode: '',
+			country: 'UK',
+			note: '',
+		},
+		deliveryLocation: {
+			street: '',
+			city: '',
+         region: '',
+			postcode: '',
+			country: 'UK',
+			note: ''
+		},
+		pickupDate: null,
+		description: '',
+		internalPONumber: '',
+		customerPONumber: '',
+		height: 0,
+		length: 0,
+		width: 0,
+		weight: 0,
+		quantity: 0,
+		packageType: PACKAGE_TYPE.PALLET
+	}
+
 	const form = useForm({
-		initialValues: {
-			id: `VOY-ID${numericId(3)}`,
-			createdAt: moment().unix(),
-			schedulingType: '',
-			internalPONumber: '',
-			customerPONumber: '',
-			weight: 0,
-			quantity: 1,
-			height: 1,
-			length: 1,
-			width: 1,
-			packageType: '',
-			pickupDate: null,
-			pickupLocation: '',
-			pickupCountry: '',
-			deliveryLocation: '',
-			deliveryCountry: '',
-			description: '',
-			vehicleType: '',
-			driver: '',
-			controller: ''
-		}
+		initialValues,
+		validate: values => ({
+			driverId: !values.driverId ? "Please select a Driver for this load" : null,
+			controllerId: !values.controllerId ? "Please select a Controller for this load" : null,
+			customerId: !values.customerId ? "Please select a Customer for this load" : null
+		})
 	});
 
 	const items = [
@@ -50,8 +82,28 @@ const book = props => {
 	));
 
 	const handleSubmit = useCallback(values => {
-		// update the createdAt timestamp
-		console.log(values);
+		console.log("INPUT:", values)
+		setLoading(true);
+		values.createdAt = moment().unix();
+		const load = generateLoad(values, drivers, team, customers);
+		console.log("OUTPUT:", load);
+		dispatch(addLoad(load));
+		showNotification({
+			id: 'new-load-success',
+			disallowClose: true,
+			onClose: () => console.log('unmounted'),
+			onOpen: () => console.log('mounted'),
+			autoClose: 5000,
+			title: 'Success',
+			message: 'You have booked a new load',
+			color: 'green',
+			icon: <Check size={20} />,
+			loading: false
+		});
+		setTimeout(() => {
+			router.push(PATHS.TRIPS);
+			setLoading(false);
+		}, 500);
 	}, []);
 
 	return (
@@ -60,10 +112,10 @@ const book = props => {
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 lg:grid-cols-4 gap-20'>
-				<div id='quote-form-container' className='flex flex-col space-y-5 col-span-3'>
-					<div className='grid grid-cols-1 gap-6'>
+				<div id='book-form-container' className='flex flex-col space-y-5 col-span-3'>
+					<div id="load-type" className='grid grid-cols-1 gap-6'>
 						<header className='form-header'>Load Type</header>
-						<div className='border border-gray-300 p-4 grid grid-cols-4 lg:grid-cols-12 lg:row-span-3 gap-y-4 gap-x-12 pb-12'>
+						<div className='border border-gray-300 p-4 grid grid-cols-4 lg:grid-cols-12 lg:row-span-3 gap-y-4 gap-x-12 pb-8'>
 							<div className='lg:row-span-1 col-span-4'>
 								<TextInput
 									radius={0}
@@ -89,7 +141,7 @@ const book = props => {
 								/>
 							</div>
 							<div className='lg:row-span-1 col-span-4 '>
-								<NumberInput radius={0} min={0} max={26000} label='Weight' placeholder='' rightSection={<span className='text-voyage-grey pr-3'>Kg</span>} {...form.getInputProps('weight')} />
+								<NumberInput required radius={0} min={0} max={26000} label='Weight' placeholder='' rightSection={<span className='text-voyage-grey pr-3'>Kg</span>} {...form.getInputProps('weight')} />
 							</div>
 							<div className='col-span-4 lg:col-span-6 lg:row-span-2'>
 								<Textarea size='sm' radius={0} label='Load Description' autosize minRows={3} maxRows={6} {...form.getInputProps('description')} />
@@ -105,10 +157,11 @@ const book = props => {
 									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Height' placeholder='Units' rightSection={<span className='text-voyage-grey pr-3'>cm</span>} {...form.getInputProps('height')} />
 								</div>
 								<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
-									<NumberInput size='sm' radius={0} min={1} max={26} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
+									<NumberInput required size='sm' radius={0} min={1} max={26} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
 								</div>
 								<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
 									<Select
+										required
 										size='sm'
 										radius={0}
 										label='Item Packaging'
@@ -129,23 +182,39 @@ const book = props => {
 							</div>
 						</div>
 					</div>
-					<div className='grid grid-cols-2 gap-5'>
+					<div id="locations" className='grid grid-cols-2 gap-5'>
 						<div className='flex flex-col space-y-6'>
 							<header className='form-header'>Pickup</header>
 							<div className=''>
-								<TextInput size='md' radius={0} placeholder='Location name or Postal Code' {...form.getInputProps('pickupLocation')} />
+								<TextInput id="pickup-street" required radius={0} placeholder='Street Address' {...form.getInputProps('pickupLocation.street')} />
+							</div>
+							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
+								<TextInput id="pickup-city" required radius={0} placeholder='Town / City' {...form.getInputProps('pickupLocation.city')} />
+								<TextInput id="pickup-region" radius={0} placeholder='Region' {...form.getInputProps('pickupLocation.region')} />
+							</div>
+							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
+								<TextInput id="pickup-postcode" required radius={0} placeholder='Postal Code' {...form.getInputProps('pickupLocation.postcode')} />
+								<TextInput id="pickup-country" disabled radius={0} placeholder='Country' {...form.getInputProps('pickupLocation.country')} />
 							</div>
 							<div className=''>
-								<TextInput size='md' radius={0} placeholder='Country' {...form.getInputProps('pickupCountry')} />
+								<Textarea radius={0} placeholder="Note" {...form.getInputProps('deliveryLocation.note')} />
 							</div>
 						</div>
 						<div className='flex flex-col space-y-6'>
 							<header className='form-header'>Delivery</header>
 							<div className=''>
-								<TextInput size='md' radius={0} placeholder='Location name or Postal Code' {...form.getInputProps('deliveryLocation')} />
+								<TextInput required size='sm' radius={0} placeholder='Street Address' {...form.getInputProps('deliveryLocation.street')} />
+							</div>
+							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
+								<TextInput required size='sm' radius={0} placeholder='Town / City' {...form.getInputProps('deliveryLocation.city')} />
+								<TextInput size='sm' radius={0} placeholder='Region' {...form.getInputProps('deliveryLocation.region')} />
+							</div>
+							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
+								<TextInput required size='sm' radius={0} placeholder='Postal Code' {...form.getInputProps('deliveryLocation.postcode')} />
+								<TextInput disabled size='sm' radius={0} placeholder='Country' {...form.getInputProps('deliveryLocation.country')} />
 							</div>
 							<div className=''>
-								<TextInput size='md' radius={0} placeholder='Country' {...form.getInputProps('deliveryCountry')} />
+								<Textarea radius={0} placeholder="Note" {...form.getInputProps('deliveryLocation.note')}/>
 							</div>
 						</div>
 					</div>
@@ -158,46 +227,70 @@ const book = props => {
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<DateTimePicker
+										required
 										allowLevelChange={false}
 										radius={0}
 										icon={<Calendar size={16}/>}
 										size='md'
 										placeholder='Pickup Date'
 										inputFormat={'DD-MMM-YYYY HH:mm a'}
-										value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}
+										/*value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}*/
 										onChange={(value: Date) => form.setFieldValue('pickupDate', value ? moment(value).unix() : null)}
 										classNames={{ root: 'md:w-72' }}
 									/>
 								</div>
 							</div>
 						</div>
-						<div>
+						<div id="col-1">
 							<div className='flex flex-col space-y-4 h-48'>
-								<header className='space-y-3 md:h-28'>
-									<h1 className='form-header'>Select Vehicle</h1>
-									<p className='font-normal'>Select the type of vehicle required for this load</p>
+								<header className='space-y-3'>
+									<h1 className='form-header'>Select Account</h1>
+									<p className='font-normal'>Select which customer to create the load for</p>
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<Select
+										required
 										size='md'
 										radius={0}
-										placeholder='Select a vehicle'
+										placeholder='Select customer'
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={[
-											{ label: 'No Preference', value: SHIPMENT_ACTIVITY.NO_PREFERENCE },
-											{ label: 'Flat Bed Trailer', value: SHIPMENT_ACTIVITY.FLATBED_TRAILER },
-											{ label: 'Jumbo Trailer', value: SHIPMENT_ACTIVITY.JUMBO_TRAILER },
-											{ label: 'Tail Lift', value: SHIPMENT_ACTIVITY.TAIL_LIFT }
-										]}
-										{...form.getInputProps('vehicleType')}
+										data={customers.map((customer): SelectInputData => ({
+											value: customer.customerId,
+											label: capitalize(sanitize(customer.companyName))
+										}))}
+										{...form.getInputProps('customerId')}
 									/>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div className='grid grid-cols-2 gap-6'>
+						<div>
+							<div className='flex flex-col space-y-4'>
+								<header className='space-y-4'>
+									<h1 className='form-header'>Select Vehicle</h1>
+									<p className='font-normal'>Select the type of vehicle required for this load</p>
+								</header>
+								<div className='flex flex-row items-center space-x-6'>
+									<Select
+										required
+										size='md'
+										radius={0}
+										placeholder='Select vehicle'
+										rightSection={<ChevronDown size={14} />}
+										rightSectionWidth={30}
+										styles={{ rightSection: { pointerEvents: 'none' } }}
+										data={Object.values(VEHICLE_TYPES).map((vehicle): SelectInputData => ({
+											value: vehicle,
+											label: capitalize(sanitize(vehicle))
+										}))}
+										{...form.getInputProps('vehicleType')}
+									/>
+								</div>
+							</div>
+						</div>
 						<div id='col-1'>
 							<div className='flex flex-col space-y-4'>
 								<header className='space-y-4'>
@@ -206,18 +299,18 @@ const book = props => {
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<Select
+										requred
 										size='md'
 										radius={0}
 										placeholder='Select driver'
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={[
-											{ label: 'Chisom', value: '1' },
-											{ label: 'Ola', value: '2' },
-											{ label: 'Rayan', value: '3' }
-										]}
-										{...form.getInputProps('driver')}
+										data={drivers.map((driver): SelectInputData => ({
+											label: driver.fullName,
+											value: driver.driverId
+										}))}
+										{...form.getInputProps('driverId')}
 									/>
 								</div>
 							</div>
@@ -230,18 +323,18 @@ const book = props => {
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<Select
+										required
 										size='md'
 										radius={0}
 										placeholder='Select controller'
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={[
-											{ label: 'Chisom', value: '1' },
-											{ label: 'Ola', value: '2' },
-											{ label: 'Rayan', value: '3' }
-										]}
-										{...form.getInputProps('controller')}
+										data={team.filter(item => item.role === TeamRole.CONTROLLER).map((member): SelectInputData => ({
+											label: member.firstname + ' ' + member.lastname,
+											value: member.memberId
+										}))}
+										{...form.getInputProps('controllerId')}
 									/>
 								</div>
 							</div>

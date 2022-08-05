@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
-import { formList, useForm } from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
@@ -44,7 +44,7 @@ const create = props => {
 			serviceType: booking?.serviceType || '',
 			shipmentType: booking?.shipmentType || '',
 			schedulingType: booking?.schedulingType || '',
-			activitiesRequired: booking?.activitiesRequired ? formList([booking?.activitiesRequired]) : formList([]),
+			activitiesRequired: booking?.activitiesRequired ? booking.activitiesRequired : [],
 			internalPONumber: booking?.internalPONumber || '',
 			customerPONumber: booking?.customerPONumber || '',
 			weight: booking?.weight || 0,
@@ -354,7 +354,7 @@ const create = props => {
 										className={`${inputButton} ${form.values.activitiesRequired.includes(item) && 'bg-secondary text-white'}`}
 										onClick={() => {
 											if (!form.values.activitiesRequired.includes(item)) {
-												form.addListItem('activitiesRequired', item);
+												form.insertListItem('activitiesRequired', item);
 											} else {
 												const index = form.values.activitiesRequired.indexOf(item);
 												form.removeListItem('activitiesRequired', index);

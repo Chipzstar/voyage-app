@@ -1,33 +1,33 @@
-import { NewBooking } from './types';
-import { Delivery, Pickup, Shipment, STATUS } from '@voyage-app/shared-types';
+import { Customer, Driver, NewBooking, Team } from './types'
+import { Load, STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment'
 import { calculateRate, numericId } from '@voyage-app/shared-utils'
 
-export function generateShipment(values: NewBooking, pickupLocation, deliveryLocation) : Omit<Shipment, "id"> {
-	const pickup: Pickup = {
-		facilityId: pickupLocation.id,
-		facilityName: pickupLocation.name,
-		location: `${pickupLocation.addressLine1} ${pickupLocation.postcode}`,
+export function generateLoad(values: NewBooking, drivers: Driver[], controllers: Team[], customers: Customer[]) : Load {
+	const pickup = {
+		...values.pickupLocation,
 		window: {
 			start: moment(values.pickupDate).unix(),
 			end: moment(values.pickupDate).add(1, "hour").unix()
 		}
 	};
-	const delivery: Delivery = {
-		facilityId: deliveryLocation.id,
-		facilityName: deliveryLocation.name,
-		location: `${deliveryLocation.addressLine1} ${deliveryLocation.postcode}`
+	const delivery = {
+		...values.deliveryLocation
 	}
+	const driver = drivers.find(driver => driver.driverId === values.driverId)
+	const controller = controllers.find(controller => controller.memberId === values.controllerId)
+	const customer = customers.find(customers => customers.customerId === values.customerId)
 	return {
-		source: 'Voyage',
-		shipmentId: `VOY-ID${numericId(3)}`,
+		id: '',
+		source: customer?.customerId,
+		customer: {
+			id: customer?.customerId,
+			name: customer?.fullName,
+			company: customer?.companyName,
+		},
+		loadId: `VOY-ID${numericId(3)}`,
 		createdAt: values.createdAt,
-		bookingStatus: 'Booked',
 		status: STATUS.NEW,
-		serviceType: values.serviceType,
-		shipmentType: values.shipmentType,
-		schedulingType: values.schedulingType,
-		activitiesRequired: values.activitiesRequired,
 		internalPONumber: values.internalPONumber,
 		customerPONumber: values.customerPONumber,
 		rate: calculateRate(values.weight, values.quantity),
@@ -45,15 +45,13 @@ export function generateShipment(values: NewBooking, pickupLocation, deliveryLoc
 			description: values.description
 		},
 		carrier: {
-			name: 'HBCS Logistics',
-			driverName: 'Tony Soprano',
-			driverPhone: '+447592136042',
-			vehicle: 'Ford Trailer Truck',
-			location: [-1.778197, 52.412811]
-		},
-		controller: {
-			name: "",
-			phone: ""
+			name: '',
+			driverId: values.driverId,
+			driverName: driver?.fullName,
+			driverPhone: driver?.defaultPhone,
+			controllerId: controller?.memberId,
+			controllerName: controller?.firstname + ' ' + controller?.lastname,
+			vehicleType: values.vehicleType,
 		}
 	};
 }

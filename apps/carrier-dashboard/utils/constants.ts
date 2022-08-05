@@ -1,5 +1,15 @@
 import moment from 'moment';
-import { EQUIPMENT_TYPES, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, Shipment, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, STATUS } from '@voyage-app/shared-types';
+import {
+	EQUIPMENT_TYPES,
+	Load,
+	PACKAGE_TYPE,
+	SCHEDULING_TYPE,
+	SERVICE_TYPE,
+	Shipment,
+	SHIPMENT_ACTIVITY,
+	SHIPMENT_TYPE,
+	STATUS, UnixTimestamp,
+} from '@voyage-app/shared-types'
 import { alphanumericId } from '@voyage-app/shared-utils';
 import { customAlphabet } from 'nanoid';
 import { AccountType, Customer, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Team, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
@@ -44,336 +54,6 @@ export const SETTINGS_TABS = [
 		label: 'Financial'
 	}
 ]
-
-const pickupFacilityId = `facility_${nanoid(24)}`;
-const deliveryFacilityId = `facility_${nanoid(24)}`;
-
-export const SAMPLE_LOADS: Shipment[] = [
-	{
-		id: '',
-		source: 'Voyage',
-		shipmentId: 'VOY-ID123',
-		createdAt: moment().unix(),
-		bookingStatus: 'Booked',
-		status: STATUS.PENDING,
-		serviceType: SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE,
-		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
-		schedulingType: SCHEDULING_TYPE.ONE_TIME,
-		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
-		internalPONumber: 'PO 931-977981-8760',
-		customerPONumber: 'PO 931-977981-8760',
-		rate: 550.21,
-		package: {
-			weight: 19000,
-			quantity: 1,
-			packageType: PACKAGE_TYPE.PALLET,
-			description: '',
-			dimensions: {
-				length: 90,
-				width: 10,
-				height: 120
-			}
-		},
-		controller: {
-			name: 'Ola Oladapo',
-			phone: '+447523958055'
-		},
-		carrier: {
-			name: 'HBCS Logistics',
-			driverName: 'Ben Award',
-			driverPhone: '+447507210809',
-			location: [-1.778197, 52.412811]
-		},
-		pickup: {
-			facilityId: pickupFacilityId,
-			facilityName: 'Moved HQ',
-			location: 'Solihull, Birmingham',
-			window: {
-				start: moment().add(1, 'd').set('h', 8).unix(),
-				end: moment().add(1, 'd').set('h', 9).unix()
-			}
-		},
-		delivery: {
-			facilityId: deliveryFacilityId,
-			facilityName: 'Packfleet',
-			location: 'South London',
-			window: {
-				start: moment().add(1, 'd').set('h', 18).unix(),
-				end: moment().add(1, 'd').set('h', 20).unix()
-			}
-		}
-	},
-	{
-		id: '',
-		source: 'Voyage',
-		shipmentId: 'VOY-ID124',
-		createdAt: moment().unix(),
-		bookingStatus: 'Booked',
-		status: STATUS.DISPATCHED,
-		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
-		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
-		schedulingType: SCHEDULING_TYPE.ONE_TIME,
-		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
-		internalPONumber: 'PO 931-977981-8760',
-		customerPONumber: 'PO 931-977981-8760',
-		rate: 550.21,
-		package: {
-			weight: 14000,
-			quantity: 1,
-			packageType: PACKAGE_TYPE.PALLET,
-			description: '',
-			dimensions: {
-				length: 90,
-				width: 10,
-				height: 120
-			}
-		},
-		controller: {
-			name: 'Chisom Oguibe',
-			phone: '+447523958055'
-		},
-		carrier: {
-			name: 'HBCS Logistics',
-			driverName: 'Ben Award',
-			driverPhone: '+447507210809',
-			location: [-1.778197, 52.412811]
-		},
-		pickup: {
-			facilityId: pickupFacilityId,
-			facilityName: 'Moved HQ',
-			location: 'Solihull, Birmingham',
-			window: {
-				start: moment().add(2, 'd').set('h', 8).unix(),
-				end: moment().add(2, 'd').set('h', 9).unix()
-			}
-		},
-		delivery: {
-			facilityId: deliveryFacilityId,
-			facilityName: 'Packfleet',
-			location: 'South London',
-			window: {
-				start: moment().add(2, 'd').set('h', 18).unix(),
-				end: moment().add(2, 'd').set('h', 20).unix()
-			}
-		}
-	},
-	{
-		id: '',
-		source: 'Voyage',
-		shipmentId: 'VOY-ID125',
-		createdAt: moment().unix(),
-		bookingStatus: 'Booked',
-		status: STATUS.EN_ROUTE,
-		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
-		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
-		schedulingType: SCHEDULING_TYPE.RECURRING,
-		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
-		internalPONumber: 'PO 931-977981-8760',
-		customerPONumber: 'PO 931-977981-8760',
-		rate: 550.21,
-		package: {
-			weight: 9000,
-			quantity: 1,
-			packageType: PACKAGE_TYPE.PALLET,
-			description: '',
-			dimensions: {
-				length: 90,
-				width: 10,
-				height: 120
-			}
-		},
-		controller: {
-			name: 'Rayan Bannai',
-			phone: '+447523958055'
-		},
-		carrier: {
-			name: 'HBCS Logistics',
-			driverName: 'Ben Award',
-			driverPhone: '+447507210809',
-			location: [-1.778197, 52.412811]
-		},
-		pickup: {
-			facilityId: pickupFacilityId,
-			facilityName: 'Moved HQ',
-			location: 'Solihull, Birmingham',
-			window: {
-				start: moment().add(3, 'd').set('h', 8).unix(),
-				end: moment().add(3, 'd').set('h', 9).unix()
-			}
-		},
-		delivery: {
-			facilityId: deliveryFacilityId,
-			facilityName: 'Packfleet',
-			location: 'South London',
-			window: {
-				start: moment().add(3, 'd').set('h', 18).unix(),
-				end: moment().add(3, 'd').set('h', 20).unix()
-			}
-		}
-	},
-	{
-		id: '',
-		source: 'Voyage',
-		shipmentId: 'VOY-ID127',
-		createdAt: moment().unix(),
-		bookingStatus: 'Booked',
-		status: STATUS.CANCELLED,
-		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
-		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
-		schedulingType: SCHEDULING_TYPE.RECURRING,
-		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
-		internalPONumber: 'PO 931-977981-8760',
-		customerPONumber: 'PO 931-977981-8760',
-		rate: 550.21,
-		package: {
-			weight: 9000,
-			quantity: 1,
-			packageType: PACKAGE_TYPE.PALLET,
-			description: '',
-			dimensions: {
-				length: 90,
-				width: 10,
-				height: 120
-			}
-		},
-		controller: {
-			name: 'Ola Oladapo',
-			phone: '+447523958055'
-		},
-		carrier: {
-			name: 'HBCS Logistics',
-			driverName: 'Ben Award',
-			driverPhone: '+447507210809',
-			location: [-1.778197, 52.412811]
-		},
-		pickup: {
-			facilityId: pickupFacilityId,
-			facilityName: 'Moved HQ',
-			location: 'Solihull, Birmingham',
-			window: {
-				start: moment().add(4, 'd').set('h', 8).unix(),
-				end: moment().add(4, 'd').set('h', 9).unix()
-			}
-		},
-		delivery: {
-			facilityId: deliveryFacilityId,
-			facilityName: 'Packfleet',
-			location: 'South London',
-			window: {
-				start: moment().add(4, 'd').set('h', 18).unix(),
-				end: moment().add(4, 'd').set('h', 20).unix()
-			}
-		}
-	},
-	{
-		id: '',
-		source: 'Voyage',
-		shipmentId: 'VOY-ID128',
-		createdAt: moment().unix(),
-		bookingStatus: 'Booked',
-		status: STATUS.DISPATCHED,
-		serviceType: SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION,
-		shipmentType: SHIPMENT_TYPE.FULL_TRUCK_LOAD,
-		schedulingType: SCHEDULING_TYPE.ONE_TIME,
-		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
-		internalPONumber: 'PO 931-977981-8760',
-		customerPONumber: 'PO 931-977981-8760',
-		rate: 550.21,
-		package: {
-			weight: 9000,
-			quantity: 1,
-			packageType: PACKAGE_TYPE.PALLET,
-			description: '',
-			dimensions: {
-				length: 90,
-				width: 10,
-				height: 120
-			}
-		},
-		controller: {
-			name: 'Ola Oladapo',
-			phone: '+447523958055'
-		},
-		carrier: {
-			name: 'HBCS Logistics',
-			driverName: 'Ben Award',
-			driverPhone: '+447507210809',
-			location: [-1.778197, 52.412811]
-		},
-		pickup: {
-			facilityId: pickupFacilityId,
-			facilityName: 'Moved HQ',
-			location: 'Solihull, Birmingham',
-			window: {
-				start: moment().add(5, 'd').set('h', 8).unix(),
-				end: moment().add(5, 'd').set('h', 9).unix()
-			}
-		},
-		delivery: {
-			facilityId: deliveryFacilityId,
-			facilityName: 'Packfleet',
-			location: 'South London',
-			window: {
-				start: moment().add(5, 'd').set('h', 18).unix(),
-				end: moment().add(5, 'd').set('h', 20).unix()
-			}
-		}
-	},
-	{
-		id: '',
-		source: 'Voyage',
-		shipmentId: 'VOY-ID130',
-		createdAt: moment().unix(),
-		bookingStatus: 'Booked',
-		status: STATUS.COMPLETED,
-		serviceType: SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE,
-		shipmentType: SHIPMENT_TYPE.LESS_THAN_PALLET_SIZE,
-		schedulingType: SCHEDULING_TYPE.ONE_TIME,
-		activitiesRequired: [SHIPMENT_ACTIVITY.TAIL_LIFT],
-		internalPONumber: 'PO 931-977981-8760',
-		customerPONumber: 'PO 931-977981-8760',
-		rate: 550.21,
-		package: {
-			weight: 15000,
-			quantity: 1,
-			packageType: PACKAGE_TYPE.PALLET,
-			description: '',
-			dimensions: {
-				length: 90,
-				width: 10,
-				height: 120
-			}
-		},
-		controller: {
-			name: 'Ola Oladapo',
-			phone: '+447523958055'
-		},
-		carrier: {
-			name: 'HBCS Logistics',
-			driverName: 'Ben Award',
-			driverPhone: '+447507210809',
-			location: [-1.778197, 52.412811]
-		},
-		pickup: {
-			facilityId: pickupFacilityId,
-			facilityName: 'Moved HQ',
-			location: 'Solihull, Birmingham',
-			window: {
-				start: moment().add(6, 'd').set('h', 8).unix(),
-				end: moment().add(6, 'd').set('h', 9).unix()
-			}
-		},
-		delivery: {
-			facilityId: deliveryFacilityId,
-			facilityName: 'Packfleet',
-			location: 'South London',
-			window: {
-				start: moment().add(6, 'd').set('h', 18).unix(),
-				end: moment().add(6, 'd').set('h', 20).unix()
-			}
-		}
-	}
-];
 
 export const SAMPLE_DRIVERS: Driver[] = [
 	{
@@ -467,17 +147,19 @@ export const SAMPLE_TEAM: Team[] = [
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
-		firstname: 'Omari',
-		lastname: 'Obrian',
-		email: 'daniel.obrian@gmail.com',
+		fullName: 'Chandler Moore',
+		firstname: 'Chandler',
+		lastname: 'Moore',
+		email: 'chandler.moore@gmail.com',
 		phone: '+447523958055',
-		role: TeamRole.ADMIN,
+		role: TeamRole.CONTROLLER,
 		isActive: true
 	},
 	{
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
+		fullName: 'Kendrick Lamar',
 		firstname: 'Kendrick',
 		lastname: 'Lamar',
 		email: 'kendrick.lamar@hotmail.com',
@@ -489,6 +171,7 @@ export const SAMPLE_TEAM: Team[] = [
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
+		fullName: 'Andy Mineo',
 		firstname: 'Andy',
 		lastname: 'Mineo',
 		email: 'andy.mineo@gmail.com',
@@ -500,6 +183,7 @@ export const SAMPLE_TEAM: Team[] = [
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
+		fullName: 'Trip Lee',
 		firstname: 'Trip',
 		lastname: 'Lee',
 		email: 'trip.leeboi@hotmail.com',
@@ -511,6 +195,7 @@ export const SAMPLE_TEAM: Team[] = [
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
+		fullName: 'Kanye West',
 		firstname: 'Kanye',
 		lastname: 'West',
 		email: 'kanye.west@starlink.com',
@@ -522,8 +207,9 @@ export const SAMPLE_TEAM: Team[] = [
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
+		fullName: 'Drake Aubrey Graham',
 		firstname: 'Drake',
-		lastname: 'Aubrey',
+		lastname: 'Aubrey Graham',
 		email: 'aubrey.graham@hiphopstudios.com',
 		phone: '+44752392331',
 		role: TeamRole.COORDINATOR,
@@ -633,6 +319,315 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		status: VEHICLE_STATUS.ON_THE_ROAD
 	}
 ]
+
+export const SAMPLE_LOADS: Load[] = [
+	{
+		id: '',
+		source: 'Voyage',
+		loadId: 'VOY-ID123',
+		createdAt: moment().unix(),
+		status: STATUS.PENDING,
+		internalPONumber: 'PO 931-977981-8760',
+		customerPONumber: 'PO 931-977981-8760',
+		rate: 550.21,
+		package: {
+			weight: 19000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: '',
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name: 'HBCS Logistics',
+			driverId: SAMPLE_DRIVERS[0].driverId,
+			driverName: SAMPLE_DRIVERS[0].fullName,
+			driverPhone: SAMPLE_DRIVERS[0].defaultPhone,
+			controllerId: SAMPLE_TEAM[0].memberId,
+			controllerName: SAMPLE_TEAM[0].fullName,
+			location: [-1.778197, 52.412811]
+		},
+		pickup: {
+			street: "4 Cranbrook Way, Shirley",
+			city: 'Shirley',
+			region: 'Solihull',
+			postcode: 'B90 4GT',
+			country: 'UK',
+			window: {
+				start: moment().add(1, 'd').set('h', 8).unix(),
+				end: moment().add(1, 'd').set('h', 9).unix()
+			}
+		},
+		delivery: {
+			street: 'Noose Lane',
+			city: 'Willenhall',
+			postcode: 'WV13 3AR',
+			country: 'UK',
+			window: {
+				start: moment().add(1, 'd').set('h', 18).unix(),
+				end: moment().add(1, 'd').set('h', 20).unix()
+			}
+		}
+	},
+	{
+		id: '',
+		source: 'Voyage',
+		loadId: 'VOY-ID124',
+		createdAt: moment().unix(),
+		status: STATUS.DISPATCHED,
+		internalPONumber: 'PO 931-977981-8760',
+		customerPONumber: 'PO 931-977981-8760',
+		rate: 550.21,
+		package: {
+			weight: 14000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: '',
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name: 'HBCS Logistics',
+			driverId: SAMPLE_DRIVERS[0].driverId,
+			driverName: SAMPLE_DRIVERS[0].fullName,
+			driverPhone: SAMPLE_DRIVERS[0].defaultPhone,
+			controllerId: SAMPLE_TEAM[0].memberId,
+			controllerName: SAMPLE_TEAM[0].fullName,
+			location: [-1.778197, 52.412811]
+		},
+		pickup: {
+			street: "4 Cranbrook Way, Shirley",
+			city: 'Shirley',
+			region: 'Solihull',
+			postcode: 'B90 4GT',
+			country: 'UK',
+			window: {
+				start: moment().add(2, 'd').set('h', 8).unix(),
+				end: moment().add(2, 'd').set('h', 9).unix()
+			}
+		},
+		delivery: {
+			street: 'Noose Lane',
+			city: 'Willenhall',
+			postcode: 'WV13 3AR',
+			country: 'UK',
+			window: {
+				start: moment().add(2, 'd').set('h', 18).unix(),
+				end: moment().add(2, 'd').set('h', 20).unix()
+			}
+		}
+	},
+	{
+		id: '',
+		source: 'Voyage',
+		loadId: 'VOY-ID125',
+		createdAt: moment().unix(),
+		status: STATUS.EN_ROUTE,
+		internalPONumber: 'PO 931-977981-8760',
+		customerPONumber: 'PO 931-977981-8760',
+		rate: 550.21,
+		package: {
+			weight: 9000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: '',
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name: 'HBCS Logistics',
+			driverId: SAMPLE_DRIVERS[0].driverId,
+			driverName: SAMPLE_DRIVERS[0].fullName,
+			driverPhone: SAMPLE_DRIVERS[0].defaultPhone,
+			controllerId: SAMPLE_TEAM[0].memberId,
+			controllerName: SAMPLE_TEAM[0].fullName,
+			location: [-1.778197, 52.412811]
+		},
+		pickup: {
+			street: "4 Cranbrook Way, Shirley",
+			city: 'Shirley',
+			region: 'Solihull',
+			postcode: 'B90 4GT',
+			country: 'UK',
+			window: {
+				start: moment().add(3, 'd').set('h', 8).unix(),
+				end: moment().add(3, 'd').set('h', 9).unix()
+			}
+		},
+		delivery: {
+			street: 'Noose Lane',
+			city: 'Willenhall',
+			postcode: 'WV13 3AR',
+			country: 'UK',
+			window: {
+				start: moment().add(3, 'd').set('h', 18).unix(),
+				end: moment().add(3, 'd').set('h', 20).unix()
+			}
+		}
+	},
+	{
+		id: '',
+		source: 'Voyage',
+		loadId: 'VOY-ID127',
+		createdAt: moment().unix(),
+		status: STATUS.CANCELLED,
+		internalPONumber: 'PO 931-977981-8760',
+		customerPONumber: 'PO 931-977981-8760',
+		rate: 550.21,
+		package: {
+			weight: 9000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: '',
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name: 'HBCS Logistics',
+			driverId: SAMPLE_DRIVERS[0].driverId,
+			driverName: SAMPLE_DRIVERS[0].fullName,
+			driverPhone: SAMPLE_DRIVERS[0].defaultPhone,
+			controllerId: SAMPLE_TEAM[0].memberId,
+			controllerName: SAMPLE_TEAM[0].fullName,
+			location: [-1.778197, 52.412811]
+		},
+		pickup: {
+			street: "4 Cranbrook Way, Shirley",
+			city: 'Shirley',
+			region: 'Solihull',
+			postcode: 'B90 4GT',
+			country: 'UK',
+			window: {
+				start: moment().add(4, 'd').set('h', 8).unix(),
+				end: moment().add(4, 'd').set('h', 9).unix()
+			}
+		},
+		delivery: {
+			street: 'Noose Lane',
+			city: 'Willenhall',
+			postcode: 'WV13 3AR',
+			country: 'UK',
+			window: {
+				start: moment().add(4, 'd').set('h', 18).unix(),
+				end: moment().add(4, 'd').set('h', 20).unix()
+			}
+		}
+	},
+	{
+		id: '',
+		source: 'Voyage',
+		loadId: 'VOY-ID128',
+		createdAt: moment().unix(),
+		status: STATUS.DISPATCHED,
+		internalPONumber: 'PO 931-977981-8760',
+		customerPONumber: 'PO 931-977981-8760',
+		rate: 550.21,
+		package: {
+			weight: 9000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: '',
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name: 'HBCS Logistics',
+			driverId: SAMPLE_DRIVERS[0].driverId,
+			driverName: SAMPLE_DRIVERS[0].fullName,
+			driverPhone: SAMPLE_DRIVERS[0].defaultPhone,
+			controllerId: SAMPLE_TEAM[0].memberId,
+			controllerName: SAMPLE_TEAM[0].fullName,
+			location: [-1.778197, 52.412811]
+		},
+		pickup: {
+			street: "4 Cranbrook Way, Shirley",
+			city: 'Shirley',
+			region: 'Solihull',
+			postcode: 'B90 4GT',
+			country: 'UK',
+			window: {
+				start: moment().add(5, 'd').set('h', 8).unix(),
+				end: moment().add(5, 'd').set('h', 9).unix()
+			}
+		},
+		delivery: {
+			street: 'Noose Lane',
+			city: 'Willenhall',
+			postcode: 'WV13 3AR',
+			country: 'UK',
+			window: {
+				start: moment().add(5, 'd').set('h', 18).unix(),
+				end: moment().add(5, 'd').set('h', 20).unix()
+			}
+		}
+	},
+	{
+		id: '',
+		source: 'Voyage',
+		loadId: 'VOY-ID130',
+		createdAt: moment().unix(),
+		status: STATUS.COMPLETED,
+		internalPONumber: 'PO 931-977981-8760',
+		customerPONumber: 'PO 931-977981-8760',
+		rate: 550.21,
+		package: {
+			weight: 15000,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET,
+			description: '',
+			dimensions: {
+				length: 90,
+				width: 10,
+				height: 120
+			}
+		},
+		carrier: {
+			name: 'HBCS Logistics',
+			driverId: SAMPLE_DRIVERS[0].driverId,
+			driverName: SAMPLE_DRIVERS[0].fullName,
+			driverPhone: SAMPLE_DRIVERS[0].defaultPhone,
+			controllerId: SAMPLE_TEAM[0].memberId,
+			controllerName: SAMPLE_TEAM[0].fullName,
+			location: [-1.778197, 52.412811]
+		},
+		pickup: {
+			street: "4 Cranbrook Way, Shirley",
+			city: 'Shirley',
+			region: 'Solihull',
+			postcode: 'B90 4GT',
+			country: 'UK',
+			window: {
+				start: moment().add(6, 'd').set('h', 8).unix(),
+				end: moment().add(6, 'd').set('h', 9).unix()
+			}
+		},
+		delivery: {
+			street: 'Noose Lane',
+			city: 'Willenhall',
+			postcode: 'WV13 3AR',
+			country: 'UK',
+			window: {
+				start: moment().add(6, 'd').set('h', 18).unix(),
+				end: moment().add(6, 'd').set('h', 20).unix()
+			}
+		}
+	}
+];
 
 export const SAMPLE_CUSTOMERS: Customer[] = [
 	{

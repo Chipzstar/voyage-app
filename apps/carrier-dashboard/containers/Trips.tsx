@@ -5,12 +5,14 @@ import DataGrid from '../components/DataGrid';
 import classNames from 'classnames';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
-import { PATHS, SAMPLE_LOADS } from '../utils/constants';
+import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
 // @ts-ignore
 import { capitalize } from '@voyage-app/shared-utils';
 import { Empty } from '@voyage-app/shared-ui-components';
 import ContentContainer from '../layout/ContentContainer'
+import { useLoads } from '../store/feature/loadSlice';
+import { useSelector } from 'react-redux';
 
 interface TripsProps {
 	statuses: STATUS[],
@@ -19,7 +21,8 @@ interface TripsProps {
 
 const Trips = ({ statuses = Object.values(STATUS), message }: TripsProps) => {
 	const router = useRouter();
-	const rows = SAMPLE_LOADS.filter(element => statuses.includes(element.status)).map((element, index) => {
+	const loads = useSelector(useLoads)
+	const rows = loads.filter(element => statuses.includes(element.status)).map((element, index) => {
 		const statusClass = classNames({
 			'my-2': true,
 			'py-1': true,
@@ -40,7 +43,7 @@ const Trips = ({ statuses = Object.values(STATUS), message }: TripsProps) => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
-					<span className='text-secondary font-semibold text-lg'>{element.shipmentId}</span>
+					<span className='text-secondary font-semibold text-lg'>{element.loadId}</span>
 				</td>
 				<td colSpan={1}>
 					<div className={statusClass}>
@@ -49,7 +52,7 @@ const Trips = ({ statuses = Object.values(STATUS), message }: TripsProps) => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span>{element.controller.name}</span>
+						<span>{element.carrier.controllerName}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
@@ -68,7 +71,7 @@ const Trips = ({ statuses = Object.values(STATUS), message }: TripsProps) => {
 					</div>
 				</td>
 				<td role='button' colSpan={2}>
-					<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.TRIPS}/${element.shipmentId}`)}>
+					<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.TRIPS}/${element.loadId}`)}>
 						<span className='text-secondary font-semibold text-lg'>View</span>
 					</button>
 				</td>
@@ -85,7 +88,7 @@ const Trips = ({ statuses = Object.values(STATUS), message }: TripsProps) => {
 					</span>
 				</button>
 			</div>
-			<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
+			<DataGrid rows={rows} headings={['Trip ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
 		</ContentContainer>
 	);
 };

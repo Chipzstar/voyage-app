@@ -94,12 +94,30 @@ export enum PACKAGE_TYPE {
 	SKIDS = 'SKID',
 }
 
+enum HAZMAT_TYPES {
+	NONE = 'none',
+	EXPLOSIVES = 'Class 1: Explosives',
+	GASES = 'Class 2: Gases',
+	FLAMMABLE_LIQUIDS = 'Class 3: Flammable liquids',
+	FLAMMABLE_SOLIDS = 'Class 4: Flammable solids',
+	OXIDIZERS = 'Class 5: Oxidizers',
+	TOXIC_SUBSTANCE = 'Class 6.1: Toxic substance',
+	INFECTIOUS_SUBSTANCE = 'Class 6.2: Infectious Substance',
+	RADIOACTIVE_MATERIAL = 'Class 7: Radioactive material',
+	CORROSIVE_SUBSTANCE = 'Class 8: Corrosive material',
+	MISC_DANGEROUS = 'Class 9: Miscellaneous dangerous goods'
+}
+
 export interface Carrier {
-	name: string
-	driverName: string,
-	driverPhone: string,
-	location?: Coordinates,
-	vehicle?: string
+	name: string;
+	driverId: string;
+	driverName: string;
+	driverPhone: string;
+	controllerId?: string;
+	controllerName?: string;
+	location?: Coordinates;
+	vehicleId?: string
+	vehicleType?: string;
 }
 
 export interface Shipment {
@@ -120,10 +138,44 @@ export interface Shipment {
 	pickup: Pickup;
 	delivery: Delivery;
 	package: Package;
-	controller: {
-		name: string;
-		phone: string;
-	}
 	carrier: Carrier;
+}
+
+export interface Load {
+	id: string;
+	source: string;
+	customer?: {
+		id: string;
+      name: string;
+		company: string;
+	},
+	loadId: string,
+	createdAt: UnixTimestamp;
+	updatedAt?: UnixTimestamp;
+	status: STATUS;
+	internalPONumber?: string;
+	customerPONumber?: string;
+	rate: number;
+	pickup: {
+		street: string;
+		city: string;
+      region?: string
+		postcode: string;
+		country: string;
+		note?: string;
+		window: ShipmentTimeWindow
+	};
+	delivery: {
+		street: string;
+		city: string;
+		region?: string
+		postcode: string;
+		country: string;
+		note?: string;
+		window?: ShipmentTimeWindow
+	};
+	package: Package;
+	carrier: Carrier;
+	hazmat?: HAZMAT_TYPES
 }
 

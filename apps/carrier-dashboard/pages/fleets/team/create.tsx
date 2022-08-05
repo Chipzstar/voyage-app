@@ -24,6 +24,7 @@ const create = () => {
 		memberId: `MEMBER-ID${alphanumericId(8)}`,
 		createdAt: moment().unix(),
 		role: TeamRole.ADMIN,
+		fullName: '',
 		firstname: '',
 		lastname: '',
 		email: '',
@@ -45,6 +46,7 @@ const create = () => {
 	));
 
 	const handleSubmit = useCallback(values => {
+		values.fullName = values.firstname + ' ' + values.lastname
 		console.log(values);
 		dispatch(addMember(values))
 		showNotification({
@@ -52,7 +54,7 @@ const create = () => {
 			disallowClose: true,
 			onClose: () => console.log('unmounted'),
 			onOpen: () => console.log('mounted'),
-			autoClose: 5000,
+			autoClose: 3000,
 			title: "Success",
 			message: 'A new member has been added to your team!',
 			color: 'green',

@@ -1,9 +1,5 @@
 import {
 	PACKAGE_TYPE,
-	SCHEDULING_TYPE,
-	SERVICE_TYPE,
-	SHIPMENT_ACTIVITY,
-	SHIPMENT_TYPE,
 	UnixTimestamp,
 } from '@voyage-app/shared-types';
 
@@ -64,28 +60,6 @@ export enum AccountType {
 	LARGE_SHIPPER="LARGE_SHIPPER",
 }
 
-export interface NewBooking {
-	id: string,
-	createdAt: UnixTimestamp,
-	serviceType: SERVICE_TYPE;
-	shipmentType: SHIPMENT_TYPE;
-	schedulingType: SCHEDULING_TYPE;
-	activitiesRequired: SHIPMENT_ACTIVITY[];
-	internalPONumber: string;
-	customerPONumber: string;
-	weight: number;
-	quantity: number;
-	height: number;
-	length: number;
-	width: number;
-	packageType: PACKAGE_TYPE;
-	pickupDate?: any;
-	pickupLocation: string;
-	deliveryLocation: string;
-	description: string;
-	notes: string;
-}
-
 export interface Driver {
 	id: string;
 	createdAt: UnixTimestamp;
@@ -116,6 +90,7 @@ export interface Team {
 	id: string;
 	createdAt: UnixTimestamp;
 	memberId: string;
+	fullName: string;
 	firstname: string;
 	lastname: string;
 	email: string;
@@ -178,4 +153,33 @@ export interface Customer {
 	taxIDNumber?: string;
 	extraContacts: Contact[];
 	notes?: string;
+}
+
+export interface Location {
+	street: string;
+	city: string;
+   region?: string;
+	postcode: string;
+	country: string;
+	note?: string;
+}
+
+export interface NewBooking {
+	createdAt: UnixTimestamp,
+	internalPONumber?: string;
+	customerPONumber?: string;
+	weight: number;
+	quantity: number;
+	height: number;
+	length: number;
+	width: number;
+	packageType: PACKAGE_TYPE;
+	pickupDate?: any;
+	pickupLocation: Location;
+	deliveryLocation: Location;
+	customerId: string;
+	driverId: string;
+	controllerId: string;
+	vehicleType: VEHICLE_TYPES | "NO_PREFERENCE";
+	description: string;
 }

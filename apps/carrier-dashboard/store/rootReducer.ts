@@ -3,12 +3,14 @@ import teamReducer from './feature/memberSlice';
 import driverReducer from './feature/driverSlice';
 import vehicleReducer from './feature/vehicleSlice';
 import customerReducer from './feature/customerSlice';
+import loadReducer from './feature/loadSlice';
 
 const appReducer = combineReducers({
 	members: teamReducer,
 	drivers: driverReducer,
 	vehicles: vehicleReducer,
-	customers: customerReducer
+	customers: customerReducer,
+	loads: loadReducer
 })
 
 const rootReducer = (state, action) => {
