@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
 import { useDispatch } from 'react-redux';
-import { ScrollArea } from '@mantine/core';
+import { Badge, ScrollArea } from '@mantine/core';
 
 interface NavMenuItem {
 	title: string;
@@ -69,7 +69,10 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 						return (
 							<li key={index} role='button' className={`${dropdownStyles}`}>
 								<Link href={option.href}>
-									<div className='flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 group pl-11'>{option.title}</div>
+									<div className='flex items-center w-full p-2 text-base font-normal text-gray-900 transition duration-75 group pl-11'>
+										<span>{option.title}</span>
+										{option.href === PATHS.MARKETPLACE && <Badge className="ml-1" color="green">Coming Soon</Badge>}
+									</div>
 								</Link>
 							</li>
 						);
@@ -150,19 +153,18 @@ const Sidebar = () => {
 						item?.submenu ? <SideMenuDropdown key={index} title={item.title} isActive={item.isActive} options={item.menuItems} /> : <SideMenuItem key={index} title={item.title} href={item.href} isActive={false} />
 					)}
 				</ul>
-
-				<div
-					role='button'
-					className='flex items-center p-4 text-base font-normal text-gray-900 hover:bg-secondary-100'
-					onClick={() => {
-						dispatch({ type: 'RESET' });
-						signOut({ callbackUrl: `${window.location.origin}/login` }).then(r => console.log('Sign Out Success!'));
-					}}
-				>
-					<Logout size={30} strokeWidth={1} color={'black'} />
-					<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
-				</div>
 			</ScrollArea>
+			<div
+				role='button'
+				className='flex items-center p-4 text-base font-normal text-gray-900 hover:bg-secondary-100'
+				onClick={() => {
+					dispatch({ type: 'RESET' });
+					signOut({ callbackUrl: `${window.location.origin}/login` }).then(r => console.log('Sign Out Success!'));
+				}}
+			>
+				<Logout size={30} strokeWidth={1} color={'black'} />
+				<span className='flex-1 ml-6 text-base md:text-lg whitespace-nowrap'>Sign Out</span>
+			</div>
 		</div>
 	);
 };
