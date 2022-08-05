@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { ActionIcon, Anchor, Breadcrumbs, Button, Select, SimpleGrid, Text } from '@mantine/core';
+import { ActionIcon, Anchor, Button, Select, SimpleGrid, Text } from '@mantine/core';
 import Link from 'next/link';
 import moment from 'moment/moment';
 import { SAMPLE_LOADS } from '../../utils/constants';
-import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types';
+import { EQUIPMENT_TYPES, SelectInputData, Load } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
 import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
 import { DateRangePicker } from '@mantine/dates';
@@ -23,16 +23,16 @@ const marketplace = () => {
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({
-			value: item.pickup.facilityId,
-			label: item.pickup.facilityName
+			value: item.pickup.street,
+			label: item.pickup.street
 		}));
 		return uniqueArray(labels, 'value');
 	}, []);
 
 	const uniqueDeliveryLocations = useMemo(() => {
 		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({
-			value: item.delivery.facilityId,
-			label: item.delivery.facilityName
+			value: item.delivery.street,
+			label: item.delivery.street
 		}));
 		return uniqueArray(labels, 'value');
 	}, []);
@@ -80,20 +80,20 @@ const marketplace = () => {
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
-				{SAMPLE_LOADS.map((shipment: Shipment, index) => (
+				{SAMPLE_LOADS.map((shipment: Load, index) => (
 					<main key={index} className='border border-voyage-grey p-3 space-y-3'>
 						<section className='flex space-x-8'>
 							<div className='flex flex-col space-y-1 flex-wrap'>
-								<span className='font-medium'>{shipment.pickup.facilityName}</span>
-								<span>{shipment.pickup.location}</span>
+								<span className='font-medium'>John Lewis Warehouse</span>
+								<span>{shipment.pickup.street} {shipment.pickup.city}</span>
 								<span className='text-sm'>{moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}</span>
 							</div>
 							<div className='flex items-center'>
 								<ArrowRight size={20} />
 							</div>
 							<div className='flex flex-col space-y-1 flex-wrap'>
-								<span className='font-medium'>{shipment.delivery.facilityName}</span>
-								<span>{shipment.delivery.location}</span>
+								<span className='font-medium'>Packfleet</span>
+								<span>{shipment.delivery.street} {shipment.delivery.postcode}</span>
 								<span className='text-sm'>{moment.unix(shipment.delivery.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery.window.end).format('HH:mm')}</span>
 							</div>
 						</section>
@@ -101,7 +101,7 @@ const marketplace = () => {
 							<div className='flex items-center'>
 								<div className='flex items-center space-x-3'>
 									<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
-									<span className='font-medium'>{shipment.carrier.vehicle}</span>
+									<span className='font-medium'>{shipment.carrier.vehicleType}</span>
 								</div>
 								<div>
 									<span className='lowercase'>

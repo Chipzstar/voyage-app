@@ -8,6 +8,8 @@ import moment from 'moment';
 import PageNav from '../../layout/PageNav'
 import Link from 'next/link'
 import ContentContainer from '../../layout/ContentContainer'
+import { useSelector } from 'react-redux'
+import { useLoads } from '../../store/feature/loadSlice'
 
 export async function getServerSideProps({ req, res, params }) {
 	// @ts-ignore
@@ -56,6 +58,7 @@ export async function getServerSideProps({ req, res, params }) {
 
 const tripDetails = ({ loadId, pageIndex, initialState }) => {
 	const router = useRouter();
+	const loads = useSelector(useLoads)
 	const items = [
 		{ title: 'Home', href: PATHS.HOME },
 		{ title: 'Trips', href: PATHS.TRIPS },
@@ -82,13 +85,13 @@ const tripDetails = ({ loadId, pageIndex, initialState }) => {
 							className='h-12'
 							onClick={() => {
 								const prevIndex = pageIndex - 1;
-								router.push(`${PATHS.TRIPS}/${SAMPLE_LOADS[prevIndex].shipmentId}`);
+								router.push(`${PATHS.TRIPS}/${loads[prevIndex].loadId}`);
 							}}
 						>
 							<span className='text-lg'>Prev</span>
 						</Button>
 						<Button
-							disabled={pageIndex === SAMPLE_LOADS.length - 1}
+							disabled={pageIndex === loads.length - 1}
 							variant='outline'
 							color='gray'
 							radius={0}
@@ -96,7 +99,7 @@ const tripDetails = ({ loadId, pageIndex, initialState }) => {
 							className='h-12'
 							onClick={() => {
 								const nextIndex = pageIndex + 1;
-								router.push(`${PATHS.TRIPS}/${SAMPLE_LOADS[nextIndex].shipmentId}`);
+								router.push(`${PATHS.TRIPS}/${loads[nextIndex].loadId}`);
 							}}
 						>
 							<span className='text-lg'>Next</span>
@@ -112,20 +115,20 @@ const tripDetails = ({ loadId, pageIndex, initialState }) => {
 								</div>
 								<div className='space-y-2'>
 									<span className='text-2xl font-medium'>Carrier</span>
-									<p className='text-lg'>{SAMPLE_LOADS[pageIndex]?.carrier?.name}</p>
-									<p className='text-lg'>{SAMPLE_LOADS[pageIndex]?.carrier?.location}</p>
+									<p className='text-lg'>{loads[pageIndex]?.carrier?.name}</p>
+									<p className='text-lg'>{loads[pageIndex]?.carrier?.location}</p>
 								</div>
 								<div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Contact</span>
-										<p className='text-lg'>{SAMPLE_LOADS[pageIndex]?.carrier?.driverName}</p>
-										<p className='text-lg'>{SAMPLE_LOADS[pageIndex]?.carrier?.driverPhone}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverName}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverPhone}</p>
 									</div>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Driver</span>
-										<p className='text-lg'>{SAMPLE_LOADS[pageIndex]?.carrier?.driverName}</p>
-										<p className='text-lg'>{SAMPLE_LOADS[pageIndex]?.carrier?.driverPhone}</p>
-										<p className='text-lg'>{SAMPLE_LOADS[pageIndex]?.carrier?.vehicle}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverName}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverPhone}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrier?.vehicleType}</p>
 									</div>
 								</div>
 							</aside>

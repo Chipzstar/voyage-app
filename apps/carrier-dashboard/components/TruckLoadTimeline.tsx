@@ -2,14 +2,17 @@ import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
 import moment from 'moment'
 import React, { useMemo } from 'react'
 import CustomWeekView from '../containers/CustomWeekView'
-import { Shipment } from '@voyage-app/shared-types';
-import { SAMPLE_LOADS, PATHS } from '../utils/constants'
+import {  PATHS } from '../utils/constants'
 import { useRouter } from 'next/router'
+import { useSelector } from 'react-redux'
+import { useLoads } from '../store/feature/loadSlice'
+import { Load } from '@voyage-app/shared-types'
 
 const localizer = momentLocalizer(moment)
 
 const TruckLoadTimeline = props => {
 	const router = useRouter();
+	const loads = useSelector(useLoads)
 	const {views, ...otherProps} = useMemo(() => ({
 		views: {
 			week: CustomWeekView,
@@ -33,9 +36,9 @@ const TruckLoadTimeline = props => {
 					}
 				}}
 				localizer={localizer}
-				events={SAMPLE_LOADS.map((load: Shipment) => ({
-					id: load.shipmentId,
-					title: `${load.pickup.facilityName} → ${load.delivery.facilityName}`,
+				events={loads.map((load: Load) => ({
+					id: load.loadId,
+					title: `${moment.unix(load.pickup.window.start).format("HH:mm")} - ${moment.unix(load.pickup.window.end).format("HH:mm")}\n${load.pickup.postcode} → ${load.delivery.postcode}`,
 					bgColor: '#ff7f50',
 					allDay: false,
 					start: moment.unix(load.pickup.window.start).toDate(),
