@@ -1,46 +1,52 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react'
 import PageNav from '../../../layout/PageNav';
 import { Anchor, FileInput, NumberInput, Select, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
-import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from '../../../utils/types';
+import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from '../../../utils/types'
 import dayjs from 'dayjs';
 import { alphanumericId, capitalize, getYears, sanitize } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import PageHeader from '../../../layout/PageHeader';
 import { showNotification } from '@mantine/notifications';
 import { Check, Upload } from 'tabler-icons-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router';
-import { addVehicle } from '../../../store/feature/vehicleSlice';
+import { addVehicle, useVehicles } from '../../../store/feature/vehicleSlice';
 import { Loader } from '@mantine/core';
 import moment from 'moment/moment'
 
-const create = ({vehicleName}) => {
+const create = ({vehicleName, vehicleId}) => {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch();
 	const router = useRouter();
+	const vehicles = useSelector(useVehicles)
+
+	const vehicle = useMemo(() => {
+		return vehicleId ? vehicles.find((item: Vehicle) => item.vehicleId === vehicleId) : null;
+	}, [vehicles]);
+
 	const initialValues: Vehicle = {
-		id: '',
-		vehicleId: `VEH-ID${alphanumericId(8)}`,
-		createdAt: moment().unix(),
-		vehicleName,
-		vehicleType: '',
-		colour: '',
-		dimensions: { height: 0, length: 0, width: 0 },
-		driverId: '',
-		engineNumber: '',
-		fuelMeasurementUnit: null,
-		fuelType: null,
-		image: '',
-		make: '',
-		model: '',
-		regNumber: '',
-		status: VEHICLE_STATUS.IDLE,
-		vin: '',
-		yearOfManufacture: 0
+		id: vehicle?.id ?? '',
+		vehicleId: vehicleId ?? `VEH-ID${alphanumericId(8)}`,
+		createdAt: vehicle?.createdAt ?? moment().unix(),
+		vehicleName: vehicleName || vehicle?.vehicleName || '',
+		vehicleType: vehicle?.vehicleType ?? '',
+		colour: vehicle?.colour ?? '',
+		dimensions: vehicle?.dimensions ?? { height: 0, length: 0, width: 0 },
+		driverId: vehicle?.driverId ?? '',
+		engineNumber: vehicle?.engineNumber ?? '',
+		fuelMeasurementUnit: vehicle?.fuelMeasurementUnit ?? null,
+		fuelType: vehicle?.fuelType ?? null,
+		image: vehicle?.image ?? '',
+		make: vehicle?.make ?? '',
+		model: vehicle?.model ?? '',
+		regNumber: vehicle?.regNumber ?? '',
+		status: vehicle?.status ?? VEHICLE_STATUS.IDLE,
+		vin: vehicle?.vin ?? '',
+		yearOfManufacture: vehicle?.yearOfManufacture ?? ''
 	};
 
 	const form = useForm({
@@ -48,6 +54,7 @@ const create = ({vehicleName}) => {
 	});
 
 	const handleSubmit = useCallback(values => {
+		values.regNumber = values.regNumber.toUpperCase();
 		setLoading(true);
 		console.log(values)
 		dispatch(addVehicle(values));
@@ -181,11 +188,11 @@ const create = ({vehicleName}) => {
 };
 
 export async function getServerSideProps(context) {
-	const query = context.req.query;
-	console.log(query)
+	const query = context.query;
 	return {
 		props: {
-			vehicleName: query?.vehicleName || ''
+			vehicleName: query?.vehicleName ?? '',
+			vehicleId: query?.vehicleId ?? null,
 		}
 	}
 }

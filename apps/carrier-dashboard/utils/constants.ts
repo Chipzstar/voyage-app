@@ -240,7 +240,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: 2011,
+		yearOfManufacture: "2011",
 		status: VEHICLE_STATUS.FULL_CAPACITY
 	},
 	{
@@ -265,7 +265,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: 2011,
+		yearOfManufacture: "2011",
 		status: VEHICLE_STATUS.IDLE
 	},
 	{
@@ -290,7 +290,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: 2011,
+		yearOfManufacture: "2011",
 		status: VEHICLE_STATUS.OCCUPIED
 	},
 	{
@@ -315,7 +315,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: 2011,
+		yearOfManufacture: "2011",
 		status: VEHICLE_STATUS.ON_THE_ROAD
 	}
 ]

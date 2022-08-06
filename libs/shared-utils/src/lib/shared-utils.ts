@@ -32,5 +32,9 @@ export function sortByDate(data, order="desc") {
 	return data
 }
 
+export function includesCaseInsensitive(this: string, str: string): boolean {
+	return this.toLowerCase().includes(str.toLowerCase())
+}
+
 export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 export const numericId = customAlphabet('1234567890');

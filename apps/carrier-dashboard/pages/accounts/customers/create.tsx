@@ -14,9 +14,11 @@ import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import { addCustomer } from '../../../store/feature/customerSlice'
 import moment from 'moment';
+import useWindowSize from '../../../hooks/useWindowSize'
 
 const create = () => {
 	const [loading, setLoading] = useState(false);
+	const { height, width } = useWindowSize()
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const initialValues: Customer = {
@@ -172,7 +174,7 @@ const create = () => {
 					</section>
 					<section>
 						<header className='page-header mb-4'>Add Contacts</header>
-						<ScrollArea.Autosize maxHeight={550}>{contacts}</ScrollArea.Autosize>
+						<ScrollArea.Autosize maxHeight={height - 260}>{contacts}</ScrollArea.Autosize>
 						<div className='flex justify-end py-5'>
 							<Button variant='outline' color='green' onClick={() => form.insertListItem('extraContacts', emptyContact)}>
 								+ New contact

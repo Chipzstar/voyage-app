@@ -22,6 +22,9 @@ export const driverSlice = createSlice({
 	reducers: {
       addDriver: (state, action: PayloadAction<Driver>) => {
 			return [...state, action.payload]
+		},
+		removeDriver: (state, action: PayloadAction<string>) => {
+			return state.filter((driver) => driver.driverId !== action.payload)
 		}
 	}
 })
@@ -33,6 +36,6 @@ export const useDrivers = (state) : Driver[] => {
 	return [...drivers].sort((a, b) => b.createdAt - a.createdAt)
 }
 
-export const { addDriver } = driverSlice.actions;
+export const { addDriver, removeDriver } = driverSlice.actions;
 
 export default driverSlice.reducer;

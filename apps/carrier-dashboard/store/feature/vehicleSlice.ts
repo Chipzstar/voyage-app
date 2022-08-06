@@ -21,6 +21,9 @@ export const vehicleSlice = createSlice({
 	reducers: {
 		addVehicle: (state, action: PayloadAction<Vehicle>) => {
 			return [...state, action.payload];
+		},
+		removeVehicle: (state, action: PayloadAction<string>) => {
+			return state.filter((v) => v.vehicleId !== action.payload);
 		}
 	}
 });
@@ -32,6 +35,6 @@ export const useVehicles = (state) : Vehicle[] => {
 	return [...vehicles].sort((a, b) => b.createdAt - a.createdAt)
 };
 
-export const { addVehicle } = vehicleSlice.actions;
+export const { addVehicle, removeVehicle } = vehicleSlice.actions;
 
 export default vehicleSlice.reducer;

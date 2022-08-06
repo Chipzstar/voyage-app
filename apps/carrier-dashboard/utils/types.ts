@@ -109,7 +109,7 @@ export interface Vehicle {
 	regNumber: string;
 	vin: string;
 	engineNumber: string;
-	yearOfManufacture: number;
+	yearOfManufacture: string;
 	colour: string;
 	fuelType: FuelType;
 	fuelMeasurementUnit: FuelMeasurementUnit

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react'
 import PageNav from '../../../layout/PageNav';
 import { Anchor, Select, Textarea, TextInput } from '@mantine/core';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import { Driver, DRIVER_STATUS } from '../../../utils/types'
 import { DatePicker } from '@mantine/dates';
 import { Calendar, Check } from 'tabler-icons-react';
 import { useDispatch, useSelector } from 'react-redux'
-import { addDriver } from '../../../store/feature/driverSlice';
+import { addDriver, useDrivers } from '../../../store/feature/driverSlice'
 import { showNotification } from '@mantine/notifications';
 import Router, { useRouter } from 'next/router';
 import { alphanumericId } from '@voyage-app/shared-utils';
@@ -17,34 +17,40 @@ import { SelectInputData } from '@voyage-app/shared-types';
 import { useVehicles } from '../../../store/feature/vehicleSlice'
 import moment from 'moment';
 
-const create = () => {
+const create = ({driverId}) => {
 	const dispatch = useDispatch();
+	const drivers = useSelector(useDrivers)
 	const vehicles = useSelector(useVehicles)
 	const router = useRouter();
+
+	const driver = useMemo(() => {
+		return driverId ? drivers.find((item: Driver) => item.driverId === driverId) : null;
+	}, [drivers]);
+
 	const initialValues: Driver = {
-		id: '',
-		driverId: `DRIVER-ID${alphanumericId(8)}`,
-		vehicleId: '',
-		createdAt: moment().unix(),
-		addressLine1: '',
-		addressLine2: '',
-		city: '',
-		region: '',
-		companyName: '',
-		defaultPhone: '',
-		dob: 0,
-		email: '',
-		fullName: '',
-		firstname: '',
-		fleetId: '',
-		hireDate: 0,
-		isActive: false,
-		lastname: '',
-		notes: '',
-		postcode: '',
-		primaryPhone: '',
-		secondaryPhone: '',
-		status: DRIVER_STATUS.UNVERIFIED
+		id: driver?.id ?? '',
+		driverId: driverId ?? `DRIVER-ID${alphanumericId(8)}`,
+		vehicleId: driver?.vehicleId ?? '',
+		createdAt: driver?.createdAt ?? moment().unix(),
+		addressLine1: driver?.addressLine1 ?? '',
+		addressLine2: driver?.addressLine2 ?? '',
+		city: driver?.city ?? '',
+		region: driver?.region ?? '',
+		companyName: driver?.companyName ?? '',
+		defaultPhone: driver?.defaultPhone ?? '',
+		dob: driver?.dob ?? null,
+		email: driver?.email ?? '',
+		fullName: driver?.fullName ?? '',
+		firstname: driver?.firstname ?? '',
+		fleetId: driver?.fleetId ?? '',
+		hireDate: driver?.hireDate ?? null,
+		isActive: driver?.isActive ?? false,
+		lastname: driver?.lastname ?? '',
+		notes: driver?.notes ?? '',
+		postcode: driver?.postcode ?? '',
+		primaryPhone: driver?.primaryPhone ?? '',
+		secondaryPhone: driver?.secondaryPhone ?? '',
+		status: driver?.status ?? DRIVER_STATUS.UNVERIFIED
 	};
 	const form = useForm({
 		initialValues
@@ -182,5 +188,14 @@ const create = () => {
 		</ContentContainer>
 	);
 };
+
+export async function getServerSideProps (context){
+	console.log(context.query)
+	return {
+		props: {
+			driverId: context.query?.driverId ?? null,
+		}
+	}
+}
 
 export default create;

@@ -1,35 +1,41 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react'
 import PageNav from '../../../layout/PageNav';
 import { Anchor, Select, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
-import { Team, TeamRole } from '../../../utils/types';
+import { Team, TeamRole } from '../../../utils/types'
 import { alphanumericId, capitalize } from '@voyage-app/shared-utils'
 import { SelectInputData } from '@voyage-app/shared-types';
-import { addMember } from '../../../store/feature/memberSlice'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '../../../store'
-import { useRouter } from 'next/router'
+import { addMember, useMembers } from '../../../store/feature/memberSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '../../../store';
+import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
 import { Check } from 'tabler-icons-react';
-import moment from 'moment/moment'
+import moment from 'moment/moment';
 
-const create = () => {
+const create = ({memberId}) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const router = useRouter()
+	const members = useSelector(useMembers)
+
+	const member = useMemo(() => {
+		return memberId ? members.find((item: Team) => item.memberId === memberId) : null;
+	}, [members]);
+	
 	const initialValues: Team = {
-		id: '',
-		memberId: `MEMBER-ID${alphanumericId(8)}`,
-		createdAt: moment().unix(),
-		role: TeamRole.ADMIN,
-		fullName: '',
-		firstname: '',
-		lastname: '',
-		email: '',
-		phone: '',
-		isActive: false
+		id: member?.id ?? '',
+		memberId: memberId ?? `MEMBER-ID${alphanumericId(8)}`,
+		createdAt: member?.createdAt ?? moment().unix(),
+		role: member?.role ?? TeamRole.ADMIN,
+		fullName: member?.fullName ?? '',
+		firstname: member?.firstname ?? '',
+		lastname: member?.lastname ?? '',
+		email: member?.email ?? '',
+		phone: member?.phone ?? '',
+		isActive: !!member?.isActive,
 	};
 	const form = useForm({
 		initialValues
@@ -106,5 +112,14 @@ const create = () => {
 		</ContentContainer>
 	);
 };
+
+export async function getServerSideProps (context){
+	console.log(context.query)
+	return {
+		props: {
+			memberId: context.query?.memberId ?? null,
+		}
+	}
+}
 
 export default create;

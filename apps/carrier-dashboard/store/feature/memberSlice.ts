@@ -33,6 +33,9 @@ export const memberSlice = createSlice({
 				}
 				return clone;
 			});
+		},
+		removeMember: (state, action: PayloadAction<string>) => {
+			return state.filter((member) => member.memberId !== action.payload)
 		}
 	}
 });
@@ -44,6 +47,6 @@ export const useMembers = state => {
 	return [...team].sort((a, b) => b.createdAt - a.createdAt);
 };
 
-export const { addMember, editMember, changeRole } = memberSlice.actions;
+export const { addMember, editMember, changeRole, removeMember } = memberSlice.actions;
 
 export default memberSlice.reducer;
