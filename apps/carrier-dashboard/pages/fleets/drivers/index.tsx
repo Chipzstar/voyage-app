@@ -85,16 +85,16 @@ const drivers = () => {
 					</div>
 				</td>
 				<td>
-					<Group spacing={0} position='left'>
-						<ActionIcon onClick={() => router.push({
+					<Group spacing="md" position='left'>
+						<ActionIcon size="sm" onClick={() => router.push({
 								pathname: `${PATHS.NEW_DRIVER}`,
 								query: { driverId: element.driverId }
 							}
 						)}>
-							<Pencil size={18} />
+							<Pencil />
 						</ActionIcon>
-						<ActionIcon color='red' onClick={() => openConfirmModal(element.driverId, element.fullName)}>
-							<Trash size={18} />
+						<ActionIcon size="sm" color='red' onClick={() => openConfirmModal(element.driverId, element.fullName)}>
+							<Trash />
 						</ActionIcon>
 					</Group>
 				</td>

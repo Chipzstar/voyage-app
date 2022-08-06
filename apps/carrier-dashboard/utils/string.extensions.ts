@@ -2,7 +2,7 @@ import { includesCaseInsensitive } from '@voyage-app/shared-utils'
 
 declare global {
 	interface String {
-		contains(str : string) : boolean;
+		contains(this: string, str : string) : boolean;
 	}
 }
 

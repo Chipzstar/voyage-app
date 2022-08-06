@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { ActionIcon, Group, Select, Text, TextInput } from '@mantine/core'
+import React, { useEffect, useRef, useState } from 'react';
+import { ActionIcon, Avatar, Group, Select, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
-import { Check, Pencil, Search, Trash } from 'tabler-icons-react'
+import { Check, Pencil, Search, Trash } from 'tabler-icons-react';
 import { PATHS } from '../../../utils/constants';
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeRole, removeMember, useMembers } from '../../../store/feature/memberSlice'
-import { TeamRole } from '../../../utils/types'
+import { changeRole, removeMember, useMembers } from '../../../store/feature/memberSlice';
+import { TeamRole } from '../../../utils/types';
 import { showNotification } from '@mantine/notifications';
-import { capitalize } from '@voyage-app/shared-utils'
-import { useModals } from '@mantine/modals'
-import _ from 'lodash'
+import { capitalize } from '@voyage-app/shared-utils';
+import { useModals } from '@mantine/modals';
+import _ from 'lodash';
 
 const team = () => {
 	const modals = useModals();
@@ -47,9 +47,11 @@ const team = () => {
 			closeOnConfirm: true
 		});
 
-	const debouncedSearch = useRef(_.debounce(value => {
-		setFilter(prevState => value.length >= 2 ?  team.filter(({ fullName, email, phone, role }) => fullName.includes(value) || email.includes(value) || phone.includes(value) || role.includes(value.toLowerCase())) : team);
-	}, 300)).current;
+	const debouncedSearch = useRef(
+		_.debounce(value => {
+			setFilter(prevState => (value.length >= 2 ? team.filter(({ fullName, email, phone, role }) => fullName.includes(value) || email.includes(value) || phone.includes(value) || role.includes(value.toLowerCase())) : team));
+		}, 300)
+	).current;
 
 	useEffect(() => {
 		return () => {
@@ -61,10 +63,16 @@ const team = () => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
-					<span>{element.firstname}</span>
-				</td>
-				<td colSpan={1}>
-					<span>{element.lastname}</span>
+					<Group spacing='sm'>
+						<Avatar
+							size={40}
+							radius={40}
+							classNames={{
+								placeholder: 'bg-transparent'
+							}}
+						/>
+						<Text weight={500}>{element.firstname} {element.lastname}</Text>
+					</Group>
 				</td>
 				<td colSpan={1}>
 					<span className='text-base font-normal'>{element.email}</span>
@@ -83,33 +91,37 @@ const team = () => {
 							defaultValue={element.role}
 							variant='unstyled'
 							onChange={(value: TeamRole) => {
-								dispatch(changeRole({id: element.memberId, role: value}))
+								dispatch(changeRole({ id: element.memberId, role: value }));
 								showNotification({
 									id: 'new-member-success',
 									disallowClose: true,
 									onClose: () => console.log('unmounted'),
 									onOpen: () => console.log('mounted'),
 									autoClose: 3000,
-									title: "Success",
+									title: 'Success',
 									message: `${element.firstname} has a new role of ${capitalize(value)}!`,
 									color: 'green',
-									icon: <Check size={20}/>,
-									loading: false,
+									icon: <Check size={20} />,
+									loading: false
 								});
 							}}
 						/>
 					</div>
 				</td>
 				<td colSpan={2}>
-					<Group spacing="md" position='left'>
-						<ActionIcon size="sm" onClick={() => router.push({
-								pathname: `${PATHS.NEW_MEMBER}`,
-								query: { memberId: element.memberId }
+					<Group spacing='md' position='left'>
+						<ActionIcon
+							size='sm'
+							onClick={() =>
+								router.push({
+									pathname: `${PATHS.NEW_MEMBER}`,
+									query: { memberId: element.memberId }
+								})
 							}
-						)}>
+						>
 							<Pencil />
 						</ActionIcon>
-						<ActionIcon size="sm" color='red' onClick={() => openConfirmModal(element.memberId, element.fullName)}>
+						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.memberId, element.fullName)}>
 							<Trash />
 						</ActionIcon>
 					</Group>
@@ -120,14 +132,14 @@ const team = () => {
 	return (
 		<ContentContainer classNames='py-4 px-8 min-h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
-				<TextInput className='w-96' radius={0} icon={<Search size={18} />} onChange={(e) => debouncedSearch(e.target.value)} placeholder='Search for name, email or phone' size='md' />
+				<TextInput className='w-96' radius={0} icon={<Search size={18} />} onChange={e => debouncedSearch(e.target.value)} placeholder='Search for name, email or phone' size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_MEMBER)}>
 					<span className='text-base'>Add member</span>
 				</button>
 			</div>
 			<DataGrid
 				rows={rows}
-				headings={['First Name', 'Last Name', 'Email', 'Phone', 'Role', 'Actions']}
+				headings={['Full Name', 'Email', 'Phone', 'Role', 'Actions']}
 				emptyContent={
 					<Empty
 						message={
@@ -145,4 +157,4 @@ const team = () => {
 	);
 };
 
-export default team;
+export default team

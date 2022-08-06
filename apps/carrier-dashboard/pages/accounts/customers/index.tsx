@@ -2,7 +2,7 @@ import React from 'react'
 import { PATHS } from '../../../utils/constants'
 import { useRouter } from 'next/router';
 import ContentContainer from '../../../layout/ContentContainer'
-import { Group, Avatar, TextInput, Text } from '@mantine/core';
+import { TextInput } from '@mantine/core'
 import { Search } from 'tabler-icons-react'
 import DataGrid from '../../../components/DataGrid'
 import { Empty } from '@voyage-app/shared-ui-components'
@@ -17,19 +17,7 @@ const customers = () => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
-					<Group spacing="sm">
-						<Avatar size={40} radius={40} classNames={{
-							placeholder: 'bg-transparent'
-						}} />
-						<div>
-							<Text weight={500}>
-								{element.companyName}
-							</Text>
-							<Text size="xs" color="dimmed">
-								{element.email}
-							</Text>
-						</div>
-					</Group>
+					<span>{element.companyName}</span>
 				</td>
 				<td colSpan={1}>
 					<span>{element.fullName}</span>
