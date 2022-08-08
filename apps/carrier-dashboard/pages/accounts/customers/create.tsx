@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { AccountType, Contact, Customer } from '../../../utils/types';
+import React, { useCallback, useMemo, useState } from 'react'
+import { AccountType, Contact, Customer } from '../../../utils/types'
 import { useForm } from '@mantine/form';
 import { PATHS } from '../../../utils/constants';
 import { Anchor, Button, Card, ScrollArea, Select, TextInput } from '@mantine/core';
@@ -10,36 +10,42 @@ import { Check, Trash, User } from 'tabler-icons-react';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { alphanumericId, capitalize, sanitize } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router';
-import { addCustomer } from '../../../store/feature/customerSlice'
+import { addCustomer, useCustomers } from '../../../store/feature/customerSlice'
 import moment from 'moment';
 import useWindowSize from '../../../hooks/useWindowSize'
 
-const create = () => {
+const create = ({customerId}) => {
 	const [loading, setLoading] = useState(false);
 	const { height } = useWindowSize()
 	const dispatch = useDispatch();
 	const router = useRouter();
+	const customers = useSelector(useCustomers)
+	
+	const customer = useMemo(() => {
+		return customerId ? customers.find((item: Customer) => item.customerId === customerId) : null;
+	}, [customers]);
+	
 	const initialValues: Customer = {
-		id: '',
-		createdAt: moment().unix(),
-		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
-		accountType: null,
-		addressLine1: '',
-		billingEmail: '',
-		city: '',
-		companyName: '',
-		country: 'UK',
-		email: '',
-		extraContacts: [],
-		fullName: '',
-		firstname: '',
-		lastname: '',
-		phone: '',
-		postcode: '',
-		region: '',
-		taxIDNumber: ''
+		id: customer?.id ?? '',
+		createdAt: customer?.createdAt ?? moment().unix(),
+		customerId: customer?.customerId ?? `CUSTOMER-ID${alphanumericId(8)}`,
+		accountType: customer?.accountType ?? null,
+		addressLine1: customer?.addressLine1 ?? '',
+		billingEmail: customer?.billingEmail ?? '',
+		city: customer?.city ?? '',
+		companyName:  customer?.companyName ?? '',
+		country: customer?.country ?? 'UK',
+		email: customer?.email ?? '',
+		extraContacts: customer?.extraContacts ?? [],
+		fullName: customer?.fullName ?? '',
+		firstname: customer?.firstname ?? '',
+		lastname: customer?.lastname ?? '',
+		phone: customer?.phone ?? '',
+		postcode: customer?.postcode ?? '',
+		region: customer?.region ?? '',
+		taxIDNumber: customer?.taxIDNumber ?? ''
 	};
 
 	const form = useForm({
@@ -186,5 +192,14 @@ const create = () => {
 		</ContentContainer>
 	);
 };
+
+export async function getServerSideProps(context) {
+	const query = context.query;
+	return {
+		props: {
+			customerId: query?.customerId ?? null,
+		}
+	}
+}
 
 export default create;

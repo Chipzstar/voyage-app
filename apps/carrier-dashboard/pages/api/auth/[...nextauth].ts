@@ -2,6 +2,8 @@ import NextAuth from 'next-auth'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import Auth0Provider from 'next-auth/providers/auth0'
 import EmailProvider from 'next-auth/providers/email'
+import GoogleProvider from 'next-auth/providers/google';
+import TwitterProvider from 'next-auth/providers/twitter';
 import prisma from '../../../db'
 
 export const authOptions = {
@@ -22,6 +24,15 @@ export const authOptions = {
 				url,
 				provider: { server, from }
 			})*/
+		}),
+		GoogleProvider({
+			clientId: process.env.GOOGLE_CLIENT_ID,
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+		}),
+		TwitterProvider({
+			clientId: process.env.TWITTER_ID,
+			clientSecret: process.env.TWITTER_SECRET,
+			version: "2.0", // opt-in to Twitter OAuth 2.0
 		}),
 		Auth0Provider({
 			clientId: process.env.AUTH0_CLIENT_ID,

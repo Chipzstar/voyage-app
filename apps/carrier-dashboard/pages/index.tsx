@@ -2,15 +2,12 @@ import { CalendarFilter, DateRange } from '@voyage-app/shared-ui-components';
 import React, { useState } from 'react';
 import moment from 'moment';
 import Map from '../components/Map';
-import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import TruckLoadTimeline from '../components/TruckLoadTimeline';
 import PageHeader from '../layout/PageHeader';
 import { PUBLIC_PATHS } from '../utils/constants';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import { authOptions} from './api/auth/[...nextauth]';
-
-ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);

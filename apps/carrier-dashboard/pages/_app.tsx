@@ -11,6 +11,7 @@ import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
 import { NotificationsProvider } from '@mantine/notifications';
 import { store } from '../store';
+import '../utils/string.extensions';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
@@ -30,8 +31,8 @@ moment.locale('en');
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 	return (
-		<AuthProvider session={session}>
-			<Provider store={store}>
+		<Provider store={store}>
+			<AuthProvider session={session}>
 				<MantineProvider
 					withGlobalStyles
 					withNormalizeCSS
@@ -54,8 +55,8 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 						</ModalsProvider>
 					</NotificationsProvider>
 				</MantineProvider>
-			</Provider>
-		</AuthProvider>
+			</AuthProvider>
+		</Provider>
 	);
 }
 

@@ -21,6 +21,9 @@ export const customerSlice = createSlice({
 	reducers: {
 		addCustomer: (state, action: PayloadAction<Customer>) => {
 			return [...state, action.payload];
+		},
+		removeCustomer: (state, action: PayloadAction<string>) => {
+			return state.filter((customer) => customer.customerId !== action.payload);
 		}
 	}
 });
@@ -32,6 +35,6 @@ export const useCustomers = (state) : Customer[] => {
 
 /*export const useCustomers = (state) : Customer[] => state['customers']*/
 
-export const { addCustomer } = customerSlice.actions;
+export const { addCustomer, removeCustomer } = customerSlice.actions;
 
 export default customerSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Pencil, Search, Trash } from 'tabler-icons-react';
@@ -47,13 +47,15 @@ const vehicles = () => {
 			closeOnConfirm: true
 		});
 
-	const debouncedSearch = useRef(
+	const debouncedSearch = useCallback(
 		_.debounce(value => {
 			setFilter(prevState =>
 				value.length >= 2 ? vehicles.filter(({ vehicleName, make, model, regNumber }) => vehicleName.contains(value) || model.contains(value) || make.contains(value) || regNumber.includes(value.toUpperCase())) : vehicles
 			);
 		}, 300)
-	).current;
+	,[vehicles]);
+
+	useEffect(() => setFilter(vehicles), [vehicles]);
 
 	const rows = filteredVehicles.map((element, index) => {
 		const foundDriver = drivers.find(driver => driver.driverId === element.driverId);
@@ -102,6 +104,13 @@ const vehicles = () => {
 			</tr>
 		);
 	});
+
+	useEffect(() => {
+		return () => {
+			debouncedSearch.cancel();
+		};
+	}, [debouncedSearch]);
+
 	return (
 		<ContentContainer classNames='py-4 px-8 h-screen flex flex-col'>
 			<div className='flex justify-between items-center mt-2 mb-6'>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ContentContainer from '../../../layout/ContentContainer';
 import { ActionIcon, Group, Switch, TextInput, Text, Avatar } from '@mantine/core';
 import { Pencil, Search, Trash } from 'tabler-icons-react';
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeDriver, useDrivers } from '../../../store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
+import '../../../utils/string.extensions';
 
 const drivers = () => {
 	const modals = useModals();
@@ -17,6 +18,8 @@ const drivers = () => {
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
 	const [filteredDrivers, setFilter] = useState([...drivers]);
+
+	useEffect(() => setFilter(drivers), [drivers]);
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
@@ -44,11 +47,11 @@ const drivers = () => {
 			closeOnConfirm: true
 		});
 
-	const debouncedSearch = useRef(
+	const debouncedSearch = useCallback(
 		_.debounce(value => {
 			setFilter(prevState => (value.length >= 2 ? drivers.filter(({ fullName, email, defaultPhone }) => fullName.includes(value) || email.includes(value) || defaultPhone.includes(value)) : drivers));
 		}, 300)
-	).current;
+	, [drivers]);
 
 	useEffect(() => {
 		return () => {

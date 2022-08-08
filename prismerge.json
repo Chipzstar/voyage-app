@@ -3,9 +3,6 @@
 		"inputs": [
 			"./prisma/schemas/*.prisma"
 		],
-		"fragments": {
-			"id": "./prisma/schemas/fragments/id.prisma.fragment"
-		},
 		"output": "./prisma/schema.prisma"
 	}
 }

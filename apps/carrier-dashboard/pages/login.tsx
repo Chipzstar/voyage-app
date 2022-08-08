@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useForm } from '@mantine/form';
-import { Alert, Button, Modal, Text, TextInput } from '@mantine/core';
+import { Alert, Button, Divider, Group, Modal, Text, TextInput } from '@mantine/core';
+import { TwitterIcon } from '@mantine/ds';
 import { AlertCircle, Mail } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import { getCsrfToken, signIn } from 'next-auth/react';
@@ -9,15 +10,21 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { PATHS } from '../utils/constants';
 import moment from 'moment/moment';
+import { GoogleIcon } from '../icons/GoogleIcon';
 
 const VerifyEmailAlert = ({ email, onClose }) => {
-	console.log("EMAIL:", email)
 	return (
 		<Modal opened={!!email} onClose={onClose} centered padding={0} withCloseButton={false}>
-			<Alert icon={<AlertCircle size={25} />} title='Verify your email!' color='green' radius='md' variant='outline' classNames={{
-				title: 'text-lg',
-				icon: 'mt-1'
-			}}>
+			<Alert
+				icon={<AlertCircle size={25} />}
+				title='Verify your email!'
+				color='green'
+				variant='outline'
+				classNames={{
+					title: 'text-lg',
+					icon: 'mt-1'
+				}}
+			>
 				<Text>Email sent to {email}. Please check your email to complete verification</Text>
 			</Alert>
 		</Modal>
@@ -25,7 +32,7 @@ const VerifyEmailAlert = ({ email, onClose }) => {
 };
 
 const login = ({ csrfToken, ...props }) => {
-	const [verifyEmail, showEmailVerification] = useState("");
+	const [verifyEmail, showEmailVerification] = useState('');
 	const router = useRouter();
 	const form = useForm({
 		initialValues: {
@@ -61,16 +68,25 @@ const login = ({ csrfToken, ...props }) => {
 	// @ts-ignore
 	return (
 		<div className='flex flex-row'>
-			<VerifyEmailAlert email={verifyEmail} onClose={() => showEmailVerification("")} />
+			<VerifyEmailAlert email={verifyEmail} onClose={() => showEmailVerification('')} />
 			<div className='flex'>
 				<img src='/static/images/login-wallpaper.svg' alt='' className='object-cover h-screen' />
 			</div>
 			<div className='grow flex my-auto justify-center'>
 				<form onSubmit={form.onSubmit(handleSignIn)} action='' className='flex flex-col space-y-8 w-196'>
-					<figure className='flex flex-row justify-center space-x-4 items-center'>
-						<img src={'/static/images/favicon.svg'} alt='' />
+					<figure className='flex flex-row justify-center space-x-2 items-center'>
+						<img src={'/static/images/logo.svg'} alt='' />
 						<span className='text-2xl font-bold mb-1'>voyage</span>
 					</figure>
+					<Group grow mb='md' mt='md'>
+						<Button leftIcon={<GoogleIcon />} variant='default' color='gray' onClick={() => signIn('google')}>
+							Google
+						</Button>
+						<Button disabled={process.env.NODE_ENV === 'development'} component='a' leftIcon={<TwitterIcon size={16} color='#00ACEE' />} variant='default' onClick={() => signIn('twitter')}>
+							Twitter
+						</Button>
+					</Group>
+					<Divider label='Or continue with email' labelPosition='center' my='lg' />
 					<div>
 						<TextInput
 							name='csrfToken'
@@ -122,7 +138,6 @@ export async function getServerSideProps({ req, res }) {
 		...user,
 		emailVerified: moment(user.emailVerified).unix()
 	}));
-	console.log(users);
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

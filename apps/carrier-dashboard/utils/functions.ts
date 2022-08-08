@@ -19,7 +19,7 @@ export function generateLoad(values: NewBooking, drivers: Driver[], controllers:
 	const customer = customers.find(customers => customers.customerId === values.customerId)
 	return {
 		id: '',
-		source: customer?.customerId,
+		source: 'CUSTOMER',
 		customer: {
 			id: customer?.customerId,
 			name: customer?.fullName,

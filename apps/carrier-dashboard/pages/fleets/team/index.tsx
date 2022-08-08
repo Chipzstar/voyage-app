@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ActionIcon, Avatar, Group, Select, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Check, Pencil, Search, Trash } from 'tabler-icons-react';
@@ -13,6 +13,7 @@ import { showNotification } from '@mantine/notifications';
 import { capitalize } from '@voyage-app/shared-utils';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
+import '../../../utils/string.extensions';
 
 const team = () => {
 	const modals = useModals();
@@ -20,6 +21,8 @@ const team = () => {
 	const dispatch = useDispatch();
 	const team = useSelector(useMembers);
 	const [filteredTeam, setFilter] = useState([...team]);
+
+	useEffect(() => setFilter(team), [team])
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
@@ -47,11 +50,11 @@ const team = () => {
 			closeOnConfirm: true
 		});
 
-	const debouncedSearch = useRef(
+	const debouncedSearch = useCallback(
 		_.debounce(value => {
-			setFilter(prevState => (value.length >= 2 ? team.filter(({ fullName, email, phone, role }) => fullName.includes(value) || email.includes(value) || phone.includes(value) || role.includes(value.toLowerCase())) : team));
+			setFilter(prevState => (value.length >= 2 ? team.filter(({ fullName, email, phone, role }) => fullName.contains(value) || email.contains(value) || phone.includes(value) || role.contains(value)) : team));
 		}, 300)
-	).current;
+	, [team]);
 
 	useEffect(() => {
 		return () => {
@@ -60,6 +63,7 @@ const team = () => {
 	}, [debouncedSearch]);
 
 	const rows = filteredTeam.map((element, index) => {
+		console.log(`${element.fullName} - ${element.role}`)
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
@@ -88,7 +92,7 @@ const team = () => {
 								input: 'capitalize'
 							}}
 							data={Object.values(TeamRole)}
-							defaultValue={element.role}
+							value={element.role}
 							variant='unstyled'
 							onChange={(value: TeamRole) => {
 								dispatch(changeRole({ id: element.memberId, role: value }));

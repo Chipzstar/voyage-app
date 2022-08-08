@@ -1,7 +1,5 @@
-import { Card, Center, Container, Grid, Group, Stack, Tabs } from '@mantine/core'
+import { Card, Center, Container, Grid, Group, Stack } from '@mantine/core'
 import React, { useMemo, useState } from 'react'
-import ContentContainer from '../../layout/ContentContainer';
-import { capitalize } from '@voyage-app/shared-utils';
 import moment from 'moment'
 import { CalendarFilter, DateRange } from '@voyage-app/shared-ui-components'
 import OverviewPieChart from '../../charts/OverviewPieChart'
@@ -29,7 +27,7 @@ const reporting = () => {
 	}, []);
 
 	return (
-		<Container fluid className="bg-stone-100" py={0}>
+		<Container fluid className="bg-stone-100 h-screen" py={0}>
 			<div className='flex justify-between items-center pt-4 mb-6'>
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} amountOfMonths={2} />
 			</div>

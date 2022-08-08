@@ -1,19 +1,67 @@
-import React from 'react'
-import { PATHS } from '../../../utils/constants'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { PATHS } from '../../../utils/constants';
 import { useRouter } from 'next/router';
-import ContentContainer from '../../../layout/ContentContainer'
-import { TextInput } from '@mantine/core'
-import { Search } from 'tabler-icons-react'
-import DataGrid from '../../../components/DataGrid'
-import { Empty } from '@voyage-app/shared-ui-components'
-import { sanitize } from '@voyage-app/shared-utils'
-import { useSelector } from 'react-redux'
-import { useCustomers } from '../../../store/feature/customerSlice'
+import ContentContainer from '../../../layout/ContentContainer';
+import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
+import { Pencil, Search, Trash } from 'tabler-icons-react';
+import DataGrid from '../../../components/DataGrid';
+import { Empty } from '@voyage-app/shared-ui-components';
+import { sanitize } from '@voyage-app/shared-utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCustomers, removeCustomer } from '../../../store/feature/customerSlice';
+import { useModals } from '@mantine/modals';
+import _ from 'lodash';
+import '../../../utils/string.extensions';
 
 const customers = () => {
+	const modals = useModals();
 	const router = useRouter();
-	const customers = useSelector(useCustomers)
-	const rows = customers.map((element, index) => {
+	const dispatch = useDispatch();
+	const customers = useSelector(useCustomers);
+	const [filteredCustomers, setFilter] = useState(customers);
+
+	useEffect(() => setFilter(customers), [customers]);
+
+	const debouncedSearch = useCallback(
+		_.debounce(value => {
+			setFilter(prevState => (value.length >= 2 ? customers.filter(({ fullName, email, phone, companyName }) => fullName.contains(value) || email.contains(value) || phone.includes(value) || companyName.contains(value)) : customers));
+		}, 300),
+		[customers]
+	);
+
+	const openConfirmModal = (id: string, name) =>
+		modals.openConfirmModal({
+			title: 'Delete Vehicle',
+			children: (
+				<Text size='md'>
+					You have selected <strong>{name}</strong>
+					<br />
+					Are you sure you want to delete this vehicle?
+				</Text>
+			),
+			labels: { confirm: 'Delete', cancel: 'Cancel' },
+			onConfirm: () => dispatch(removeCustomer(id)),
+			onCancel: () => console.log('Cancel'),
+			classNames: {
+				title: 'modal-header'
+			},
+			confirmProps: {
+				color: 'red',
+				classNames: {
+					root: 'bg-red-500'
+				}
+			},
+			closeOnCancel: true,
+			closeOnConfirm: true
+		});
+
+	useEffect(() => {
+		return () => {
+			debouncedSearch.cancel();
+		};
+	}, [debouncedSearch]);
+
+	const rows = filteredCustomers.map((element, index) => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
@@ -22,9 +70,11 @@ const customers = () => {
 				<td colSpan={1}>
 					<span>{element.fullName}</span>
 				</td>
-				<td colSpan={1} className="w-64">
+				<td colSpan={1} className='w-64'>
 					<div className='flex flex-col flex-shrink flex-wrap'>
-						<span>{element.addressLine1} {element.addressLine2}</span>
+						<span>
+							{element.addressLine1} {element.addressLine2}
+						</span>
 						<span>{element.postcode}</span>
 					</div>
 				</td>
@@ -32,12 +82,25 @@ const customers = () => {
 					<span className='text-base font-normal'>{element.email}</span>
 				</td>
 				<td colSpan={1}>
-					<span className="capitalize">{sanitize(element.accountType)}</span>
+					<span className='capitalize'>{sanitize(element.accountType)}</span>
 				</td>
-				<td className='space-x-8' colSpan={2}>
-					<button className='bg-transparent hover:underline text-sm' onClick={() => router.push(`${PATHS.CUSTOMERS}/${element.customerId}`)}>
-						<span className='text-secondary font-semibold'>View More</span>
-					</button>
+				<td colSpan={2}>
+					<Group spacing='md' position='left'>
+						<ActionIcon
+							size='sm'
+							onClick={() =>
+								router.push({
+									pathname: `${PATHS.NEW_ACCOUNT}`,
+									query: { customerId: element.customerId }
+								})
+							}
+						>
+							<Pencil />
+						</ActionIcon>
+						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.customerId, element.companyName)}>
+							<Trash />
+						</ActionIcon>
+					</Group>
 				</td>
 			</tr>
 		);
@@ -45,19 +108,29 @@ const customers = () => {
 	return (
 		<ContentContainer classNames='py-4 px-8 min-h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
-				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' size="md"/>
+				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' onChange={e => debouncedSearch(e.target.value)} size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_ACCOUNT)}>
 					<span className='text-base'>New Account</span>
 				</button>
 			</div>
 			<DataGrid
 				rows={rows}
-				headings={['Account Name', 'POC', 'Address', 'Contact Email', 'Account Type', 'Details']}
-				emptyContent={<Empty message={<span className="text-center text-2xl">You have no team members<br/>Click the 'Add Member' button to add a new member</span>}/>}
+				headings={['Account Name', 'POC', 'Address', 'Contact Email', 'Account Type', 'Actions']}
+				emptyContent={
+					<Empty
+						message={
+							<span className='text-center text-2xl'>
+								You have no customers
+								<br />
+								Click the 'Add Account' button to add a new customer
+							</span>
+						}
+					/>
+				}
 				spacingY='md'
 			/>
 		</ContentContainer>
 	);
 };
 
-export default customers
+export default customers;
