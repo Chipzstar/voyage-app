@@ -18,7 +18,7 @@ import useWindowSize from '../../../hooks/useWindowSize'
 
 const create = () => {
 	const [loading, setLoading] = useState(false);
-	const { height, width } = useWindowSize()
+	const { height } = useWindowSize()
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const initialValues: Customer = {

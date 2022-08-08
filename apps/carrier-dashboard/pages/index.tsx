@@ -3,8 +3,12 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import Map from '../components/Map';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
-import TruckLoadTimeline from '../components/TruckLoadTimeline'
-import PageHeader from '../layout/PageHeader'
+import TruckLoadTimeline from '../components/TruckLoadTimeline';
+import PageHeader from '../layout/PageHeader';
+import { PUBLIC_PATHS } from '../utils/constants';
+import { unstable_getServerSession } from 'next-auth';
+import { getToken } from 'next-auth/jwt';
+import { authOptions} from './api/auth/[...nextauth]';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -13,13 +17,35 @@ export function Index(props) {
 	return (
 		<div className='py-4 px-8 h-full overflow-y-auto'>
 			<div className='flex justify-between mb-5'>
-				<PageHeader title="Truck Board"/>
+				<PageHeader title='Truck Board' />
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
 			</div>
 			<Map height={250} />
-			<TruckLoadTimeline/>
+			<TruckLoadTimeline />
 		</div>
 	);
 }
 
-export default Index
+export async function getServerSideProps({ req, res }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	console.log('\nHOMEPAGE');
+	console.log(session);
+	console.log(token);
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	return {
+		props: {
+			session
+		}
+	};
+}
+
+export default Index;

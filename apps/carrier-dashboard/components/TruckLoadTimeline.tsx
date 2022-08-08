@@ -23,22 +23,24 @@ const TruckLoadTimeline = props => {
 		<div className='py-3'>
 			<Calendar
 				components={{
-					eventWrapper: value => {
-						console.log(value.event)
-						return (
-							<div role='button' style={{
-								backgroundColor: value.event.bgColor,
-							}} className='flex flex-col px-1 rounded-lg shadow-md p-1 border border-1' onClick={() => router.push(`${PATHS.TRIPS}/${value.event.id}`)}>
-								<span className='text-xs font-semibold text-secondary'>{value.event.id}</span>
-								<span className='text-sm'>{value.event.title}</span>
-							</div>
-						);
-					}
+					eventWrapper: value => (
+						<div
+							role='button'
+							style={{
+								backgroundColor: value.event.bgColor
+							}}
+							className='flex flex-col px-1 rounded-lg shadow-md p-1 border border-1'
+							onClick={() => router.push(`${PATHS.TRIPS}/${value.event.id}`)}
+						>
+							<span className='text-xs font-semibold text-secondary'>{value.event.id}</span>
+							<span className='text-sm'>{value.event.title}</span>
+						</div>
+					)
 				}}
 				localizer={localizer}
 				events={loads.map((load: Load) => ({
 					id: load.loadId,
-					title: `${moment.unix(load.pickup.window.start).format("HH:mm")} - ${moment.unix(load.pickup.window.end).format("HH:mm")}\n${load.pickup.postcode} → ${load.delivery.postcode}`,
+					title: `${moment.unix(load.pickup.window.start).format('HH:mm')} - ${moment.unix(load.pickup.window.end).format('HH:mm')}\n${load.pickup.postcode} → ${load.delivery.postcode}`,
 					bgColor: '#ff7f50',
 					allDay: false,
 					start: moment.unix(load.pickup.window.start).toDate(),

@@ -27,7 +27,7 @@ declare global {
 
 let prisma
 if (process.env.NODE_ENV === 'production') {
-	prisma = new PrismaClient()
+	prisma = new PrismaClient();
 	prisma.$use(fieldEncryptionMiddleware())
 } else {
 	if (!global.prisma) {
