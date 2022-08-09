@@ -22,8 +22,6 @@ const team = () => {
 	const team = useSelector(useMembers);
 	const [filteredTeam, setFilter] = useState([...team]);
 
-	useEffect(() => setFilter(team), [team]);
-
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
 			title: 'Delete Team Member',
@@ -56,6 +54,8 @@ const team = () => {
 		}, 300),
 		[team]
 	);
+
+	useEffect(() => setFilter(team), [team]);
 
 	useEffect(() => {
 		return () => {
@@ -137,7 +137,7 @@ const team = () => {
 		);
 	});
 	return (
-		<ContentContainer classNames='py-4 px-8 min-h-screen'>
+		<ContentContainer classNames='py-4 px-8 h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} onChange={e => debouncedSearch(e.target.value)} placeholder='Search for name, email or phone' size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_MEMBER)}>

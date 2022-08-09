@@ -8,9 +8,8 @@ import { SessionProvider as AuthProvider } from 'next-auth/react';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
-import { Provider } from 'react-redux';
 import { NotificationsProvider } from '@mantine/notifications';
-import { store } from '../store';
+import { wrapper } from '../store';
 import '../utils/string.extensions';
 
 import Router from 'next/router';
@@ -31,33 +30,31 @@ moment.locale('en');
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 	return (
-		<Provider store={store}>
-			<AuthProvider session={session}>
-				<MantineProvider
-					withGlobalStyles
-					withNormalizeCSS
-					theme={{
-						colorScheme: 'light'
-					}}
-				>
-					<NotificationsProvider position='top-right'>
-						<ModalsProvider>
-							<Layout>
-								<Head>
-									<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-									<Favicon />
-									<title>Carrier Dashboard</title>
-								</Head>
-								<main className='app'>
-									<Component {...pageProps} />
-								</main>
-							</Layout>
-						</ModalsProvider>
-					</NotificationsProvider>
-				</MantineProvider>
-			</AuthProvider>
-		</Provider>
+		<AuthProvider session={session}>
+			<MantineProvider
+				withGlobalStyles
+				withNormalizeCSS
+				theme={{
+					colorScheme: 'light'
+				}}
+			>
+				<NotificationsProvider position='top-right'>
+					<ModalsProvider>
+						<Layout>
+							<Head>
+								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+								<Favicon />
+								<title>Carrier Dashboard</title>
+							</Head>
+							<main className='app'>
+								<Component {...pageProps} />
+							</main>
+						</Layout>
+					</ModalsProvider>
+				</NotificationsProvider>
+			</MantineProvider>
+		</AuthProvider>
 	);
 }
 
-export default App;
+export default wrapper.withRedux(App)

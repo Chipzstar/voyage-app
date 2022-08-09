@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { SAMPLE_DRIVERS } from '../../utils/constants'
 import { Driver } from '../../utils/types'
 import axios from 'axios'
-import { RootState } from '../index'
+import { HYDRATE } from 'next-redux-wrapper'
 
-const initialState = SAMPLE_DRIVERS;
+const initialState = [];
 
 export const createDriver = createAsyncThunk('driver/createDriver', async (payload: Partial<Driver>, thunkAPI) => {
 	try {
@@ -20,11 +19,19 @@ export const driverSlice = createSlice({
 	name: 'drivers',
 	initialState,
 	reducers: {
+		setDrivers: (state, action: PayloadAction<Driver[]>) => {
+			return action.payload;
+		},
       addDriver: (state, action: PayloadAction<Driver>) => {
 			return [...state, action.payload]
 		},
 		removeDriver: (state, action: PayloadAction<string>) => {
 			return state.filter((driver) => driver.driverId !== action.payload)
+		}
+	},
+	extraReducers: {
+		[HYDRATE]: (state, action) => {
+			return action.payload.drivers ? action.payload.drivers : state
 		}
 	}
 })
@@ -36,6 +43,6 @@ export const useDrivers = (state) : Driver[] => {
 	return [...drivers].sort((a, b) => b.createdAt - a.createdAt)
 }
 
-export const { addDriver, removeDriver } = driverSlice.actions;
+export const { setDrivers, addDriver, removeDriver } = driverSlice.actions;
 
 export default driverSlice.reducer;

@@ -61,8 +61,40 @@ export enum AccountType {
 	LARGE_SHIPPER="LARGE_SHIPPER",
 }
 
+export type Address = {
+	addressLine1: string,
+	addressLine2?: string,
+   city: string,
+	region?: string,
+	postcode: string,
+	country?: string,
+}
+
+type Stripe = {
+	customerId: string,
+	paymentMethodId: string,
+}
+
+export interface Carrier {
+	id: string;
+	carrierId: string;
+	userId?: string;
+	createdAt?: UnixTimestamp;
+	updatedAt?: UnixTimestamp;
+	fullName: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+	company: string;
+	address: Address;
+   phone: string;
+	stripe?: Stripe;
+
+}
+
 export interface Driver {
 	id: string;
+	carrierId: string;
 	createdAt: UnixTimestamp;
 	isActive: boolean;
 	status: DRIVER_STATUS;
@@ -70,8 +102,8 @@ export interface Driver {
 	vehicleId?: string;
 	dob?: UnixTimestamp;
 	fullName: string;
-	firstname: string;
-	lastname: string;
+	firstName: string;
+	lastName: string;
 	email: string;
 	companyName: string;
 	defaultPhone: string;

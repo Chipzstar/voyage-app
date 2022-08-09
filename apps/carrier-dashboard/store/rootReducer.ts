@@ -4,8 +4,10 @@ import driverReducer from './feature/driverSlice';
 import vehicleReducer from './feature/vehicleSlice';
 import customerReducer from './feature/customerSlice';
 import loadReducer from './feature/loadSlice';
+import profileReducer from './feature/profileSlice';
 
 const appReducer = combineReducers({
+	profile: profileReducer,
 	members: teamReducer,
 	drivers: driverReducer,
 	vehicles: vehicleReducer,

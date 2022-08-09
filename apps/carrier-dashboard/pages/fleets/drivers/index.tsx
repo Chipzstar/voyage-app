@@ -1,16 +1,21 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ContentContainer from '../../../layout/ContentContainer';
-import { ActionIcon, Group, Switch, TextInput, Text, Avatar } from '@mantine/core';
+import { ActionIcon, Avatar, Group, Switch, Text, TextInput } from '@mantine/core';
 import { Pencil, Search, Trash } from 'tabler-icons-react';
-import { PATHS } from '../../../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
 import { useRouter } from 'next/router';
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeDriver, useDrivers } from '../../../store/feature/driverSlice';
+import { removeDriver, setDrivers, useDrivers } from '../../../store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
+import { wrapper } from '../../../store';
+import { unstable_getServerSession } from 'next-auth';
+import prisma from '../../../db';
+import { authOptions } from '../../api/auth/[...nextauth]';
+import moment from 'moment/moment';
 
 const drivers = () => {
 	const modals = useModals();
@@ -18,8 +23,6 @@ const drivers = () => {
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
 	const [filteredDrivers, setFilter] = useState([...drivers]);
-
-	useEffect(() => setFilter(drivers), [drivers]);
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
@@ -50,14 +53,17 @@ const drivers = () => {
 	const debouncedSearch = useCallback(
 		_.debounce(value => {
 			setFilter(prevState => (value.length >= 2 ? drivers.filter(({ fullName, email, defaultPhone }) => fullName.includes(value) || email.includes(value) || defaultPhone.includes(value)) : drivers));
-		}, 300)
-	, [drivers]);
+		}, 300),
+		[drivers]
+	);
 
 	useEffect(() => {
 		return () => {
 			debouncedSearch.cancel();
 		};
 	}, [debouncedSearch]);
+
+	useEffect(() => setFilter(drivers), [drivers]);
 
 	const rows = filteredDrivers.map((element, index) => {
 		return (
@@ -72,7 +78,7 @@ const drivers = () => {
 							}}
 						/>
 						<Text weight={500}>
-							{element.firstname} {element.lastname}
+							{element.firstName} {element.lastName}
 						</Text>
 					</Group>
 				</td>
@@ -146,5 +152,57 @@ const drivers = () => {
 		</ContentContainer>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	if (session.id) {
+		let carrier = await prisma.carrier.findFirst({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			}
+		});
+		let drivers = await prisma.driver.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: carrier.id
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		drivers = drivers.map(driver => ({
+			...driver,
+			createdAt: moment(driver.createdAt).unix(),
+			updatedAt: moment(driver.updatedAt).unix()
+		}));
+		store.dispatch(setDrivers(drivers));
+	}
+	return {
+		props: {
+			session
+		}
+	};
+});
 
 export default drivers

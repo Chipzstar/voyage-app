@@ -39,6 +39,7 @@ model User {
   location      Location[]
   carrierId     Carrier?
   shipperId     Shipper?
+  drivers       Driver[]
 }
 
 model VerificationToken {
