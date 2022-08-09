@@ -56,7 +56,7 @@ const NewFuelTransaction = ({ opened, onClose }) => {
 						placeholder='Select a Driver'
 						data={Object.values(SAMPLE_DRIVERS).map(
 							(item): SelectInputData => ({
-								label: item.firstname + ' ' + item.lastname,
+								label: item.firstName + ' ' + item.lastName,
 								value: item.driverId
 							})
 						)}
