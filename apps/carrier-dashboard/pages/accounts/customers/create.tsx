@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AccountType, Contact, Customer } from '../../../utils/types'
 import { useForm } from '@mantine/form';
 import { PATHS } from '../../../utils/constants';
@@ -22,11 +22,21 @@ const create = ({customerId}) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const customers = useSelector(useCustomers)
-	
+
+	const items = [
+		{ title: 'Home', href: PATHS.HOME },
+		{ title: 'Customers', href: PATHS.CUSTOMERS },
+		{ title: 'New Account', href: PATHS.NEW_ACCOUNT }
+	].map((item, index) => (
+		<Anchor component={Link} href={item.href} key={index}>
+			<span className='hover:text-secondary hover:underline'>{item.title}</span>
+		</Anchor>
+	));
+
 	const customer = useMemo(() => {
 		return customerId ? customers.find((item: Customer) => item.customerId === customerId) : null;
 	}, [customers]);
-	
+
 	const initialValues: Customer = {
 		id: customer?.id ?? '',
 		createdAt: customer?.createdAt ?? moment().unix(),
@@ -104,16 +114,6 @@ const create = ({customerId}) => {
 		</Card>
 	));
 
-	const items = [
-		{ title: 'Home', href: PATHS.HOME },
-		{ title: 'Customers', href: PATHS.CUSTOMERS },
-		{ title: 'New Account', href: PATHS.NEW_ACCOUNT }
-	].map((item, index) => (
-		<Anchor component={Link} href={item.href} key={index}>
-			<span className='hover:text-secondary hover:underline'>{item.title}</span>
-		</Anchor>
-	));
-
 	return (
 		<ContentContainer classNames='px-8 h-screen flex flex-col overflow-y-auto pb-5'>
 			<PageNav items={items} />
@@ -137,10 +137,10 @@ const create = ({customerId}) => {
 								<TextInput required label='Contact Email' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('email')} />
 							</div>
 							<div>
-								<TextInput required label='Address Line 1' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine1')} />
+								<TextInput autoComplete="address-line1" required label='Address Line 1' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine1')} />
 							</div>
 							<div>
-								<TextInput label='Address Line 2' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine2')} />
+								<TextInput autoComplete="address-line2" label='Address Line 2' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine2')} />
 							</div>
 							<div>
 								<TextInput required label='City' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('city')} />
