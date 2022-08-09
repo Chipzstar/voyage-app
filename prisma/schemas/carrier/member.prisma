@@ -1,0 +1,23 @@
+enum TeamRole {
+	ADMIN
+	CONTROLLER
+	SECRETARY
+	FLEET_MANAGER
+	COORDINATOR
+}
+
+model Member {
+    id  String  @id @default(auto()) @map("_id") @db.ObjectId
+    carrier Carrier @relation(fields: [carrierId], references: [id])
+    carrierId String @db.ObjectId
+    memberId String
+    fullName String
+    firstname String
+    lastname String
+    email String
+    phone String
+    role TeamRole
+    isActive Boolean
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

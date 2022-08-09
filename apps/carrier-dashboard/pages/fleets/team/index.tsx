@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react';
 import { ActionIcon, Avatar, Group, Select, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Check, Pencil, Search, Trash } from 'tabler-icons-react';
@@ -22,7 +22,7 @@ const team = () => {
 	const team = useSelector(useMembers);
 	const [filteredTeam, setFilter] = useState([...team]);
 
-	useEffect(() => setFilter(team), [team])
+	useEffect(() => setFilter(team), [team]);
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
@@ -53,8 +53,9 @@ const team = () => {
 	const debouncedSearch = useCallback(
 		_.debounce(value => {
 			setFilter(prevState => (value.length >= 2 ? team.filter(({ fullName, email, phone, role }) => fullName.contains(value) || email.contains(value) || phone.includes(value) || role.contains(value)) : team));
-		}, 300)
-	, [team]);
+		}, 300),
+		[team]
+	);
 
 	useEffect(() => {
 		return () => {
@@ -63,7 +64,7 @@ const team = () => {
 	}, [debouncedSearch]);
 
 	const rows = filteredTeam.map((element, index) => {
-		console.log(`${element.fullName} - ${element.role}`)
+		console.log(`${element.fullName} - ${element.role}`);
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
@@ -75,7 +76,9 @@ const team = () => {
 								placeholder: 'bg-transparent'
 							}}
 						/>
-						<Text weight={500}>{element.firstname} {element.lastname}</Text>
+						<Text weight={500}>
+							{element.firstname} {element.lastname}
+						</Text>
 					</Group>
 				</td>
 				<td colSpan={1}>

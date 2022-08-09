@@ -4,21 +4,6 @@ enum LocationType {
     LASTMILE_CARRIER
 }
 
-type LocationTimeWindow {
-    h: Int
-    m: Int
-}
-
-type OperatingProps {
-	isActive Boolean
-	open LocationTimeWindow
-	close LocationTimeWindow
-}
-
-type OperatingHoursState {
-    facility OperatingProps
-}
-
 model Location {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 	locationId String @unique

@@ -1,7 +1,9 @@
 {
 	"app": {
 		"inputs": [
-			"./prisma/schemas/*.prisma"
+			"./prisma/schemas/*.prisma",
+			"./prisma/schemas/shipper/*.prisma",
+			"./prisma/schemas/carrier/*.prisma"
 		],
 		"output": "./prisma/schema.prisma"
 	}

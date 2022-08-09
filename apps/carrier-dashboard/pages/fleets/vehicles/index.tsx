@@ -58,7 +58,7 @@ const vehicles = () => {
 	useEffect(() => setFilter(vehicles), [vehicles]);
 
 	const rows = filteredVehicles.map((element, index) => {
-		const foundDriver = drivers.find(driver => driver.driverId === element.driverId);
+		const foundDriver = drivers.find(driver => driver.driverId === element.currentDriver);
 		return (
 			<tr key={element.vehicleId}>
 				<td colSpan={1}>

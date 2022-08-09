@@ -24,6 +24,7 @@ export enum VEHICLE_TYPES {
 	JUMBO_TRAILER = 'JUMBO_TRAILER',
 	FLATBED_TRAILER = 'FLATBED_TRAILER',
 	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
+	ARCTIC_TRUCK = 'ARCTIC_TRUCK',
 	OTHER= 'OTHER',
 }
 
@@ -64,7 +65,7 @@ export interface Driver {
 	id: string;
 	createdAt: UnixTimestamp;
 	isActive: boolean;
-	status: string;
+	status: DRIVER_STATUS;
 	driverId: string;
 	vehicleId?: string;
 	dob?: UnixTimestamp;
@@ -102,9 +103,9 @@ export interface Team {
 export interface Vehicle {
 	id: string;
 	createdAt: UnixTimestamp;
-	driverId: string;
 	vehicleId: string;
-	vehicleType: string;
+	currentDriver: string;
+	vehicleType: VEHICLE_TYPES;
    vehicleName: string;
 	regNumber: string;
 	vin: string;

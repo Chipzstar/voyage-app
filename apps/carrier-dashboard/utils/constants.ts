@@ -1,18 +1,8 @@
 import moment from 'moment';
-import {
-	EQUIPMENT_TYPES,
-	Load,
-	PACKAGE_TYPE,
-	SCHEDULING_TYPE,
-	SERVICE_TYPE,
-	Shipment,
-	SHIPMENT_ACTIVITY,
-	SHIPMENT_TYPE,
-	STATUS, UnixTimestamp,
-} from '@voyage-app/shared-types'
+import { Load, PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
 import { customAlphabet } from 'nanoid';
-import { AccountType, Customer, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Team, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
+import { AccountType, Customer, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Team, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
 import orderId from 'order-id';
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
@@ -221,10 +211,10 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
-		driverId: `DRIVER-ID${alphanumericId(8)}`,
+		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
-		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		vehicleName: 'Mercedes Axor',
 		make: 'Mercedes-Benz',
 		model: 'Axor',
@@ -246,10 +236,10 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
-		driverId: `DRIVER-ID${alphanumericId(8)}`,
+		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
-		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		vehicleName: 'Merceded Axor',
 		make: 'Mercedes-Benz',
 		model: 'Axor',
@@ -271,10 +261,10 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
-		driverId: `DRIVER-ID${alphanumericId(8)}`,
+		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
-		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		vehicleName: 'Merceded Axor',
 		make: 'Mercedes-Benz',
 		model: 'Actros L',
@@ -296,10 +286,10 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
 		createdAt: moment().subtract(1, 'day').unix(),
-		driverId: `DRIVER-ID${alphanumericId(8)}`,
+		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
 		vehicleId: `VEH-ID${alphanumericId(8)}`,
-		vehicleType: EQUIPMENT_TYPES.FLATBED_TRAILER,
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		vehicleName: 'Merceded Axor',
 		make: 'Mercedes-Benz',
 		model: 'Axor',

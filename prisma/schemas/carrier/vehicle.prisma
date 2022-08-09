@@ -1,0 +1,54 @@
+enum VehicleStatus {
+    IDLE
+	OCCUPIED
+	ON_THE_ROAD
+	FULL_CAPACITY
+}
+
+enum VehicleType {
+    DRY_VAN
+    TAIL_LIFT
+    JUMBO_TRAILER
+    FLATBED_TRAILER
+    STEP_DECK_TRAILER
+    ARCTIC_TRUCK
+    OTHER
+}
+
+enum FuelType {
+	PETROL
+	DIESEL
+	ELECTRIC
+	HYBRID
+	ALTERNATIVE
+}
+
+enum FuelMeasurementUnit {
+	LITRE
+	GALLON
+}
+
+model Vehicle {
+    id  String   @id @default(auto()) @map("_id") @db.ObjectId
+    carrier Carrier @relation(fields: [carrierId], references: [id])
+    carrierId String @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    vehicleId String
+    currentDriver String
+    vehicleType VehicleType
+    vehicleName String
+    regNumber String
+    vin String
+    engineNumber String
+    yearOfManufacture String
+    colour String
+    fuelType FuelType
+    fuelMeasurementUnit FuelMeasurementUnit
+    image String?
+    dimensions Dimensions
+    make String
+    model String
+    notes String?
+    status VehicleStatus
+}

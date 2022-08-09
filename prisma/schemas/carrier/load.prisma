@@ -1,0 +1,20 @@
+model Load {
+    id  String @id @default(auto()) @map("_id") @db.ObjectId
+    shipmentId String  @unique
+    carrier Carrier @relation(fields: [carrierId], references: [id])
+    carrierId String @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    bookingStatus String @default("Booked")
+    status STATUS
+    serviceType SERVICE_TYPE
+    schedulingType SCHEDULING_TYPE
+    activitiesRequired SHIPMENT_ACTIVITY[]
+    internalPONumber String? @default("")
+    customerPONumber String? @default("")
+    rate Int
+    pickup Pickup
+    delivery Delivery
+    package Package
+    carrierInfo CarrierInfo?
+}

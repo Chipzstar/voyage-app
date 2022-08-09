@@ -1,29 +1,44 @@
 import NextAuth from 'next-auth'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import Auth0Provider from 'next-auth/providers/auth0'
-import EmailProvider from 'next-auth/providers/email'
 import GoogleProvider from 'next-auth/providers/google';
 import TwitterProvider from 'next-auth/providers/twitter';
 import prisma from '../../../db'
+import Credentials from 'next-auth/providers/credentials'
 
 export const authOptions = {
 	adapter: PrismaAdapter(prisma),
 	providers: [
-		EmailProvider({
-			server: {
-				host: process.env.SMTP_HOST,
-				port: Number(process.env.SMTP_PORT),
-				auth: {
-					user: process.env.SMTP_USER,
-					pass: process.env.SMTP_PASSWORD,
+		Credentials({
+			name: 'credentials',
+			credentials: {
+				email: {
+					label: 'email',
+					type: 'email'
+				},
+				password: {
+					label: 'password',
+					type: 'password'
 				},
 			},
-			from: process.env.SMTP_FROM,
-			/*sendVerificationRequest({
-				identifier: email,
-				url,
-				provider: { server, from }
-			})*/
+			async authorize(credentials, req) {
+				// Add logic here to look up the user from the credentials supplied
+				if (credentials == null) return null;
+				const user = await prisma.user.findFirst({
+					where: {
+						email: {
+							equals: credentials.email
+						}
+					}
+				});
+				if (user) {
+					// Any object returned will be saved in `user` property of the JWT
+					return user;
+				} else {
+					// If you return null then an error will be displayed advising the user to check their details.
+					return null;
+				}
+			}
 		}),
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID,

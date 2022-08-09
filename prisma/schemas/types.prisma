@@ -1,0 +1,69 @@
+type Stripe {
+    customerId String
+    paymentMethodId String
+}
+
+type Address {
+    addressLine1 String
+    addressLine2 String?
+    city String
+    region String?
+    postcode String
+    country String
+}
+
+type TimeWindow {
+    start Int
+    end Int
+}
+
+type Dimensions {
+    length Int
+    width Int
+    height Int
+}
+
+type Pickup {
+    facilityId String
+    facilityName String
+    location String
+    window TimeWindow
+}
+
+type Delivery {
+    facilityId String
+    facilityName String
+    location String
+    window TimeWindow?
+}
+
+type Package {
+	weight Int
+	quantity Int
+	dimensions Dimensions
+	packageType PACKAGE_TYPE
+	description String
+}
+
+type CarrierInfo {
+	name String
+	driverName String
+	driverPhone String
+	location Float[]
+	vehicle String?
+}
+
+type LocationTimeWindow {
+    h: Int
+    m: Int
+}
+
+type OperatingProps {
+	isActive Boolean
+	open LocationTimeWindow
+	close LocationTimeWindow
+}
+
+type OperatingHoursState {
+    facility OperatingProps
+}

@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useForm } from '@mantine/form';
-import { Alert, Button, Divider, Group, Modal, Text, TextInput } from '@mantine/core';
-import { TwitterIcon } from '@mantine/ds';
-import { AlertCircle, Mail } from 'tabler-icons-react';
+import { Alert, Button, Loader, Modal, PasswordInput, Text, TextInput } from '@mantine/core';
+import { AlertCircle, Lock, Mail } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import { getCsrfToken, signIn } from 'next-auth/react';
 import prisma from '../db';
@@ -10,7 +9,6 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { PATHS } from '../utils/constants';
 import moment from 'moment/moment';
-import { GoogleIcon } from '../icons/GoogleIcon';
 
 const VerifyEmailAlert = ({ email, onClose }) => {
 	return (
@@ -32,34 +30,41 @@ const VerifyEmailAlert = ({ email, onClose }) => {
 };
 
 const login = ({ csrfToken, ...props }) => {
+	const [loading, setLoading] = useState(false);
 	const [verifyEmail, showEmailVerification] = useState('');
 	const router = useRouter();
+
 	const form = useForm({
 		initialValues: {
-			email: ''
+			email: '',
+			password: ''
 		},
 		validate: values => ({
-			email: !props.users.find(item => item.email === values.email) ? 'No user found with that email address' : null
+			email: !props.users.find(item => item.email === values.email) ? 'No user found with that email address' : null,
+			password: !props.users.find(item => item.password === values.password && item.email === values.email) ? 'Wrong password' : null
 		})
 	});
 
 	const handleSignIn = useCallback(async values => {
 		try {
-			const { ok, error } = await signIn('email', {
+			setLoading(true)
+			const { ok, error } = await signIn('credentials', {
 				email: values.email,
+				password: values.password,
 				redirect: false
 			});
 			if (ok) {
 				console.log('Login Success');
-				showEmailVerification(values.email);
-				// await router.replace('/');
+				await router.replace('/');
 				return;
 			}
 			// Something went wrong
 			if (error) {
 				return null;
 			}
+			setLoading(false)
 		} catch (error) {
+			setLoading(false);
 			// handle error here (eg. display message to user)
 			console.log(error.error);
 		}
@@ -78,7 +83,7 @@ const login = ({ csrfToken, ...props }) => {
 						<img src={'/static/images/logo.svg'} alt='' />
 						<span className='text-2xl font-bold mb-1'>voyage</span>
 					</figure>
-					<Group grow mb='md' mt='md'>
+					{/*<Group grow mb='md' mt='md'>
 						<Button leftIcon={<GoogleIcon />} variant='default' color='gray' onClick={() => signIn('google')}>
 							Google
 						</Button>
@@ -86,7 +91,7 @@ const login = ({ csrfToken, ...props }) => {
 							Twitter
 						</Button>
 					</Group>
-					<Divider label='Or continue with email' labelPosition='center' my='lg' />
+					<Divider label='Or continue with email' labelPosition='center' my='lg' />*/}
 					<div>
 						<TextInput
 							name='csrfToken'
@@ -95,6 +100,9 @@ const login = ({ csrfToken, ...props }) => {
 							defaultValue={csrfToken}
 						/>
 						<TextInput name='email' placeholder='Email' icon={<Mail size={16} />} radius={0} size='md' {...form.getInputProps('email')} />
+					</div>
+					<div>
+						<PasswordInput name='password' placeholder='Password' icon={<Lock size={16} />} radius={0} size='md' {...form.getInputProps('password')} />
 					</div>
 					<div className='flex flex-col items-center space-y-4'>
 						<Button
@@ -107,6 +115,7 @@ const login = ({ csrfToken, ...props }) => {
 							}}
 							className='text-normal text-white text-center w-full h-12'
 						>
+							{loading && <Loader size="xs" className="mr-2" />}
 							<Text color='white' size='lg'>
 								Log in
 							</Text>

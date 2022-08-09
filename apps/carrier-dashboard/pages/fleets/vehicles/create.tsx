@@ -1,22 +1,21 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react';
 import PageNav from '../../../layout/PageNav';
-import { Anchor, FileInput, NumberInput, Select, TextInput } from '@mantine/core';
+import { Anchor, FileInput, Loader, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
-import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from '../../../utils/types'
+import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from '../../../utils/types';
 import dayjs from 'dayjs';
 import { alphanumericId, capitalize, getYears, sanitize } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import PageHeader from '../../../layout/PageHeader';
 import { showNotification } from '@mantine/notifications';
 import { Check, Upload } from 'tabler-icons-react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { addVehicle, useVehicles } from '../../../store/feature/vehicleSlice';
-import { Loader } from '@mantine/core';
-import moment from 'moment/moment'
+import moment from 'moment/moment';
 
 const create = ({vehicleName, vehicleId}) => {
 	const [loading, setLoading] = useState(false);
@@ -33,10 +32,9 @@ const create = ({vehicleName, vehicleId}) => {
 		vehicleId: vehicleId ?? `VEH-ID${alphanumericId(8)}`,
 		createdAt: vehicle?.createdAt ?? moment().unix(),
 		vehicleName: vehicleName || vehicle?.vehicleName || '',
-		vehicleType: vehicle?.vehicleType ?? '',
+		vehicleType: vehicle?.vehicleType ?? VEHICLE_TYPES.DRY_VAN,
 		colour: vehicle?.colour ?? '',
 		dimensions: vehicle?.dimensions ?? { height: 0, length: 0, width: 0 },
-		driverId: vehicle?.driverId ?? '',
 		engineNumber: vehicle?.engineNumber ?? '',
 		fuelMeasurementUnit: vehicle?.fuelMeasurementUnit ?? null,
 		fuelType: vehicle?.fuelType ?? null,
@@ -46,7 +44,9 @@ const create = ({vehicleName, vehicleId}) => {
 		regNumber: vehicle?.regNumber ?? '',
 		status: vehicle?.status ?? VEHICLE_STATUS.IDLE,
 		vin: vehicle?.vin ?? '',
-		yearOfManufacture: vehicle?.yearOfManufacture ?? ''
+		yearOfManufacture: vehicle?.yearOfManufacture ?? '',
+		currentDriver: '',
+		notes: '',
 	};
 
 	const form = useForm({
@@ -169,11 +169,14 @@ const create = ({vehicleName, vehicleId}) => {
 								{...form.getInputProps('image')}
 							/>
 						</div>
-						<div className='col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
+						<div className='md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
 							<NumberInput label='Vehicle Length' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.length')} />
 							<NumberInput label='Vehicle Width' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.width')} />
 							<NumberInput label='Max Vehicle Height' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.height')} />
 						</div>
+						{/*<div className="md:col-span-2">
+							<Textarea label="Notes" maxRows={3} {...form.getInputProps('notes')} />
+						</div>*/}
 					</div>
 					<div className="flex justify-end">
 						<button type="submit" className='flex items-center justify-center voyage-button'>

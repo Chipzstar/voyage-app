@@ -35,9 +35,10 @@ model User {
   sessions      Session[]
   firstname     String?
   lastname      String?
-  password      String?   ///@encrypted
-  shipment      Shipment[]
+  password      String   /// @encrypted
   location      Location[]
+  carrierId     Carrier?
+  shipperId     Shipper?
 }
 
 model VerificationToken {
