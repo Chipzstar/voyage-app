@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import PageNav from '../../../layout/PageNav';
-import { Anchor, Select, TextInput } from '@mantine/core';
+import { Anchor, Loader, Select, TextInput } from '@mantine/core'
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
@@ -21,6 +21,7 @@ import prisma from '../../../db'
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice'
 
 const create = ({memberId}) => {
+	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>()
 	const router = useRouter()
 	const members = useSelector(useMembers)
@@ -58,8 +59,8 @@ const create = ({memberId}) => {
 	));
 
 	const handleSubmit = useCallback(values => {
+		setLoading(true)
 		values.fullName = values.firstname + ' ' + values.lastname
-		console.log(values);
 		dispatch(createMember(values)).unwrap()
 			.then((res) => {
 				console.log(res)
@@ -75,10 +76,12 @@ const create = ({memberId}) => {
 					icon: <Check size={20}/>,
 					loading: false,
 				});
+				setLoading(false)
 				setTimeout(() => router.push(PATHS.TEAM), 1000)
 			})
 			.catch(err => {
 				console.error(err)
+				setLoading(false);
 				showNotification({
 					id: 'new-member-failure',
 					disallowClose: true,
@@ -127,8 +130,9 @@ const create = ({memberId}) => {
 						</div>
 					</div>
 					<div>
-						<button type="submit" className='voyage-button'>
-							Save
+						<button type="submit" className='flex items-center justify-center voyage-button'>
+							<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
+							<span>Save</span>
 						</button>
 					</div>
 				</form>

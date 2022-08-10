@@ -220,6 +220,7 @@ export const SAMPLE_TEAM: Team[] = [
 export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
@@ -245,6 +246,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
@@ -270,6 +272,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',
@@ -295,6 +298,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
 		regNumber: 'BD5I SMR',

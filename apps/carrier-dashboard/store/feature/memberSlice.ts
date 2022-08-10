@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Team, TeamRole } from '../../utils/types'
 import axios from 'axios';
+import { HYDRATE } from 'next-redux-wrapper'
 
 const initialState = [];
 
@@ -10,7 +11,8 @@ export const createMember = createAsyncThunk('member/createMember', async (paylo
 		thunkAPI.dispatch(addMember(member));
 		return member;
 	} catch (err) {
-		return thunkAPI.rejectWithValue(err);
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 });
 
@@ -39,6 +41,11 @@ export const memberSlice = createSlice({
 		removeMember: (state, action: PayloadAction<string>) => {
 			return state.filter((member) => member.memberId !== action.payload)
 		}
+	},
+	extraReducers: {
+		[HYDRATE]: (state, action) => {
+			return action.payload.members ? action.payload.members : state
+		}
 	}
 });
 
@@ -49,6 +56,6 @@ export const useMembers = state => {
 	return [...team].sort((a, b) => b.createdAt - a.createdAt);
 };
 
-export const { addMember, editMember, changeRole, removeMember, setMembers } = memberSlice.actions;
+export const { addMember, changeRole, removeMember, setMembers } = memberSlice.actions;
 
 export default memberSlice.reducer;

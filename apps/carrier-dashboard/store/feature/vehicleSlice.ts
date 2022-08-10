@@ -2,8 +2,9 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SAMPLE_VEHICLES } from '../../utils/constants'
 import { Driver, Vehicle } from '../../utils/types'
 import axios from 'axios';
+import { HYDRATE } from 'next-redux-wrapper'
 
-const initialState = SAMPLE_VEHICLES;
+const initialState = [];
 
 export const createVehicle = createAsyncThunk('vehicle/createVehicle', async (payload: Partial<Vehicle>, thunkAPI) => {
 	try {
@@ -11,7 +12,8 @@ export const createVehicle = createAsyncThunk('vehicle/createVehicle', async (pa
 		thunkAPI.dispatch(addVehicle(vehicle));
 		return vehicle;
 	} catch (err) {
-		thunkAPI.rejectWithValue(err.message);
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 });
 
@@ -27,6 +29,11 @@ export const vehicleSlice = createSlice({
 		},
 		removeVehicle: (state, action: PayloadAction<string>) => {
 			return state.filter((v) => v.vehicleId !== action.payload);
+		}
+	},
+	extraReducers: {
+		[HYDRATE]: (state, action) => {
+			return action.payload.vehicles ? action.payload.vehicles : state
 		}
 	}
 });

@@ -12,10 +12,10 @@ export enum TeamRole {
 }
 
 export enum VEHICLE_STATUS {
-	IDLE = "idle",
-	OCCUPIED = "occupied",
-	ON_THE_ROAD = "on-the-road",
-	FULL_CAPACITY = "full-capacity",
+	IDLE = "IDLE",
+	OCCUPIED = "OCCUPIED",
+	ON_THE_ROAD = "ON_THE_ROAD",
+	FULL_CAPACITY = "FULL_CAPACITY",
 }
 
 export enum VEHICLE_TYPES {
@@ -137,20 +137,21 @@ export interface Team {
 
 export interface Vehicle {
 	id: string;
+	carrierId: string;
 	createdAt: UnixTimestamp;
 	vehicleId: string;
-	currentDriver: string;
+	currentDriver?: string;
 	vehicleType: VEHICLE_TYPES;
    vehicleName: string;
 	regNumber: string;
 	vin: string;
-	engineNumber: string;
-	yearOfManufacture: string;
-	colour: string;
+	engineNumber?: string;
+	yearOfManufacture?: string;
+	colour?: string;
 	fuelType: FuelType;
 	fuelMeasurementUnit: FuelMeasurementUnit
-	image: string;
-	dimensions: {
+	image?: string;
+	dimensions?: {
 		length: number;
 		width: number;
 		height: number;
