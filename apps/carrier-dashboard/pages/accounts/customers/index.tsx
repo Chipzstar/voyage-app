@@ -1,28 +1,29 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { PATHS, PUBLIC_PATHS } from '../../../utils/constants'
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
 import { useRouter } from 'next/router';
 import ContentContainer from '../../../layout/ContentContainer';
 import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
-import { Pencil, Search, Trash } from 'tabler-icons-react';
+import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react'
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { sanitize } from '@voyage-app/shared-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCustomers, removeCustomer, setCustomers } from '../../../store/feature/customerSlice'
+import { useCustomers, deleteCustomer, setCustomers } from '../../../store/feature/customerSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
-import { wrapper } from '../../../store'
-import { getToken } from 'next-auth/jwt'
-import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '../../api/auth/[...nextauth]'
-import prisma from '../../../db'
-import moment from 'moment'
+import { AppDispatch, wrapper } from '../../../store';
+import { getToken } from 'next-auth/jwt';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../../api/auth/[...nextauth]';
+import prisma from '../../../db';
+import moment from 'moment';
+import { notifyError, notifySuccess } from '../../../utils/functions'
 
 const customers = () => {
 	const modals = useModals();
 	const router = useRouter();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const customers = useSelector(useCustomers);
 	const [filteredCustomers, setFilter] = useState(customers);
 
@@ -44,7 +45,11 @@ const customers = () => {
 				</Text>
 			),
 			labels: { confirm: 'Delete', cancel: 'Cancel' },
-			onConfirm: () => dispatch(removeCustomer(id)),
+			onConfirm: () =>
+				dispatch(deleteCustomer(id))
+					.unwrap()
+					.then(res => notifySuccess('delete-customer-success', 'Customer deleted!', <Check size={20} />))
+					.catch(err => notifyError('delete-customer-failure', `There was a problem deleting this account.\n${err.message}`, <X size={20} />)),
 			onCancel: () => console.log('Cancel'),
 			classNames: {
 				title: 'modal-header'
@@ -103,7 +108,7 @@ const customers = () => {
 						>
 							<Pencil />
 						</ActionIcon>
-						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.customerId, element.companyName)}>
+						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.id, element.companyName)}>
 							<Trash />
 						</ActionIcon>
 					</Group>
@@ -182,7 +187,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		props: {
 			session
 		}
-	}
-})
+	};
+});
 
-export default customers;
+export default customers

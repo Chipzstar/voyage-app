@@ -1,26 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import ContentContainer from '../../../layout/ContentContainer';
 import { ActionIcon, Avatar, Group, Switch, Text, TextInput } from '@mantine/core';
-import { Pencil, Search, Trash } from 'tabler-icons-react';
+import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react';
 import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
 import { useRouter } from 'next/router';
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeDriver, setDrivers, useDrivers } from '../../../store/feature/driverSlice';
+import { deleteDriver, setDrivers, useDrivers } from '../../../store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
-import { wrapper } from '../../../store';
+import { AppDispatch, wrapper } from '../../../store';
 import { unstable_getServerSession } from 'next-auth';
 import prisma from '../../../db';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import moment from 'moment/moment';
 import { getToken } from 'next-auth/jwt';
+import { notifyError, notifySuccess } from '../../../utils/functions';
 
 const drivers = () => {
 	const modals = useModals();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
 	const [filteredDrivers, setFilter] = useState([...drivers]);
@@ -36,7 +37,11 @@ const drivers = () => {
 				</Text>
 			),
 			labels: { confirm: 'Delete', cancel: 'Cancel' },
-			onConfirm: () => dispatch(removeDriver(id)),
+			onConfirm: () =>
+				dispatch(deleteDriver(id))
+					.unwrap()
+					.then(res => notifySuccess('delete-driver-success', 'Driver deleted!', <Check size={20} />))
+					.catch(err => notifyError('delete-driver-failure', `There was a problem deleting this driver.\n${err.message}`, <X size={20} />)),
 			onCancel: () => console.log('Cancel'),
 			classNames: {
 				title: 'modal-header'
@@ -117,7 +122,7 @@ const drivers = () => {
 						>
 							<Pencil />
 						</ActionIcon>
-						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.driverId, element.fullName)}>
+						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.id, element.fullName)}>
 							<Trash />
 						</ActionIcon>
 					</Group>

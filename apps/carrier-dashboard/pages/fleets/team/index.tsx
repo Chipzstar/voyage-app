@@ -1,31 +1,31 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActionIcon, Avatar, Group, Select, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
-import { Check, Pencil, Search, Trash } from 'tabler-icons-react';
+import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react'
 import { PATHS, PUBLIC_PATHS } from '../../../utils/constants'
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeRole, removeMember, setMembers, useMembers } from '../../../store/feature/memberSlice'
+import { changeRole, deleteMember, setMembers, useMembers } from '../../../store/feature/memberSlice'
 import { TeamRole } from '../../../utils/types';
-import { showNotification } from '@mantine/notifications';
 import { capitalize } from '@voyage-app/shared-utils';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
-import { wrapper } from '../../../store'
+import { AppDispatch, wrapper } from '../../../store';
 import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth]'
 import prisma from '../../../db'
 import moment from 'moment'
 import { SelectInputData } from '@voyage-app/shared-types'
 import { getToken } from 'next-auth/jwt'
+import { notifyError, notifySuccess } from '../../../utils/functions'
 
 const team = () => {
 	const modals = useModals();
 	const router = useRouter();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const team = useSelector(useMembers);
 	const [filteredTeam, setFilter] = useState([...team]);
 
@@ -40,7 +40,10 @@ const team = () => {
 				</Text>
 			),
 			labels: { confirm: 'Delete', cancel: 'Cancel' },
-			onConfirm: () => dispatch(removeMember(id)),
+			onConfirm: () => dispatch(deleteMember(id))
+				.unwrap()
+				.then(res => notifySuccess('delete-member-success', 'Member deleted!', <Check size={20} />))
+				.catch(err => notifyError('delete-member-failure', `There was a problem deleting this member.\n${err.message}`, <X size={20} />)),
 			onCancel: () => console.log('Cancel'),
 			classNames: {
 				title: 'modal-header'
@@ -105,18 +108,7 @@ const team = () => {
 							variant='unstyled'
 							onChange={(value: TeamRole) => {
 								dispatch(changeRole({ id: element.memberId, role: value }));
-								showNotification({
-									id: 'new-member-success',
-									disallowClose: true,
-									onClose: () => console.log('unmounted'),
-									onOpen: () => console.log('mounted'),
-									autoClose: 3000,
-									title: 'Success',
-									message: `${element.firstname} has a new role of ${capitalize(value)}!`,
-									color: 'green',
-									icon: <Check size={20} />,
-									loading: false
-								});
+								notifySuccess('edit-member-success', `${element.firstname} has a new role of ${capitalize(value)}!`, <Check size={20} />)
 							}}
 						/>
 					</div>
@@ -134,7 +126,7 @@ const team = () => {
 						>
 							<Pencil />
 						</ActionIcon>
-						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.memberId, element.fullName)}>
+						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.id, element.fullName)}>
 							<Trash />
 						</ActionIcon>
 					</Group>

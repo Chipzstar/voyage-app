@@ -21,6 +21,7 @@ import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth]'
 import prisma from '../../../db'
 import moment from 'moment'
+import { notifyError, notifySuccess } from '../../../utils/functions'
 
 const create = ({ vehicleName, vehicleId }) => {
 	const [loading, setLoading] = useState(false);
@@ -67,18 +68,7 @@ const create = ({ vehicleName, vehicleId }) => {
 		dispatch(createVehicle(values))
 			.unwrap()
 			.then(() => {
-				showNotification({
-					id: 'new-vehicle-success',
-					disallowClose: true,
-					onClose: () => console.log('unmounted'),
-					onOpen: () => console.log('mounted'),
-					autoClose: 5000,
-					title: 'Success',
-					message: 'A new vehicle has been added to your account!',
-					color: 'green',
-					icon: <Check size={20} />,
-					loading: false
-				});
+				notifySuccess('new-vehicle-success', 'A new vehicle has been added to your account!', <Check size={20} />)
 				setTimeout(() => {
 					router.push(PATHS.VEHICLES);
 					setLoading(false);
@@ -86,19 +76,8 @@ const create = ({ vehicleName, vehicleId }) => {
 			})
 			.catch(err => {
 				console.error(err);
+				notifyError('new-vehicle-failure', `There was a problem creating your new vehicle.\n${err.message}`,  <X size={20} /> );
 				setLoading(false);
-				showNotification({
-					id: 'new-vehicle-failure',
-					disallowClose: true,
-					onClose: () => console.log('unmounted'),
-					onOpen: () => console.log('mounted'),
-					autoClose: 3000,
-					title: 'Error',
-					message: `There was a problem creating your new vehicle.\n${err.message}`,
-					color: 'red',
-					icon: <X size={20} />,
-					loading: false
-				});
 			});
 	}, []);
 

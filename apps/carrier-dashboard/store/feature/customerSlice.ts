@@ -15,6 +15,17 @@ export const createCustomer = createAsyncThunk('customer/createCustomer', async 
 	}
 });
 
+export const deleteCustomer = createAsyncThunk('customer/deleteCustomer', async (payload: string, thunkAPI) => {
+	try {
+		const result = (await axios.delete(`/api/customer/${payload}`)).data;
+		thunkAPI.dispatch(removeCustomer(payload));
+		return result;
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
 export const customerSlice = createSlice({
 	name: 'customers',
 	initialState,
@@ -26,7 +37,7 @@ export const customerSlice = createSlice({
 			return [...state, action.payload];
 		},
 		removeCustomer: (state, action: PayloadAction<string>) => {
-			return state.filter((customer) => customer.customerId !== action.payload);
+			return state.filter((customer) => customer.id !== action.payload);
 		}
 	}
 });

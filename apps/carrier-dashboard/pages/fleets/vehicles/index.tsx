@@ -1,28 +1,29 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
-import { Pencil, Search, Trash } from 'tabler-icons-react';
-import { PATHS, PUBLIC_PATHS } from '../../../utils/constants'
+import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react';
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeVehicle, useVehicles, setVehicles } from '../../../store/feature/vehicleSlice';
+import { useVehicles, setVehicles, deleteVehicle } from '../../../store/feature/vehicleSlice';
 import { useDrivers } from 'apps/carrier-dashboard/store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
-import { wrapper } from '../../../store'
-import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '../../api/auth/[...nextauth]'
-import prisma from '../../../db'
-import moment from 'moment/moment'
-import { getToken } from 'next-auth/jwt'
+import { AppDispatch, wrapper } from '../../../store';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../../api/auth/[...nextauth]';
+import prisma from '../../../db';
+import moment from 'moment/moment';
+import { getToken } from 'next-auth/jwt';
+import { notifyError, notifySuccess } from '../../../utils/functions';
 
 const vehicles = () => {
 	const modals = useModals();
 	const router = useRouter();
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const vehicles = useSelector(useVehicles);
 	const drivers = useSelector(useDrivers);
 	const [filteredVehicles, setFilter] = useState([...vehicles]);
@@ -38,7 +39,11 @@ const vehicles = () => {
 				</Text>
 			),
 			labels: { confirm: 'Delete', cancel: 'Cancel' },
-			onConfirm: () => dispatch(removeVehicle(id)),
+			onConfirm: () =>
+				dispatch(deleteVehicle(id))
+					.unwrap()
+					.then(() => notifySuccess('delete-vehicle-success', 'Vehicle deleted', <Check size={20} />))
+					.catch(err => notifyError('delete-vehicle-failure', `There was a problem deleting this account.\n${err.message}`, <X size={20} />)),
 			onCancel: () => console.log('Cancel'),
 			classNames: {
 				title: 'modal-header'
@@ -58,8 +63,9 @@ const vehicles = () => {
 			setFilter(prevState =>
 				value.length >= 2 ? vehicles.filter(({ vehicleName, make, model, regNumber }) => vehicleName.contains(value) || model.contains(value) || make.contains(value) || regNumber.includes(value.toUpperCase())) : vehicles
 			);
-		}, 300)
-	,[vehicles]);
+		}, 300),
+		[vehicles]
+	);
 
 	useEffect(() => setFilter(vehicles), [vehicles]);
 
@@ -102,7 +108,7 @@ const vehicles = () => {
 						>
 							<Pencil />
 						</ActionIcon>
-						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.vehicleId, element.vehicleName)}>
+						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.id, element.vehicleName)}>
 							<Trash />
 						</ActionIcon>
 					</Group>

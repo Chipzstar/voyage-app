@@ -16,6 +16,17 @@ export const createMember = createAsyncThunk('member/createMember', async (paylo
 	}
 });
 
+export const deleteMember = createAsyncThunk('member/deleteMember', async (payload: string, thunkAPI) => {
+	try {
+		const result = (await axios.delete(`/api/member/${payload}`)).data;
+		thunkAPI.dispatch(removeMember(payload));
+		return result;
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
 export const memberSlice = createSlice({
 	name: 'members',
 	initialState,
@@ -39,7 +50,7 @@ export const memberSlice = createSlice({
 			});
 		},
 		removeMember: (state, action: PayloadAction<string>) => {
-			return state.filter((member) => member.memberId !== action.payload)
+			return state.filter((m) => m.id !== action.payload)
 		}
 	},
 	extraReducers: {

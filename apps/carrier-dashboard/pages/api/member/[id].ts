@@ -43,7 +43,6 @@ export default async function handler(req, res) {
 		}
 	} else if (req.method === 'DELETE'){
 		try {
-			console.log(prisma)
 			const result = await prisma.member.delete({
 				where: {
 					id

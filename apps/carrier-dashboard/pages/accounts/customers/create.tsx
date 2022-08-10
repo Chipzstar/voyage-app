@@ -21,6 +21,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
+import { notifyError, notifySuccess } from '../../../utils/functions'
 
 const emptyContact: Contact = {
 	name: '',
@@ -86,35 +87,13 @@ const create = ({ customerId }) => {
 		dispatch(createCustomer(values))
 			.unwrap()
 			.then(() => {
-				showNotification({
-					id: 'new-customer-success',
-					disallowClose: true,
-					onClose: () => console.log('unmounted'),
-					onOpen: () => console.log('mounted'),
-					autoClose: 5000,
-					title: 'Success',
-					message: 'A new customer has been created!',
-					color: 'green',
-					icon: <Check size={20} />,
-					loading: false
-				});
+				notifySuccess('new-customer-success', 'You created a new customer!', <Check size={20} />)
 				setLoading(false);
 				setTimeout(() => router.push(PATHS.CUSTOMERS), 500);
 			})
 			.catch(err => {
 				console.error(err);
-				showNotification({
-					id: 'new-customer-failure',
-					disallowClose: true,
-					onClose: () => console.log('unmounted'),
-					onOpen: () => console.log('mounted'),
-					autoClose: 3000,
-					title: 'Error',
-					message: `There was a problem creating a new account.\n${err.message}`,
-					color: 'red',
-					icon: <X size={20} />,
-					loading: false
-				});
+				notifyError('new-customer-failure', `There was a problem creating a new account.\n${err.message}`,  <X size={20} />)
 				setLoading(false);
 			});
 	}, []);
@@ -255,4 +234,4 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	};
 });
 
-export default create;
+export default create

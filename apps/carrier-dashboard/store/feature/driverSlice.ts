@@ -16,6 +16,17 @@ export const createDriver = createAsyncThunk('driver/createDriver', async (paylo
 	}
 });
 
+export const deleteDriver = createAsyncThunk('driver/deleteDriver', async (payload: string, thunkAPI) => {
+	try {
+		const result = (await axios.delete(`/api/driver/${payload}`)).data;
+		thunkAPI.dispatch(removeDriver(payload));
+		return result;
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
 export const driverSlice = createSlice({
 	name: 'drivers',
 	initialState,
@@ -27,7 +38,7 @@ export const driverSlice = createSlice({
 			return [...state, action.payload]
 		},
 		removeDriver: (state, action: PayloadAction<string>) => {
-			return state.filter((driver) => driver.driverId !== action.payload)
+			return state.filter((d) => d.id !== action.payload)
 		}
 	},
 	extraReducers: {
