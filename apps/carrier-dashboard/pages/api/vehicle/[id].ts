@@ -28,12 +28,13 @@ export default async function handler(req, res) {
 		}
 	} else if (req.method === 'PUT'){
 		try {
+			let { id, ...rest } = payload
 			const vehicle = await prisma.vehicle.update({
 				where: {
 					id
 				},
 				data: {
-					...payload,
+					...rest,
 				}
 			});
 			console.log(vehicle);

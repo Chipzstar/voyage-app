@@ -16,8 +16,8 @@ model Customer {
     accountType AccountType
     companyName String
     fullName String
-    firstname String?
-    lastname String?
+    firstName String?
+    lastName String?
     email String
     phone String
     billingEmail String

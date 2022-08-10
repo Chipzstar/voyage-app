@@ -10,20 +10,30 @@ import dayjs from 'dayjs';
 import { alphanumericId, capitalize, getYears, sanitize } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import PageHeader from '../../../layout/PageHeader';
-import { showNotification } from '@mantine/notifications';
 import { Check, Upload, X } from 'tabler-icons-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCarrier, useCarrier } from '../../../store/feature/profileSlice'
-import { AppDispatch, wrapper } from 'apps/carrier-dashboard/store'
+import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
+import { AppDispatch, wrapper } from 'apps/carrier-dashboard/store';
 import { useRouter } from 'next/router';
-import { createVehicle, useVehicles } from '../../../store/feature/vehicleSlice';
-import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '../../api/auth/[...nextauth]'
-import prisma from '../../../db'
-import moment from 'moment'
-import { notifyError, notifySuccess } from '../../../utils/functions'
+import { createVehicle, setVehicles, updateVehicle, useVehicles } from '../../../store/feature/vehicleSlice';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../../api/auth/[...nextauth]';
+import prisma from '../../../db';
+import moment from 'moment';
+import { notifyError, notifySuccess } from '../../../utils/functions';
+import { getToken } from 'next-auth/jwt';
 
-const create = ({ vehicleName, vehicleId }) => {
+const items = [
+	{ title: 'Home', href: PATHS.HOME },
+	{ title: 'Vehicles', href: PATHS.VEHICLES },
+	{ title: 'New Vehicle', href: PATHS.NEW_VEHICLE }
+].map((item, index) => (
+	<Anchor component={Link} href={item.href} key={index}>
+		<span className='hover:text-secondary hover:underline'>{item.title}</span>
+	</Anchor>
+));
+
+const create = ({ vehicleName, vehicleId, session }) => {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
@@ -36,9 +46,10 @@ const create = ({ vehicleName, vehicleId }) => {
 
 	const initialValues: Vehicle = {
 		id: vehicle?.id ?? undefined,
+		userId: vehicle?.userId ?? session?.id,
 		carrierId: vehicle?.carrierId ?? profile.id,
 		vehicleId: vehicleId ?? `VEH-ID${alphanumericId(8)}`,
-		createdAt: vehicle?.createdAt ?? undefined,
+		createdAt: undefined,
 		vehicleName: vehicleName || vehicle?.vehicleName || '',
 		vehicleType: vehicle?.vehicleType ?? null,
 		colour: vehicle?.colour ?? '',
@@ -65,31 +76,36 @@ const create = ({ vehicleName, vehicleId }) => {
 		values.regNumber = values.regNumber.toUpperCase();
 		setLoading(true);
 		console.log(values);
-		dispatch(createVehicle(values))
-			.unwrap()
-			.then(() => {
-				notifySuccess('new-vehicle-success', 'A new vehicle has been added to your account!', <Check size={20} />)
-				setTimeout(() => {
-					router.push(PATHS.VEHICLES);
-					setLoading(false);
-				}, 500);
-			})
-			.catch(err => {
-				console.error(err);
-				notifyError('new-vehicle-failure', `There was a problem creating your new vehicle.\n${err.message}`,  <X size={20} /> );
-				setLoading(false);
-			});
+		vehicle
+			? dispatch(updateVehicle(values))
+					.unwrap()
+					.then(() => {
+						notifySuccess('new-vehicle-success', 'A new vehicle has been added to your account!', <Check size={20} />);
+						setTimeout(() => {
+							router.push(PATHS.VEHICLES);
+							setLoading(false);
+						}, 500);
+					})
+					.catch(err => {
+						console.error(err);
+						notifyError('new-vehicle-failure', `There was a problem creating your new vehicle.\n${err.message}`, <X size={20} />);
+						setLoading(false);
+					})
+			: dispatch(createVehicle(values))
+					.unwrap()
+					.then(() => {
+						notifySuccess('new-vehicle-success', 'A new vehicle has been added to your account!', <Check size={20} />);
+						setTimeout(() => {
+							router.push(PATHS.VEHICLES);
+							setLoading(false);
+						}, 500);
+					})
+					.catch(err => {
+						console.error(err);
+						notifyError('new-vehicle-failure', `There was a problem creating your new vehicle.\n${err.message}`, <X size={20} />);
+						setLoading(false);
+					});
 	}, []);
-
-	const items = [
-		{ title: 'Home', href: PATHS.HOME },
-		{ title: 'Vehicles', href: PATHS.VEHICLES },
-		{ title: 'New Vehicle', href: PATHS.NEW_VEHICLE }
-	].map((item, index) => (
-		<Anchor component={Link} href={item.href} key={index}>
-			<span className='hover:text-secondary hover:underline'>{item.title}</span>
-		</Anchor>
-	));
 
 	return (
 		<ContentContainer classNames='px-8 h-screen flex flex-col'>
@@ -197,6 +213,7 @@ const create = ({ vehicleName, vehicleId }) => {
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res, query }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
 	if (session.id) {
 		const carrier = await prisma.carrier.findFirst({
 			where: {
@@ -210,13 +227,39 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
+		let vehicles = await prisma.vehicle.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: token?.carrierId
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		vehicles = vehicles.map(vehicle => ({
+			...vehicle,
+			createdAt: moment(vehicle.createdAt).unix(),
+			updatedAt: moment(vehicle.updatedAt).unix()
+		}));
+		store.dispatch(setVehicles(vehicles));
 	}
 	return {
 		props: {
+			session,
 			vehicleName: query?.vehicleName ?? '',
 			vehicleId: query?.vehicleId ?? null
 		}
 	};
-})
+});
 
 export default create;

@@ -28,17 +28,19 @@ export default async function handler(req, res) {
 		}
 	} else if (req.method === 'PUT'){
 		try {
+			let { id, ...rest } = payload
 			const customer = await prisma.customer.update({
 				where: {
 					id
 				},
 				data: {
-					...payload,
+					...rest,
 				}
 			});
 			console.log(customer);
 			res.json(customer);
 		} catch (err) {
+			console.log(err)
 			res.status(400).json({ status: 400, message: 'An error occurred!' })
 		}
 	} else if (req.method === 'DELETE'){

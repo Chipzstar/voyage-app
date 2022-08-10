@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 	await runMiddleware(req, res, cors);
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions)
-	const payload = req.body;
+	let payload = req.body;
 	console.log("PAYLOAD", payload)
 	const { id } = req.query
 	if (req.method === 'POST') {
@@ -28,18 +28,20 @@ export default async function handler(req, res) {
 		}
 	} else if (req.method === 'PUT'){
 		try {
+			let { id, ...rest } = payload
 			const driver = await prisma.driver.update({
 				where: {
 					id
 				},
 				data: {
-					...payload,
+					...rest,
 				}
 			});
 			console.log(driver);
 			res.json(driver);
 		} catch (err) {
-			res.status(400).json({ status: 400, message: 'An error occurred!' })
+			console.error(err)
+			res.status(400).send({ message: 'An error occurred!' })
 		}
 	} else if (req.method === 'DELETE'){
 		try {

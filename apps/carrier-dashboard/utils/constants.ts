@@ -48,6 +48,7 @@ export const SETTINGS_TABS = [
 export const SAMPLE_DRIVERS: Driver[] = [
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
@@ -70,6 +71,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
@@ -92,6 +94,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
@@ -114,6 +117,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().unix(),
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
@@ -139,6 +143,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 export const SAMPLE_TEAM: Team[] = [
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
@@ -152,6 +157,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
@@ -165,6 +171,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
@@ -178,6 +185,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
@@ -191,6 +199,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
@@ -204,6 +213,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
@@ -220,6 +230,7 @@ export const SAMPLE_TEAM: Team[] = [
 export const SAMPLE_VEHICLES: Vehicle[] = [
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
@@ -246,6 +257,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
@@ -272,6 +284,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
@@ -298,6 +311,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 	},
 	{
 		id: '',
+		userId: '',
 		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		currentDriver: `DRIVER-ID${alphanumericId(8)}`,
@@ -633,7 +647,7 @@ export const SAMPLE_LOADS: Load[] = [
 	}
 ];
 
-export const SAMPLE_CUSTOMERS: Customer[] = [
+/*export const SAMPLE_CUSTOMERS: Customer[] = [
 	{
 		id: '',
 		carrierId: '',
@@ -802,7 +816,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 		],
 		taxIDNumber: '322-82-0578'
 	}
-]
+]*/
 
 export const SAMPLE_INVOICES = [
 	{

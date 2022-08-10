@@ -5,28 +5,29 @@ import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
-import { Driver, DRIVER_STATUS } from '../../../utils/types'
+import { Driver, DRIVER_STATUS } from '../../../utils/types';
 import { DatePicker } from '@mantine/dates';
-import { Calendar, Check, X } from 'tabler-icons-react'
-import { useDispatch, useSelector } from 'react-redux'
-import { createDriver, useDrivers } from '../../../store/feature/driverSlice'
-import { showNotification } from '@mantine/notifications';
+import { Calendar, Check, X } from 'tabler-icons-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createDriver, setDrivers, updateDriver, useDrivers } from '../../../store/feature/driverSlice';
 import Router, { useRouter } from 'next/router';
 import { alphanumericId } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
-import { useVehicles } from '../../../store/feature/vehicleSlice'
+import { setVehicles, useVehicles } from '../../../store/feature/vehicleSlice';
 import moment from 'moment';
-import { AppDispatch, wrapper } from '../../../store'
-import { setCarrier, useCarrier } from '../../../store/feature/profileSlice'
-import prisma from '../../../db'
-import { authOptions } from '../../api/auth/[...nextauth]'
-import { unstable_getServerSession } from 'next-auth'
+import { AppDispatch, wrapper } from '../../../store';
+import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
+import prisma from '../../../db';
+import { authOptions } from '../../api/auth/[...nextauth]';
+import { unstable_getServerSession } from 'next-auth';
+import { getToken } from 'next-auth/jwt';
+import { notifyError, notifySuccess } from '../../../utils/functions';
 
-const create = ({driverId}) => {
+const create = ({ driverId, session }) => {
 	const dispatch = useDispatch<AppDispatch>();
-	const drivers = useSelector(useDrivers)
-	const vehicles = useSelector(useVehicles)
-	const profile = useSelector(useCarrier)
+	const drivers = useSelector(useDrivers);
+	const vehicles = useSelector(useVehicles);
+	const profile = useSelector(useCarrier);
 	const router = useRouter();
 
 	const items = [
@@ -39,7 +40,7 @@ const create = ({driverId}) => {
 		</Anchor>
 	));
 
-	useEffect(() => console.log(profile), [profile])
+	useEffect(() => console.log(profile), [profile]);
 
 	const driver = useMemo(() => {
 		return driverId ? drivers.find((item: Driver) => item.driverId === driverId) : null;
@@ -47,10 +48,11 @@ const create = ({driverId}) => {
 
 	const initialValues: Driver = {
 		id: driver?.id ?? undefined,
-		carrierId: driver?.carrierId ?? profile.id,
+		userId: driver?.userId ?? session?.id,
+		carrierId: driver?.carrierId ?? profile?.id,
 		driverId: driverId ?? `DRIVER-ID${alphanumericId(8)}`,
 		vehicleId: driver?.vehicleId ?? '',
-		createdAt: driver?.createdAt ?? undefined,
+		createdAt: undefined,
 		addressLine1: driver?.addressLine1 ?? '',
 		addressLine2: driver?.addressLine2 ?? '',
 		city: driver?.city ?? '',
@@ -77,42 +79,24 @@ const create = ({driverId}) => {
 	});
 
 	const handleSubmit = useCallback(values => {
-		values.defaultPhone = values.primaryPhone
-		values.firstName = values.fullName.split(" ")[0]
-		values.lastname = values.fullName.includes(' ') ? values.fullName.split(' ').at(-1) : '';
-		dispatch(createDriver(values))
-			.unwrap()
-			.then((res) => {
-				console.log("RESULT:", res)
-				showNotification({
-					id: 'new-driver-success',
-					disallowClose: true,
-					onClose: () => console.log('unmounted'),
-					onOpen: () => console.log('mounted'),
-					autoClose: 5000,
-					title: 'Success',
-					message: 'You have a new driver!',
-					color: 'green',
-					icon: <Check size={20} />,
-					loading: false
-				});
-				setTimeout(() => router.push(PATHS.DRIVERS), 500);
-			})
-			.catch(err => {
-				console.error(err)
-				showNotification({
-					id: 'new-driver-failure',
-					disallowClose: true,
-					onClose: () => console.log('unmounted'),
-					onOpen: () => console.log('mounted'),
-					autoClose: 3000,
-					title: "Error",
-					message: `There was a problem creating your new driver. \n${err.message}`,
-					color: 'red',
-					icon: <X size={20}/>,
-					loading: false,
-				});
-			});
+		values.defaultPhone = values.primaryPhone;
+		values.firstName = values.fullName.split(' ')[0];
+		values.lastName = values.fullName.includes(' ') ? values.fullName.split(' ').at(-1) : '';
+		driver
+			? dispatch(updateDriver(values))
+					.unwrap()
+					.then(res => {
+						notifySuccess('update-driver-success', `Driver ${values.driverId} has been updated`, <Check size={20} />);
+						setTimeout(() => router.push(PATHS.DRIVERS), 500);
+					})
+					.catch(err => notifyError('update-driver-failure', `There was a problem updating this driver. \n${err.message}`, <X size={20} />))
+			: dispatch(createDriver(values))
+					.unwrap()
+					.then(res => {
+						notifySuccess('new-driver-success', 'You have a new driver!', <Check size={20} />);
+						setTimeout(() => router.push(PATHS.DRIVERS), 500);
+					})
+					.catch(err => notifyError('new-driver-failure', `There was a problem creating your new driver. \n${err.message}`, <X size={20} />));
 	}, []);
 	return (
 		<ContentContainer classNames='px-8 h-screen flex flex-col'>
@@ -136,7 +120,7 @@ const create = ({driverId}) => {
 								autoCapitalize='on'
 								size='sm'
 								value={form.values.dob ? moment.unix(form.values.dob).toDate() : undefined}
-								onChange={(date) => form.setFieldValue('dob', moment(date).unix())}
+								onChange={date => form.setFieldValue('dob', moment(date).unix())}
 							/>
 						</div>
 						<div>
@@ -164,7 +148,7 @@ const create = ({driverId}) => {
 								autoCapitalize='on'
 								size='sm'
 								value={form.values.hireDate ? moment.unix(form.values.hireDate).toDate() : undefined}
-								onChange={(date) => form.setFieldValue('hireDate', moment(date).unix())}
+								onChange={date => form.setFieldValue('hireDate', moment(date).unix())}
 							/>
 						</div>
 						<div>
@@ -197,22 +181,24 @@ const create = ({driverId}) => {
 							/>
 						</div>
 						<div>
-							<TextInput autoComplete="address-line1" required label='Address' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine1')} />
+							<TextInput autoComplete='address-line1' required label='Address' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine1')} />
 						</div>
 						<div>
-							<TextInput autoComplete="address-line2" label='Address 2' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine2')} />
+							<TextInput autoComplete='address-line2' label='Address 2' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine2')} />
 						</div>
 						<div className='md:col-span-2 grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6'>
-							<TextInput autoComplete="address-level2" required label='City' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('city')} />
-							<TextInput autoComplete="address-level3" label='Region / County' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('region')} />
-							<TextInput autoComplete="postal-code" required label='Postal Code' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('postcode')} />
+							<TextInput autoComplete='address-level2' required label='City' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('city')} />
+							<TextInput autoComplete='address-level3' label='Region / County' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('region')} />
+							<TextInput autoComplete='postal-code' required label='Postal Code' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('postcode')} />
 						</div>
 						<div className='md:col-span-2'>
 							<Textarea label='Notes' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('notes')} />
 						</div>
 					</div>
 					<div className='flex justify-end'>
-						<button type="submit" className='voyage-button'>Save</button>
+						<button type='submit' className='voyage-button'>
+							Save
+						</button>
 					</div>
 				</form>
 			</div>
@@ -223,6 +209,8 @@ const create = ({driverId}) => {
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res, query }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	console.log(store.getState());
 	if (session.id) {
 		const carrier = await prisma.carrier.findFirst({
 			where: {
@@ -236,9 +224,60 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
+		let drivers = await prisma.driver.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: token?.carrierId
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		drivers = drivers.map(driver => ({
+			...driver,
+			createdAt: moment(driver.createdAt).unix(),
+			updatedAt: moment(driver.updatedAt).unix()
+		}));
+		store.dispatch(setDrivers(drivers));
+		let vehicles = await prisma.vehicle.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: token?.carrierId
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		vehicles = vehicles.map(vehicle => ({
+			...vehicle,
+			createdAt: moment(vehicle.createdAt).unix(),
+			updatedAt: moment(vehicle.updatedAt).unix()
+		}));
+		store.dispatch(setVehicles(vehicles));
 	}
 	return {
 		props: {
+			session,
 			driverId: query?.driverId ?? null
 		}
 	};

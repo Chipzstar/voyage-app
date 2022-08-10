@@ -16,6 +16,17 @@ export const createDriver = createAsyncThunk('driver/createDriver', async (paylo
 	}
 });
 
+export const updateDriver = createAsyncThunk('driver/updateDriver', async (payload: Partial<Driver>, thunkAPI) => {
+	try {
+		const driver = (await axios.put(`/api/driver/${payload.id}`, payload)).data;
+		thunkAPI.dispatch(editDriver(driver));
+		return driver;
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
 export const deleteDriver = createAsyncThunk('driver/deleteDriver', async (payload: string, thunkAPI) => {
 	try {
 		const result = (await axios.delete(`/api/driver/${payload}`)).data;
@@ -37,24 +48,20 @@ export const driverSlice = createSlice({
       addDriver: (state, action: PayloadAction<Driver>) => {
 			return [...state, action.payload]
 		},
+		editDriver: (state, action: PayloadAction<Driver>) => {
+			return state.map((d: Driver) => d.driverId === action.payload.driverId ? action.payload : d)
+		},
 		removeDriver: (state, action: PayloadAction<string>) => {
 			return state.filter((d) => d.id !== action.payload)
 		}
-	},
-	extraReducers: {
-		[HYDRATE]: (state, action) => {
-			return action.payload.drivers ? action.payload.drivers : state
-		}
 	}
 })
-
-/*export const useDrivers = (state) : Driver[] => state['drivers']*/
 
 export const useDrivers = (state) : Driver[] => {
 	let drivers: Driver[] = state['drivers'];
 	return [...drivers].sort((a, b) => b.createdAt - a.createdAt)
 }
 
-export const { setDrivers, addDriver, removeDriver } = driverSlice.actions;
+export const { setDrivers, addDriver, editDriver, removeDriver } = driverSlice.actions;
 
 export default driverSlice.reducer;

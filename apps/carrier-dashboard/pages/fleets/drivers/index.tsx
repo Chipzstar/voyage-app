@@ -3,21 +3,21 @@ import ContentContainer from '../../../layout/ContentContainer';
 import { ActionIcon, Avatar, Group, Switch, Text, TextInput } from '@mantine/core';
 import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react';
 import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
+import prisma from '../../../db';
 import { useRouter } from 'next/router';
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDriver, setDrivers, useDrivers } from '../../../store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
+import { notifyError, notifySuccess } from '../../../utils/functions';
 import _ from 'lodash';
-import '../../../utils/string.extensions';
 import { AppDispatch, wrapper } from '../../../store';
+import { getToken } from 'next-auth/jwt';
 import { unstable_getServerSession } from 'next-auth';
-import prisma from '../../../db';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import moment from 'moment/moment';
-import { getToken } from 'next-auth/jwt';
-import { notifyError, notifySuccess } from '../../../utils/functions';
+import '../../../utils/string.extensions';
 
 const drivers = () => {
 	const modals = useModals();

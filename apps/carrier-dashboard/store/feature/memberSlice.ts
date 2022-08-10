@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Team, TeamRole } from '../../utils/types'
+import { Customer, Team, TeamRole } from '../../utils/types'
 import axios from 'axios';
 import { HYDRATE } from 'next-redux-wrapper'
 
@@ -9,6 +9,17 @@ export const createMember = createAsyncThunk('member/createMember', async (paylo
 	try {
 		const member = (await axios.post(`/api/member/${payload.memberId}`, payload)).data;
 		thunkAPI.dispatch(addMember(member));
+		return member;
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
+export const updateMember = createAsyncThunk('customer/updateMember', async (payload: Partial<Team>, thunkAPI) => {
+	try {
+		const member = (await axios.put(`/api/member/${payload.id}`, payload)).data;
+		thunkAPI.dispatch(editMember(member));
 		return member;
 	} catch (err) {
 		console.error(err?.response?.data)
@@ -37,8 +48,8 @@ export const memberSlice = createSlice({
 		addMember: (state, action: PayloadAction<Team>) => {
 			return [...state, action.payload];
 		},
-		editMember: (state, action: PayloadAction<{ id: string; data: Team }>) => {
-			return state.map(member => (member.memberId === action.payload.id ? action.payload.data : member));
+		editMember: (state, action: PayloadAction<Team>) => {
+			return state.map((m: Team) => m.memberId === action.payload.memberId ? action.payload : m)
 		},
 		changeRole: (state, action: PayloadAction<{id: string, role: TeamRole}>) => {
 			return state.map(member => {
@@ -52,11 +63,6 @@ export const memberSlice = createSlice({
 		removeMember: (state, action: PayloadAction<string>) => {
 			return state.filter((m) => m.id !== action.payload)
 		}
-	},
-	extraReducers: {
-		[HYDRATE]: (state, action) => {
-			return action.payload.members ? action.payload.members : state
-		}
 	}
 });
 
@@ -67,6 +73,6 @@ export const useMembers = state => {
 	return [...team].sort((a, b) => b.createdAt - a.createdAt);
 };
 
-export const { addMember, changeRole, removeMember, setMembers } = memberSlice.actions;
+export const { addMember, changeRole, editMember, removeMember, setMembers } = memberSlice.actions;
 
 export default memberSlice.reducer;

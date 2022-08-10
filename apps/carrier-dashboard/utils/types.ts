@@ -95,6 +95,7 @@ export interface Carrier {
 export interface Driver {
 	id: string;
 	carrierId: string;
+	userId: string;
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
 	isActive: boolean;
@@ -122,6 +123,7 @@ export interface Driver {
 
 export interface Team {
 	id: string;
+	userId: string;
 	carrierId: string;
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
@@ -137,6 +139,7 @@ export interface Team {
 
 export interface Vehicle {
 	id: string;
+	userId: string;
 	carrierId: string;
 	createdAt: UnixTimestamp;
 	vehicleId: string;
@@ -171,14 +174,15 @@ export interface Contact {
 
 export interface Customer {
 	id: string;
+	userId: string;
 	carrierId: string;
 	createdAt: UnixTimestamp,
    customerId: string;
 	accountType: AccountType;
 	companyName: string;
 	fullName: string;
-	firstname?: string;
-	lastname?: string;
+	firstName?: string;
+	lastName?: string;
    email: string;
 	phone: string;
 	billingEmail: string;

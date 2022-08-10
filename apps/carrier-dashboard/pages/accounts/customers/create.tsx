@@ -9,10 +9,9 @@ import ContentContainer from '../../../layout/ContentContainer';
 import { Check, Trash, User, X } from 'tabler-icons-react';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { alphanumericId, capitalize, sanitize } from '@voyage-app/shared-utils';
-import { showNotification } from '@mantine/notifications';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { createCustomer, useCustomers } from '../../../store/feature/customerSlice';
+import { createCustomer, setCustomers, updateCustomer, useCustomers } from '../../../store/feature/customerSlice';
 import moment from 'moment';
 import useWindowSize from '../../../hooks/useWindowSize';
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
@@ -21,7 +20,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
-import { notifyError, notifySuccess } from '../../../utils/functions'
+import { notifyError, notifySuccess } from '../../../utils/functions';
 
 const emptyContact: Contact = {
 	name: '',
@@ -40,7 +39,7 @@ const items = [
 	</Anchor>
 ));
 
-const create = ({ customerId }) => {
+const create = ({ customerId, session }) => {
 	const [loading, setLoading] = useState(false);
 	const { height } = useWindowSize();
 	const dispatch = useDispatch<AppDispatch>();
@@ -55,8 +54,9 @@ const create = ({ customerId }) => {
 	const initialValues: Customer = {
 		id: customer?.id ?? undefined,
 		carrierId: customer?.carrierId ?? profile.id,
-		createdAt: customer?.createdAt ?? undefined,
+		userId: customer?.userId ?? session?.id,
 		customerId: customer?.customerId ?? `CUSTOMER-ID${alphanumericId(8)}`,
+		createdAt: undefined,
 		accountType: customer?.accountType ?? AccountType.MEDIUM_SHIPPER,
 		addressLine1: customer?.addressLine1 ?? '',
 		addressLine2: customer?.addressLine2 ?? '',
@@ -67,8 +67,8 @@ const create = ({ customerId }) => {
 		email: customer?.email ?? '',
 		extraContacts: customer?.extraContacts ?? [],
 		fullName: customer?.fullName ?? '',
-		firstname: customer?.firstname ?? '',
-		lastname: customer?.lastname ?? '',
+		firstName: customer?.firstName ?? '',
+		lastName: customer?.lastName ?? '',
 		phone: customer?.phone ?? '',
 		postcode: customer?.postcode ?? '',
 		region: customer?.region ?? '',
@@ -82,21 +82,34 @@ const create = ({ customerId }) => {
 
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
-		values.firstname = values.fullName.split(' ')[0];
-		values.lastname = values.fullName.includes(' ') ? values.fullName.split(' ').at(-1) : '';
-		dispatch(createCustomer(values))
-			.unwrap()
-			.then(() => {
-				notifySuccess('new-customer-success', 'You created a new customer!', <Check size={20} />)
-				setLoading(false);
-				setTimeout(() => router.push(PATHS.CUSTOMERS), 500);
-			})
-			.catch(err => {
-				console.error(err);
-				notifyError('new-customer-failure', `There was a problem creating a new account.\n${err.message}`,  <X size={20} />)
-				setLoading(false);
-			});
-	}, []);
+		values.firstName = values.fullName.split(' ')[0];
+		values.lastName = values.fullName.includes(' ') ? values.fullName.split(' ').at(-1) : '';
+		customer
+			? dispatch(updateCustomer(values))
+					.unwrap()
+					.then(() => {
+						notifySuccess('update-customer-success', `Customer ${values.customerId} has been updated`, <Check size={20} />);
+						setLoading(false);
+						setTimeout(() => router.push(PATHS.CUSTOMERS), 500);
+					})
+					.catch(err => {
+						console.error(err);
+						notifyError('update-customer-failure', `There was a problem updating this customer.\n${err.message}`, <X size={20} />);
+						setLoading(false);
+					})
+			: dispatch(createCustomer(values))
+					.unwrap()
+					.then(() => {
+						notifySuccess('new-customer-success', 'You created a new customer!', <Check size={20} />);
+						setLoading(false);
+						setTimeout(() => router.push(PATHS.CUSTOMERS), 500);
+					})
+					.catch(err => {
+						console.error(err);
+						notifyError('new-customer-failure', `There was a problem creating a new account.\n${err.message}`, <X size={20} />);
+						setLoading(false);
+					});
+	}, [customer]);
 
 	const contacts = form.values.extraContacts.map((item, index) => (
 		<Card key={index} p='lg' radius={0} withBorder mb={10}>
@@ -226,9 +239,35 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
+		let customers = await prisma.customer.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: token?.carrierId
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		customers = customers.map(customer => ({
+			...customer,
+			createdAt: moment(customer.createdAt).unix(),
+			updatedAt: moment(customer.updatedAt).unix()
+		}));
+		store.dispatch(setCustomers(customers));
 	}
 	return {
 		props: {
+			session,
 			customerId: query?.customerId ?? null
 		}
 	};

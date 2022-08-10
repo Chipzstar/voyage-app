@@ -24,10 +24,10 @@ const rootReducer = (state, action) => {
 				...action.payload.profile,
 				...state.profile
 			},
-			drivers: action.payload.drivers ? action.payload.drivers : state.drivers,
-			members: action.payload.members ? action.payload.members : state.members,
-			vehicles: action.payload.vehicles ? action.payload.vehicles : state.vehicles,
-			customers: action.payload.customers ? action.payload.customers : state.customers
+			drivers: action.payload.drivers || state.drivers,
+			members: action.payload.members || state.members,
+			vehicles: action.payload.vehicles || state.vehicles,
+			customers: action.payload.customers || state.customers
 		};
 	}
 	if (['LOGOUT', 'RESET'].includes(action.type)) {
