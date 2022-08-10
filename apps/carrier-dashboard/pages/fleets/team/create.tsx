@@ -8,13 +8,17 @@ import { useForm } from '@mantine/form';
 import { Team, TeamRole } from '../../../utils/types'
 import { alphanumericId, capitalize } from '@voyage-app/shared-utils'
 import { SelectInputData } from '@voyage-app/shared-types';
-import { addMember, useMembers } from '../../../store/feature/memberSlice';
+import { createMember, useMembers } from '../../../store/feature/memberSlice'
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../../../store';
+import { AppDispatch, wrapper } from '../../../store'
 import { useRouter } from 'next/router';
 import { showNotification } from '@mantine/notifications';
-import { Check } from 'tabler-icons-react';
+import { Check, X } from 'tabler-icons-react';
 import moment from 'moment/moment';
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from '../../api/auth/[...nextauth]'
+import prisma from '../../../db'
+import { setCarrier } from '../../../store/feature/profileSlice'
 
 const create = ({memberId}) => {
 	const dispatch = useDispatch<AppDispatch>()
@@ -54,20 +58,38 @@ const create = ({memberId}) => {
 	const handleSubmit = useCallback(values => {
 		values.fullName = values.firstname + ' ' + values.lastname
 		console.log(values);
-		dispatch(addMember(values))
-		showNotification({
-			id: 'new-member-success',
-			disallowClose: true,
-			onClose: () => console.log('unmounted'),
-			onOpen: () => console.log('mounted'),
-			autoClose: 3000,
-			title: "Success",
-			message: 'A new member has been added to your team!',
-			color: 'green',
-			icon: <Check size={20}/>,
-			loading: false,
-		});
-		setTimeout(() => router.push(PATHS.TEAM), 1000)
+		dispatch(createMember(values)).unwrap()
+			.then((res) => {
+				console.log(res)
+				showNotification({
+					id: 'new-member-success',
+					disallowClose: true,
+					onClose: () => console.log('unmounted'),
+					onOpen: () => console.log('mounted'),
+					autoClose: 3000,
+					title: "Success",
+					message: 'A new member has been added to your team!',
+					color: 'green',
+					icon: <Check size={20}/>,
+					loading: false,
+				});
+				setTimeout(() => router.push(PATHS.TEAM), 1000)
+			})
+			.catch(err => {
+				console.error(err)
+				showNotification({
+					id: 'new-member-failure',
+					disallowClose: true,
+					onClose: () => console.log('unmounted'),
+					onOpen: () => console.log('mounted'),
+					autoClose: 3000,
+					title: "Error",
+					message: `There was a problem creating your new member. \n${err.message}`,
+					color: 'red',
+					icon: <X size={20}/>,
+					loading: false,
+				});
+			});
 	}, []);
 
 	return (
@@ -113,13 +135,29 @@ const create = ({memberId}) => {
 	);
 };
 
-export async function getServerSideProps (context){
-	console.log(context.query)
-	return {
-		props: {
-			memberId: context.query?.memberId ?? null,
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res, query }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	if (session.id) {
+		const carrier = await prisma.carrier.findFirst({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			}
+		});
+		if (carrier) {
+			carrier.createdAt = moment(carrier.createdAt).unix();
+			carrier.updatedAt = moment(carrier.updatedAt).unix();
+			store.dispatch(setCarrier(carrier));
 		}
 	}
-}
+	return {
+		props: {
+			memberId: query?.memberId ?? null,
+		}
+	}
+});
 
 export default create;

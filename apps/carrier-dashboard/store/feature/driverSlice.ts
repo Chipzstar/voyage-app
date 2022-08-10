@@ -9,9 +9,10 @@ export const createDriver = createAsyncThunk('driver/createDriver', async (paylo
 	try {
 		const driver = (await axios.post(`/api/driver/${payload.driverId}`, payload)).data;
 		thunkAPI.dispatch(addDriver(driver));
-		return driver;
+		return thunkAPI.fulfillWithValue(driver);
 	} catch (err) {
-		thunkAPI.rejectWithValue(err.message);
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 });
 

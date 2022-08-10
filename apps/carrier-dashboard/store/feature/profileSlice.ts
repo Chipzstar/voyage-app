@@ -12,14 +12,6 @@ export const profileSlice = createSlice({
 		setCarrier: (state, action: PayloadAction<Carrier>) => {
 			return action.payload;
 		}
-	},
-	extraReducers: {
-		[HYDRATE]: (state, action) => {
-			return {
-				...state,
-				...action.payload.profile
-			}
-		}
 	}
 })
 

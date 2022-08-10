@@ -122,6 +122,7 @@ export interface Driver {
 export interface Team {
 	id: string;
 	createdAt: UnixTimestamp;
+	updatedAt?: UnixTimestamp;
 	memberId: string;
 	fullName: string;
 	firstname: string;

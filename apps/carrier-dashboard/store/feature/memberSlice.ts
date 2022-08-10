@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SAMPLE_TEAM } from '../../utils/constants';
 import { Team, TeamRole } from '../../utils/types'
 import axios from 'axios';
 
-const initialState = SAMPLE_TEAM;
+const initialState = [];
 
 export const createMember = createAsyncThunk('member/createMember', async (payload: Partial<Team>, thunkAPI) => {
 	try {
@@ -11,7 +10,7 @@ export const createMember = createAsyncThunk('member/createMember', async (paylo
 		thunkAPI.dispatch(addMember(member));
 		return member;
 	} catch (err) {
-		thunkAPI.rejectWithValue(err.message);
+		return thunkAPI.rejectWithValue(err);
 	}
 });
 
@@ -19,6 +18,9 @@ export const memberSlice = createSlice({
 	name: 'members',
 	initialState,
 	reducers: {
+		setMembers: (state, action: PayloadAction<Team[]>) => {
+			return action.payload
+		},
 		addMember: (state, action: PayloadAction<Team>) => {
 			return [...state, action.payload];
 		},
@@ -47,6 +49,6 @@ export const useMembers = state => {
 	return [...team].sort((a, b) => b.createdAt - a.createdAt);
 };
 
-export const { addMember, editMember, changeRole, removeMember } = memberSlice.actions;
+export const { addMember, editMember, changeRole, removeMember, setMembers } = memberSlice.actions;
 
 export default memberSlice.reducer;

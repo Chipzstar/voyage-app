@@ -5,7 +5,7 @@ import { customAlphabet } from 'nanoid';
 import { AccountType, Customer, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Team, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
 import orderId from 'order-id';
 
-const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzACBCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
+export const DEBUG_MODE = process.env.NODE_ENV !== 'production'
 
 export const PUBLIC_PATHS = {
 	LOGIN: '/login'

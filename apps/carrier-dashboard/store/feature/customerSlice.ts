@@ -3,7 +3,7 @@ import { SAMPLE_CUSTOMERS } from '../../utils/constants';
 import { Customer } from '../../utils/types';
 import axios from 'axios';
 
-const initialState = SAMPLE_CUSTOMERS;
+const initialState = [];
 
 export const createCustomer = createAsyncThunk('customer/createCustomer', async (payload: Partial<Customer>, thunkAPI) => {
 	try {

@@ -16,12 +16,14 @@ import { unstable_getServerSession } from 'next-auth';
 import prisma from '../../../db';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import moment from 'moment/moment';
+import { useCarrier } from '../../../store/feature/profileSlice'
 
 const drivers = () => {
 	const modals = useModals();
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
+	const profile = useSelector(useCarrier)
 	const [filteredDrivers, setFilter] = useState([...drivers]);
 
 	const openConfirmModal = (id: string, name) =>
@@ -64,6 +66,8 @@ const drivers = () => {
 	}, [debouncedSearch]);
 
 	useEffect(() => setFilter(drivers), [drivers]);
+
+	useEffect(() => console.log(profile), [profile])
 
 	const rows = filteredDrivers.map((element, index) => {
 		return (
@@ -177,7 +181,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 				OR: [
 					{
 						carrierId: {
-							equals: carrier.id
+							equals: carrier?.id
 						}
 					},
 					{

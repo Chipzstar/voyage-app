@@ -7,7 +7,7 @@ import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
 import { Driver, DRIVER_STATUS } from '../../../utils/types'
 import { DatePicker } from '@mantine/dates';
-import { Calendar, Check } from 'tabler-icons-react';
+import { Calendar, Check, X } from 'tabler-icons-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createDriver, useDrivers } from '../../../store/feature/driverSlice'
 import { showNotification } from '@mantine/notifications';
@@ -39,9 +39,12 @@ const create = ({driverId}) => {
 		</Anchor>
 	));
 
+	useEffect(() => console.log(profile), [profile])
+
 	const driver = useMemo(() => {
 		return driverId ? drivers.find((item: Driver) => item.driverId === driverId) : null;
 	}, [drivers]);
+
 	const initialValues: Driver = {
 		id: driver?.id ?? undefined,
 		carrierId: driver?.carrierId ?? profile.id,
@@ -95,7 +98,21 @@ const create = ({driverId}) => {
 				});
 				setTimeout(() => router.push(PATHS.DRIVERS), 500);
 			})
-			.catch(err => console.error(err))
+			.catch(err => {
+				console.error(err)
+				showNotification({
+					id: 'new-member-failure',
+					disallowClose: true,
+					onClose: () => console.log('unmounted'),
+					onOpen: () => console.log('mounted'),
+					autoClose: 3000,
+					title: "Error",
+					message: `There was a problem creating your new member. \n${err.message}`,
+					color: 'red',
+					icon: <X size={20}/>,
+					loading: false,
+				});
+			});
 	}, []);
 	return (
 		<ContentContainer classNames='px-8 h-screen flex flex-col'>
@@ -118,7 +135,8 @@ const create = ({driverId}) => {
 								radius={0}
 								autoCapitalize='on'
 								size='sm'
-								{...form.getInputProps('dob')}
+								value={form.values.dob ? moment.unix(form.values.dob).toDate() : undefined}
+								onChange={(date) => form.setFieldValue('dob', moment(date).unix())}
 							/>
 						</div>
 						<div>
@@ -145,7 +163,8 @@ const create = ({driverId}) => {
 								radius={0}
 								autoCapitalize='on'
 								size='sm'
-								{...form.getInputProps('hireDate')}
+								value={form.values.hireDate ? moment.unix(form.values.hireDate).toDate() : undefined}
+								onChange={(date) => form.setFieldValue('hireDate', moment(date).unix())}
 							/>
 						</div>
 						<div>
@@ -212,9 +231,11 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 				}
 			}
 		});
-		carrier.createdAt = moment(carrier.createdAt).unix();
-		carrier.updatedAt = moment(carrier.updatedAt).unix();
-		store.dispatch(setCarrier(carrier));
+		if (carrier) {
+			carrier.createdAt = moment(carrier.createdAt).unix();
+			carrier.updatedAt = moment(carrier.updatedAt).unix();
+			store.dispatch(setCarrier(carrier));
+		}
 	}
 	return {
 		props: {

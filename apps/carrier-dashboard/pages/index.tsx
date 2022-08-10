@@ -55,10 +55,11 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 				}
 			}
 		})
-		console.log(carrier)
-		carrier.createdAt = moment(carrier.createdAt).unix();
-		carrier.updatedAt = moment(carrier.updatedAt).unix();
-		store.dispatch(setCarrier(carrier));
+		if (carrier) {
+			carrier.createdAt = moment(carrier.createdAt).unix();
+			carrier.updatedAt = moment(carrier.updatedAt).unix();
+			store.dispatch(setCarrier(carrier));
+		}
 	}
 	return {
 		props: {

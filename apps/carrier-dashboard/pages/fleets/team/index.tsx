@@ -2,18 +2,23 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ActionIcon, Avatar, Group, Select, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Check, Pencil, Search, Trash } from 'tabler-icons-react';
-import { PATHS } from '../../../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants'
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeRole, removeMember, useMembers } from '../../../store/feature/memberSlice';
+import { changeRole, removeMember, setMembers, useMembers } from '../../../store/feature/memberSlice'
 import { TeamRole } from '../../../utils/types';
 import { showNotification } from '@mantine/notifications';
 import { capitalize } from '@voyage-app/shared-utils';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
+import { wrapper } from '../../../store'
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from '../../api/auth/[...nextauth]'
+import prisma from '../../../db'
+import moment from 'moment'
 
 const team = () => {
 	const modals = useModals();
@@ -163,5 +168,57 @@ const team = () => {
 		</ContentContainer>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	if (session.id) {
+		let carrier = await prisma.carrier.findFirst({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			}
+		});
+		let members = await prisma.member.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: carrier?.id
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		members = members.map(member => ({
+			...member,
+			createdAt: moment(member.createdAt).unix(),
+			updatedAt: moment(member.updatedAt).unix()
+		}));
+		store.dispatch(setMembers(members));
+	}
+	return {
+		props: {
+			session
+		}
+	};
+});
 
 export default team

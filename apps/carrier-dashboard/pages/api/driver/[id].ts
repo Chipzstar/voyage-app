@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 			res.json(driver);
 		} catch (err) {
 			console.log(err)
-			res.status(400).json({ status: 400, message: 'An error occurred!' })
+			res.status(500).send({message:'Internal Server Error. Please try again'});
 		}
 	} else if (req.method === 'PUT'){
 		try {
