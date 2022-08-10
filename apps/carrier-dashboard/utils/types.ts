@@ -4,11 +4,11 @@ import {
 } from '@voyage-app/shared-types';
 
 export enum TeamRole {
-	ADMIN="admin",
-	CONTROLLER="controller",
-	SECRETARY="secretary",
-	FLEET_MANAGER="fleet manager",
-	COORDINATOR="coordinator"
+	ADMIN="ADMIN",
+	CONTROLLER="CONTROLLER",
+	SECRETARY="SECRETARY",
+	FLEET_MANAGER="FLEET_MANAGER",
+	COORDINATOR="COORDINATOR",
 }
 
 export enum VEHICLE_STATUS {
@@ -96,6 +96,7 @@ export interface Driver {
 	id: string;
 	carrierId: string;
 	createdAt: UnixTimestamp;
+	updatedAt?: UnixTimestamp;
 	isActive: boolean;
 	status: DRIVER_STATUS;
 	driverId: string;
@@ -121,6 +122,7 @@ export interface Driver {
 
 export interface Team {
 	id: string;
+	carrierId: string;
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
 	memberId: string;

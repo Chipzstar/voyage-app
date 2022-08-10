@@ -19,6 +19,7 @@ import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth]'
 import prisma from '../../../db'
 import moment from 'moment'
+import { SelectInputData } from '@voyage-app/shared-types'
 
 const team = () => {
 	const modals = useModals();
@@ -95,11 +96,10 @@ const team = () => {
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
 						<Select
-							classNames={{
-								item: 'capitalize',
-								input: 'capitalize'
-							}}
-							data={Object.values(TeamRole)}
+							data={Object.values(TeamRole).map((role):SelectInputData => ({
+								value: role,
+                        label: capitalize(role.toLowerCase().replace(/_/g, ' '))
+							}))}
 							value={element.role}
 							variant='unstyled'
 							onChange={(value: TeamRole) => {

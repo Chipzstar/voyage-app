@@ -18,21 +18,23 @@ import moment from 'moment/moment';
 import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth]'
 import prisma from '../../../db'
-import { setCarrier } from '../../../store/feature/profileSlice'
+import { setCarrier, useCarrier } from '../../../store/feature/profileSlice'
 
 const create = ({memberId}) => {
 	const dispatch = useDispatch<AppDispatch>()
 	const router = useRouter()
 	const members = useSelector(useMembers)
+	const profile = useSelector(useCarrier)
 
 	const member = useMemo(() => {
 		return memberId ? members.find((item: Team) => item.memberId === memberId) : null;
 	}, [members]);
 	
 	const initialValues: Team = {
-		id: member?.id ?? '',
+		id: member?.id ?? undefined,
+		carrierId: member?.carrierId ?? profile.id,
 		memberId: memberId ?? `MEMBER-ID${alphanumericId(8)}`,
-		createdAt: member?.createdAt ?? moment().unix(),
+		createdAt: member?.createdAt ?? undefined,
 		role: member?.role ?? TeamRole.ADMIN,
 		fullName: member?.fullName ?? '',
 		firstname: member?.firstname ?? '',
@@ -120,7 +122,7 @@ const create = ({memberId}) => {
 								{...form.getInputProps('role')}
 								data={Object.values(TeamRole).map((item): SelectInputData => ({
 									value: item,
-									label: capitalize(item.replace(/_/g, ' '))
+									label: capitalize(item.toLowerCase().replace(/_/g, ' '))
 								}))} />
 						</div>
 					</div>
