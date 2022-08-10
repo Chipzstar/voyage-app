@@ -19,6 +19,9 @@ export const vehicleSlice = createSlice({
 	name: 'vehicles',
 	initialState,
 	reducers: {
+		setVehicles: (state, action: PayloadAction<Vehicle[]>) => {
+			return action.payload
+		},
 		addVehicle: (state, action: PayloadAction<Vehicle>) => {
 			return [...state, action.payload];
 		},
@@ -35,6 +38,6 @@ export const useVehicles = (state) : Vehicle[] => {
 	return [...vehicles].sort((a, b) => b.createdAt - a.createdAt)
 };
 
-export const { addVehicle, removeVehicle } = vehicleSlice.actions;
+export const { addVehicle, removeVehicle, setVehicles } = vehicleSlice.actions;
 
 export default vehicleSlice.reducer;

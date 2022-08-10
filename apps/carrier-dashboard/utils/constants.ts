@@ -139,6 +139,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 export const SAMPLE_TEAM: Team[] = [
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		fullName: 'Chandler Moore',
@@ -151,6 +152,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		fullName: 'Kendrick Lamar',
@@ -163,6 +165,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		fullName: 'Andy Mineo',
@@ -175,6 +178,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		fullName: 'Trip Lee',
@@ -187,6 +191,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		fullName: 'Kanye West',
@@ -199,6 +204,7 @@ export const SAMPLE_TEAM: Team[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		memberId: `USER-ID${alphanumericId(8)}`,
 		fullName: 'Drake Aubrey Graham',

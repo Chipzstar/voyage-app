@@ -2,16 +2,21 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Pencil, Search, Trash } from 'tabler-icons-react';
-import { PATHS } from '../../../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants'
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeVehicle, useVehicles } from '../../../store/feature/vehicleSlice';
+import { removeVehicle, useVehicles, setVehicles } from '../../../store/feature/vehicleSlice';
 import { useDrivers } from 'apps/carrier-dashboard/store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
+import { wrapper } from '../../../store'
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from '../../api/auth/[...nextauth]'
+import prisma from '../../../db'
+import moment from 'moment/moment'
 
 const vehicles = () => {
 	const modals = useModals();
@@ -138,5 +143,57 @@ const vehicles = () => {
 		</ContentContainer>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	if (session.id) {
+		let carrier = await prisma.carrier.findFirst({
+			where: {
+				userId: {
+					equals: session.id
+				}
+			}
+		});
+		let vehicles = await prisma.vehicle.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: carrier?.id
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		vehicles = vehicles.map(vehicle => ({
+			...vehicle,
+			createdAt: moment(vehicle.createdAt).unix(),
+			updatedAt: moment(vehicle.updatedAt).unix()
+		}));
+		store.dispatch(setVehicles(vehicles));
+	}
+	return {
+		props: {
+			session
+		}
+	};
+});
 
 export default vehicles;
