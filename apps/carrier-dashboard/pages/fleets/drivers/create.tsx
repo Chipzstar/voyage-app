@@ -101,13 +101,13 @@ const create = ({driverId}) => {
 			.catch(err => {
 				console.error(err)
 				showNotification({
-					id: 'new-member-failure',
+					id: 'new-driver-failure',
 					disallowClose: true,
 					onClose: () => console.log('unmounted'),
 					onOpen: () => console.log('mounted'),
 					autoClose: 3000,
 					title: "Error",
-					message: `There was a problem creating your new member. \n${err.message}`,
+					message: `There was a problem creating your new driver. \n${err.message}`,
 					color: 'red',
 					icon: <X size={20}/>,
 					loading: false,

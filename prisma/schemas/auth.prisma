@@ -40,6 +40,8 @@ model User {
   carrierId     Carrier?
   shipperId     Shipper?
   drivers       Driver[]
+  members       Member[]
+  vehicles      Vehicle[]
 }
 
 model VerificationToken {
