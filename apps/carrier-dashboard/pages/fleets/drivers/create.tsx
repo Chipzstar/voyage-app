@@ -79,7 +79,7 @@ const create = ({driverId}) => {
 	const handleSubmit = useCallback(values => {
 		values.defaultPhone = values.primaryPhone
 		values.firstName = values.fullName.split(" ")[0]
-		values.lastName = values.fullName.split(" ").at(-1)
+		values.lastname = values.fullName.includes(' ') ? values.fullName.split(' ').at(-1) : '';
 		dispatch(createDriver(values))
 			.unwrap()
 			.then((res) => {

@@ -1,5 +1,5 @@
 import { CalendarFilter, DateRange } from '@voyage-app/shared-ui-components';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import moment from 'moment';
 import Map from '../components/Map';
 import TruckLoadTimeline from '../components/TruckLoadTimeline';
@@ -9,17 +9,11 @@ import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import { authOptions} from './api/auth/[...nextauth]';
 import prisma from '../db'
-import { setCarrier, useCarrier } from '../store/feature/profileSlice'
+import { setCarrier } from '../store/feature/profileSlice'
 import { wrapper } from '../store'
-import { useSelector } from 'react-redux'
 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
-	const profile = useSelector(useCarrier);
-
-	useEffect(() => {
-		console.log(profile);
-	}, [profile]);
 
 	return (
 		<div className='py-4 px-8 h-full overflow-y-auto'>
@@ -38,7 +32,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
 	console.log('\nHOMEPAGE');
-	console.log(token);
+	console.table(token)
 	if (!session) {
 		return {
 			redirect: {
@@ -47,12 +41,21 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 			}
 		};
 	}
-	if (session.id){
+	if (session.id || token.carrierId){
 		const carrier = await prisma.carrier.findFirst({
 			where: {
-            userId: {
-					equals: session.id
-				}
+				OR: [
+					{
+						userId: {
+							equals: session.id
+						}
+					},
+					{
+						id: {
+							equals: token?.carrierId
+						}
+					}
+				]
 			}
 		})
 		if (carrier) {

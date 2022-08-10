@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SAMPLE_CUSTOMERS } from '../../utils/constants';
 import { Customer } from '../../utils/types';
 import axios from 'axios';
 
@@ -11,7 +10,8 @@ export const createCustomer = createAsyncThunk('customer/createCustomer', async 
 		thunkAPI.dispatch(addCustomer(customer));
 		return customer;
 	} catch (err) {
-		thunkAPI.rejectWithValue(err.message);
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 });
 
@@ -19,6 +19,9 @@ export const customerSlice = createSlice({
 	name: 'customers',
 	initialState,
 	reducers: {
+		setCustomers: (state, action: PayloadAction<Customer[]>) => {
+			return action.payload;
+		},
 		addCustomer: (state, action: PayloadAction<Customer>) => {
 			return [...state, action.payload];
 		},
@@ -33,8 +36,6 @@ export const useCustomers = (state) : Customer[] => {
 	return [...customers].sort((a, b) => b.createdAt - a.createdAt);
 }
 
-/*export const useCustomers = (state) : Customer[] => state['customers']*/
-
-export const { addCustomer, removeCustomer } = customerSlice.actions;
+export const { setCustomers, addCustomer, removeCustomer } = customerSlice.actions;
 
 export default customerSlice.reducer;

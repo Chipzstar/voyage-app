@@ -171,6 +171,7 @@ export interface Contact {
 
 export interface Customer {
 	id: string;
+	carrierId: string;
 	createdAt: UnixTimestamp,
    customerId: string;
 	accountType: AccountType;

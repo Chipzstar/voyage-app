@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { PATHS } from '../../../utils/constants';
+import React, { useCallback, useEffect, useState } from 'react';
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants'
 import { useRouter } from 'next/router';
 import ContentContainer from '../../../layout/ContentContainer';
 import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
@@ -8,10 +8,16 @@ import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { sanitize } from '@voyage-app/shared-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCustomers, removeCustomer } from '../../../store/feature/customerSlice';
+import { useCustomers, removeCustomer, setCustomers } from '../../../store/feature/customerSlice'
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
+import { wrapper } from '../../../store'
+import { getToken } from 'next-auth/jwt'
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from '../../api/auth/[...nextauth]'
+import prisma from '../../../db'
+import moment from 'moment'
 
 const customers = () => {
 	const modals = useModals();
@@ -19,8 +25,6 @@ const customers = () => {
 	const dispatch = useDispatch();
 	const customers = useSelector(useCustomers);
 	const [filteredCustomers, setFilter] = useState(customers);
-
-	useEffect(() => setFilter(customers), [customers]);
 
 	const debouncedSearch = useCallback(
 		_.debounce(value => {
@@ -36,7 +40,7 @@ const customers = () => {
 				<Text size='md'>
 					You have selected <strong>{name}</strong>
 					<br />
-					Are you sure you want to delete this vehicle?
+					Are you sure you want to delete this customer?
 				</Text>
 			),
 			labels: { confirm: 'Delete', cancel: 'Cancel' },
@@ -54,6 +58,8 @@ const customers = () => {
 			closeOnCancel: true,
 			closeOnConfirm: true
 		});
+
+	useEffect(() => setFilter(customers), [customers]);
 
 	useEffect(() => {
 		return () => {
@@ -106,7 +112,7 @@ const customers = () => {
 		);
 	});
 	return (
-		<ContentContainer classNames='py-4 px-8 min-h-screen'>
+		<ContentContainer classNames='py-4 px-8 h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' onChange={e => debouncedSearch(e.target.value)} size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_ACCOUNT)}>
@@ -122,7 +128,7 @@ const customers = () => {
 							<span className='text-center text-2xl'>
 								You have no customers
 								<br />
-								Click the 'Add Account' button to add a new customer
+								Click the 'New Account' button to add a new customer
 							</span>
 						}
 					/>
@@ -132,5 +138,51 @@ const customers = () => {
 		</ContentContainer>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	if (session.id) {
+		let customers = await prisma.customer.findMany({
+			where: {
+				OR: [
+					{
+						carrierId: {
+							equals: token?.carrierId
+						}
+					},
+					{
+						userId: {
+							equals: session.id
+						}
+					}
+				]
+			},
+			orderBy: {
+				createdAt: 'desc'
+			}
+		});
+		customers = customers.map(customer => ({
+			...customer,
+			createdAt: moment(customer.createdAt).unix(),
+			updatedAt: moment(customer.updatedAt).unix()
+		}));
+		store.dispatch(setCustomers(customers));
+	}
+	return {
+		props: {
+			session
+		}
+	}
+})
 
 export default customers;

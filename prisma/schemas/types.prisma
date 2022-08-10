@@ -67,3 +67,10 @@ type OperatingProps {
 type OperatingHoursState {
     facility OperatingProps
 }
+
+type Contact {
+    name String
+    email String
+    phone String
+    notes String?
+ }

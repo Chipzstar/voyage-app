@@ -636,6 +636,7 @@ export const SAMPLE_LOADS: Load[] = [
 export const SAMPLE_CUSTOMERS: Customer[] = [
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(7, 'day').unix(),
 		customerId: `customer_${alphanumericId(8)}`,
 		companyName: 'Addidas',
@@ -659,6 +660,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(6, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'ASOS',
@@ -682,6 +684,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(5, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'BooHoo',
@@ -705,6 +708,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(4, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'TopMan',
@@ -728,6 +732,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(3, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'UrbanWear',
@@ -751,6 +756,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(2, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Decathlon',
@@ -774,6 +780,7 @@ export const SAMPLE_CUSTOMERS: Customer[] = [
 	},
 	{
 		id: '',
+		carrierId: '',
 		createdAt: moment().subtract(1, 'day').unix(),
 		customerId: `CUSTOMER-ID${alphanumericId(8)}`,
 		companyName: 'Nike',

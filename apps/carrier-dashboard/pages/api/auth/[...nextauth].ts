@@ -1,10 +1,9 @@
-import NextAuth from 'next-auth'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
-import Auth0Provider from 'next-auth/providers/auth0'
+import NextAuth from 'next-auth';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import Auth0Provider from 'next-auth/providers/auth0';
 import GoogleProvider from 'next-auth/providers/google';
-import TwitterProvider from 'next-auth/providers/twitter';
-import prisma from '../../../db'
-import Credentials from 'next-auth/providers/credentials'
+import prisma from '../../../db';
+import Credentials from 'next-auth/providers/credentials';
 
 export const authOptions = {
 	adapter: PrismaAdapter(prisma),
@@ -19,7 +18,7 @@ export const authOptions = {
 				password: {
 					label: 'password',
 					type: 'password'
-				},
+				}
 			},
 			async authorize(credentials, req) {
 				// Add logic here to look up the user from the credentials supplied
@@ -32,8 +31,15 @@ export const authOptions = {
 					}
 				});
 				if (user) {
+					const carrier = await prisma.carrier.findFirst({
+						where: {
+							userId: {
+								equals: user.id
+							}
+						}
+					});
 					// Any object returned will be saved in `user` property of the JWT
-					return user;
+					return {...user, carrierId: carrier?.id ?? null};
 				} else {
 					// If you return null then an error will be displayed advising the user to check their details.
 					return null;
@@ -42,49 +48,45 @@ export const authOptions = {
 		}),
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID,
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-		}),
-		TwitterProvider({
-			clientId: process.env.TWITTER_ID,
-			clientSecret: process.env.TWITTER_SECRET,
-			version: "2.0", // opt-in to Twitter OAuth 2.0
+			clientSecret: process.env.GOOGLE_CLIENT_SECRET
 		}),
 		Auth0Provider({
 			clientId: process.env.AUTH0_CLIENT_ID,
 			clientSecret: process.env.AUTH0_CLIENT_SECRET,
-			issuer: process.env.AUTH0_ISSUER,
-		}),
+			issuer: process.env.AUTH0_ISSUER
+		})
 	],
 	pages: {
 		error: '/login',
-		signIn: '/login',
+		signIn: '/login'
 	},
 	callbacks: {
 		async jwt({ token, user, account, profile, isNewUser }) {
 			if (user) {
-				token.id = user.id
-				token.email = user.email
+				token.id = user.id;
+				token.email = user.email;
+				token.carrierId = user?.carrierId
 			}
-			return token
+			return token;
 		},
 		async session({ session, token }) {
 			if (token) {
-				session.id = token.id
+				session.id = token.id;
 			}
-			return session
+			return session;
 		}
 	},
 	secret: process.env.NEXTAUTH_SECRET,
 	session: {
 		// Set to jwt in order to CredentialsProvider works properly
 		strategy: 'jwt',
-		maxAge: 30 * 24 * 60 * 60, // 30 days
+		maxAge: 30 * 24 * 60 * 60 // 30 days
 	},
 	jwt: {
-		encryption: true,
+		encryption: true
 	},
-	debug: process.env.NODE_ENV !== 'production',
-}
+	debug: process.env.NODE_ENV !== 'production'
+};
 
 // @ts-ignore
 export default (req, res) => NextAuth(req, res, authOptions)

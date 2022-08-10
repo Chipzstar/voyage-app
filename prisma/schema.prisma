@@ -57,6 +57,7 @@ model User {
   drivers       Driver[]
   members       Member[]
   vehicles      Vehicle[]
+  customers     Customer[]
 }
 
 model VerificationToken {
@@ -135,6 +136,13 @@ type OperatingProps {
 
 type OperatingHoursState {
   facility OperatingProps
+}
+
+type Contact {
+  name  String
+  email String
+  phone String
+  notes String?
 }
 enum LocationType {
   WAREHOUSE
@@ -240,12 +248,12 @@ model Shipper {
   shipment  Shipment[]
 }
 model Carrier {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  carrierId String    @unique
-  user      User      @relation(fields: [userId], references: [id])
-  userId    String    @unique @db.ObjectId
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  carrierId String     @unique
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @unique @db.ObjectId
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   fullName  String
   firstname String
   lastname  String
@@ -258,6 +266,40 @@ model Carrier {
   drivers   Driver[]
   members   Member[]
   vehicles  Vehicle[]
+  customers Customer[]
+}
+enum AccountType {
+  SMALL_SHIPPER
+  MEDIUM_SHIPPER
+  LARGE_SHIPPER
+}
+
+model Customer {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String      @db.ObjectId
+  carrier       Carrier     @relation(fields: [carrierId], references: [id])
+  carrierId     String      @db.ObjectId
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  customerId    String
+  accountType   AccountType
+  companyName   String
+  fullName      String
+  firstname     String?
+  lastname      String?
+  email         String
+  phone         String
+  billingEmail  String
+  addressLine1  String
+  addressLine2  String?
+  city          String
+  region        String?
+  postcode      String
+  country       String
+  taxIDNumber   String?
+  extraContacts Contact[]
+  notes         String?
 }
 enum DriverStatus {
   OFFLINE

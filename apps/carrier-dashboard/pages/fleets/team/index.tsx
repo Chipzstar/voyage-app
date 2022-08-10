@@ -20,6 +20,7 @@ import { authOptions } from '../../api/auth/[...nextauth]'
 import prisma from '../../../db'
 import moment from 'moment'
 import { SelectInputData } from '@voyage-app/shared-types'
+import { getToken } from 'next-auth/jwt'
 
 const team = () => {
 	const modals = useModals();
@@ -172,6 +173,7 @@ const team = () => {
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
 	if (!session) {
 		return {
 			redirect: {
@@ -181,19 +183,12 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let carrier = await prisma.carrier.findFirst({
-			where: {
-				userId: {
-					equals: session.id
-				}
-			}
-		});
 		let members = await prisma.member.findMany({
 			where: {
 				OR: [
 					{
 						carrierId: {
-							equals: carrier?.id
+							equals: token?.carrierId
 						}
 					},
 					{

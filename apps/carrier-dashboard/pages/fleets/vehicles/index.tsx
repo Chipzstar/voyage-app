@@ -17,6 +17,7 @@ import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '../../api/auth/[...nextauth]'
 import prisma from '../../../db'
 import moment from 'moment/moment'
+import { getToken } from 'next-auth/jwt'
 
 const vehicles = () => {
 	const modals = useModals();
@@ -147,6 +148,7 @@ const vehicles = () => {
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
 	if (!session) {
 		return {
 			redirect: {
@@ -156,19 +158,12 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let carrier = await prisma.carrier.findFirst({
-			where: {
-				userId: {
-					equals: session.id
-				}
-			}
-		});
 		let vehicles = await prisma.vehicle.findMany({
 			where: {
 				OR: [
 					{
 						carrierId: {
-							equals: carrier?.id
+							equals: token?.carrierId
 						}
 					},
 					{
