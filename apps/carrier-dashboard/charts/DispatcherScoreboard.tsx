@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { createStyles, ScrollArea, Table } from '@mantine/core';
-import { SAMPLE_CUSTOMERS } from '../utils/constants';
+import { useSelector } from 'react-redux';
+import { useCustomers } from '../store/feature/customerSlice';
 
 const useStyles = createStyles(theme => ({
 	header: {
@@ -42,8 +43,9 @@ const useStyles = createStyles(theme => ({
 
 const DispatcherScoreboard = props => {
 	const { classes, cx } = useStyles();
+	const customers = useSelector(useCustomers)
 	const [scrolled, setScrolled] = useState(false);
-	const rows = SAMPLE_CUSTOMERS.map((element, index) => (
+	const rows = customers.map((element, index) => (
 		<tr key={index}>
 			<td className='flex items-center'>
 				<div className='p-2 bg-voyage-grey h-2 w-2'>
