@@ -1,11 +1,11 @@
 import React from 'react';
-import { Customer, Driver, NewBooking, Team } from './types';
+import { Customer, Driver, NewBooking, Member } from './types';
 import { Load, STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { calculateRate, numericId } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
 
-export function generateLoad(values: NewBooking, drivers: Driver[], controllers: Team[], customers: Customer[]): Load {
+export function generateLoad(values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[]): Load {
 	const pickup = {
 		...values.pickupLocation,
 		window: {
@@ -52,7 +52,7 @@ export function generateLoad(values: NewBooking, drivers: Driver[], controllers:
 			driverName: driver?.fullName,
 			driverPhone: driver?.defaultPhone,
 			controllerId: controller?.memberId,
-			controllerName: controller?.firstname + ' ' + controller?.lastname,
+			controllerName: controller?.firstName + ' ' + controller?.lastName,
 			vehicleType: values.vehicleType
 		}
 	};

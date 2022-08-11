@@ -87,7 +87,7 @@ const team = () => {
 							}}
 						/>
 						<Text weight={500}>
-							{element.firstname} {element.lastname}
+							{element.firstName} {element.lastName}
 						</Text>
 					</Group>
 				</td>
@@ -108,7 +108,7 @@ const team = () => {
 							variant='unstyled'
 							onChange={(value: TeamRole) => {
 								dispatch(changeRole({ id: element.memberId, role: value }));
-								notifySuccess('edit-member-success', `${element.firstname} has a new role of ${capitalize(value)}!`, <Check size={20} />)
+								notifySuccess('edit-member-success', `${element.firstName} has a new role of ${capitalize(value)}!`, <Check size={20} />)
 							}}
 						/>
 					</div>

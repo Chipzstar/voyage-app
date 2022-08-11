@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
-import { Team, TeamRole } from '../../../utils/types';
+import { Member, TeamRole } from '../../../utils/types';
 import { alphanumericId, capitalize } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { createMember, setMembers, updateMember, useMembers } from '../../../store/feature/memberSlice'
@@ -40,10 +40,10 @@ const create = ({ memberId, session }) => {
 	const profile = useSelector(useCarrier);
 
 	const member = useMemo(() => {
-		return memberId ? members.find((item: Team) => item.memberId === memberId) : null;
+		return memberId ? members.find((item: Member) => item.memberId === memberId) : null;
 	}, [members]);
 
-	const initialValues: Team = {
+	const initialValues: Member = {
 		id: member?.id ?? undefined,
 		userId: member?.userId ?? session?.id,
 		carrierId: member?.carrierId ?? profile.id,
@@ -51,8 +51,8 @@ const create = ({ memberId, session }) => {
 		createdAt: undefined,
 		role: member?.role ?? TeamRole.ADMIN,
 		fullName: member?.fullName ?? '',
-		firstname: member?.firstname ?? '',
-		lastname: member?.lastname ?? '',
+		firstName: member?.firstName ?? '',
+		lastName: member?.lastName ?? '',
 		email: member?.email ?? '',
 		phone: member?.phone ?? '',
 		isActive: !!member?.isActive
@@ -101,10 +101,10 @@ const create = ({ memberId, session }) => {
 				<form onSubmit={form.onSubmit(handleSubmit)}>
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-10'>
 						<div>
-							<TextInput required className='w-96' label='First Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('firstname')} />
+							<TextInput required className='w-96' label='First Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('firstName')} />
 						</div>
 						<div>
-							<TextInput required className='w-96' label='Last Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('lastname')} />
+							<TextInput required className='w-96' label='Last Name' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('lastName')} />
 						</div>
 						<div>
 							<TextInput required type='email' className='w-96' label='Email Address' radius={0} autoCapitalize='on' size='md' {...form.getInputProps('email')} />

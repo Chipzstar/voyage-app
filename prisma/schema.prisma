@@ -374,8 +374,8 @@ model Member {
   carrierId String   @db.ObjectId
   memberId  String
   fullName  String
-  firstname String
-  lastname  String
+  firstName String
+  lastName  String
   email     String
   phone     String
   role      TeamRole

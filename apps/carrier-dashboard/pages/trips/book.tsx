@@ -331,7 +331,7 @@ const book = props => {
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
 										data={team.filter(item => item.role === TeamRole.CONTROLLER).map((member): SelectInputData => ({
-											label: member.firstname + ' ' + member.lastname,
+											label: member.firstName + ' ' + member.lastName,
 											value: member.memberId
 										}))}
 										{...form.getInputProps('controllerId')}

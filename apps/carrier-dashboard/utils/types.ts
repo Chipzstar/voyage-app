@@ -121,7 +121,7 @@ export interface Driver {
 	notes?: string;
 }
 
-export interface Team {
+export interface Member {
 	id: string;
 	userId: string;
 	carrierId: string;
@@ -129,8 +129,8 @@ export interface Team {
 	updatedAt?: UnixTimestamp;
 	memberId: string;
 	fullName: string;
-	firstname: string;
-	lastname: string;
+	firstName: string;
+	lastName: string;
 	email: string;
    phone: string;
 	role: TeamRole;
