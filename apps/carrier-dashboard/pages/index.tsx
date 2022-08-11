@@ -41,7 +41,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 			}
 		};
 	}
-	if (session.id || token.carrierId){
+	if (session.id || token?.carrierId){
 		const carrier = await prisma.carrier.findFirst({
 			where: {
 				OR: [
