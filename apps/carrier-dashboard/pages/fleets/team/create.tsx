@@ -64,7 +64,7 @@ const create = ({ memberId, session }) => {
 
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
-		values.fullName = values.firstname + ' ' + values.lastname;
+		values.fullName = values.firstName + ' ' + values.lastName;
 		member
 			? dispatch(updateMember(values))
 					.unwrap()
