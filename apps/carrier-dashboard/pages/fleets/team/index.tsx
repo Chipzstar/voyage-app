@@ -1,26 +1,25 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActionIcon, Avatar, Group, Select, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
-import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react'
-import { PATHS, PUBLIC_PATHS } from '../../../utils/constants'
+import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react';
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
 import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeRole, deleteMember, setMembers, useMembers } from '../../../store/feature/memberSlice'
+import { deleteMember, setMembers, updateMember, useMembers } from '../../../store/feature/memberSlice';
 import { TeamRole } from '../../../utils/types';
-import { capitalize } from '@voyage-app/shared-utils';
+import { capitalize, sanitize } from '@voyage-app/shared-utils';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
 import { AppDispatch, wrapper } from '../../../store';
-import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '../../api/auth/[...nextauth]'
-import prisma from '../../../db'
-import moment from 'moment'
-import { SelectInputData } from '@voyage-app/shared-types'
-import { getToken } from 'next-auth/jwt'
-import { notifyError, notifySuccess } from '../../../utils/functions'
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../../api/auth/[...nextauth]';
+import prisma from '../../../db';
+import { SelectInputData } from '@voyage-app/shared-types';
+import { getToken } from 'next-auth/jwt';
+import { fetchMembers, notifyError, notifySuccess } from '../../../utils/functions';
 
 const team = () => {
 	const modals = useModals();
@@ -107,8 +106,14 @@ const team = () => {
 							value={element.role}
 							variant='unstyled'
 							onChange={(value: TeamRole) => {
-								dispatch(changeRole({ id: element.memberId, role: value }));
-								notifySuccess('edit-member-success', `${element.firstName} has a new role of ${capitalize(value)}!`, <Check size={20} />)
+								dispatch(updateMember({ id: element.id, role: value })).unwrap().then((res) => {
+									console.log("RESULT", res);
+									notifySuccess('edit-member-success', `${element.firstName} has a new role of ${capitalize(sanitize(value))}!`, <Check size={20} />)
+								}).catch(err => {
+									console.error(err)
+									notifyError('edit-member-failure', `There was a problem changing this member's role to ${capitalize(sanitize(value))}`, <X size={20} />)
+								})
+
 							}}
 						/>
 					</div>
@@ -175,30 +180,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let members = await prisma.member.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		members = members.map(member => ({
-			...member,
-			createdAt: moment(member.createdAt).unix(),
-			updatedAt: moment(member.updatedAt).unix()
-		}));
+		let members = await fetchMembers(session.id, token?.carrierId, prisma)
 		store.dispatch(setMembers(members));
 	}
 	return {

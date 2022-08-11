@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Customer, Member, TeamRole } from '../../utils/types'
+import { Member, TeamRole } from '../../utils/types'
 import axios from 'axios';
 import { HYDRATE } from 'next-redux-wrapper'
 

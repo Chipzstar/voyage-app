@@ -1,14 +1,19 @@
 import {
+	CarrierInfo,
+	HAZMAT_TYPES,
+	Package,
 	PACKAGE_TYPE,
+	ShipmentTimeWindow,
+	STATUS,
 	UnixTimestamp,
-} from '@voyage-app/shared-types';
+} from '@voyage-app/shared-types'
 
 export enum TeamRole {
-	ADMIN="ADMIN",
-	CONTROLLER="CONTROLLER",
-	SECRETARY="SECRETARY",
-	FLEET_MANAGER="FLEET_MANAGER",
-	COORDINATOR="COORDINATOR",
+	ADMIN = 'ADMIN',
+	CONTROLLER = 'CONTROLLER',
+	SECRETARY = 'SECRETARY',
+	FLEET_MANAGER = 'FLEET_MANAGER',
+	COORDINATOR = 'COORDINATOR'
 }
 
 export enum VEHICLE_STATUS {
@@ -89,13 +94,12 @@ export interface Carrier {
 	address: Address;
    phone: string;
 	stripe?: Stripe;
-
 }
 
 export interface Driver {
 	id: string;
 	carrierId: string;
-	userId: string;
+	userId: string | unknown;
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
 	isActive: boolean;
@@ -139,7 +143,7 @@ export interface Member {
 
 export interface Vehicle {
 	id: string;
-	userId: string;
+	userId: string | unknown;
 	carrierId: string;
 	createdAt: UnixTimestamp;
 	vehicleId: string;
@@ -208,6 +212,7 @@ export interface Location {
 
 export interface NewBooking {
 	createdAt: UnixTimestamp,
+	carrierId: string;
 	internalPONumber?: string;
 	customerPONumber?: string;
 	weight: number;
@@ -222,6 +227,51 @@ export interface NewBooking {
 	customerId: string;
 	driverId: string;
 	controllerId: string;
-	vehicleType: VEHICLE_TYPES | "NO_PREFERENCE";
+	vehicleType: VEHICLE_TYPES;
 	description: string;
+}
+
+export interface Load {
+	id: string;
+	carrierId: string;
+	loadId: string;
+	source: string;
+	createdAt: UnixTimestamp;
+	updatedAt?: UnixTimestamp;
+	status: STATUS;
+	internalPONumber?: string;
+	customerPONumber?: string;
+	rate: number;
+	pickup: {
+		street: string;
+		city: string;
+		region?: string;
+		postcode: string;
+		country: string;
+		note?: string;
+		window: ShipmentTimeWindow;
+	};
+	delivery: {
+		street: string;
+		city: string;
+		region?: string;
+		postcode: string;
+		country: string;
+		note?: string;
+		window?: ShipmentTimeWindow;
+	};
+	customer?: {
+		id: string;
+		name: string;
+		company: string;
+	};
+	driver?: {
+		id: string;
+		name: string;
+		phone: string;
+	};
+	vehicleType: VEHICLE_TYPES
+	package: Package;
+	carrierInfo: CarrierInfo;
+	hazmat?: HAZMAT_TYPES;
 }

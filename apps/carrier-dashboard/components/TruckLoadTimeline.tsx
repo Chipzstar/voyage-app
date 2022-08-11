@@ -6,7 +6,7 @@ import {  PATHS } from '../utils/constants'
 import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
 import { useLoads } from '../store/feature/loadSlice'
-import { Load } from '@voyage-app/shared-types'
+import { Load } from '../utils/types'
 
 const localizer = momentLocalizer(moment)
 

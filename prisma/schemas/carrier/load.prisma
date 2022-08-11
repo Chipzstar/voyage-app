@@ -1,20 +1,36 @@
+
+enum HamzatType {
+    NONE
+    EXPLOSIVES
+    GASES
+    FLAMMABLE_LIQUIDS
+    FLAMMABLE_SOLIDS
+    OXIDIZERS
+    TOXIC_SUBSTANCE
+    INFECTIOUS_SUBSTANCE
+    RADIOACTIVE_MATERIA
+    CORROSIVE_SUBSTANCE
+    MISC_DANGEROUS
+}
+
 model Load {
     id  String @id @default(auto()) @map("_id") @db.ObjectId
-    shipmentId String  @unique
+    loadId String  @unique
     carrier Carrier @relation(fields: [carrierId], references: [id])
     carrierId String @db.ObjectId
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    bookingStatus String @default("Booked")
+    source String
     status STATUS
-    serviceType SERVICE_TYPE
-    schedulingType SCHEDULING_TYPE
-    activitiesRequired SHIPMENT_ACTIVITY[]
     internalPONumber String? @default("")
     customerPONumber String? @default("")
     rate Int
-    pickup Pickup
-    delivery Delivery
+    pickup LoadLocation
+    delivery LoadLocation
     package Package
     carrierInfo CarrierInfo?
+    hamzat HamzatType?
+    vehicleType VehicleType
+    customer CustomerInfo
+    driver DriverInfo
 }

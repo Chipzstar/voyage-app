@@ -20,8 +20,9 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import moment from 'moment';
-import { notifyError, notifySuccess } from '../../../utils/functions';
+import { fetchVehicles, notifyError, notifySuccess } from '../../../utils/functions'
 import { getToken } from 'next-auth/jwt';
+import { useSession } from 'next-auth/react'
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -33,8 +34,9 @@ const items = [
 	</Anchor>
 ));
 
-const create = ({ vehicleName, vehicleId, session }) => {
+const create = ({ vehicleName, vehicleId }) => {
 	const [loading, setLoading] = useState(false);
+	const { data: session } = useSession()
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const vehicles = useSelector(useVehicles);
@@ -75,7 +77,6 @@ const create = ({ vehicleName, vehicleId, session }) => {
 	const handleSubmit = useCallback(values => {
 		values.regNumber = values.regNumber.toUpperCase();
 		setLoading(true);
-		console.log(values);
 		vehicle
 			? dispatch(updateVehicle(values))
 					.unwrap()
@@ -227,35 +228,11 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
-		let vehicles = await prisma.vehicle.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		vehicles = vehicles.map(vehicle => ({
-			...vehicle,
-			createdAt: moment(vehicle.createdAt).unix(),
-			updatedAt: moment(vehicle.updatedAt).unix()
-		}));
+		let vehicles = await fetchVehicles(session.id, token?.carrierId, prisma)
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {
 		props: {
-			session,
 			vehicleName: query?.vehicleName ?? '',
 			vehicleId: query?.vehicleId ?? null
 		}

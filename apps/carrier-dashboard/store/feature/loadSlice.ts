@@ -1,19 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Load } from '@voyage-app/shared-types';
 import axios from 'axios';
-import { SAMPLE_LOADS } from '../../utils/constants'
+import { Load } from '../../utils/types'
 
-const initialState = SAMPLE_LOADS;
+const initialState = [];
 
-export const createLoad = createAsyncThunk('load/createLoad', async (payload : Omit<Load, "id">, thunkAPI) => {
+export const createLoad = createAsyncThunk('load/createLoad', async (payload : Partial<Load>, thunkAPI) => {
 	try {
 		console.log(payload)
-		const result = (await axios.post(`/api/load/${payload.loadId}`, payload)).data
-		console.log(result)
-		return result
+		const load = (await axios.post(`/api/load/${payload.loadId}`, payload)).data
+		thunkAPI.dispatch(addLoad(load))
+		return load
 	} catch (err) {
-		console.error(err)
-		thunkAPI.rejectWithValue(err.message)
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 })
 

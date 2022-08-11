@@ -10,13 +10,12 @@ import { Empty } from '@voyage-app/shared-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDriver, setDrivers, useDrivers } from '../../../store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
-import { notifyError, notifySuccess } from '../../../utils/functions';
+import { fetchDrivers, notifyError, notifySuccess } from '../../../utils/functions'
 import _ from 'lodash';
 import { AppDispatch, wrapper } from '../../../store';
 import { getToken } from 'next-auth/jwt';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
-import moment from 'moment/moment';
 import '../../../utils/string.extensions';
 
 const drivers = () => {
@@ -172,30 +171,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let drivers = await prisma.driver.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		drivers = drivers.map(driver => ({
-			...driver,
-			createdAt: moment(driver.createdAt).unix(),
-			updatedAt: moment(driver.updatedAt).unix()
-		}));
+		let drivers = await fetchDrivers(session.id, token?.carrierId, prisma)
 		store.dispatch(setDrivers(drivers));
 	}
 	return {

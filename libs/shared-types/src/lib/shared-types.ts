@@ -94,7 +94,7 @@ export enum PACKAGE_TYPE {
 	SKIDS = 'SKID',
 }
 
-enum HAZMAT_TYPES {
+export enum HAZMAT_TYPES {
 	NONE = 'none',
 	EXPLOSIVES = 'Class 1: Explosives',
 	GASES = 'Class 2: Gases',
@@ -108,7 +108,7 @@ enum HAZMAT_TYPES {
 	MISC_DANGEROUS = 'Class 9: Miscellaneous dangerous goods'
 }
 
-export interface Carrier {
+export interface CarrierInfo {
 	name: string;
 	driverId: string;
 	driverName: string;
@@ -138,44 +138,6 @@ export interface Shipment {
 	pickup: Pickup;
 	delivery: Delivery;
 	package: Package;
-	carrier: Carrier;
-}
-
-export interface Load {
-	id: string;
-	source: string;
-	customer?: {
-		id: string;
-      name: string;
-		company: string;
-	},
-	loadId: string,
-	createdAt: UnixTimestamp;
-	updatedAt?: UnixTimestamp;
-	status: STATUS;
-	internalPONumber?: string;
-	customerPONumber?: string;
-	rate: number;
-	pickup: {
-		street: string;
-		city: string;
-      region?: string
-		postcode: string;
-		country: string;
-		note?: string;
-		window: ShipmentTimeWindow
-	};
-	delivery: {
-		street: string;
-		city: string;
-		region?: string
-		postcode: string;
-		country: string;
-		note?: string;
-		window?: ShipmentTimeWindow
-	};
-	package: Package;
-	carrier: Carrier;
-	hazmat?: HAZMAT_TYPES
+	carrier: CarrierInfo;
 }
 

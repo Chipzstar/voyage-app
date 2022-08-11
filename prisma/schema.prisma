@@ -93,14 +93,14 @@ type Dimensions {
   height Int
 }
 
-type Pickup {
+type ShipmentPickup {
   facilityId   String
   facilityName String
   location     String
   window       TimeWindow
 }
 
-type Delivery {
+type ShipmentDelivery {
   facilityId   String
   facilityName String
   location     String
@@ -116,11 +116,14 @@ type Package {
 }
 
 type CarrierInfo {
-  name        String
-  driverName  String
-  driverPhone String
-  location    Float[]
-  vehicle     String?
+  name           String
+  driverId       String
+  driverName     String
+  driverPhone    String
+  controllerId   String?
+  controllerName String?
+  location       Float[]
+  vehicleType    String?
 }
 
 type LocationTimeWindow {
@@ -144,6 +147,29 @@ type Contact {
   phone String
   notes String?
 }
+
+type LoadLocation {
+  street   String
+  city     String
+  region   String?
+  postcode String
+  country  String
+  note     String?
+  window   TimeWindow?
+}
+
+type CustomerInfo {
+  id      String
+  name    String
+  company String
+}
+
+type DriverInfo {
+  id    String
+  name  String
+  phone String
+}
+
 enum LocationType {
   WAREHOUSE
   STORE
@@ -207,7 +233,7 @@ enum PACKAGE_TYPE {
   CRATE
   BOX
   CONTAINER
-  SKIDS
+  SKID
 }
 
 model Shipment {
@@ -225,8 +251,8 @@ model Shipment {
   internalPONumber   String?             @default("")
   customerPONumber   String?             @default("")
   rate               Int
-  pickup             Pickup
-  delivery           Delivery
+  pickup             ShipmentPickup
+  delivery           ShipmentDelivery
   package            Package
   carrierInfo        CarrierInfo?
 }
@@ -338,25 +364,41 @@ model Driver {
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }
+
+enum HamzatType {
+  NONE
+  EXPLOSIVES
+  GASES
+  FLAMMABLE_LIQUIDS
+  FLAMMABLE_SOLIDS
+  OXIDIZERS
+  TOXIC_SUBSTANCE
+  INFECTIOUS_SUBSTANCE
+  RADIOACTIVE_MATERIA
+  CORROSIVE_SUBSTANCE
+  MISC_DANGEROUS
+}
+
 model Load {
-  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
-  shipmentId         String              @unique
-  carrier            Carrier             @relation(fields: [carrierId], references: [id])
-  carrierId          String              @db.ObjectId
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
-  bookingStatus      String              @default("Booked")
-  status             STATUS
-  serviceType        SERVICE_TYPE
-  schedulingType     SCHEDULING_TYPE
-  activitiesRequired SHIPMENT_ACTIVITY[]
-  internalPONumber   String?             @default("")
-  customerPONumber   String?             @default("")
-  rate               Int
-  pickup             Pickup
-  delivery           Delivery
-  package            Package
-  carrierInfo        CarrierInfo?
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  loadId           String       @unique
+  carrier          Carrier      @relation(fields: [carrierId], references: [id])
+  carrierId        String       @db.ObjectId
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  source           String
+  status           STATUS
+  internalPONumber String?      @default("")
+  customerPONumber String?      @default("")
+  rate             Int
+  pickup           LoadLocation
+  delivery         LoadLocation
+  package          Package
+  carrierInfo      CarrierInfo?
+  hamzat           HamzatType?
+  vehicleType      VehicleType
+  customer         CustomerInfo
+  driver           DriverInfo
 }
 enum TeamRole {
   ADMIN

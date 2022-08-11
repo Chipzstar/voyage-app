@@ -23,14 +23,14 @@ type Dimensions {
     height Int
 }
 
-type Pickup {
+type ShipmentPickup {
     facilityId String
     facilityName String
     location String
     window TimeWindow
 }
 
-type Delivery {
+type ShipmentDelivery {
     facilityId String
     facilityName String
     location String
@@ -46,11 +46,14 @@ type Package {
 }
 
 type CarrierInfo {
-	name String
-	driverName String
-	driverPhone String
-	location Float[]
-	vehicle String?
+	name            String
+	driverId        String
+	driverName      String
+	driverPhone     String
+	controllerId    String?
+	controllerName  String?
+	location        Float[]
+	vehicleType     String?
 }
 
 type LocationTimeWindow {
@@ -73,4 +76,29 @@ type Contact {
     email String
     phone String
     notes String?
- }
+}
+
+type LoadLocation {
+    street      String
+    city        String
+    region      String?
+    postcode    String
+    country     String
+    note        String?
+    window      TimeWindow?
+}
+
+type CustomerInfo {
+    id      String
+    name    String
+    company String
+}
+
+type DriverInfo {
+    id      String
+    name    String
+    phone   String
+}
+
+
+

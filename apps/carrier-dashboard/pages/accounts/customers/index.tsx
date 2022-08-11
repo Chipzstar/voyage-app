@@ -18,7 +18,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import moment from 'moment';
-import { notifyError, notifySuccess } from '../../../utils/functions'
+import { fetchCustomers, notifyError, notifySuccess } from '../../../utils/functions'
 
 const customers = () => {
 	const modals = useModals();
@@ -157,30 +157,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let customers = await prisma.customer.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		customers = customers.map(customer => ({
-			...customer,
-			createdAt: moment(customer.createdAt).unix(),
-			updatedAt: moment(customer.updatedAt).unix()
-		}));
+		let customers = await fetchCustomers(session.id, token?.carrierId, prisma)
 		store.dispatch(setCustomers(customers));
 	}
 	return {

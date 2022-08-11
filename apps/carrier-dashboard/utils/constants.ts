@@ -1,8 +1,7 @@
 import moment from 'moment';
-import { Load, PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
+import { PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
-import { customAlphabet } from 'nanoid';
-import { AccountType, Customer, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Member, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
+import { Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
 import orderId from 'order-id';
 
 export const DEBUG_MODE = process.env.NODE_ENV !== 'production'
@@ -341,6 +340,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 export const SAMPLE_LOADS: Load[] = [
 	{
 		id: '',
+		carrierId: '',
 		source: 'Voyage',
 		loadId: 'VOY-ID123',
 		createdAt: moment().unix(),
@@ -359,7 +359,7 @@ export const SAMPLE_LOADS: Load[] = [
 				height: 120
 			}
 		},
-		carrier: {
+		carrierInfo: {
 			name: 'HBCS Logistics',
 			driverId: SAMPLE_DRIVERS[0].driverId,
 			driverName: SAMPLE_DRIVERS[0].fullName,
@@ -388,10 +388,22 @@ export const SAMPLE_LOADS: Load[] = [
 				start: moment().add(1, 'd').set('h', 18).unix(),
 				end: moment().add(1, 'd').set('h', 20).unix()
 			}
-		}
+		},
+		customer: {
+			id: `CUSTOMER-ID${alphanumericId(8)}`,
+			name: "",
+			company: "ASOS"
+		},
+		driver: {
+			id: `DRIVER-ID${alphanumericId(8)}`,
+			name: "Chisom Oguibe",
+			phone: "+447523958055"
+		},
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
 	},
 	{
 		id: '',
+		carrierId: '',
 		source: 'Voyage',
 		loadId: 'VOY-ID124',
 		createdAt: moment().unix(),
@@ -410,7 +422,7 @@ export const SAMPLE_LOADS: Load[] = [
 				height: 120
 			}
 		},
-		carrier: {
+		carrierInfo: {
 			name: 'HBCS Logistics',
 			driverId: SAMPLE_DRIVERS[0].driverId,
 			driverName: SAMPLE_DRIVERS[0].fullName,
@@ -439,10 +451,22 @@ export const SAMPLE_LOADS: Load[] = [
 				start: moment().add(2, 'd').set('h', 18).unix(),
 				end: moment().add(2, 'd').set('h', 20).unix()
 			}
-		}
+		},
+		customer: {
+			id: `CUSTOMER-ID${alphanumericId(8)}`,
+			name: "",
+			company: "ASOS"
+		},
+		driver: {
+			id: `DRIVER-ID${alphanumericId(8)}`,
+			name: "Chisom Oguibe",
+			phone: "+447523958055"
+		},
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
 	},
 	{
 		id: '',
+		carrierId: '',
 		source: 'Voyage',
 		loadId: 'VOY-ID125',
 		createdAt: moment().unix(),
@@ -461,7 +485,7 @@ export const SAMPLE_LOADS: Load[] = [
 				height: 120
 			}
 		},
-		carrier: {
+		carrierInfo: {
 			name: 'HBCS Logistics',
 			driverId: SAMPLE_DRIVERS[0].driverId,
 			driverName: SAMPLE_DRIVERS[0].fullName,
@@ -490,10 +514,22 @@ export const SAMPLE_LOADS: Load[] = [
 				start: moment().add(3, 'd').set('h', 18).unix(),
 				end: moment().add(3, 'd').set('h', 20).unix()
 			}
-		}
+		},
+		customer: {
+			id: `CUSTOMER-ID${alphanumericId(8)}`,
+			name: "",
+			company: "ASOS"
+		},
+		driver: {
+			id: `DRIVER-ID${alphanumericId(8)}`,
+			name: "Chisom Oguibe",
+			phone: "+447523958055"
+		},
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
 	},
 	{
 		id: '',
+		carrierId: '',
 		source: 'Voyage',
 		loadId: 'VOY-ID127',
 		createdAt: moment().unix(),
@@ -512,7 +548,7 @@ export const SAMPLE_LOADS: Load[] = [
 				height: 120
 			}
 		},
-		carrier: {
+		carrierInfo: {
 			name: 'HBCS Logistics',
 			driverId: SAMPLE_DRIVERS[0].driverId,
 			driverName: SAMPLE_DRIVERS[0].fullName,
@@ -541,10 +577,22 @@ export const SAMPLE_LOADS: Load[] = [
 				start: moment().add(4, 'd').set('h', 18).unix(),
 				end: moment().add(4, 'd').set('h', 20).unix()
 			}
-		}
+		},
+		customer: {
+			id: `CUSTOMER-ID${alphanumericId(8)}`,
+			name: "",
+			company: "ASOS"
+		},
+		driver: {
+			id: `DRIVER-ID${alphanumericId(8)}`,
+			name: "Chisom Oguibe",
+			phone: "+447523958055"
+		},
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
 	},
 	{
 		id: '',
+		carrierId: '',
 		source: 'Voyage',
 		loadId: 'VOY-ID128',
 		createdAt: moment().unix(),
@@ -563,7 +611,7 @@ export const SAMPLE_LOADS: Load[] = [
 				height: 120
 			}
 		},
-		carrier: {
+		carrierInfo: {
 			name: 'HBCS Logistics',
 			driverId: SAMPLE_DRIVERS[0].driverId,
 			driverName: SAMPLE_DRIVERS[0].fullName,
@@ -592,10 +640,22 @@ export const SAMPLE_LOADS: Load[] = [
 				start: moment().add(5, 'd').set('h', 18).unix(),
 				end: moment().add(5, 'd').set('h', 20).unix()
 			}
-		}
+		},
+		customer: {
+			id: `CUSTOMER-ID${alphanumericId(8)}`,
+			name: "",
+			company: "ASOS"
+		},
+		driver: {
+			id: `DRIVER-ID${alphanumericId(8)}`,
+			name: "Chisom Oguibe",
+			phone: "+447523958055"
+		},
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
 	},
 	{
 		id: '',
+		carrierId: '',
 		source: 'Voyage',
 		loadId: 'VOY-ID130',
 		createdAt: moment().unix(),
@@ -614,7 +674,7 @@ export const SAMPLE_LOADS: Load[] = [
 				height: 120
 			}
 		},
-		carrier: {
+		carrierInfo: {
 			name: 'HBCS Logistics',
 			driverId: SAMPLE_DRIVERS[0].driverId,
 			driverName: SAMPLE_DRIVERS[0].fullName,
@@ -643,7 +703,18 @@ export const SAMPLE_LOADS: Load[] = [
 				start: moment().add(6, 'd').set('h', 18).unix(),
 				end: moment().add(6, 'd').set('h', 20).unix()
 			}
-		}
+		},
+		customer: {
+			id: `CUSTOMER-ID${alphanumericId(8)}`,
+			name: "",
+			company: "ASOS"
+		},
+		driver: {
+			id: `DRIVER-ID${alphanumericId(8)}`,
+			name: "Chisom Oguibe",
+			phone: "+447523958055"
+		},
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
 	}
 ];
 

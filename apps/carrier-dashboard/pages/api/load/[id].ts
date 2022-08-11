@@ -2,25 +2,25 @@ import { runMiddleware, cors } from '../index';
 import prisma from '../../../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt'
 
 export default async function handler(req, res) {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
-	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions)
 	const payload = req.body;
+	const token = await getToken({ req });
 	console.log("PAYLOAD", payload)
 	const { id } = req.query
 	if (req.method === 'POST') {
 		try {
-			const member = await prisma.member.create({
+			const load = await prisma.load.create({
 				data: {
 					...payload,
-					userId: session.id,
-					carrierId: payload.carrierId
+					carrierId: payload?.carrierId || token?.carrierId
 				}
 			});
-			res.json(member);
+			console.log(load);
+			res.json(load);
 		} catch (err) {
 			console.log(err)
 			res.status(500).send({message:'Internal Server Error. Please try again'});
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 	} else if (req.method === 'PUT'){
 		try {
 			let { id, ...rest } = payload
-			const member = await prisma.member.update({
+			const load = await prisma.load.update({
 				where: {
 					id
 				},
@@ -36,14 +36,15 @@ export default async function handler(req, res) {
 					...rest,
 				}
 			});
-			res.json(member);
+			console.log(load);
+			res.json(load);
 		} catch (err) {
-			console.error(err)
+			console.log(err)
 			res.status(400).json({ status: 400, message: 'An error occurred!' })
 		}
 	} else if (req.method === 'DELETE'){
 		try {
-			const result = await prisma.member.delete({
+			const result = await prisma.load.delete({
 				where: {
 					id
 				}

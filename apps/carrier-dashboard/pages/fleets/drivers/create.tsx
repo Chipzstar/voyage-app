@@ -21,27 +21,26 @@ import prisma from '../../../db';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
-import { notifyError, notifySuccess } from '../../../utils/functions';
+import { fetchDrivers, notifyError, notifySuccess } from '../../../utils/functions'
+import { useSession } from "next-auth/react"
 
-const create = ({ driverId, session }) => {
+const items = [
+	{ title: 'Home', href: PATHS.HOME },
+	{ title: 'Drivers', href: PATHS.DRIVERS },
+	{ title: 'New Driver', href: PATHS.NEW_DRIVER }
+].map((item, index) => (
+	<Anchor component={Link} href={item.href} key={index}>
+		<span className='hover:text-secondary hover:underline'>{item.title}</span>
+	</Anchor>
+));
+
+const create = ({ driverId }) => {
+	const { data: session, status } = useSession()
 	const dispatch = useDispatch<AppDispatch>();
+	const router = useRouter();
 	const drivers = useSelector(useDrivers);
 	const vehicles = useSelector(useVehicles);
 	const profile = useSelector(useCarrier);
-	const router = useRouter();
-
-	const items = [
-		{ title: 'Home', href: PATHS.HOME },
-		{ title: 'Drivers', href: PATHS.DRIVERS },
-		{ title: 'New Driver', href: PATHS.NEW_DRIVER }
-	].map((item, index) => (
-		<Anchor component={Link} href={item.href} key={index}>
-			<span className='hover:text-secondary hover:underline'>{item.title}</span>
-		</Anchor>
-	));
-
-	useEffect(() => console.log(profile), [profile]);
-
 	const driver = useMemo(() => {
 		return driverId ? drivers.find((item: Driver) => item.driverId === driverId) : null;
 	}, [drivers]);
@@ -75,7 +74,10 @@ const create = ({ driverId, session }) => {
 	};
 
 	const form = useForm({
-		initialValues
+		initialValues,
+		validate: values => ({
+			vehicleId: !values.vehicleId ? "Please select a vehicle for this driver" : null,
+		})
 	});
 
 	const handleSubmit = useCallback(values => {
@@ -93,11 +95,13 @@ const create = ({ driverId, session }) => {
 			: dispatch(createDriver(values))
 					.unwrap()
 					.then(res => {
+						console.log('new driver', res);
 						notifySuccess('new-driver-success', 'You have a new driver!', <Check size={20} />);
 						setTimeout(() => router.push(PATHS.DRIVERS), 500);
 					})
 					.catch(err => notifyError('new-driver-failure', `There was a problem creating your new driver. \n${err.message}`, <X size={20} />));
 	}, []);
+
 	return (
 		<ContentContainer classNames='px-8 h-screen flex flex-col'>
 			<PageNav items={items} />
@@ -210,7 +214,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
-	console.log(store.getState());
 	if (session.id) {
 		const carrier = await prisma.carrier.findFirst({
 			where: {
@@ -224,30 +227,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
-		let drivers = await prisma.driver.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		drivers = drivers.map(driver => ({
-			...driver,
-			createdAt: moment(driver.createdAt).unix(),
-			updatedAt: moment(driver.updatedAt).unix()
-		}));
+		let drivers = await fetchDrivers(session.id, token?.carrierId, prisma)
 		store.dispatch(setDrivers(drivers));
 		let vehicles = await prisma.vehicle.findMany({
 			where: {
@@ -277,7 +257,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	return {
 		props: {
-			session,
 			driverId: query?.driverId ?? null
 		}
 	};

@@ -27,7 +27,8 @@ const rootReducer = (state, action) => {
 			drivers: action.payload.drivers || state.drivers,
 			members: action.payload.members || state.members,
 			vehicles: action.payload.vehicles || state.vehicles,
-			customers: action.payload.customers || state.customers
+			customers: action.payload.customers || state.customers,
+			loads: action.payload.loads || state.loads
 		};
 	}
 	if (['LOGOUT', 'RESET'].includes(action.type)) {

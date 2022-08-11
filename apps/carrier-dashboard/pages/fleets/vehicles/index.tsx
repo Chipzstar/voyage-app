@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react';
@@ -7,7 +7,7 @@ import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { useVehicles, setVehicles, deleteVehicle } from '../../../store/feature/vehicleSlice';
+import { deleteVehicle, setVehicles, useVehicles } from '../../../store/feature/vehicleSlice';
 import { useDrivers } from 'apps/carrier-dashboard/store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
@@ -16,9 +16,8 @@ import { AppDispatch, wrapper } from '../../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
-import moment from 'moment/moment';
 import { getToken } from 'next-auth/jwt';
-import { notifyError, notifySuccess } from '../../../utils/functions';
+import { fetchVehicles, notifyError, notifySuccess } from '../../../utils/functions';
 
 const vehicles = () => {
 	const modals = useModals();
@@ -164,30 +163,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let vehicles = await prisma.vehicle.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		vehicles = vehicles.map(vehicle => ({
-			...vehicle,
-			createdAt: moment(vehicle.createdAt).unix(),
-			updatedAt: moment(vehicle.updatedAt).unix()
-		}));
+		let vehicles = await fetchVehicles(session.id, token?.carrierId, prisma)
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {

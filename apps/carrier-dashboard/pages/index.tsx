@@ -11,6 +11,8 @@ import { authOptions} from './api/auth/[...nextauth]';
 import prisma from '../db'
 import { setCarrier } from '../store/feature/profileSlice'
 import { wrapper } from '../store'
+import { fetchLoads, fetchProfile } from '../utils/functions';
+import { setLoads } from '../store/feature/loadSlice';
 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
@@ -42,27 +44,10 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 		};
 	}
 	if (session.id || token?.carrierId){
-		const carrier = await prisma.carrier.findFirst({
-			where: {
-				OR: [
-					{
-						userId: {
-							equals: session.id
-						}
-					},
-					{
-						id: {
-							equals: token?.carrierId
-						}
-					}
-				]
-			}
-		})
-		if (carrier) {
-			carrier.createdAt = moment(carrier.createdAt).unix();
-			carrier.updatedAt = moment(carrier.updatedAt).unix();
-			store.dispatch(setCarrier(carrier));
-		}
+		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		let loads = await fetchLoads(token?.carrierId, prisma)
+		store.dispatch(setCarrier(carrier));
+		store.dispatch(setLoads(loads));
 	}
 	return {
 		props: {

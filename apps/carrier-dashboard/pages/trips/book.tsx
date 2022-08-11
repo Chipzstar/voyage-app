@@ -1,35 +1,58 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/router'
 import { useForm } from '@mantine/form'
 import moment from 'moment/moment'
 import { PACKAGE_TYPE, SelectInputData } from '@voyage-app/shared-types'
-// import { createShipment } from '../../store/features/shipmentsSlice';
-import { Calendar, Check, ChevronDown } from 'tabler-icons-react'
-import { Anchor, Breadcrumbs, NumberInput, Select, Textarea, TextInput } from '@mantine/core'
+import { Calendar, Check, ChevronDown, X } from 'tabler-icons-react';
+import { Anchor, Breadcrumbs, Loader, NumberInput, Select, Textarea, TextInput } from '@mantine/core'
 import { DateTimePicker } from '@voyage-app/shared-ui-components'
 import Link from 'next/link'
 import ContentContainer from '../../layout/ContentContainer'
 import { useDispatch, useSelector } from 'react-redux'
 import { NewBooking, TeamRole, VEHICLE_TYPES } from '../../utils/types'
-import { generateLoad } from '../../utils/functions'
-import { useDrivers } from '../../store/feature/driverSlice'
-import { useMembers } from '../../store/feature/memberSlice'
-import { useCustomers } from '../../store/feature/customerSlice'
+import {
+	fetchCustomers,
+	fetchDrivers,
+	fetchMembers, fetchProfile,
+	generateLoad,
+	notifyError,
+	notifySuccess,
+} from '../../utils/functions'
+import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
+import { setMembers, useMembers } from '../../store/feature/memberSlice'
+import { setCustomers, useCustomers } from '../../store/feature/customerSlice';
 import { capitalize, sanitize } from '@voyage-app/shared-utils'
-import { addLoad } from '../../store/feature/loadSlice'
-import { showNotification } from '@mantine/notifications'
-import { PATHS } from 'apps/carrier-dashboard/utils/constants'
-// import { createBooking } from '../../../shipper-dashboard/store/features/bookingsSlice';
+import { createLoad } from '../../store/feature/loadSlice'
+import { PATHS, PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants'
+import { setCarrier, useCarrier } from '../../store/feature/profileSlice'
+import { AppDispatch, wrapper } from '../../store'
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from '../api/auth/[...nextauth]'
+import { getToken } from 'next-auth/jwt'
+import prisma from '../../db'
+
+const items = [
+	{ title: 'Home', href: '/' },
+	{ title: 'Trips', href: '/trips' },
+	{ title: 'Book', href: '/trips/book' }
+].map((item, index) => (
+	<Anchor component={Link} href={item.href} key={index}>
+		<span className='hover:text-secondary hover:underline'>{item.title}</span>
+	</Anchor>
+));
 
 const book = props => {
 	const [loading, setLoading] = useState(false);
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const drivers = useSelector(useDrivers)
 	const team = useSelector(useMembers)
 	const customers = useSelector(useCustomers)
+	const profile = useSelector(useCarrier)
+
 	const initialValues: NewBooking = {
-		createdAt: null,
+		createdAt: undefined,
+		carrierId: profile?.id,
 		customerId: '',
 		driverId: '',
 		controllerId: '',
@@ -71,39 +94,25 @@ const book = props => {
 		})
 	});
 
-	const items = [
-		{ title: 'Home', href: '/' },
-		{ title: 'Trips', href: '/trips' },
-		{ title: 'Book', href: '/trips/book' }
-	].map((item, index) => (
-		<Anchor component={Link} href={item.href} key={index}>
-			<span className='hover:text-secondary hover:underline'>{item.title}</span>
-		</Anchor>
-	));
-
 	const handleSubmit = useCallback(values => {
 		console.log("INPUT:", values)
 		setLoading(true);
 		values.createdAt = moment().unix();
-		const load = generateLoad(values, drivers, team, customers);
+		const load = generateLoad(profile, values, drivers, team, customers);
 		console.log("OUTPUT:", load);
-		dispatch(addLoad(load));
-		showNotification({
-			id: 'new-load-success',
-			disallowClose: true,
-			onClose: () => console.log('unmounted'),
-			onOpen: () => console.log('mounted'),
-			autoClose: 5000,
-			title: 'Success',
-			message: 'You have booked a new load',
-			color: 'green',
-			icon: <Check size={20} />,
-			loading: false
-		});
-		setTimeout(() => {
-			router.push(PATHS.TRIPS);
-			setLoading(false);
-		}, 500);
+		dispatch(createLoad(load))
+			.unwrap()
+			.then(() => {
+				notifySuccess('new-load-success', "You've booked a new load", <Check size={20} />);
+				setTimeout(() => {
+					router.push(PATHS.TRIPS);
+					setLoading(false);
+				}, 500);
+			})
+			.catch(err => {
+				notifyError('new-load-failure', `There was an error creating your load. ${err.message}`, <X size={20} />)
+				setLoading(false);
+			});
 	}, []);
 
 	return (
@@ -148,13 +157,13 @@ const book = props => {
 							</div>
 							<div className='lg:col-span-6 col-span-4 lg:row-span-2 grid grid-cols-12 gap-x-6 gap-y-4'>
 								<div className='col-span-4 lg:row-span-1'>
-									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Length' placeholder='Units' {...form.getInputProps('length')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+									<NumberInput required size='sm' radius={0} min={1} max={10000} label='Item Length' placeholder='Units' {...form.getInputProps('length')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
 								</div>
 								<div className='col-span-4 lg:row-span-1'>
-									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Width' placeholder='Units' {...form.getInputProps('width')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+									<NumberInput required size='sm' radius={0} min={1} max={10000} label='Item Width' placeholder='Units' {...form.getInputProps('width')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
 								</div>
 								<div className='col-span-4 lg:row-span-1'>
-									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Height' placeholder='Units' rightSection={<span className='text-voyage-grey pr-3'>cm</span>} {...form.getInputProps('height')} />
+									<NumberInput required size='sm' radius={0} min={1} max={10000} label='Item Height' placeholder='Units' rightSection={<span className='text-voyage-grey pr-3'>cm</span>} {...form.getInputProps('height')} />
 								</div>
 								<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
 									<NumberInput required size='sm' radius={0} min={1} max={26} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
@@ -194,7 +203,7 @@ const book = props => {
 							</div>
 							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
 								<TextInput id="pickup-postcode" required radius={0} placeholder='Postal Code' {...form.getInputProps('pickupLocation.postcode')} />
-								<TextInput id="pickup-country" disabled radius={0} placeholder='Country' {...form.getInputProps('pickupLocation.country')} />
+								<TextInput id="pickup-country" readOnly radius={0} placeholder='Country' {...form.getInputProps('pickupLocation.country')} />
 							</div>
 							<div className=''>
 								<Textarea radius={0} placeholder="Note" {...form.getInputProps('deliveryLocation.note')} />
@@ -211,7 +220,7 @@ const book = props => {
 							</div>
 							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
 								<TextInput required size='sm' radius={0} placeholder='Postal Code' {...form.getInputProps('deliveryLocation.postcode')} />
-								<TextInput disabled size='sm' radius={0} placeholder='Country' {...form.getInputProps('deliveryLocation.country')} />
+								<TextInput readOnly size='sm' radius={0} placeholder='Country' {...form.getInputProps('deliveryLocation.country')} />
 							</div>
 							<div className=''>
 								<Textarea radius={0} placeholder="Note" {...form.getInputProps('deliveryLocation.note')}/>
@@ -234,7 +243,7 @@ const book = props => {
 										size='md'
 										placeholder='Pickup Date'
 										inputFormat={'DD-MMM-YYYY HH:mm a'}
-										/*value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}*/
+										value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}
 										onChange={(value: Date) => form.setFieldValue('pickupDate', value ? moment(value).unix() : null)}
 										classNames={{ root: 'md:w-72' }}
 									/>
@@ -343,7 +352,8 @@ const book = props => {
 				</div>
 				<div id='button-container' className='flex flex-col flex-wrap justify-center space-y-8'>
 					<button type='submit' className='voyage-button w-auto'>
-						Book
+						<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
+						<span>Book</span>
 					</button>
 					<button type='button' className='voyage-button w-auto bg-transparent text-black hover:bg-stone-100' onClick={() => router.back()}>
 						Cancel
@@ -353,5 +363,34 @@ const book = props => {
 		</ContentContainer>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	if (session.id) {
+		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		let members = await fetchMembers(session.id, token?.carrierId, prisma)
+		let drivers = await fetchDrivers(session.id, token?.carrierId, prisma)
+		let customers = await fetchCustomers(session.id, token?.carrierId, prisma)
+		store.dispatch(setMembers(members));
+		store.dispatch(setDrivers(drivers));
+		store.dispatch(setCustomers(customers));
+		store.dispatch(setCarrier(carrier));
+	}
+	return {
+		props: {
+			session
+		}
+	};
+});
 
 export default book;

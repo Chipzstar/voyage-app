@@ -3,12 +3,13 @@ import { ActionIcon, Anchor, Button, Select, SimpleGrid, Text } from '@mantine/c
 import Link from 'next/link';
 import moment from 'moment/moment';
 import { SAMPLE_LOADS } from '../../utils/constants';
-import { EQUIPMENT_TYPES, SelectInputData, Load } from '@voyage-app/shared-types';
+import { EQUIPMENT_TYPES, SelectInputData} from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
 import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
 import { DateRangePicker } from '@mantine/dates';
 import ContentContainer from '../../layout/ContentContainer'
 import PageNav from '../../layout/PageNav'
+import { Load } from '../../utils/types'
 
 const marketplace = () => {
 	const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
