@@ -6,7 +6,6 @@ const initialState = [];
 
 export const createLoad = createAsyncThunk('load/createLoad', async (payload : Partial<Load>, thunkAPI) => {
 	try {
-		console.log(payload)
 		const load = (await axios.post(`/api/load/${payload.loadId}`, payload)).data
 		thunkAPI.dispatch(addLoad(load))
 		return load

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { TextInput } from '@mantine/core';
 import { Search } from 'tabler-icons-react';
 import DataGrid from '../components/DataGrid';
@@ -10,7 +10,8 @@ import { useRouter } from 'next/router';
 import { capitalize } from '@voyage-app/shared-utils';
 import { Empty } from '@voyage-app/shared-ui-components';
 import ContentContainer from '../layout/ContentContainer';
-import { Load } from '../utils/types'
+import { Load } from '../utils/types';
+import _ from 'lodash';
 
 interface TripsProps {
 	loads: Load[];
@@ -20,10 +21,25 @@ interface TripsProps {
 
 const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps) => {
 	const router = useRouter();
+	const [filteredLoads, setFilter] = useState([...loads]);
 
-	useEffect(() => console.log(loads), [loads]);
+	useEffect(() => setFilter(loads), [loads]);
 
-	const rows = loads
+	const debouncedSearch = useCallback(
+		_.debounce(value => {
+			setFilter(prevState =>
+				value.length >= 2
+					? loads.filter(
+							({ loadId, pickup: { postcode }, driver: { name: driverName }, customer: { name: customerName } }) =>
+								loadId.contains(value) || driverName.contains(value) || customerName.contains(value) || postcode.contains(value)
+					  )
+					: loads
+			);
+		}, 300),
+		[loads]
+	);
+
+	const rows = filteredLoads
 		.filter(element => statuses.includes(element.status))
 		.map((element, index) => {
 			const statusClass = classNames({
@@ -84,7 +100,7 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 	return (
 		<ContentContainer classNames='px-6 py-2'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
-				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search by ID, location, driver..' />
+				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search by ID, postcode, driver, customer...' onChange={e => debouncedSearch(e.target.value)} />
 				<button className='voyage-button h-11' onClick={() => router.push(PATHS.BOOK).then(() => console.log('navigating to booking page...'))}>
 					<span className='text-base'>
 						<span className='text-lg'>+&nbsp;</span>New Load

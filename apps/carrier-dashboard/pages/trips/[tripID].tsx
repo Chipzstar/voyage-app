@@ -3,51 +3,35 @@ import { Timeline, Text, Button, Anchor } from '@mantine/core'
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { PATHS, SAMPLE_LOADS } from '../../utils/constants'
+import { PATHS, PUBLIC_PATHS } from '../../utils/constants'
 import moment from 'moment';
 import PageNav from '../../layout/PageNav'
 import Link from 'next/link'
 import ContentContainer from '../../layout/ContentContainer'
 import { useSelector } from 'react-redux'
-import { useLoads } from '../../store/feature/loadSlice'
+import { setLoads, useLoads } from '../../store/feature/loadSlice'
+import { unstable_getServerSession } from 'next-auth'
+import { authOptions } from '../api/auth/[...nextauth]'
+import { getToken } from 'next-auth/jwt'
+import { fetchLoads } from '../../utils/functions'
+import prisma from '../../db'
+import { store } from '../../store'
 
 export async function getServerSideProps({ req, res, params }) {
 	// @ts-ignore
-	// const session = await unstable_getServerSession(req, res, authOptions);
-	let pageIndex = SAMPLE_LOADS.findIndex(item => item.shipmentId === params.tripID);
-	/*// fetch all shipments for the current user
-	let shipments = await prisma.shipment.findMany({
-		where: {
-			userId: {
-				equals: session.id
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
 			}
-		},
-		orderBy: {
-			createdAt: 'desc'
-		}
-	});
-	shipments = shipments.map(shipment => ({
-		...shipment,
-		createdAt: moment(shipment.createdAt).unix(),
-		updatedAt: moment(shipment.updatedAt).unix()
-	}));
-	// set them in memory
-	store.dispatch(setShipments(shipments));
-	// find the first shipment with matching shipment ID
-	const shipment = await prisma.shipment.findFirst({
-		where: {
-			userId: {
-				equals: session.id
-			},
-			shipmentId: {
-				equals: params.shipmentID
-			}
-		}
-	});
-	if (shipment) {
-		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
-		console.table({ pageIndex });
-	}*/
+		};
+	}
+	const loads = await fetchLoads(token?.carrierId, prisma)
+	store.dispatch(setLoads(loads))
+	let pageIndex = loads.findIndex(item => item.loadId === params.tripID);
 	return {
 		props: {
 			loadId: params.tripID,
@@ -56,7 +40,7 @@ export async function getServerSideProps({ req, res, params }) {
 	};
 }
 
-const tripDetails = ({ loadId, pageIndex, initialState }) => {
+const tripDetails = ({ loadId, pageIndex }) => {
 	const router = useRouter();
 	const loads = useSelector(useLoads)
 	const items = [
@@ -115,20 +99,20 @@ const tripDetails = ({ loadId, pageIndex, initialState }) => {
 								</div>
 								<div className='space-y-2'>
 									<span className='text-2xl font-medium'>Carrier</span>
-									<p className='text-lg'>{loads[pageIndex]?.carrier?.name}</p>
-									<p className='text-lg'>{loads[pageIndex]?.carrier?.location}</p>
+									<p className='text-lg'>{loads[pageIndex]?.carrierInfo?.name}</p>
+									<p className='text-lg'>{loads[pageIndex]?.carrierInfo?.location}</p>
 								</div>
 								<div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Contact</span>
-										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverName}</p>
-										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverPhone}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrierInfo?.driverName}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrierInfo?.driverPhone}</p>
 									</div>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Driver</span>
-										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverName}</p>
-										<p className='text-lg'>{loads[pageIndex]?.carrier?.driverPhone}</p>
-										<p className='text-lg'>{loads[pageIndex]?.carrier?.vehicleType}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrierInfo?.driverName}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrierInfo?.driverPhone}</p>
+										<p className='text-lg'>{loads[pageIndex]?.carrierInfo?.vehicleType}</p>
 									</div>
 								</div>
 							</aside>

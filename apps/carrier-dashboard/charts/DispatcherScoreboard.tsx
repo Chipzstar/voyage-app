@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { createStyles, ScrollArea, Table } from '@mantine/core';
 import { useSelector } from 'react-redux';
 import { useCustomers } from '../store/feature/customerSlice';
+import { useLoads } from '../store/feature/loadSlice'
 
 const useStyles = createStyles(theme => ({
 	header: {
@@ -44,19 +44,19 @@ const useStyles = createStyles(theme => ({
 const DispatcherScoreboard = props => {
 	const { classes, cx } = useStyles();
 	const customers = useSelector(useCustomers)
+	const loads = useSelector(useLoads)
 	const [scrolled, setScrolled] = useState(false);
+	
 	const rows = customers.map((element, index) => (
 		<tr key={index}>
 			<td className='flex items-center'>
 				<div className='p-2 bg-voyage-grey h-2 w-2'>
 					<span>{index + 1}</span>
 				</div>
-				<span>
-					{element.fullName}
-				</span>
+				<span>{element.fullName}</span>
 			</td>
 			<td>
-				<span>100</span>
+				<span>{loads.reduce((prev, curr) => curr.customer.id === element.id ? 1 : prev, 0)}</span>
 			</td>
 			<td>
 				<span>£2000</span>

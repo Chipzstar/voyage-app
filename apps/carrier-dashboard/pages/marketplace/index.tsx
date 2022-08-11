@@ -102,7 +102,7 @@ const marketplace = () => {
 							<div className='flex items-center'>
 								<div className='flex items-center space-x-3'>
 									<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
-									<span className='font-medium'>{shipment.carrier.vehicleType}</span>
+									<span className='font-medium'>{shipment.carrierInfo.vehicleType}</span>
 								</div>
 								<div>
 									<span className='lowercase'>
