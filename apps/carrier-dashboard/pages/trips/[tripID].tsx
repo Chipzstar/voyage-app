@@ -106,7 +106,7 @@ const tripDetails = ({ loadId, pageIndex }) => {
 										</div>
 										<Text>{pickup.street}</Text>
 										<Text>{pickup.city}</Text>
-										<Text transform="uppercase">{pickup.postcode}</Text>
+										<Text transform='uppercase'>{pickup.postcode}</Text>
 									</div>
 									<div className='space-y-2'>
 										<span className='page-subheading'>Dropoff</span>
@@ -117,7 +117,7 @@ const tripDetails = ({ loadId, pageIndex }) => {
 										</div>
 										<Text>{delivery.street}</Text>
 										<Text>{delivery.city}</Text>
-										<Text transform="uppercase">{delivery.postcode}</Text>
+										<Text transform='uppercase'>{delivery.postcode}</Text>
 									</div>
 									<div className='space-y-2'>
 										<span className='page-subheading'>Customer</span>
@@ -160,7 +160,7 @@ const tripDetails = ({ loadId, pageIndex }) => {
 							</aside>
 						</div>
 						<div>
-							<Map height={215} />
+							<Map height={215} customers={[loads[pageIndex]]} />
 						</div>
 					</div>
 				</main>

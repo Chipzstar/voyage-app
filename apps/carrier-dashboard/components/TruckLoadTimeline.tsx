@@ -1,12 +1,10 @@
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
-import moment from 'moment'
+import moment from 'moment-timezone';
 import React, { useMemo } from 'react'
 import CustomWeekView from '../containers/CustomWeekView'
-import {  PATHS } from '../utils/constants'
+import { localizer, PATHS } from '../utils/constants'
 import { useRouter } from 'next/router'
 import { Load } from '../utils/types'
-
-const localizer = momentLocalizer(moment)
 
 /*const WeekEvent = (value) => {
 	console.log(value)
@@ -34,13 +32,14 @@ const TruckLoadTimeline = ({ loads }) => {
 	const handleEventPropGetter = (event, start, end, isSelected) => {
 		console.log(event);
 		const style = {
+			zIndex: 50,
 			backgroundColor: event.bgColor,
 			opacity: 0.8,
 			color: 'black',
 			display: 'block'
 		};
 		return {
-			style: style
+			style
 		};
 	}
 	return (
@@ -71,14 +70,18 @@ const TruckLoadTimeline = ({ loads }) => {
 				onSelectEvent={handleEventSelection}
 				eventPropGetter={handleEventPropGetter}
 				localizer={localizer}
-				events={loads.map((load: Load) => ({
-					id: load.loadId,
-					title: `${load.loadId}\n${load.pickup.postcode} → ${load.delivery.postcode}`,
-					bgColor: '#ff7f50',
-					allDay: false,
-					start: moment.unix(load.pickup.window.start).toDate(),
-					end: moment.unix(load.pickup.window.end).toDate()
-				}))}
+				events={loads.map((load: Load) => {
+					console.log(moment.unix(load.pickup.window.start).toDate())
+					console.log(moment.unix(load.pickup.window.end).toDate())
+					return {
+						id: load.loadId,
+						title: `${load.loadId}\n${load.pickup.postcode} → ${load.delivery.postcode}`,
+						bgColor: '#ff7f50',
+						allDay: false,
+						start: moment.unix(load.pickup.window.start).toDate(),
+						end: moment.unix(load.pickup.window.end).toDate()
+					};
+				})}
 				startAccessor='start'
 				endAccessor='end'
 				views={views}
