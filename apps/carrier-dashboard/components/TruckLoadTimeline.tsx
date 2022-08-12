@@ -31,6 +31,18 @@ const TruckLoadTimeline = ({ loads }) => {
 	);
 
 	const handleEventSelection = e => router.push(`${PATHS.TRIPS}/${e.id}`);
+	const handleEventPropGetter = (event, start, end, isSelected) => {
+		console.log(event);
+		const style = {
+			backgroundColor: event.bgColor,
+			opacity: 0.8,
+			color: 'black',
+			display: 'block'
+		};
+		return {
+			style: style
+		};
+	}
 	return (
 		<div className='py-3'>
 			<Calendar
@@ -57,6 +69,7 @@ const TruckLoadTimeline = ({ loads }) => {
 					}
 				}}
 				onSelectEvent={handleEventSelection}
+				eventPropGetter={handleEventPropGetter}
 				localizer={localizer}
 				events={loads.map((load: Load) => ({
 					id: load.loadId,
