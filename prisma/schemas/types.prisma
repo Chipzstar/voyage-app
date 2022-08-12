@@ -79,12 +79,14 @@ type Contact {
 }
 
 type LoadLocation {
+    fullAddress String
     street      String
     city        String
     region      String?
     postcode    String
     country     String
     note        String?
+    location    Geolocation?
     window      TimeWindow?
 }
 
@@ -103,6 +105,15 @@ type DriverInfo {
 type TrackingHistory {
     status STATUS
     timestamp Int
+}
+
+enum GEOLOCATION_TYPE {
+    Point
+}
+
+type Geolocation {
+   type: GEOLOCATION_TYPE
+   coordinates: Float[]
 }
 
 

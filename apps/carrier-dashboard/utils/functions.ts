@@ -1,19 +1,30 @@
-import { Customer, Driver, Load, Member, NewBooking } from './types';
+import { Customer, Driver, Load, LoadLocation, Location, Member, NewBooking } from './types'
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { calculateRate, numericId } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
 import { PLACE_TYPES } from './constants'
 
+function genFullAddress(location: Location){
+	let fullAddress = ''
+	Object.entries(location).forEach(([key, value]) => {
+		if (key !== 'note') fullAddress += value + ' '
+	})
+	console.log(fullAddress)
+	return fullAddress;
+}
+
 export function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[]): Load {
-	const pickup = {
+	const pickup:LoadLocation = {
 		...values.pickupLocation,
+		fullAddress: genFullAddress(values.pickupLocation),
 		window: {
 			start: moment(values.pickupDate).unix(),
 			end: moment(values.pickupDate).add(1, 'hour').unix()
 		}
 	};
-	const delivery = {
+	const delivery:LoadLocation = {
+		fullAddress: genFullAddress(values.deliveryLocation),
 		...values.deliveryLocation
 	};
 	const driver = drivers.find(driver => driver.driverId === values.driverId);

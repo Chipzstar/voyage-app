@@ -88,6 +88,8 @@ const book = props => {
 	const form = useForm({
 		initialValues,
 		validate: values => ({
+			pickupDate: !values.pickupDate ? "Please select a date for pickup" : null,
+			vehicleType: !values.vehicleType ? "Please select the type of vehicle for this load" : null,
 			driverId: !values.driverId ? "Please select a Driver for this load" : null,
 			controllerId: !values.controllerId ? "Please select a Controller for this load" : null,
 			customerId: !values.customerId ? "Please select a Customer for this load" : null
@@ -122,7 +124,7 @@ const book = props => {
 			</section>
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 lg:grid-cols-4 gap-20'>
 				<div id='book-form-container' className='flex flex-col space-y-5 col-span-3'>
-					<div id="load-type" className='grid grid-cols-1 gap-6'>
+					<div id='load-type' className='grid grid-cols-1 gap-6'>
 						<header className='form-header'>Load Type</header>
 						<div className='border border-gray-300 p-4 grid grid-cols-4 lg:grid-cols-12 lg:row-span-3 gap-y-4 gap-x-12 pb-8'>
 							<div className='lg:row-span-1 col-span-4'>
@@ -191,22 +193,22 @@ const book = props => {
 							</div>
 						</div>
 					</div>
-					<div id="locations" className='grid grid-cols-2 gap-5'>
+					<div id='locations' className='grid grid-cols-2 gap-5'>
 						<div className='flex flex-col space-y-6'>
 							<header className='form-header'>Pickup</header>
 							<div className=''>
-								<TextInput id="pickup-street" required radius={0} placeholder='Street Address' {...form.getInputProps('pickupLocation.street')} />
+								<TextInput id='pickup-street' required radius={0} placeholder='Street Address' {...form.getInputProps('pickupLocation.street')} />
 							</div>
 							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
-								<TextInput id="pickup-city" required radius={0} placeholder='Town / City' {...form.getInputProps('pickupLocation.city')} />
-								<TextInput id="pickup-region" radius={0} placeholder='Region' {...form.getInputProps('pickupLocation.region')} />
+								<TextInput id='pickup-city' required radius={0} placeholder='Town / City' {...form.getInputProps('pickupLocation.city')} />
+								<TextInput id='pickup-region' radius={0} placeholder='Region' {...form.getInputProps('pickupLocation.region')} />
 							</div>
 							<div className='grid grid-cols-1 lg:grid-cols-2 gap-y-6 gap-x-6'>
-								<TextInput id="pickup-postcode" required radius={0} placeholder='Postal Code' {...form.getInputProps('pickupLocation.postcode')} />
-								<TextInput id="pickup-country" readOnly radius={0} placeholder='Country' {...form.getInputProps('pickupLocation.country')} />
+								<TextInput id='pickup-postcode' required radius={0} placeholder='Postal Code' {...form.getInputProps('pickupLocation.postcode')} />
+								<TextInput id='pickup-country' readOnly radius={0} placeholder='Country' {...form.getInputProps('pickupLocation.country')} />
 							</div>
 							<div className=''>
-								<Textarea radius={0} placeholder="Note" {...form.getInputProps('deliveryLocation.note')} />
+								<Textarea radius={0} placeholder='Note' {...form.getInputProps('deliveryLocation.note')} />
 							</div>
 						</div>
 						<div className='flex flex-col space-y-6'>
@@ -223,7 +225,7 @@ const book = props => {
 								<TextInput readOnly size='sm' radius={0} placeholder='Country' {...form.getInputProps('deliveryLocation.country')} />
 							</div>
 							<div className=''>
-								<Textarea radius={0} placeholder="Note" {...form.getInputProps('deliveryLocation.note')}/>
+								<Textarea radius={0} placeholder='Note' {...form.getInputProps('deliveryLocation.note')} />
 							</div>
 						</div>
 					</div>
@@ -236,10 +238,12 @@ const book = props => {
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<DateTimePicker
+										error={form.errors['pickupDate']}
+										name='pickupDate'
 										required
 										allowLevelChange={false}
 										radius={0}
-										icon={<Calendar size={16}/>}
+										icon={<Calendar size={16} />}
 										size='md'
 										placeholder='Pickup Date'
 										inputFormat={'DD-MMM-YYYY HH:mm a'}
@@ -250,7 +254,7 @@ const book = props => {
 								</div>
 							</div>
 						</div>
-						<div id="col-1">
+						<div id='col-1'>
 							<div className='flex flex-col space-y-4 h-48'>
 								<header className='space-y-3'>
 									<h1 className='form-header'>Select Account</h1>
@@ -265,10 +269,12 @@ const book = props => {
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={customers.map((customer): SelectInputData => ({
-											value: customer.customerId,
-											label: capitalize(sanitize(customer.companyName))
-										}))}
+										data={customers.map(
+											(customer): SelectInputData => ({
+												value: customer.customerId,
+												label: capitalize(sanitize(customer.companyName))
+											})
+										)}
 										{...form.getInputProps('customerId')}
 									/>
 								</div>
@@ -291,10 +297,12 @@ const book = props => {
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={Object.values(VEHICLE_TYPES).map((vehicle): SelectInputData => ({
-											value: vehicle,
-											label: capitalize(sanitize(vehicle))
-										}))}
+										data={Object.values(VEHICLE_TYPES).map(
+											(vehicle): SelectInputData => ({
+												value: vehicle,
+												label: capitalize(sanitize(vehicle))
+											})
+										)}
 										{...form.getInputProps('vehicleType')}
 									/>
 								</div>
@@ -315,10 +323,12 @@ const book = props => {
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={drivers.map((driver): SelectInputData => ({
-											label: driver.fullName,
-											value: driver.driverId
-										}))}
+										data={drivers.map(
+											(driver): SelectInputData => ({
+												label: driver.fullName,
+												value: driver.driverId
+											})
+										)}
 										{...form.getInputProps('driverId')}
 									/>
 								</div>
@@ -339,10 +349,14 @@ const book = props => {
 										rightSection={<ChevronDown size={14} />}
 										rightSectionWidth={30}
 										styles={{ rightSection: { pointerEvents: 'none' } }}
-										data={team.filter(item => item.role === TeamRole.CONTROLLER).map((member): SelectInputData => ({
-											label: member.firstName + ' ' + member.lastName,
-											value: member.memberId
-										}))}
+										data={team
+											.filter(item => item.role === TeamRole.CONTROLLER)
+											.map(
+												(member): SelectInputData => ({
+													label: member.firstName + ' ' + member.lastName,
+													value: member.memberId
+												})
+											)}
 										{...form.getInputProps('controllerId')}
 									/>
 								</div>
@@ -351,7 +365,7 @@ const book = props => {
 					</div>
 				</div>
 				<div id='button-container' className='flex flex-col flex-wrap justify-center space-y-8'>
-					<button type='submit' className='voyage-button w-auto'>
+					<button type='submit' className='flex justify-center items-center voyage-button w-auto'>
 						<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
 						<span>Book</span>
 					</button>

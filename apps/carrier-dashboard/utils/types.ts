@@ -85,6 +85,11 @@ type Tracking = {
 	timestamp: UnixTimestamp
 }
 
+type Geolocation = {
+	type: "Point",
+	coordinates: [number, number]
+}
+
 export interface Carrier {
 	id: string;
 	carrierId: string;
@@ -212,6 +217,8 @@ export interface Location {
    region?: string;
 	postcode: string;
 	country: string;
+	lat?: number;
+	lng?: number;
 	note?: string;
 }
 
@@ -236,6 +243,18 @@ export interface NewBooking {
 	description: string;
 }
 
+export interface LoadLocation {
+	fullAddress?: string;
+	street: string;
+	city: string;
+	region?: string;
+	postcode: string;
+	country: string;
+	note?: string;
+	location?: Geolocation
+	window?: ShipmentTimeWindow;
+}
+
 export interface Load {
 	id: string;
 	carrierId: string;
@@ -247,24 +266,8 @@ export interface Load {
 	internalPONumber?: string;
 	customerPONumber?: string;
 	rate: number;
-	pickup: {
-		street: string;
-		city: string;
-		region?: string;
-		postcode: string;
-		country: string;
-		note?: string;
-		window: ShipmentTimeWindow;
-	};
-	delivery: {
-		street: string;
-		city: string;
-		region?: string;
-		postcode: string;
-		country: string;
-		note?: string;
-		window?: ShipmentTimeWindow;
-	};
+	pickup: LoadLocation;
+	delivery: LoadLocation;
 	customer?: {
 		id: string;
 		name: string;

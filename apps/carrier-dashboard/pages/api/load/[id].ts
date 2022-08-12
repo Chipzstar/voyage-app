@@ -1,21 +1,104 @@
 import { runMiddleware, cors } from '../index';
-import prisma from '../../../db';
-import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt'
+import { Load, LoadLocation } from '../../../utils/types'
+import { Client } from '@googlemaps/google-maps-services-js'
+import prisma from '../../../db';
+import { PLACE_TYPES } from '../../../utils/constants'
+
+const GMapsClient = new Client();
+
+async function geocodeAddress(address: string) {
+	try {
+		const response = (
+			await GMapsClient.geocode({
+				params: {
+					address,
+					key: process.env.GOOGLE_MAPS_API_KEY
+				}
+			})
+		).data;
+
+		if (response.results.length) {
+			const formattedAddress: LoadLocation = {
+				street: '',
+				city: '',
+				region: '',
+				postcode: '',
+				country: 'UK',
+				location: {
+					type: 'Point',
+					coordinates: [response.results[0].geometry.location.lng, response.results[0].geometry.location.lat]
+				}
+			};
+			let fullAddress = response.results[0].formatted_address;
+			let components = response.results[0].address_components;
+			console.log(components);
+			components.forEach(({ long_name, types }) => {
+				switch (types[0]) {
+					case PLACE_TYPES.ESTABLISHMENT:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.STREET_NUMBER:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.STREET_ADDRESS:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.SUB_PREMISE:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.PREMISE:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.INTERSECTION:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.CITY:
+						formattedAddress.city = long_name;
+						break;
+					case PLACE_TYPES.POSTCODE:
+						formattedAddress.postcode = long_name;
+						break;
+					case PLACE_TYPES.POSTCODE_PREFIX:
+						// make postcode property empty since the real value is not a full postcode
+						formattedAddress.postcode = long_name;
+						break;
+					default:
+						return;
+				}
+			});
+			return { fullAddress, formattedAddress };
+		}
+		throw new Error('No Address suggestions found');
+	} catch (e) {
+		console.error(e);
+		throw e;
+	}
+}
 
 export default async function handler(req, res) {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
-	const payload = req.body;
 	const token = await getToken({ req });
-	console.log("PAYLOAD", payload)
 	const { id } = req.query
 	if (req.method === 'POST') {
 		try {
+			const payload: Load = req.body;
+			console.log("PAYLOAD", payload)
+			// geocode pickup and delivery addresses
+			const { fullAddress: pickupFullAddress, formattedAddress: pickupFormattedAddress } = await geocodeAddress(payload.pickup.fullAddress)
+			const { fullAddress: deliveryFullAddress, formattedAddress: deliveryFormattedAddress } = await geocodeAddress(payload.delivery.fullAddress)
 			const load = await prisma.load.create({
-				data: {
+				data: <Load>{
 					...payload,
+					pickup: {
+						...payload.pickup,
+						...pickupFormattedAddress
+					},
+					delivery: {
+						...payload.delivery,
+						...deliveryFormattedAddress
+					},
 					carrierId: payload?.carrierId || token?.carrierId
 				}
 			});
@@ -27,7 +110,7 @@ export default async function handler(req, res) {
 		}
 	} else if (req.method === 'PUT'){
 		try {
-			let { id, ...rest } = payload
+			let { id, ...rest } = req.body
 			const load = await prisma.load.update({
 				where: {
 					id

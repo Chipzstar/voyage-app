@@ -17,6 +17,7 @@ import { fetchLoads } from '../../utils/functions';
 import prisma from '../../db';
 import { wrapper } from '../../store';
 import { capitalize, sanitize } from '@voyage-app/shared-utils';
+import Pluralize from 'react-pluralize';
 
 const tripDetails = ({ loadId, pageIndex }) => {
 	const router = useRouter();
@@ -132,7 +133,7 @@ const tripDetails = ({ loadId, pageIndex }) => {
 									<div className='space-y-2 col-span-2'>
 										<span className='page-subheading'>Package Details</span>
 										<p>
-											{packageInfo?.quantity} {packageInfo?.packageType.toLowerCase()}s
+											<Pluralize singular={packageInfo?.packageType.toLowerCase()} count={packageInfo?.quantity ?? 1} />
 										</p>
 										<p>
 											{packageInfo?.weight} kg &nbsp;/&nbsp; {packageInfo?.dimensions.length} x {packageInfo?.dimensions.width} x {packageInfo?.dimensions.height} cm
