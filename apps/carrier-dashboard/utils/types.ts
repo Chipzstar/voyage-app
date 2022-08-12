@@ -80,6 +80,11 @@ type Stripe = {
 	paymentMethodId: string,
 }
 
+type Tracking = {
+	status: STATUS,
+	timestamp: UnixTimestamp
+}
+
 export interface Carrier {
 	id: string;
 	carrierId: string;
@@ -274,4 +279,5 @@ export interface Load {
 	package: Package;
 	carrierInfo: CarrierInfo;
 	hazmat?: HAZMAT_TYPES;
+	trackingHistory: Tracking[]
 }

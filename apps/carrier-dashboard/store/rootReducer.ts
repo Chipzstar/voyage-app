@@ -14,7 +14,7 @@ const appReducer = combineReducers({
 	vehicles: vehicleReducer,
 	customers: customerReducer,
 	loads: loadReducer
-})
+});
 
 const rootReducer = (state, action) => {
 	if (action.type === HYDRATE) {
@@ -35,8 +35,8 @@ const rootReducer = (state, action) => {
 		state = undefined;
 	}
 	return appReducer(state, action);
-}
+};
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
 
-export default rootReducer;
+export default rootReducer

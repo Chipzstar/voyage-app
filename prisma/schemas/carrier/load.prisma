@@ -33,4 +33,5 @@ model Load {
     vehicleType VehicleType
     customer CustomerInfo
     driver DriverInfo
+    trackingHistory TrackingHistory[]
 }

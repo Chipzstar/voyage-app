@@ -100,5 +100,10 @@ type DriverInfo {
     phone   String
 }
 
+type TrackingHistory {
+    status STATUS
+    timestamp Int
+}
+
 
 

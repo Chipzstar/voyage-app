@@ -1,11 +1,8 @@
-import React from 'react';
-import { Customer, Driver, NewBooking, Member, Load } from './types';
+import { Customer, Driver, Load, Member, NewBooking } from './types';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { calculateRate, numericId } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
-import prisma from '../db';
-import { setCarrier } from '../store/feature/profileSlice';
 
 export function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[]): Load {
 	const pickup = {
@@ -64,7 +61,11 @@ export function generateLoad(profile, values: NewBooking, drivers: Driver[], con
 			controllerName: controller?.firstName + ' ' + controller?.lastName,
 			vehicleType: values.vehicleType
 		},
-		vehicleType: values.vehicleType
+		vehicleType: values.vehicleType,
+		trackingHistory: [{
+			status: STATUS.NEW,
+			timestamp: moment().unix()
+		}]
 	};
 }
 

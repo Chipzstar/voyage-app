@@ -170,6 +170,11 @@ type DriverInfo {
   phone String
 }
 
+type TrackingHistory {
+  status    STATUS
+  timestamp Int
+}
+
 enum LocationType {
   WAREHOUSE
   STORE
@@ -380,16 +385,16 @@ enum HamzatType {
 }
 
 model Load {
-  id               String       @id @default(auto()) @map("_id") @db.ObjectId
-  loadId           String       @unique
-  carrier          Carrier      @relation(fields: [carrierId], references: [id])
-  carrierId        String       @db.ObjectId
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  loadId           String            @unique
+  carrier          Carrier           @relation(fields: [carrierId], references: [id])
+  carrierId        String            @db.ObjectId
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
   source           String
   status           STATUS
-  internalPONumber String?      @default("")
-  customerPONumber String?      @default("")
+  internalPONumber String?           @default("")
+  customerPONumber String?           @default("")
   rate             Int
   pickup           LoadLocation
   delivery         LoadLocation
@@ -399,6 +404,7 @@ model Load {
   vehicleType      VehicleType
   customer         CustomerInfo
   driver           DriverInfo
+  trackingHistory  TrackingHistory[]
 }
 enum TeamRole {
   ADMIN

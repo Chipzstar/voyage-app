@@ -399,7 +399,8 @@ export const SAMPLE_LOADS: Load[] = [
 			name: "Chisom Oguibe",
 			phone: "+447523958055"
 		},
-		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
+		trackingHistory: []
 	},
 	{
 		id: '',
@@ -462,7 +463,8 @@ export const SAMPLE_LOADS: Load[] = [
 			name: "Chisom Oguibe",
 			phone: "+447523958055"
 		},
-		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
+		trackingHistory: []
 	},
 	{
 		id: '',
@@ -525,7 +527,8 @@ export const SAMPLE_LOADS: Load[] = [
 			name: "Chisom Oguibe",
 			phone: "+447523958055"
 		},
-		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
+		trackingHistory: []
 	},
 	{
 		id: '',
@@ -588,7 +591,8 @@ export const SAMPLE_LOADS: Load[] = [
 			name: "Chisom Oguibe",
 			phone: "+447523958055"
 		},
-		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
+		trackingHistory: []
 	},
 	{
 		id: '',
@@ -651,7 +655,8 @@ export const SAMPLE_LOADS: Load[] = [
 			name: "Chisom Oguibe",
 			phone: "+447523958055"
 		},
-		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
+		trackingHistory: []
 	},
 	{
 		id: '',
@@ -714,7 +719,8 @@ export const SAMPLE_LOADS: Load[] = [
 			name: "Chisom Oguibe",
 			phone: "+447523958055"
 		},
-		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER
+		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
+		trackingHistory: []
 	}
 ];
 
