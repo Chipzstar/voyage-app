@@ -43,7 +43,7 @@ const Map = ({ height=500, customers=[] }: MapProps) => {
 
 	useEffect(() => {
 		if (map.current) {
-			let bbox = []
+			let coordinates = []
 			customers.forEach((customer: Load) => {
 				const pickupCoords = customer.pickup?.location?.coordinates;
 				const deliveryCoords = customer.delivery?.location?.coordinates
@@ -54,12 +54,16 @@ const Map = ({ height=500, customers=[] }: MapProps) => {
 					new mapboxgl.Marker()
 						.setLngLat(deliveryCoords)
 						.addTo(map.current);
-					bbox.push(pickupCoords, deliveryCoords)
+					coordinates.push(pickupCoords, deliveryCoords)
 				}
 			})
-			console.log(bbox)
+			console.log(coordinates)
 			map.current.setPadding({left: 15, top: 50, right: 15, bottom: 40});
-			bbox.length >=2 && map.current.fitBounds(bbox,"top-right",{ padding: { top: 100, bottom: 100, left: 15, right: 15 } })
+			if (coordinates.length >=2) {
+				const bounds = coordinates.reduce((bounds, coord) => bounds.extend(coord), new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+				console.log(bounds)
+				map.current.fitBounds(bounds);
+			}
 		}
 	}, [customers])
 
