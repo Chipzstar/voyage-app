@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Timeline, Text, Button, Anchor, Badge } from '@mantine/core';
 import { ChevronLeft, ChevronRight, Clock } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
@@ -43,16 +43,14 @@ const tripDetails = ({ loadId, pageIndex }) => {
 
 	const { pickup, delivery, packageInfo, carrierInfo, customer, trackingHistory } = useMemo(() => {
 		return {
-			customer: loads[pageIndex].customer,
-			pickup: loads[pageIndex].pickup,
-			delivery: loads[pageIndex].delivery,
+			customer: loads[pageIndex]?.customer,
+			pickup: loads[pageIndex]?.pickup,
+			delivery: loads[pageIndex]?.delivery,
 			packageInfo: loads[pageIndex]?.package,
 			carrierInfo: loads[pageIndex]?.carrierInfo,
 			trackingHistory: loads[pageIndex]?.trackingHistory ?? []
 		};
 	}, [loads, pageIndex]);
-
-	useEffect(() => console.log(loads[pageIndex]), [loads]);
 
 	return (
 		<ContentContainer>
@@ -100,12 +98,14 @@ const tripDetails = ({ loadId, pageIndex }) => {
 										<span className='page-subheading'>Pickup</span>
 										<div className='flex'>
 											<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
-												<Text>{moment.unix(pickup.window.start).format('HH:mm a')} - {moment.unix(pickup.window.end).format('HH:mm a')}</Text>
+												<Text>
+													{moment.unix(pickup.window.start).format('HH:mm a')} - {moment.unix(pickup.window.end).format('HH:mm a')}
+												</Text>
 											</Badge>
 										</div>
 										<Text>{pickup.street}</Text>
 										<Text>{pickup.city}</Text>
-										<Text>{pickup.postcode}</Text>
+										<Text transform="uppercase">{pickup.postcode}</Text>
 									</div>
 									<div className='space-y-2'>
 										<span className='page-subheading'>Dropoff</span>
@@ -116,7 +116,7 @@ const tripDetails = ({ loadId, pageIndex }) => {
 										</div>
 										<Text>{delivery.street}</Text>
 										<Text>{delivery.city}</Text>
-										<Text>{delivery.postcode}</Text>
+										<Text transform="uppercase">{delivery.postcode}</Text>
 									</div>
 									<div className='space-y-2'>
 										<span className='page-subheading'>Customer</span>
@@ -129,15 +129,14 @@ const tripDetails = ({ loadId, pageIndex }) => {
 										<p>{carrierInfo?.driverPhone}</p>
 										<p className='capitalize'>{sanitize(carrierInfo?.vehicleType.toLowerCase())}</p>
 									</div>
-									<div className='space-y-2'>
+									<div className='space-y-2 col-span-2'>
 										<span className='page-subheading'>Package Details</span>
-										<div className='flex'>
-											<p>{packageInfo.weight} kg</p>
-											<p>&nbsp;/&nbsp;</p>
-											<p>
-												{packageInfo.dimensions.length} x {packageInfo.dimensions.width} x {packageInfo.dimensions.height} cm
-											</p>
-										</div>
+										<p>
+											{packageInfo?.quantity} {packageInfo?.packageType.toLowerCase()}s
+										</p>
+										<p>
+											{packageInfo?.weight} kg &nbsp;/&nbsp; {packageInfo?.dimensions.length} x {packageInfo?.dimensions.width} x {packageInfo?.dimensions.height} cm
+										</p>
 									</div>
 								</section>
 							</aside>
@@ -182,7 +181,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	const loads = await fetchLoads(token?.carrierId, prisma);
-	console.log(loads);
 	store.dispatch(setLoads(loads));
 	let pageIndex = loads.findIndex(item => item.loadId === params.tripID);
 	return {
@@ -193,4 +191,4 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	};
 });
 
-export default tripDetails;
+export default tripDetails

@@ -1,5 +1,5 @@
 import { CalendarFilter, DateRange } from '@voyage-app/shared-ui-components';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import moment from 'moment';
 import Map from '../components/Map';
 import TruckLoadTimeline from '../components/TruckLoadTimeline';
@@ -7,16 +7,17 @@ import PageHeader from '../layout/PageHeader';
 import { PUBLIC_PATHS } from '../utils/constants';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
-import { authOptions} from './api/auth/[...nextauth]';
-import prisma from '../db'
-import { setCarrier } from '../store/feature/profileSlice'
-import { wrapper } from '../store'
+import { authOptions } from './api/auth/[...nextauth]';
+import prisma from '../db';
+import { setCarrier } from '../store/feature/profileSlice';
+import { wrapper } from '../store';
 import { fetchLoads, fetchProfile } from '../utils/functions';
-import { setLoads } from '../store/feature/loadSlice';
+import { setLoads, useLoads } from '../store/feature/loadSlice'
+import { useSelector } from 'react-redux';
 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
-
+	const loads = useSelector(useLoads);
 	return (
 		<div className='py-4 px-8 h-full overflow-y-auto'>
 			<div className='flex justify-between mb-5'>
@@ -24,17 +25,17 @@ export function Index(props) {
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
 			</div>
 			<Map height={250} />
-			<TruckLoadTimeline />
+			<TruckLoadTimeline loads={loads} />
 		</div>
 	);
 }
 
-export const getServerSideProps = wrapper.getServerSideProps(store => async({ req, res }) => {
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
 	console.log('\nHOMEPAGE');
-	console.table(token)
+	console.table(token);
 	if (!session) {
 		return {
 			redirect: {
@@ -43,9 +44,10 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 			}
 		};
 	}
-	if (session.id || token?.carrierId){
-		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
-		let loads = await fetchLoads(token?.carrierId, prisma)
+	if (session.id || token?.carrierId) {
+		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
+		let loads = await fetchLoads(token?.carrierId, prisma);
+		console.table({count: loads.length})
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setLoads(loads));
 	}
