@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
-import { Timeline, Text, Button, Anchor, Badge } from '@mantine/core';
+import { Anchor, Badge, Button, Text, Timeline } from '@mantine/core';
 import { ChevronLeft, ChevronRight, Clock } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
+import { mapboxClient, PATHS, PUBLIC_PATHS } from '../../utils/constants';
 import moment from 'moment';
 import PageNav from '../../layout/PageNav';
 import Link from 'next/link';
@@ -18,8 +18,9 @@ import prisma from '../../db';
 import { wrapper } from '../../store';
 import { capitalize, sanitize } from '@voyage-app/shared-utils';
 import Pluralize from 'react-pluralize';
+import { Load, MapType } from '../../utils/types';
 
-const tripDetails = ({ loadId, pageIndex }) => {
+const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 	const router = useRouter();
 	const loads = useSelector(useLoads);
 
@@ -160,7 +161,13 @@ const tripDetails = ({ loadId, pageIndex }) => {
 							</aside>
 						</div>
 						<div>
-							<Map height={215} customers={[loads[pageIndex]]} />
+							<Map
+								height={215}
+								customers={[loads[pageIndex]]}
+								type={MapType.ORDER}
+								route={geoJSON}
+								tripId={loadId}
+							/>
 						</div>
 					</div>
 				</main>
@@ -183,13 +190,31 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	const loads = await fetchLoads(token?.carrierId, prisma);
 	store.dispatch(setLoads(loads));
-	let pageIndex = loads.findIndex(item => item.loadId === params.tripID);
+	let pageIndex = loads.findIndex((item: Load) => item.loadId === params.tripID);
+	// fetch mapbox route directions between pickup and dropoff
+	let geoJSON = {
+		type: 'LineString',
+		coordinates: []
+	};
+
+	if (pageIndex !== -1) {
+		const bounds = [loads[pageIndex].pickup.location.coordinates, loads[pageIndex].delivery.location.coordinates];
+		const profile = 'mapbox/driving-traffic';
+		let coordinates = bounds.join(';');
+		const request = await mapboxClient.createRequest({
+			method: 'GET',
+			path: `/directions/v5/${profile}/${coordinates}?geometries=geojson`
+		});
+		const response = await request.send();
+		geoJSON = response.body.routes[0].geometry;
+	}
 	return {
 		props: {
 			loadId: params.tripID,
-			pageIndex
+			pageIndex,
+			geoJSON
 		}
 	};
 });
 
-export default tripDetails
+export default tripDetails;

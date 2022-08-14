@@ -66,6 +66,11 @@ export enum AccountType {
 	LARGE_SHIPPER="LARGE_SHIPPER",
 }
 
+export enum MapType {
+	DASHBOARD,
+	ORDER
+}
+
 export type Address = {
 	addressLine1: string,
 	addressLine2?: string,

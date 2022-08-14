@@ -17,7 +17,7 @@ const sliceData = (data, page, rowsPerPage) => {
 const useTable = (data, page, height) => {
 	const [tableRange, setTableRange] = useState([]);
 	const [slice, setSlice] = useState([]);
-	const rowsPerPage = Math.floor(height / 120);
+	const rowsPerPage = Math.floor(height / 100);
 
 	useEffect(() => {
 		const range = calculateRange(data, rowsPerPage);

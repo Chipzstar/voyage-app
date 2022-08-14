@@ -44,6 +44,7 @@
     "@mantine/modals": "^5.0.2",
     "@mantine/next": "^5.0.2",
     "@mantine/notifications": "^5.0.2",
+    "@mapbox/mapbox-sdk": "^0.13.4",
     "@next-auth/prisma-adapter": "^1.0.3",
     "@nivo/bar": "^0.78.0",
     "@nivo/core": "^0.78.0",
@@ -145,4 +146,3 @@
     "singleQuote": true
   }
 }
-

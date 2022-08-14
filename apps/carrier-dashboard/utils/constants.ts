@@ -5,6 +5,11 @@ import { Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, L
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar'
 moment.tz.setDefault('Europe/London');
+import mbxClient from '@mapbox/mapbox-sdk';
+
+export const mapboxClient = mbxClient({
+	accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+});
 
 export const localizer = momentLocalizer(moment)
 

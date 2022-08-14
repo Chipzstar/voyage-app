@@ -12,9 +12,10 @@ import prisma from '../db';
 import { setCarrier } from '../store/feature/profileSlice';
 import { wrapper } from '../store';
 import { fetchLoads, fetchProfile } from '../utils/functions';
-import { setLoads, useLoads } from '../store/feature/loadSlice'
+import { setLoads, useLoads } from '../store/feature/loadSlice';
 import { useSelector } from 'react-redux';
-import { STATUS } from '@voyage-app/shared-types'
+import { STATUS } from '@voyage-app/shared-types';
+import { MapType } from '../utils/types';
 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
@@ -30,7 +31,7 @@ export function Index(props) {
 				<PageHeader title='Truck Board' />
 				<CalendarFilter current={dateRange as DateRange} setCurrent={setRange} />
 			</div>
-			<Map height={250} customers={activeCustomers} />
+			<Map height={250} customers={activeCustomers} type={MapType.DASHBOARD} />
 			<TruckLoadTimeline loads={loads} />
 		</div>
 	);
