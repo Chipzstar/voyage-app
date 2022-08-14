@@ -1,5 +1,5 @@
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar'
-import moment from 'moment-timezone';
+import { Calendar, Views } from 'react-big-calendar'
+import moment from 'moment-timezone'
 import React, { useMemo } from 'react'
 import CustomWeekView from '../containers/CustomWeekView'
 import { localizer, PATHS } from '../utils/constants'
@@ -32,7 +32,6 @@ const TruckLoadTimeline = ({ loads }) => {
 	const handleEventPropGetter = (event, start, end, isSelected) => {
 		console.log(event);
 		const style = {
-			zIndex: 50,
 			backgroundColor: event.bgColor,
 			opacity: 0.8,
 			color: 'black',
@@ -49,7 +48,7 @@ const TruckLoadTimeline = ({ loads }) => {
 					eventWrapper: ({ event, children }) => {
 						const newChildren = { ...children };
 						const newChildrenProps = { ...newChildren.props };
-						newChildrenProps.className = `${newChildrenProps.className} flex flex-col px-1 rounded-lg shadow-md p-1 border border-1 text-sm`;
+						newChildrenProps.className = `${newChildrenProps.className} flex flex-col px-1 rounded-lg shadow-md p-1 border border-1 text-sm z-50`;
 						newChildren.props = { ...newChildrenProps };
 						return (
 							<div>{newChildren}</div>

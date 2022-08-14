@@ -24,6 +24,7 @@ const drivers = () => {
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
 	const [filteredDrivers, setFilter] = useState([...drivers]);
+	const [activePage, setPage] = useState(1);
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
@@ -57,18 +58,10 @@ const drivers = () => {
 
 	const debouncedSearch = useCallback(
 		_.debounce(value => {
-			setFilter(prevState => (value.length >= 2 ? drivers.filter(({ fullName, email, defaultPhone }) => fullName.includes(value) || email.includes(value) || defaultPhone.includes(value)) : drivers));
+			setFilter(prevState => (value.length >= 2 ? drivers.filter(({ fullName, email, defaultPhone }) => fullName.contains(value) || email.contains(value) || defaultPhone.includes(value)) : drivers));
 		}, 300),
 		[drivers]
 	);
-
-	useEffect(() => {
-		return () => {
-			debouncedSearch.cancel();
-		};
-	}, [debouncedSearch]);
-
-	useEffect(() => setFilter(drivers), [drivers]);
 
 	const rows = filteredDrivers.map((element, index) => {
 		return (
@@ -130,8 +123,16 @@ const drivers = () => {
 		);
 	});
 
+	useEffect(() => {
+		return () => {
+			debouncedSearch.cancel();
+		};
+	}, [debouncedSearch]);
+
+	useEffect(() => setFilter(drivers), [drivers]);
+
 	return (
-		<ContentContainer classNames='py-4 px-8 h-screen'>
+		<ContentContainer classNames='py-4 px-8 h-screen flex flex-col'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' size='md' radius={0} icon={<Search size={18} />} onChange={e => debouncedSearch(e.target.value)} placeholder='Search for name, email or phone' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_DRIVER)}>
@@ -140,6 +141,8 @@ const drivers = () => {
 			</div>
 			<DataGrid
 				rows={rows}
+				activePage={activePage}
+				setPage={setPage}
 				spacingY='md'
 				headings={['Driver Name', 'Email', 'Phone', 'City', 'Postcode', 'Status', 'Actions']}
 				emptyContent={

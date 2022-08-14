@@ -27,6 +27,7 @@ const team = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const team = useSelector(useMembers);
 	const [filteredTeam, setFilter] = useState([...team]);
+	const [activePage, setPage] = useState(1);
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
@@ -148,6 +149,8 @@ const team = () => {
 				</button>
 			</div>
 			<DataGrid
+				activePage={activePage}
+				setPage={setPage}
 				rows={rows}
 				headings={['Full Name', 'Email', 'Phone', 'Role', 'Actions']}
 				emptyContent={

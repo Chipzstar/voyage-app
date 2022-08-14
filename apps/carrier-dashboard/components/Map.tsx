@@ -57,11 +57,9 @@ const Map = ({ height=500, customers=[] }: MapProps) => {
 					coordinates.push(pickupCoords, deliveryCoords)
 				}
 			})
-			console.log(coordinates)
 			map.current.setPadding({left: 50, top: 50, right: 50, bottom: 40});
 			if (coordinates.length >=2) {
 				const bounds = coordinates.reduce((bounds, coord) => bounds.extend(coord), new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
-				console.log(bounds)
 				map.current.fitBounds(bounds);
 			}
 		}

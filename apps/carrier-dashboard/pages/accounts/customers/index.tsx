@@ -17,7 +17,6 @@ import { getToken } from 'next-auth/jwt';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
-import moment from 'moment';
 import { fetchCustomers, notifyError, notifySuccess } from '../../../utils/functions'
 
 const customers = () => {
@@ -26,6 +25,7 @@ const customers = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const customers = useSelector(useCustomers);
 	const [filteredCustomers, setFilter] = useState(customers);
+	const [activePage, setPage] = useState(1);
 
 	const debouncedSearch = useCallback(
 		_.debounce(value => {
@@ -125,6 +125,8 @@ const customers = () => {
 				</button>
 			</div>
 			<DataGrid
+				activePage={activePage}
+				setPage={setPage}
 				rows={rows}
 				headings={['Account Name', 'POC', 'Address', 'Contact Email', 'Account Type', 'Actions']}
 				emptyContent={

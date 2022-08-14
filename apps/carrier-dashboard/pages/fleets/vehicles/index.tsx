@@ -26,6 +26,7 @@ const vehicles = () => {
 	const vehicles = useSelector(useVehicles);
 	const drivers = useSelector(useDrivers);
 	const [filteredVehicles, setFilter] = useState([...vehicles]);
+	const [activePage, setPage] = useState(1);
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
@@ -131,6 +132,8 @@ const vehicles = () => {
 				</button>
 			</div>
 			<DataGrid
+				activePage={activePage}
+				setPage={setPage}
 				rows={rows}
 				headings={['Vehicle Name', 'Make', 'Model', 'Status', 'Current Driver', 'Reg No.', 'Actions']}
 				emptyContent={

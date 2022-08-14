@@ -22,6 +22,7 @@ interface TripsProps {
 const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps) => {
 	const router = useRouter();
 	const [filteredLoads, setFilter] = useState([...loads]);
+	const [activePage, setPage] = useState(1);
 
 	useEffect(() => setFilter(loads), [loads]);
 
@@ -97,6 +98,7 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 				</tr>
 			);
 		});
+
 	return (
 		<ContentContainer classNames='px-6 py-2'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
@@ -107,7 +109,7 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 					</span>
 				</button>
 			</div>
-			<DataGrid rows={rows} headings={['Trip ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
+			<DataGrid activePage={activePage} setPage={setPage} rows={rows} headings={['Trip ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
 		</ContentContainer>
 	);
 };

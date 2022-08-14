@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'
 import DataGrid from '../components/DataGrid';
 import { PATHS, SAMPLE_INVOICES } from '../utils/constants';
 import moment from 'moment';
@@ -9,6 +9,7 @@ import { sanitize } from '@voyage-app/shared-utils'
 
 const Invoices = ({ message }) => {
 	const router = useRouter();
+	const [activePage, setPage] = useState(1);
 	const rows = SAMPLE_INVOICES.map((element, index) => {
 		return (
 			<tr key={index}>
@@ -53,7 +54,7 @@ const Invoices = ({ message }) => {
 	});
 	return (
 		<div>
-			<DataGrid rows={rows} headings={['Invoice ID', 'Date Created', 'Reference', 'Total', 'Paid', 'Date Due', 'Balance Due', 'Action']} emptyContent={<Empty message={message} />} />
+			<DataGrid activePage={activePage} setPage={setPage} rows={rows} headings={['Invoice ID', 'Date Created', 'Reference', 'Total', 'Paid', 'Date Due', 'Balance Due', 'Action']} emptyContent={<Empty message={message} />} />
 		</div>
 	);
 };

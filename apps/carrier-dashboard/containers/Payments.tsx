@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react'
 import DataGrid from '../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { PATHS, SAMPLE_INVOICES } from '../utils/constants';
@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 
 const Payments = ({message}) => {
 	const router = useRouter()
+	const [activePage, setPage] = useState(1);
 	const rows = SAMPLE_INVOICES.map((element, index) => {
 		return (
 			<tr key={index}>
@@ -53,7 +54,7 @@ const Payments = ({message}) => {
 	});
 	return (
 		<div>
-			<DataGrid rows={rows} headings={['Invoice ID', 'Work Type', 'Work Period', 'Invoice Date', 'Payment Date', 'Status', 'Amount', '']} emptyContent={<Empty message={message} />} />
+			<DataGrid activePage={activePage} setPage={setPage} rows={rows} headings={['Invoice ID', 'Work Type', 'Work Period', 'Invoice Date', 'Payment Date', 'Status', 'Amount', '']} emptyContent={<Empty message={message} />} />
 		</div>
 	)
 }

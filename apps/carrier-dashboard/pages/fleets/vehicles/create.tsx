@@ -20,9 +20,9 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import moment from 'moment';
-import { fetchVehicles, notifyError, notifySuccess } from '../../../utils/functions'
+import { fetchVehicles, notifyError, notifySuccess } from '../../../utils/functions';
 import { getToken } from 'next-auth/jwt';
-import { useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react';
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -36,7 +36,7 @@ const items = [
 
 const create = ({ vehicleName, vehicleId }) => {
 	const [loading, setLoading] = useState(false);
-	const { data: session } = useSession()
+	const { data: session } = useSession();
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const vehicles = useSelector(useVehicles);
@@ -59,7 +59,6 @@ const create = ({ vehicleName, vehicleId }) => {
 		engineNumber: vehicle?.engineNumber ?? '',
 		fuelMeasurementUnit: vehicle?.fuelMeasurementUnit ?? null,
 		fuelType: vehicle?.fuelType ?? null,
-		image: vehicle?.image ?? '',
 		make: vehicle?.make ?? '',
 		model: vehicle?.model ?? '',
 		regNumber: vehicle?.regNumber ?? '',
@@ -141,11 +140,17 @@ const create = ({ vehicleName, vehicleId }) => {
 						<div>
 							<TextInput label='Engine Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('engineNumber')} />
 						</div>
-						<div className='col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
+
+						<div>
 							<TextInput required label='Make' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('make')} />
+						</div>
+						<div>
 							<TextInput required label='Model' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('model')} />
+						</div>
+						<div>
 							<Select label='Year' radius={0} size='sm' min={dayjs().year()} max={dayjs().year()} data={getYears(50)} {...form.getInputProps('yearOfManufacture')} />
 						</div>
+
 						<div>
 							<TextInput label='Colour' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('colour')} />
 						</div>
@@ -181,9 +186,9 @@ const create = ({ vehicleName, vehicleId }) => {
 								{...form.getInputProps('fuelMeasurementUnit')}
 							/>
 						</div>
-						<div>
+						{/*<div>
 							<FileInput radius={0} size='sm' label='Vehicle Image' placeholder='Upload image of vehicle' accept='image/png,image/jpeg' icon={<Upload size={16} />} {...form.getInputProps('image')} />
-						</div>
+						</div>*/}
 						<div className='md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6'>
 							<NumberInput label='Vehicle Length' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.length')} />
 							<NumberInput label='Vehicle Width' min={0} max={10000} radius={0} autoCapitalize='on' size='sm' rightSection={<span className='text-voyage-grey pr-3'>mm</span>} {...form.getInputProps('dimensions.width')} />
@@ -228,7 +233,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
-		let vehicles = await fetchVehicles(session.id, token?.carrierId, prisma)
+		let vehicles = await fetchVehicles(session.id, token?.carrierId, prisma);
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {
@@ -239,4 +244,4 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	};
 });
 
-export default create;
+export default create
