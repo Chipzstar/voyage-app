@@ -16,15 +16,15 @@ const Organisation = ({ carrierInfo }: OrganisationProps) => {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 	const initialValues: Carrier = {
-		id: carrierInfo.id,
-		carrierId: carrierInfo.carrierId,
-		company: carrierInfo.company ?? '',
-		firstname: carrierInfo.firstname ?? '',
-		lastname: carrierInfo.lastname ?? '',
-		fullName: carrierInfo.fullName ?? '',
-		email: carrierInfo.email ?? '',
-		phone: carrierInfo.phone ?? '',
-		address: carrierInfo.address ?? {
+		id: carrierInfo?.id,
+		carrierId: carrierInfo?.carrierId,
+		company: carrierInfo?.company ?? '',
+		firstname: carrierInfo?.firstname ?? '',
+		lastname: carrierInfo?.lastname ?? '',
+		fullName: carrierInfo?.fullName ?? '',
+		email: carrierInfo?.email ?? '',
+		phone: carrierInfo?.phone ?? '',
+		address: carrierInfo?.address ?? {
 			addressLine1: '',
 			addressLine2: '',
 			city: '',
