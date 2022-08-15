@@ -50,7 +50,12 @@ export const SETTINGS_TABS = [
 	{
 		value: 'financial',
 		label: 'Financial'
-	}
+	},
+	{
+		value: 'documents',
+		label: 'Documents'
+	},
+
 ]
 
 export const SAMPLE_DRIVERS: Driver[] = [

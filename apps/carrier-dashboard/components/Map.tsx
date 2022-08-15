@@ -86,7 +86,6 @@ const Map = ({
 
 	useEffect(() => {
 		if (map.current && type === MapType.ORDER) {
-			console.log(geoJSON);
 			map.current.on('load', () => {
 				map.current.addSource(`route_${tripId}`, geoJSON);
 				map.current.addLayer({

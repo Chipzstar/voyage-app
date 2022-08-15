@@ -95,6 +95,14 @@ type Geolocation = {
 	coordinates: [number, number]
 }
 
+export interface CarrierDocument {
+	type: string,
+	document: {
+		filename: string,
+		location: string,
+	}
+}
+
 export interface Carrier {
 	id: string;
 	carrierId: string;
@@ -109,6 +117,7 @@ export interface Carrier {
 	address: Address;
    phone: string;
 	stripe?: Stripe;
+	documents?: CarrierDocument
 }
 
 export interface Driver {

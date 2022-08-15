@@ -1,9 +1,20 @@
 import { Carrier } from '../../utils/types'
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { HYDRATE } from 'next-redux-wrapper';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../index'
+import axios from 'axios'
 
 const initialState = {}
+
+export const updateCarrier = createAsyncThunk('carrier/updateCarrier', async (payload: Carrier, thunkAPI) => {
+	try {
+		const carrier = (await axios.put(`/api/carrier/${payload.id}`, payload)).data;
+		thunkAPI.dispatch(editCarrier(carrier));
+		return carrier;
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+})
 
 export const profileSlice = createSlice({
 	name: 'profile',
@@ -11,12 +22,18 @@ export const profileSlice = createSlice({
 	reducers: {
 		setCarrier: (state, action: PayloadAction<Carrier>) => {
 			return action.payload;
+		},
+		editCarrier: (state, action: PayloadAction<Carrier>) => {
+			return {
+				...state,
+				...action.payload
+			}
 		}
 	}
 })
 
 export const useCarrier = (state: AppState) : Carrier => state['profile']
 
-export const { setCarrier } = profileSlice.actions;
+export const { setCarrier, editCarrier } = profileSlice.actions;
 
 export default profileSlice.reducer;
