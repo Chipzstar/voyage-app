@@ -1,17 +1,46 @@
 import React, { useCallback, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
-import { Button, Center, Container, Group, Loader, Radio, Stack, Text, useMantineTheme } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { Dropzone, DropzoneProps, PDF_MIME_TYPE } from '@mantine/dropzone';
-import { Check, Note, Upload, X } from 'tabler-icons-react'
+import { ActionIcon, Button, Center, Container, Group, Loader, Radio, Stack, Text, useMantineTheme } from '@mantine/core';
+import { useForm, UseFormReturnType } from '@mantine/form';
+import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
+import { Check, Note, Trash, Upload, X } from 'tabler-icons-react';
 import { notifyError, notifySuccess, uploadFile } from '../../../utils/functions';
-import { DocumentType } from '../../../utils/types'
+import { DocumentType } from '../../../utils/types';
+
+interface FormValues {
+	documentType: string;
+	file: File | null;
+}
+
+const Empty = () => {
+	return (
+		<Group>
+			<Note size={50} />
+			<div>
+				<Text size='xl' inline>
+					Drag documents here or click to select files
+				</Text>
+				<Text size='sm' color='dimmed' inline mt={7}>
+					Each file should not exceed 5MB
+				</Text>
+			</div>
+		</Group>
+	);
+};
+
+const DocumentInfo = ({ form, fileInfo }: { form: UseFormReturnType<FormValues>; fileInfo: File | null }) => {
+	return (
+		<Group>
+			<Text size='xl'>{fileInfo?.name}</Text>
+			<Text size='md'>{fileInfo?.size / 1000} Kb</Text>
+		</Group>
+	);
+};
 
 const Documents = props => {
 	const [loading, setLoading] = useState(false);
 	const theme = useMantineTheme();
 	const openRef = useRef<() => void>(null);
-	const form = useForm({
+	const form = useForm<FormValues>({
 		initialValues: {
 			documentType: '',
 			file: null
@@ -22,31 +51,17 @@ const Documents = props => {
 	});
 
 	const handleSubmit = useCallback(values => {
-		alert(JSON.stringify(values));
+		setLoading(true);
 		console.log(values.file);
 		uploadFile(values.file)
-			.then(() => notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />))
-			.catch(err => notifyError('upload-document-error', `Failed to upload document ${err.message}`, <X size={20} />));
-		/*const formData = new FormData();
-		formData.append('file', values.file);
-		fetch('http://MY_UPLOAD_SERVER.COM/api/upload', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			},
-			body: formData
-		})
-			.then(res => {
-				const respJson = res.json();
-				// console.log("File uploaded", respJson);
-				// TODO: Update ui and states....
-				// setUploads(respJson.url);
-				return respJson;
+			.then(() => {
+				notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
+				setLoading(false);
 			})
 			.catch(err => {
-				console.log('File upload error', err);
-				// TODO: Update ui and states with error....
-			});*/
+				notifyError('upload-document-error', `Failed to upload document ${err.message}`, <X size={20} />);
+				setLoading(false);
+			});
 	}, []);
 
 	return (
@@ -62,6 +77,10 @@ const Documents = props => {
 						</Radio.Group>
 
 						<Dropzone
+							classNames={{
+								root: `${form.values.file} && 'z-0'`
+							}}
+							loading={loading}
 							multiple={false}
 							onDrop={files => {
 								console.log('accepted files', files);
@@ -78,19 +97,7 @@ const Documents = props => {
 								<Dropzone.Reject>
 									<X size={50} color={theme.colors.red[theme.colorScheme === 'dark' ? 4 : 6]} />
 								</Dropzone.Reject>
-								<Dropzone.Idle>
-									<Group>
-										<Note size={50} />
-										<div>
-											<Text size='xl' inline>
-												Drag documents here or click to select files
-											</Text>
-											<Text size='sm' color='dimmed' inline mt={7}>
-												Each file should not exceed 5MB
-											</Text>
-										</div>
-									</Group>
-								</Dropzone.Idle>
+								<Dropzone.Idle>{form.values.file ? <DocumentInfo form={form} fileInfo={form.values.file} /> : <Empty />}</Dropzone.Idle>
 							</Group>
 						</Dropzone>
 					</Stack>
