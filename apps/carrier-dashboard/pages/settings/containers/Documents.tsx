@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Button, Center, Container, Group, Loader, Radio, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Dropzone, DropzoneProps, PDF_MIME_TYPE } from '@mantine/dropzone';
-import { Note, Upload, X } from 'tabler-icons-react';
+import { Check, Note, Upload, X } from 'tabler-icons-react'
+import { notifyError, notifySuccess, uploadFile } from '../../../utils/functions';
+import { DocumentType } from '../../../utils/types'
 
 const Documents = props => {
 	const [loading, setLoading] = useState(false);
@@ -22,6 +24,9 @@ const Documents = props => {
 	const handleSubmit = useCallback(values => {
 		alert(JSON.stringify(values));
 		console.log(values.file);
+		uploadFile(values.file)
+			.then(() => notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />))
+			.catch(err => notifyError('upload-document-error', `Failed to upload document ${err.message}`, <X size={20} />));
 		/*const formData = new FormData();
 		formData.append('file', values.file);
 		fetch('http://MY_UPLOAD_SERVER.COM/api/upload', {
@@ -51,12 +56,21 @@ const Documents = props => {
 				<form onSubmit={form.onSubmit(handleSubmit)} className='w-3/4'>
 					<Stack className='w-full'>
 						<Radio.Group label='Select the type of document to upload' description='You must upload one of each document type before creating loads.' required className='w-full' {...form.getInputProps('documentType')}>
-							<Radio value='uk-hgv-operators-license' label='UK HGV Operators Licence' />
-							<Radio value='goods-in-transit-insurance' label='Goods in Transit insurance' />
-							<Radio value='liability-insurance' label='Liability Insurance' />
+							<Radio key={0} value={DocumentType.UK_HGV_OPERATORS_LICENSE} label='UK HGV Operators Licence' />
+							<Radio key={1} value={DocumentType.GOODS_IN_TRANSIT_INSURANCE} label='Goods in Transit insurance' />
+							<Radio key={2} value={DocumentType.LIABILITY_INSURANCE} label='Liability Insurance' />
 						</Radio.Group>
 
-						<Dropzone multiple={false} onDrop={files => console.log('accepted files', files)} onReject={files => console.log('rejected files', files)} maxSize={3 * 1024 ** 2} accept={PDF_MIME_TYPE}>
+						<Dropzone
+							multiple={false}
+							onDrop={files => {
+								console.log('accepted files', files);
+								form.setFieldValue('file', files[0]);
+							}}
+							onReject={files => console.log('rejected files', files)}
+							maxSize={3 * 1024 ** 2}
+							accept={PDF_MIME_TYPE}
+						>
 							<Group position='center' spacing='xl' style={{ minHeight: 220, pointerEvents: 'none' }}>
 								<Dropzone.Accept>
 									<Upload size={50} color={theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 6]} />
@@ -79,20 +93,17 @@ const Documents = props => {
 								</Dropzone.Idle>
 							</Group>
 						</Dropzone>
-
-						{/*<Group position="center" mt="md">
-							<Button onClick={() => openRef.current()}>Select files</Button>
-						</Group>*/}
 					</Stack>
 					<Group my={10} py={10} position='center'>
 						<Button
+							disabled={!form.values.file}
 							type='submit'
 							classNames={{
-								root: 'bg-secondary hover:bg-secondary-600'
+								root: `bg-secondary ${form.values.file && 'hover:bg-secondary-600'}`
 							}}
 						>
 							<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
-							<span>Save Changes</span>
+							<span>Upload</span>
 						</Button>
 					</Group>
 				</form>

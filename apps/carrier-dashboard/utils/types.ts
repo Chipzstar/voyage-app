@@ -95,8 +95,14 @@ type Geolocation = {
 	coordinates: [number, number]
 }
 
+export enum DocumentType {
+	UK_HGV_OPERATORS_LICENSE="UK_HGV_OPERATORS_LICENSE",
+	GOODS_IN_TRANSIT_INSURANCE="GOODS_IN_TRANSIT_INSURANCE",
+	LIABILITY_INSURANCE="LIABILITY_INSURANCE"
+}
+
 export interface CarrierDocument {
-	type: string,
+	type: DocumentType,
 	document: {
 		filename: string,
 		location: string,

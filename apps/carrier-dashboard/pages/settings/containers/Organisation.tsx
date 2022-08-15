@@ -16,8 +16,8 @@ const Organisation = ({ carrierInfo }: OrganisationProps) => {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 	const initialValues: Carrier = {
-		id: carrierInfo?.id,
-		carrierId: carrierInfo?.carrierId,
+		id: carrierInfo?.id ?? undefined,
+		carrierId: carrierInfo?.carrierId ?? undefined,
 		company: carrierInfo?.company ?? '',
 		firstname: carrierInfo?.firstname ?? '',
 		lastname: carrierInfo?.lastname ?? '',
@@ -77,7 +77,7 @@ const Organisation = ({ carrierInfo }: OrganisationProps) => {
 						</Group>
 						<Group grow>
 							<TextInput radius={0} label='Region' {...form.getInputProps('address.region')} />
-							<TextInput radius={0} label='Country' defaultValue='UK' readOnly {...form.getInputProps('address.country')} />
+							<TextInput radius={0} label='Country' readOnly {...form.getInputProps('address.country')} />
 						</Group>
 					</Stack>
 					<Group my={20} py={10}>

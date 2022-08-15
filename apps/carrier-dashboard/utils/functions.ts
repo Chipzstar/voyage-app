@@ -1,21 +1,21 @@
-import { Customer, Driver, Load, LoadLocation, Location, Member, NewBooking } from './types'
+import { Customer, Driver, Load, LoadLocation, Location, Member, NewBooking } from './types';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { calculateRate, numericId } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
-import { PLACE_TYPES } from './constants'
+import { PLACE_TYPES } from './constants';
 
-function genFullAddress(location: Location){
-	let fullAddress = ''
+function genFullAddress(location: Location) {
+	let fullAddress = '';
 	Object.entries(location).forEach(([key, value]) => {
-		if (key !== 'note') fullAddress += value + ' '
-	})
-	console.log(fullAddress)
+		if (key !== 'note') fullAddress += value + ' ';
+	});
+	console.log(fullAddress);
 	return fullAddress;
 }
 
 export function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[]): Load {
-	const pickup:LoadLocation = {
+	const pickup: LoadLocation = {
 		...values.pickupLocation,
 		fullAddress: genFullAddress(values.pickupLocation),
 		window: {
@@ -23,7 +23,7 @@ export function generateLoad(profile, values: NewBooking, drivers: Driver[], con
 			end: moment(values.pickupDate).add(1, 'hour').unix()
 		}
 	};
-	const delivery:LoadLocation = {
+	const delivery: LoadLocation = {
 		fullAddress: genFullAddress(values.deliveryLocation),
 		...values.deliveryLocation
 	};
@@ -74,10 +74,12 @@ export function generateLoad(profile, values: NewBooking, drivers: Driver[], con
 			vehicleType: values.vehicleType
 		},
 		vehicleType: values.vehicleType,
-		trackingHistory: [{
-			status: STATUS.NEW,
-			timestamp: moment().unix()
-		}]
+		trackingHistory: [
+			{
+				status: STATUS.NEW,
+				timestamp: moment().unix()
+			}
+		]
 	};
 }
 
@@ -274,7 +276,12 @@ export function parseAddress(data, requiresGeoJSON = false) {
 		country: 'UK',
 		latitude: data[0].geometry.location.lat(),
 		longitude: data[0].geometry.location.lng(),
-		...(requiresGeoJSON && { geolocation: { type: 'Point', coordinates: [data[0].geometry.location.lng(), data[0].geometry.location.lat()] } })
+		...(requiresGeoJSON && {
+			geolocation: {
+				type: 'Point',
+				coordinates: [data[0].geometry.location.lng(), data[0].geometry.location.lat()]
+			}
+		})
 	};
 	let components = address.filter(({ types }) => types.some(type => Object.values(PLACE_TYPES).includes(type)));
 	components.forEach(({ long_name, types }) => {
@@ -319,13 +326,41 @@ export function validateAddress(pickup, dropoff) {
 	const types = ['street address', 'city', 'postcode'];
 	Object.values(pickup).forEach((item: string, index) => {
 		if (!item) throw new Error(`Pickup address does not include a '${types[index]}'. Please add all parts of the address and try again`);
-		else if (index === 2 && item.length < 6)
-			throw new Error(`Your Pickup postcode,' ${item}', is not complete. Please include a full UK postcode in your address`);
+		else if (index === 2 && item.length < 6) throw new Error(`Your Pickup postcode,' ${item}', is not complete. Please include a full UK postcode in your address`);
 	});
 	Object.values(dropoff).forEach((item: string, index) => {
 		if (!item) throw new Error(`Dropoff address does not include a '${types[index]}'. Please add all parts of the address and try again`);
-		else if (index === 2 && item.length < 6)
-			throw new Error(`Your Dropoff postcode '${item}', is not complete. Please include a full UK postcode in your address`);
+		else if (index === 2 && item.length < 6) throw new Error(`Your Dropoff postcode '${item}', is not complete. Please include a full UK postcode in your address`);
 	});
 	return true;
+}
+
+export async function uploadFile(file) {
+	try {
+		const filename = encodeURIComponent(file.name);
+		const res = await fetch(`/api/upload-url?file=${filename}`);
+		const { url, fields } = await res.json();
+		const formData = new FormData();
+
+		Object.entries({ ...fields, file }).forEach(([key, value]) => {
+			formData.append(key, value);
+		});
+		console.log(formData)
+
+		const upload = await fetch(url, {
+			method: 'POST',
+			body: formData
+		});
+
+		if (upload.ok) {
+			console.log('Uploaded successfully!');
+			return true
+		} else {
+			console.error('Upload failed.', upload.status);
+			return false
+		}
+	} catch (error) {
+		console.error(error)
+		throw error
+	}
 }

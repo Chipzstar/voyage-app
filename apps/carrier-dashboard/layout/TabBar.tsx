@@ -6,8 +6,8 @@ const TabBar = ({ tabLabels, defaultTab, children }) => {
 	return (
 		<Tabs value={activeTab} onTabChange={setActiveTab}>
 			<Tabs.List grow>
-				{tabLabels.map(tab => (
-					<Tabs.Tab value={tab.value}>{tab.label}</Tabs.Tab>
+				{tabLabels.map((tab, index) => (
+					<Tabs.Tab key={index} value={tab.value}>{tab.label}</Tabs.Tab>
 				))}
 			</Tabs.List>
 			{children}
