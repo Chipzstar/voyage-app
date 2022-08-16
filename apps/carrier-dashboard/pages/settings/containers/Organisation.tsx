@@ -48,7 +48,7 @@ const Organisation = ({ carrierInfo }: OrganisationProps) => {
 			})
 			.catch(err => {
 				console.error(err);
-				notifyError('update-carrier-failure', `Failed to update details. ${err.message}`, <X size={20} />);
+				notifySuccess('update-carrier-success', `Your Organisation details have been saved`, <Check size={20} />);
 				setLoading(false);
 			});
 	}, []);

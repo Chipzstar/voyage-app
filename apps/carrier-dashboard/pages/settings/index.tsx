@@ -32,7 +32,7 @@ const settings = () => {
 					<Financial/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
-					<Documents/>
+					<Documents carrierInfo={profile}/>
 				</Tabs.Panel>
 			</TabBar>
 		</Container>

@@ -335,14 +335,14 @@ export function validateAddress(pickup, dropoff) {
 	return true;
 }
 
-export async function uploadFile(file) {
+export async function uploadFile({ id, file, documentType }) {
 	try {
 		const filename = encodeURIComponent(file.name);
-		const res = await fetch(`/api/upload-url?file=${filename}`);
+		const res = await fetch(`/api/upload-url?id=${id}&filename=${filename}&type=${documentType}`);
 		const { url, fields } = await res.json();
 		const formData = new FormData();
 
-		Object.entries({ ...fields, file }).forEach(([key, value]) => {
+		Object.entries({ ...fields, file }).forEach(([key, value]: [string, string]) => {
 			formData.append(key, value);
 		});
 		console.log(formData)

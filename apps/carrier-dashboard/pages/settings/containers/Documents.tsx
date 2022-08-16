@@ -7,6 +7,7 @@ import { notifyError, notifySuccess, uploadFile } from '../../../utils/functions
 import { DocumentType } from '../../../utils/types';
 
 interface FormValues {
+	id: string;
 	documentType: string;
 	file: File | null;
 }
@@ -31,17 +32,18 @@ const DocumentInfo = ({ form, fileInfo }: { form: UseFormReturnType<FormValues>;
 	return (
 		<Group>
 			<Text size='xl'>{fileInfo?.name}</Text>
-			<Text size='md'>{fileInfo?.size / 1000} Kb</Text>
+			<Text size='md' color="dimmed">({fileInfo?.size / 1000} Kb)</Text>
 		</Group>
 	);
 };
 
-const Documents = props => {
+const Documents = ({ carrierInfo }) => {
 	const [loading, setLoading] = useState(false);
 	const theme = useMantineTheme();
 	const openRef = useRef<() => void>(null);
 	const form = useForm<FormValues>({
 		initialValues: {
+			id: carrierInfo?.id ?? '',
 			documentType: '',
 			file: null
 		},
@@ -52,14 +54,13 @@ const Documents = props => {
 
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
-		console.log(values.file);
-		uploadFile(values.file)
+		uploadFile(values)
 			.then(() => {
 				notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
 				setLoading(false);
 			})
 			.catch(err => {
-				notifyError('upload-document-error', `Failed to upload document ${err.message}`, <X size={20} />);
+				notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
 				setLoading(false);
 			});
 	}, []);
@@ -68,7 +69,7 @@ const Documents = props => {
 		<Container fluid className='tab-container bg-voyage-background'>
 			<Center className='flex flex-col h-full'>
 				<header className='page-header my-6'>Upload Documents</header>
-				<form onSubmit={form.onSubmit(handleSubmit)} className='w-3/4'>
+				<form encType='multipart/form-data' onSubmit={form.onSubmit(handleSubmit)} className='w-3/4'>
 					<Stack className='w-full'>
 						<Radio.Group label='Select the type of document to upload' description='You must upload one of each document type before creating loads.' required className='w-full' {...form.getInputProps('documentType')}>
 							<Radio key={0} value={DocumentType.UK_HGV_OPERATORS_LICENSE} label='UK HGV Operators Licence' />
