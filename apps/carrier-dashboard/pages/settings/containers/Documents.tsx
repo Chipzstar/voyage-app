@@ -1,9 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { ActionIcon, Button, Center, Container, Group, Loader, Radio, Stack, Text, useMantineTheme } from '@mantine/core';
+import { Button, Center, Container, Group, Loader, Radio, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
-import { Check, Note, Trash, Upload, X } from 'tabler-icons-react';
-import { notifyError, notifySuccess, uploadFile } from '../../../utils/functions';
+import { Check, Note, Upload, X } from 'tabler-icons-react';
+import { notifySuccess, uploadFile } from '../../../utils/functions';
 import { DocumentType } from '../../../utils/types';
 
 interface FormValues {
