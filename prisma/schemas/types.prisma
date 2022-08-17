@@ -116,5 +116,13 @@ type Geolocation {
    coordinates: Float[]
 }
 
+type ChargeRule {
+    active  Boolean
+    value   Float
+}
 
-
+type RateChargeRules {
+    DISTANCE    ChargeRule
+    WEIGHT      ChargeRule
+    PACKAGE     ChargeRule
+}

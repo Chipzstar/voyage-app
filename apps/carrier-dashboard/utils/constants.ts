@@ -1,7 +1,20 @@
 import moment from 'moment';
 import { PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
-import { Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
+import {
+	ChargeUnitType,
+	Driver,
+	DRIVER_STATUS,
+	FuelMeasurementUnit,
+	FuelType,
+	INVOICE_STATUS,
+	Load,
+	Member,
+	TeamRole,
+	Vehicle,
+	VEHICLE_STATUS,
+	VEHICLE_TYPES,
+} from './types'
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar'
 moment.tz.setDefault('Europe/London');
@@ -1013,4 +1026,20 @@ export const PLACE_TYPES = {
 	POSTCODE_PREFIX: 'postal_code_prefix',
 	INTERSECTION: 'intersection'
 };
+
+export const defaultChargeRules = {
+	[ChargeUnitType.DISTANCE]: {
+		active: false,
+		value: 0
+	},
+	[ChargeUnitType.WEIGHT]: {
+		active: false,
+		value: 0
+	},
+	[ChargeUnitType.PACKAGE]: {
+		active: false,
+		value: 0
+	}
+}
+
 

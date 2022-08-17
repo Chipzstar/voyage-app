@@ -8,11 +8,12 @@ import { wrapper } from '../../store'
 import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '../api/auth/[...nextauth]'
 import { getToken } from 'next-auth/jwt'
-import { fetchProfile } from '../../utils/functions'
+import { fetchProfile, fetchSettings } from '../../utils/functions'
 import prisma from '../../db'
 import { setCarrier, useCarrier } from '../../store/feature/profileSlice'
 import { useSelector } from 'react-redux';
 import Documents from './containers/Documents';
+import { setSettings, useSettings } from '../../store/feature/settingsSlice'
 
 const TAB_LABELS = {
 	ORGANIZATION: SETTINGS_TABS[0].value,
@@ -22,6 +23,8 @@ const TAB_LABELS = {
 
 const settings = () => {
 	const profile = useSelector(useCarrier)
+	const settings = useSelector(useSettings)
+
 	return (
 		<Container fluid px={0} className="h-full">
 			<TabBar tabLabels={SETTINGS_TABS} defaultTab={SETTINGS_TABS[0].value}>
@@ -29,7 +32,7 @@ const settings = () => {
 					<Organisation carrierInfo={profile}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.FINANCIAL}>
-					<Financial/>
+					<Financial settings={settings}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
 					<Documents carrierInfo={profile}/>
@@ -53,7 +56,10 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	if (session.id || token?.carrierId) {
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
+		let settings = await fetchSettings(token?.carrierId, prisma);
+		console.log(settings)
 		store.dispatch(setCarrier(carrier));
+		store.dispatch(setSettings(settings));
 	}
 	return {
 		props: {

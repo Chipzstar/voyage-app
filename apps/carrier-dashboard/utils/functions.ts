@@ -265,6 +265,16 @@ export async function fetchLoads(carrierId, prisma) {
 	return loads;
 }
 
+export async function fetchSettings(carrierId, prisma){
+	return await prisma.settings.findFirst({
+		where: {
+			carrierId: {
+				equals: carrierId
+			}
+		}
+	});
+}
+
 export function parseAddress(data, requiresGeoJSON = false) {
 	console.log(data);
 	let address = data[0].address_components;

@@ -5,6 +5,7 @@ import vehicleReducer from './feature/vehicleSlice';
 import customerReducer from './feature/customerSlice';
 import loadReducer from './feature/loadSlice';
 import profileReducer from './feature/profileSlice';
+import settingsReducer from './feature/settingsSlice';
 import { HYDRATE } from 'next-redux-wrapper';
 
 const appReducer = combineReducers({
@@ -13,7 +14,8 @@ const appReducer = combineReducers({
 	drivers: driverReducer,
 	vehicles: vehicleReducer,
 	customers: customerReducer,
-	loads: loadReducer
+	loads: loadReducer,
+	settings: settingsReducer
 });
 
 const rootReducer = (state, action) => {
@@ -23,6 +25,10 @@ const rootReducer = (state, action) => {
 			profile: {
 				...action.payload.profile,
 				...state.profile
+			},
+			settings: {
+				...action.payload.settings,
+				...state.settings
 			},
 			drivers: action.payload.drivers || state.drivers,
 			members: action.payload.members || state.members,

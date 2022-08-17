@@ -126,6 +126,29 @@ export interface Carrier {
 	documents?: CarrierDocument
 }
 
+export enum ChargeUnitType {
+	WEIGHT = 'WEIGHT',
+	PACKAGE = 'PACKAGE',
+	DISTANCE = 'DISTANCE'
+}
+
+type ChargeRule = {
+	active: boolean;
+	value: Number
+}
+
+export interface RateChargeRules {
+	[ChargeUnitType.DISTANCE]: ChargeRule;
+	[ChargeUnitType.WEIGHT]: ChargeRule
+	[ChargeUnitType.PACKAGE]: ChargeRule
+}
+
+export interface Settings {
+	id: string;
+	carrierId: string;
+	rateChargeRules: RateChargeRules
+}
+
 export interface Driver {
 	id: string;
 	carrierId: string;

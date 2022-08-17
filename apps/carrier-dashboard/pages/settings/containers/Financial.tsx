@@ -1,24 +1,28 @@
 import React, { useCallback } from 'react';
-import { Container, Center, Card, Stack, Button, Group, TextInput, Radio, Popover, NumberInput } from '@mantine/core';
+import { Button, Checkbox, Container, Group, NumberInput, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useDispatch } from 'react-redux';
+import { updateSettings } from '../../../store/feature/settingsSlice';
+import { AppDispatch } from 'apps/carrier-dashboard/store';
+import { notifySuccess } from 'apps/carrier-dashboard/utils/functions';
+import { Check } from 'tabler-icons-react';
+import { ChargeUnitType, RateChargeRules } from 'apps/carrier-dashboard/utils/types';
+import { defaultChargeRules } from '../../../utils/constants';
 
-enum ChargeUnitType {
-	WEIGHT,
-	PACKAGE,
-	DISTANCE
-}
-
-const Financial = () => {
+const Financial = ({ settings }) => {
+	const dispatch = useDispatch<AppDispatch>();
+	const initialValues: RateChargeRules = settings?.rateChargeRules ?? defaultChargeRules;
 	const quoteConfigForm = useForm({
-		initialValues: {
-			chargeUnit: null,
-			chargePerUnit: 0
-		}
+		initialValues
 	});
 
 	const submitQuoteSettings = useCallback(values => {
-		alert(JSON.stringify(values))
-	}, [])
+		dispatch(updateSettings(values))
+			.unwrap()
+			.then(() => {
+				notifySuccess('update-settings-success', 'Quote settings saved!', <Check size={20} />);
+			});
+	}, []);
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
@@ -60,70 +64,61 @@ const Financial = () => {
 				<section className='flex flex-col h-full justify-center items-center border-l border-voyage-grey'>
 					<header className='page-header my-6'>Quote Settings</header>
 					<form onSubmit={quoteConfigForm.onSubmit(submitQuoteSettings)}>
-						<Radio.Group orientation='vertical' required>
-							<Popover width={300} trapFocus position='bottom' withArrow shadow='md'>
-								<Popover.Target>
-									<Radio value='mile' label='Charge per mile' />
-								</Popover.Target>
-								<Popover.Dropdown sx={theme => ({ background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}>
-									<NumberInput
-										required
-										size='sm'
-										radius={0}
-										precision={2}
-										step={0.05}
-										min={0}
-										max={100}
-										label='Charge per Mile'
-										placeholder='Charge'
-										{...quoteConfigForm.getInputProps('chargePerUnit')}
-										icon={<span className='text-voyage-grey'>£</span>}
-									/>
-								</Popover.Dropdown>
-							</Popover>
-							<Popover width={300} trapFocus position='bottom' withArrow shadow='md'>
-								<Popover.Target>
-									<Radio value='package' label='Charge per pallet' />
-								</Popover.Target>
-								<Popover.Dropdown sx={theme => ({ background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}>
-									<NumberInput
-										required
-										size='sm'
-										radius={0}
-										precision={2}
-										step={0.05}
-										min={0}
-										max={100}
-										label='Charge per Pallet'
-										placeholder='Charge'
-										{...quoteConfigForm.getInputProps('chargePerUnit')}
-										icon={<span className='text-voyage-grey'>£</span>}
-									/>
-								</Popover.Dropdown>
-							</Popover>
-							<Popover width={300} trapFocus position='bottom' withArrow shadow='md'>
-								<Popover.Target>
-									<Radio value='weight' label='Charge per kg' />
-								</Popover.Target>
-								<Popover.Dropdown sx={theme => ({ background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white })}>
-									<NumberInput
-										required
-										size='sm'
-										radius={0}
-										precision={2}
-										step={0.05}
-										min={0}
-										max={100}
-										label='Charge per Kg'
-										placeholder='Charge'
-										{...quoteConfigForm.getInputProps('chargePerUnit')}
-										icon={<span className='text-voyage-grey'>£</span>}
-									/>
-								</Popover.Dropdown>
-							</Popover>
-						</Radio.Group>
+						<Stack>
+							<Group>
+								<Checkbox checked={quoteConfigForm.values[ChargeUnitType.DISTANCE].active} value='mile' label='Charge per mile' className='w-48' {...quoteConfigForm.getInputProps(`${ChargeUnitType.DISTANCE}.active`)} />
+								<NumberInput
+									disabled={!quoteConfigForm.values[ChargeUnitType.DISTANCE].active}
+									required
+									size='sm'
+									radius={0}
+									precision={2}
+									step={0.05}
+									min={0}
+									max={100}
+									placeholder='Charge'
+									{...quoteConfigForm.getInputProps(`${ChargeUnitType.DISTANCE}.value`)}
+									icon={<span className='text-voyage-grey'>£</span>}
+								/>
+							</Group>
+							<Group>
+								<Checkbox checked={quoteConfigForm.values[ChargeUnitType.PACKAGE].active} value='package' label='Charge per pallet' className='w-48' {...quoteConfigForm.getInputProps(`${ChargeUnitType.PACKAGE}.active`)} />
+								<NumberInput
+									disabled={!quoteConfigForm.values[ChargeUnitType.PACKAGE].active}
+									required
+									size='sm'
+									radius={0}
+									precision={2}
+									step={0.05}
+									min={0}
+									max={100}
+									placeholder='Charge'
+									{...quoteConfigForm.getInputProps(`${ChargeUnitType.PACKAGE}.value`)}
+									icon={<span className='text-voyage-grey'>£</span>}
+								/>
+							</Group>
+
+							<Group>
+								<Checkbox checked={quoteConfigForm.values[ChargeUnitType.WEIGHT].active} value='weight' label='Charge per kg' className='w-48' {...quoteConfigForm.getInputProps(`${ChargeUnitType.WEIGHT}.active`)} />
+								<NumberInput
+									disabled={!quoteConfigForm.values[ChargeUnitType.WEIGHT].active}
+									required
+									size='sm'
+									radius={0}
+									precision={2}
+									step={0.05}
+									min={0}
+									max={100}
+									placeholder='Charge'
+									{...quoteConfigForm.getInputProps(`${ChargeUnitType.WEIGHT}.value`)}
+									icon={<span className='text-voyage-grey'>£</span>}
+								/>
+							</Group>
+						</Stack>
 						<Stack align='center' py={20}>
-							<Button type="submit" className='bg-secondary hover:bg-secondary-600'>Save Changes</Button>
+							<Button type='submit' className='bg-secondary hover:bg-secondary-600'>
+								Save Changes
+							</Button>
 						</Stack>
 					</form>
 				</section>

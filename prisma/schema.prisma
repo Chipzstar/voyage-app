@@ -186,6 +186,17 @@ type Geolocation {
   coordinates Float[]
 }
 
+type ChargeRule {
+  active Boolean
+  value  Float
+}
+
+type RateChargeRules {
+  DISTANCE ChargeRule
+  WEIGHT   ChargeRule
+  PACKAGE  ChargeRule
+}
+
 enum LocationType {
   WAREHOUSE
   STORE
@@ -309,6 +320,7 @@ model Carrier {
   members   Member[]
   vehicles  Vehicle[]
   customers Customer[]
+  settings  Settings?
 }
 enum AccountType {
   SMALL_SHIPPER
@@ -441,6 +453,18 @@ model Member {
   isActive  Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+enum ChargeUnitTypes {
+  DISTANCE
+  WEIGHT
+  QUANTITY
+}
+
+model Settings {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  carrier         Carrier         @relation(fields: [carrierId], references: [id])
+  carrierId       String          @unique @db.ObjectId
+  rateChargeRules RateChargeRules
 }
 enum VehicleStatus {
   IDLE

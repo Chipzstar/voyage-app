@@ -1,0 +1,12 @@
+enum ChargeUnitTypes {
+    DISTANCE
+    WEIGHT
+    QUANTITY
+}
+
+model Settings {
+    id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+    carrier             Carrier @relation(fields: [carrierId], references: [id])
+    carrierId           String @db.ObjectId @unique
+    rateChargeRules     RateChargeRules
+}
