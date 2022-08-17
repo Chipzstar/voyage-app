@@ -2,26 +2,32 @@ import React, { useCallback } from 'react';
 import { Button, Checkbox, Container, Group, NumberInput, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDispatch } from 'react-redux';
-import { updateSettings } from '../../../store/feature/settingsSlice';
+import { createSettings, updateSettings } from '../../../store/feature/settingsSlice';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
-import { notifySuccess } from 'apps/carrier-dashboard/utils/functions';
-import { Check } from 'tabler-icons-react';
-import { ChargeUnitType, RateChargeRules } from 'apps/carrier-dashboard/utils/types';
-import { defaultChargeRules } from '../../../utils/constants';
+import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
+import { Check, X } from 'tabler-icons-react';
+import { ChargeUnitType, Settings } from 'apps/carrier-dashboard/utils/types';
 
 const Financial = ({ settings }) => {
 	const dispatch = useDispatch<AppDispatch>();
-	const initialValues: RateChargeRules = settings?.rateChargeRules ?? defaultChargeRules;
+	const initialValues: Settings = settings;
 	const quoteConfigForm = useForm({
 		initialValues
 	});
 
 	const submitQuoteSettings = useCallback(values => {
-		dispatch(updateSettings(values))
-			.unwrap()
-			.then(() => {
-				notifySuccess('update-settings-success', 'Quote settings saved!', <Check size={20} />);
-			});
+		settings.id
+			? dispatch(updateSettings(values))
+					.unwrap()
+					.then(() => {
+						notifySuccess('update-settings-success', 'Quote settings saved!', <Check size={20} />);
+					})
+					.catch(err => notifyError('update-settings-success', `There was a problem saving your settings. ${err?.message}`, <X size={20} />))
+			: dispatch(createSettings(values))
+					.unwrap()
+					.then(() => {
+						notifySuccess('create-settings-success', 'Quote settings saved!', <Check size={20} />);
+					});
 	}, []);
 
 	return (
@@ -66,9 +72,14 @@ const Financial = ({ settings }) => {
 					<form onSubmit={quoteConfigForm.onSubmit(submitQuoteSettings)}>
 						<Stack>
 							<Group>
-								<Checkbox checked={quoteConfigForm.values[ChargeUnitType.DISTANCE].active} value='mile' label='Charge per mile' className='w-48' {...quoteConfigForm.getInputProps(`${ChargeUnitType.DISTANCE}.active`)} />
+								<Checkbox
+									// checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.DISTANCE].active}
+									label='Charge per mile'
+									className='w-48'
+									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.DISTANCE}.active`)}
+								/>
 								<NumberInput
-									disabled={!quoteConfigForm.values[ChargeUnitType.DISTANCE].active}
+									disabled={!quoteConfigForm.values.rateChargeRules[ChargeUnitType.DISTANCE].active}
 									required
 									size='sm'
 									radius={0}
@@ -77,14 +88,19 @@ const Financial = ({ settings }) => {
 									min={0}
 									max={100}
 									placeholder='Charge'
-									{...quoteConfigForm.getInputProps(`${ChargeUnitType.DISTANCE}.value`)}
+									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.DISTANCE}.value`)}
 									icon={<span className='text-voyage-grey'>£</span>}
 								/>
 							</Group>
 							<Group>
-								<Checkbox checked={quoteConfigForm.values[ChargeUnitType.PACKAGE].active} value='package' label='Charge per pallet' className='w-48' {...quoteConfigForm.getInputProps(`${ChargeUnitType.PACKAGE}.active`)} />
+								<Checkbox
+									// checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.PACKAGE].active}
+									label='Charge per pallet'
+									className='w-48'
+									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.PACKAGE}.active`)}
+								/>
 								<NumberInput
-									disabled={!quoteConfigForm.values[ChargeUnitType.PACKAGE].active}
+									disabled={!quoteConfigForm.values.rateChargeRules[ChargeUnitType.PACKAGE].active}
 									required
 									size='sm'
 									radius={0}
@@ -93,15 +109,20 @@ const Financial = ({ settings }) => {
 									min={0}
 									max={100}
 									placeholder='Charge'
-									{...quoteConfigForm.getInputProps(`${ChargeUnitType.PACKAGE}.value`)}
+									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.PACKAGE}.value`)}
 									icon={<span className='text-voyage-grey'>£</span>}
 								/>
 							</Group>
 
 							<Group>
-								<Checkbox checked={quoteConfigForm.values[ChargeUnitType.WEIGHT].active} value='weight' label='Charge per kg' className='w-48' {...quoteConfigForm.getInputProps(`${ChargeUnitType.WEIGHT}.active`)} />
+								<Checkbox
+									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.WEIGHT].active}
+									label='Charge per kg'
+									className='w-48'
+									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.WEIGHT}.active`)}
+								/>
 								<NumberInput
-									disabled={!quoteConfigForm.values[ChargeUnitType.WEIGHT].active}
+									disabled={!quoteConfigForm.values.rateChargeRules[ChargeUnitType.WEIGHT].active}
 									required
 									size='sm'
 									radius={0}
@@ -110,7 +131,7 @@ const Financial = ({ settings }) => {
 									min={0}
 									max={100}
 									placeholder='Charge'
-									{...quoteConfigForm.getInputProps(`${ChargeUnitType.WEIGHT}.value`)}
+									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.WEIGHT}.value`)}
 									icon={<span className='text-voyage-grey'>£</span>}
 								/>
 							</Group>

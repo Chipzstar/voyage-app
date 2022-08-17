@@ -1,22 +1,10 @@
 import moment from 'moment';
 import { PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
-import {
-	ChargeUnitType,
-	Driver,
-	DRIVER_STATUS,
-	FuelMeasurementUnit,
-	FuelType,
-	INVOICE_STATUS,
-	Load,
-	Member,
-	TeamRole,
-	Vehicle,
-	VEHICLE_STATUS,
-	VEHICLE_TYPES,
-} from './types'
+import { ChargeUnitType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
 import orderId from 'order-id';
-import { momentLocalizer } from 'react-big-calendar'
+import { momentLocalizer } from 'react-big-calendar';
+
 moment.tz.setDefault('Europe/London');
 import mbxClient from '@mapbox/mapbox-sdk';
 
@@ -24,9 +12,9 @@ export const mapboxClient = mbxClient({
 	accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 });
 
-export const localizer = momentLocalizer(moment)
+export const localizer = momentLocalizer(moment);
 
-export const DEBUG_MODE = process.env.NODE_ENV !== 'production'
+export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
 
 export const PUBLIC_PATHS = {
 	LOGIN: '/login'
@@ -67,9 +55,8 @@ export const SETTINGS_TABS = [
 	{
 		value: 'documents',
 		label: 'Documents'
-	},
-
-]
+	}
+];
 
 export const SAMPLE_DRIVERS: Driver[] = [
 	{
@@ -103,7 +90,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		status: DRIVER_STATUS.OFFLINE,
 		isActive: false,
-		fullName: "Ola Oladapo",
+		fullName: 'Ola Oladapo',
 		firstName: 'Ola',
 		lastName: 'Oladapo',
 		email: 'ola.oladapo7@gmail.com',
@@ -126,7 +113,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		status: DRIVER_STATUS.OFFLINE,
 		isActive: false,
-		fullName: "Ryan Bannai",
+		fullName: 'Ryan Bannai',
 		firstName: 'Rayan',
 		lastName: 'Bannai',
 		email: 'rayan.bannai@googlemail.com',
@@ -149,7 +136,7 @@ export const SAMPLE_DRIVERS: Driver[] = [
 		driverId: `DRIVER-ID${alphanumericId(8)}`,
 		status: DRIVER_STATUS.OFFLINE,
 		isActive: false,
-		fullName: "Oscar Sanz",
+		fullName: 'Oscar Sanz',
 		firstName: 'Oscar',
 		lastName: 'Sanz',
 		email: 'oscar_sanz@hotmail.com',
@@ -269,7 +256,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		dimensions: {
 			length: 6867,
 			width: 2487,
-			height: 1440,
+			height: 1440
 		},
 		vin: '1G1YZ23J9P5803427',
 		colour: 'Silver',
@@ -278,7 +265,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: "2011",
+		yearOfManufacture: '2011',
 		status: VEHICLE_STATUS.FULL_CAPACITY
 	},
 	{
@@ -296,7 +283,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		dimensions: {
 			length: 6867,
 			width: 2487,
-			height: 1440,
+			height: 1440
 		},
 		vin: '1G1YZ23J9P5803427',
 		colour: 'Silver',
@@ -305,7 +292,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: "2011",
+		yearOfManufacture: '2011',
 		status: VEHICLE_STATUS.IDLE
 	},
 	{
@@ -323,7 +310,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		dimensions: {
 			length: 6867,
 			width: 2487,
-			height: 1440,
+			height: 1440
 		},
 		vin: '1G1YZ23J9P5803427',
 		colour: 'Silver',
@@ -332,7 +319,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: "2011",
+		yearOfManufacture: '2011',
 		status: VEHICLE_STATUS.OCCUPIED
 	},
 	{
@@ -350,7 +337,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		dimensions: {
 			length: 6867,
 			width: 2487,
-			height: 1440,
+			height: 1440
 		},
 		vin: '1G1YZ23J9P5803427',
 		colour: 'Silver',
@@ -359,10 +346,10 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
 		engineNumber: '52WVC10338',
 		image: 'https://www.mercedes-benz-trucks.com/content/dam/mbo/markets/en_ID/models/long-distance-actros/technical-data/specification-dimension/images/stage/stage-specification-dimension.jpg',
 		notes: '',
-		yearOfManufacture: "2011",
+		yearOfManufacture: '2011',
 		status: VEHICLE_STATUS.ON_THE_ROAD
 	}
-]
+];
 
 export const SAMPLE_LOADS: Load[] = [
 	{
@@ -396,7 +383,7 @@ export const SAMPLE_LOADS: Load[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			street: "4 Cranbrook Way, Shirley",
+			street: '4 Cranbrook Way, Shirley',
 			city: 'Shirley',
 			region: 'Solihull',
 			postcode: 'B90 4GT',
@@ -418,13 +405,13 @@ export const SAMPLE_LOADS: Load[] = [
 		},
 		customer: {
 			id: `CUSTOMER-ID${alphanumericId(8)}`,
-			name: "",
-			company: "ASOS"
+			name: '',
+			company: 'ASOS'
 		},
 		driver: {
 			id: `DRIVER-ID${alphanumericId(8)}`,
-			name: "Chisom Oguibe",
-			phone: "+447523958055"
+			name: 'Chisom Oguibe',
+			phone: '+447523958055'
 		},
 		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		trackingHistory: []
@@ -460,7 +447,7 @@ export const SAMPLE_LOADS: Load[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			street: "4 Cranbrook Way, Shirley",
+			street: '4 Cranbrook Way, Shirley',
 			city: 'Shirley',
 			region: 'Solihull',
 			postcode: 'B90 4GT',
@@ -482,13 +469,13 @@ export const SAMPLE_LOADS: Load[] = [
 		},
 		customer: {
 			id: `CUSTOMER-ID${alphanumericId(8)}`,
-			name: "",
-			company: "ASOS"
+			name: '',
+			company: 'ASOS'
 		},
 		driver: {
 			id: `DRIVER-ID${alphanumericId(8)}`,
-			name: "Chisom Oguibe",
-			phone: "+447523958055"
+			name: 'Chisom Oguibe',
+			phone: '+447523958055'
 		},
 		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		trackingHistory: []
@@ -524,7 +511,7 @@ export const SAMPLE_LOADS: Load[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			street: "4 Cranbrook Way, Shirley",
+			street: '4 Cranbrook Way, Shirley',
 			city: 'Shirley',
 			region: 'Solihull',
 			postcode: 'B90 4GT',
@@ -546,13 +533,13 @@ export const SAMPLE_LOADS: Load[] = [
 		},
 		customer: {
 			id: `CUSTOMER-ID${alphanumericId(8)}`,
-			name: "",
-			company: "ASOS"
+			name: '',
+			company: 'ASOS'
 		},
 		driver: {
 			id: `DRIVER-ID${alphanumericId(8)}`,
-			name: "Chisom Oguibe",
-			phone: "+447523958055"
+			name: 'Chisom Oguibe',
+			phone: '+447523958055'
 		},
 		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		trackingHistory: []
@@ -588,7 +575,7 @@ export const SAMPLE_LOADS: Load[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			street: "4 Cranbrook Way, Shirley",
+			street: '4 Cranbrook Way, Shirley',
 			city: 'Shirley',
 			region: 'Solihull',
 			postcode: 'B90 4GT',
@@ -610,13 +597,13 @@ export const SAMPLE_LOADS: Load[] = [
 		},
 		customer: {
 			id: `CUSTOMER-ID${alphanumericId(8)}`,
-			name: "",
-			company: "ASOS"
+			name: '',
+			company: 'ASOS'
 		},
 		driver: {
 			id: `DRIVER-ID${alphanumericId(8)}`,
-			name: "Chisom Oguibe",
-			phone: "+447523958055"
+			name: 'Chisom Oguibe',
+			phone: '+447523958055'
 		},
 		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		trackingHistory: []
@@ -652,7 +639,7 @@ export const SAMPLE_LOADS: Load[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			street: "4 Cranbrook Way, Shirley",
+			street: '4 Cranbrook Way, Shirley',
 			city: 'Shirley',
 			region: 'Solihull',
 			postcode: 'B90 4GT',
@@ -674,13 +661,13 @@ export const SAMPLE_LOADS: Load[] = [
 		},
 		customer: {
 			id: `CUSTOMER-ID${alphanumericId(8)}`,
-			name: "",
-			company: "ASOS"
+			name: '',
+			company: 'ASOS'
 		},
 		driver: {
 			id: `DRIVER-ID${alphanumericId(8)}`,
-			name: "Chisom Oguibe",
-			phone: "+447523958055"
+			name: 'Chisom Oguibe',
+			phone: '+447523958055'
 		},
 		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		trackingHistory: []
@@ -716,7 +703,7 @@ export const SAMPLE_LOADS: Load[] = [
 			location: [-1.778197, 52.412811]
 		},
 		pickup: {
-			street: "4 Cranbrook Way, Shirley",
+			street: '4 Cranbrook Way, Shirley',
 			city: 'Shirley',
 			region: 'Solihull',
 			postcode: 'B90 4GT',
@@ -738,13 +725,13 @@ export const SAMPLE_LOADS: Load[] = [
 		},
 		customer: {
 			id: `CUSTOMER-ID${alphanumericId(8)}`,
-			name: "",
-			company: "ASOS"
+			name: '',
+			company: 'ASOS'
 		},
 		driver: {
 			id: `DRIVER-ID${alphanumericId(8)}`,
-			name: "Chisom Oguibe",
-			phone: "+447523958055"
+			name: 'Chisom Oguibe',
+			phone: '+447523958055'
 		},
 		vehicleType: VEHICLE_TYPES.FLATBED_TRAILER,
 		trackingHistory: []
@@ -936,7 +923,7 @@ export const SAMPLE_INVOICES = [
 		periodStart: 1661777361,
 		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.PAID,
+		status: INVOICE_STATUS.PAID
 	},
 	{
 		id: '',
@@ -951,7 +938,7 @@ export const SAMPLE_INVOICES = [
 		periodStart: 1661777361,
 		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.OVERDUE,
+		status: INVOICE_STATUS.OVERDUE
 	},
 	{
 		id: '',
@@ -966,7 +953,7 @@ export const SAMPLE_INVOICES = [
 		periodStart: 1661777361,
 		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.PAID,
+		status: INVOICE_STATUS.PAID
 	},
 	{
 		id: '',
@@ -981,7 +968,7 @@ export const SAMPLE_INVOICES = [
 		periodStart: 1661777361,
 		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.PAID,
+		status: INVOICE_STATUS.PAID
 	},
 	{
 		id: '',
@@ -996,7 +983,7 @@ export const SAMPLE_INVOICES = [
 		periodStart: 1661777361,
 		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.SHORT_PAID,
+		status: INVOICE_STATUS.SHORT_PAID
 	},
 	{
 		id: '',
@@ -1011,9 +998,9 @@ export const SAMPLE_INVOICES = [
 		periodStart: 1661777361,
 		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.INVOICED,
+		status: INVOICE_STATUS.INVOICED
 	}
-]
+];
 
 export const PLACE_TYPES = {
 	ESTABLISHMENT: 'establishment',
@@ -1027,19 +1014,21 @@ export const PLACE_TYPES = {
 	INTERSECTION: 'intersection'
 };
 
-export const defaultChargeRules = {
-	[ChargeUnitType.DISTANCE]: {
-		active: false,
-		value: 0
-	},
-	[ChargeUnitType.WEIGHT]: {
-		active: false,
-		value: 0
-	},
-	[ChargeUnitType.PACKAGE]: {
-		active: false,
-		value: 0
+export const defaultSettings: Settings = {
+	id: null,
+	carrierId: '',
+	rateChargeRules: <RateChargeRules>{
+		[ChargeUnitType.DISTANCE]: {
+			active: false,
+			value: 0
+		},
+		[ChargeUnitType.WEIGHT]: {
+			active: false,
+			value: 0
+		},
+		[ChargeUnitType.PACKAGE]: {
+			active: false,
+			value: 0
+		}
 	}
-}
-
-
+};

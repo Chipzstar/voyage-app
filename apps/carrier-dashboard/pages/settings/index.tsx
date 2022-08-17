@@ -57,7 +57,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	if (session.id || token?.carrierId) {
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
-		console.log(settings)
+		console.log("SETTINGS", settings)
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setSettings(settings));
 	}
