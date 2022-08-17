@@ -118,7 +118,6 @@ const Sidebar = () => {
 			submenu: true,
 			menuItems: [
 				{ title: 'Customers', href: PATHS.CUSTOMERS, isActive: router.pathname.includes(PATHS.CUSTOMERS) },
-				{ title: 'Invoice', href: PATHS.INVOICES, isActive: router.pathname.includes(PATHS.INVOICES) },
 				{ title: 'Payment', href: PATHS.PAYMENTS, isActive: router.pathname.includes(PATHS.PAYMENTS) }
 			]
 		},

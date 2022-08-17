@@ -1,7 +1,6 @@
 import { runMiddleware, cors } from '../index';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
-import { Settings } from '../../../utils/types';
 
 export default async function handler(req, res) {
 	// Run the middleware
@@ -11,7 +10,6 @@ export default async function handler(req, res) {
 	let { id, ...payload } = req.body;
 	console.log('PAYLOAD', payload);
 	const { id: ID } = req.query;
-	console.table({ ID });
 	if (req.method === 'POST') {
 		try {
 			const settings = await prisma.settings.create({
@@ -30,7 +28,7 @@ export default async function handler(req, res) {
 		try {
 			const settings = await prisma.settings.update({
 				where: {
-					id: ID
+					carrierId: token?.carrierId
 				},
 				data: {
 					...payload
@@ -46,7 +44,7 @@ export default async function handler(req, res) {
 		try {
 			const result = await prisma.settings.delete({
 				where: {
-					id: ID
+					carrierId: token?.carrierId
 				}
 			});
 			console.log(result);

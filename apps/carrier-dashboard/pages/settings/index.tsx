@@ -1,6 +1,6 @@
 import TabBar from '../../layout/TabBar';
 import { PUBLIC_PATHS, SETTINGS_TABS } from '../../utils/constants'
-import React from 'react';
+import React, { useEffect } from 'react'
 import { Container, Tabs } from '@mantine/core'
 import Organisation from './containers/Organisation'
 import Financial from './containers/Financial'
@@ -57,7 +57,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	if (session.id || token?.carrierId) {
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
-		console.log("SETTINGS", settings)
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setSettings(settings));
 	}

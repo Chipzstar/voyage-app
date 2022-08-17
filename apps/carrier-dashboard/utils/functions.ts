@@ -364,10 +364,10 @@ export async function uploadFile({ id, file, documentType }) {
 
 		if (upload.ok) {
 			console.log('Uploaded successfully!');
-			return true
+			return upload
 		} else {
 			console.error('Upload failed.', upload.status);
-			return false
+			return upload
 		}
 	} catch (error) {
 		console.error(error)

@@ -23,12 +23,12 @@ const rootReducer = (state, action) => {
 		return {
 			...state, /// use previous state/// apply delta from hydration
 			profile: {
+				...state.profile,
 				...action.payload.profile,
-				...state.profile
 			},
 			settings: {
+				...state.settings,
 				...action.payload.settings,
-				...state.settings
 			},
 			drivers: action.payload.drivers || state.drivers,
 			members: action.payload.members || state.members,

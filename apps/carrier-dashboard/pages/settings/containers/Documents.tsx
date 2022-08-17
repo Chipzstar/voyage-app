@@ -1,10 +1,11 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Button, Center, Container, Group, Loader, Radio, Stack, Text, useMantineTheme } from '@mantine/core';
+import { Badge, Button, Card, Center, Container, Group, Loader, Paper, Radio, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
 import { notifySuccess, uploadFile } from '../../../utils/functions';
-import { DocumentType } from '../../../utils/types';
+import { DocumentType, Document } from '../../../utils/types';
+import { SAMPLE_DOCUMENTS } from '../../../utils/constants';
 
 interface FormValues {
 	id: string;
@@ -32,7 +33,9 @@ const DocumentInfo = ({ form, fileInfo }: { form: UseFormReturnType<FormValues>;
 	return (
 		<Group>
 			<Text size='xl'>{fileInfo?.name}</Text>
-			<Text size='md' color="dimmed">({fileInfo?.size / 1000} Kb)</Text>
+			<Text size='md' color='dimmed'>
+				({fileInfo?.size / 1000} Kb)
+			</Text>
 		</Group>
 	);
 };
@@ -55,8 +58,9 @@ const Documents = ({ carrierInfo }) => {
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
 		uploadFile(values)
-			.then(() => {
+			.then((res) => {
 				notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
+				console.log(res)
 				setLoading(false);
 			})
 			.catch(err => {
@@ -67,9 +71,45 @@ const Documents = ({ carrierInfo }) => {
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			<Center className='flex flex-col h-full'>
-				<header className='page-header my-6'>Upload Documents</header>
-				<form encType='multipart/form-data' onSubmit={form.onSubmit(handleSubmit)} className='w-3/4'>
+			<div className='grid grid-cols-3 h-full px-4 py-6 gap-x-10'>
+				<section>
+					<header className='page-header mb-3'>Your Documents</header>
+					<SimpleGrid>
+						{SAMPLE_DOCUMENTS.map(doc => (
+							<Paper shadow='md' p='md' withBorder className='w-full bg-transparent'>
+								<Stack>
+									<Group position='apart'>
+										<div>
+											<Text color='dimmed' weight={600}>
+												Filename
+											</Text>
+											<span>{doc.filename}</span>
+										</div>
+										<Badge variant='gradient' gradient={{ from: 'grey', to: 'black' }}>
+											Verifying
+										</Badge>
+									</Group>
+									<div>
+										<Text color='dimmed' weight={600}>
+											Document Type
+										</Text>
+										<span className='capitalize'>{doc.type.replace(/_/g, ' ').toLowerCase()}</span>
+									</div>
+								</Stack>
+								<Group position='right' mt='xs'>
+									<Button variant='default' size='xs'>
+										<Text color='dimmed'>Download</Text>
+									</Button>
+									<Button variant='outline' color='red' size='xs'>
+										Remove
+									</Button>
+								</Group>
+							</Paper>
+						))}
+					</SimpleGrid>
+				</section>
+				<form encType='multipart/form-data' onSubmit={form.onSubmit(handleSubmit)} className='col-span-2'>
+					<header className='page-header mb-6'>Upload Documents</header>
 					<Stack className='w-full'>
 						<Radio.Group label='Select the type of document to upload' description='You must upload one of each document type before creating loads.' required className='w-full' {...form.getInputProps('documentType')}>
 							<Radio key={0} value={DocumentType.UK_HGV_OPERATORS_LICENSE} label='UK HGV Operators Licence' />
@@ -115,7 +155,7 @@ const Documents = ({ carrierInfo }) => {
 						</Button>
 					</Group>
 				</form>
-			</Center>
+			</div>
 		</Container>
 	);
 };

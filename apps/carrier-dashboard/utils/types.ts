@@ -327,3 +327,14 @@ export interface Load {
 	hazmat?: HAZMAT_TYPES;
 	trackingHistory: Tracking[]
 }
+
+export interface Document {
+	id: string;
+	carrierId: string;
+	createdAt?: UnixTimestamp;
+	updatedAt?: UnixTimestamp;
+	type: DocumentType
+	filename: string;
+	filepath: string;
+	location: string;
+}

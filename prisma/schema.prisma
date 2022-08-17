@@ -196,7 +196,6 @@ type RateChargeRules {
   WEIGHT   ChargeRule
   PACKAGE  ChargeRule
 }
-
 enum LocationType {
   WAREHOUSE
   STORE
@@ -315,6 +314,7 @@ model Carrier {
   email     String
   phone     String
   stripe    Stripe?
+  documents Document[]
   loads     Load[]
   drivers   Driver[]
   members   Member[]
@@ -354,6 +354,23 @@ model Customer {
   taxIDNumber   String?
   extraContacts Contact[]
   notes         String?
+}
+enum DocumentType {
+  UK_HGV_OPERATORS_LICENSE
+  GOODS_IN_TRANSIT_INSURANCE
+  LIABILITY_INSURANCE
+}
+
+model Document {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  carrier   Carrier      @relation(fields: [carrierId], references: [id])
+  carrierId String       @db.ObjectId
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  type      DocumentType
+  filename  String
+  filepath  String
+  location  String
 }
 enum DriverStatus {
   OFFLINE

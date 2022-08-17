@@ -1,12 +1,29 @@
-import moment from 'moment';
-import { PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
-import { alphanumericId } from '@voyage-app/shared-utils';
-import { ChargeUnitType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
-import orderId from 'order-id';
-import { momentLocalizer } from 'react-big-calendar';
+import moment from 'moment'
+import { PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types'
+import { alphanumericId } from '@voyage-app/shared-utils'
+import {
+	ChargeUnitType,
+	Document,
+	DocumentType,
+	Driver,
+	DRIVER_STATUS,
+	FuelMeasurementUnit,
+	FuelType,
+	INVOICE_STATUS,
+	Load,
+	Member,
+	RateChargeRules,
+	Settings,
+	TeamRole,
+	Vehicle,
+	VEHICLE_STATUS,
+	VEHICLE_TYPES,
+} from './types'
+import orderId from 'order-id'
+import { momentLocalizer } from 'react-big-calendar'
+import mbxClient from '@mapbox/mapbox-sdk'
 
 moment.tz.setDefault('Europe/London');
-import mbxClient from '@mapbox/mapbox-sdk';
 
 export const mapboxClient = mbxClient({
 	accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
@@ -1011,8 +1028,8 @@ export const PLACE_TYPES = {
 	CITY: 'postal_town',
 	POSTCODE: 'postal_code',
 	POSTCODE_PREFIX: 'postal_code_prefix',
-	INTERSECTION: 'intersection'
-};
+	INTERSECTION: 'intersection',
+}
 
 export const defaultSettings: Settings = {
 	id: null,
@@ -1020,15 +1037,35 @@ export const defaultSettings: Settings = {
 	rateChargeRules: <RateChargeRules>{
 		[ChargeUnitType.DISTANCE]: {
 			active: false,
-			value: 0
+			value: 0,
 		},
 		[ChargeUnitType.WEIGHT]: {
 			active: false,
-			value: 0
+			value: 0,
 		},
 		[ChargeUnitType.PACKAGE]: {
 			active: false,
-			value: 0
-		}
-	}
-};
+			value: 0,
+		},
+	},
+}
+
+export const SAMPLE_DOCUMENTS: Document[] = [
+	{
+		id: '',
+		carrierId: '',
+		filename: 'Liability Insurance',
+		filepath: '/id/type/insurance.pdf',
+		type: DocumentType.LIABILITY_INSURANCE,
+		location: 'https://github.com/'
+	},
+	{
+		id: '',
+		carrierId: '',
+		filename: 'UK HGV Operators License',
+		filepath: '/id/type/insurance.pdf',
+		type: DocumentType.UK_HGV_OPERATORS_LICENSE,
+		location: 'https://github.com/'
+	},
+]
+

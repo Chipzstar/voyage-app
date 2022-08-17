@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Button, Checkbox, Container, Group, NumberInput, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDispatch } from 'react-redux';
@@ -16,9 +16,12 @@ const Financial = ({ settings, carrierInfo }) => {
 		carrierId: settings?.carrierId ?? carrierInfo?.id ?? undefined,
 		rateChargeRules: settings?.rateChargeRules ?? defaultSettings.rateChargeRules
 	};
+
 	const quoteConfigForm = useForm({
 		initialValues
 	});
+
+	useEffect(() => console.log("init:", settings), [settings]);
 
 	const submitQuoteSettings = useCallback(values => {
 		settings.id
@@ -76,11 +79,11 @@ const Financial = ({ settings, carrierInfo }) => {
 					<header className='page-header my-6'>Quote Settings</header>
 					<form onSubmit={quoteConfigForm.onSubmit(submitQuoteSettings)}>
 						<Stack>
-							<Group>
+							<Group position="center">
 								<Checkbox
 									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.DISTANCE].active}
 									label='Charge per mile'
-									className='w-48'
+									className='lg:w-48'
 									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.DISTANCE}.active`)}
 								/>
 								<NumberInput
@@ -97,11 +100,11 @@ const Financial = ({ settings, carrierInfo }) => {
 									icon={<span className='text-voyage-grey'>£</span>}
 								/>
 							</Group>
-							<Group>
+							<Group position="center">
 								<Checkbox
 									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.PACKAGE].active}
 									label='Charge per pallet'
-									className='w-48'
+									className='lg:w-48'
 									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.PACKAGE}.active`)}
 								/>
 								<NumberInput
@@ -119,11 +122,11 @@ const Financial = ({ settings, carrierInfo }) => {
 								/>
 							</Group>
 
-							<Group>
+							<Group position="center">
 								<Checkbox
 									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.WEIGHT].active}
 									label='Charge per kg'
-									className='w-48'
+									className='lg:w-48'
 									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.WEIGHT}.active`)}
 								/>
 								<NumberInput
