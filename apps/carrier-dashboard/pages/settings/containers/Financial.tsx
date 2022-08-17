@@ -7,10 +7,15 @@ import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
 import { Check, X } from 'tabler-icons-react';
 import { ChargeUnitType, Settings } from 'apps/carrier-dashboard/utils/types';
+import { defaultSettings } from '../../../utils/constants'
 
-const Financial = ({ settings }) => {
+const Financial = ({ settings, carrierInfo }) => {
 	const dispatch = useDispatch<AppDispatch>();
-	const initialValues: Settings = settings;
+	const initialValues: Settings = {
+		id: settings?.id ?? undefined,
+		carrierId: settings?.carrierId ?? carrierInfo?.id ?? undefined,
+		rateChargeRules: settings?.rateChargeRules ?? defaultSettings.rateChargeRules
+	};
 	const quoteConfigForm = useForm({
 		initialValues
 	});
@@ -73,7 +78,7 @@ const Financial = ({ settings }) => {
 						<Stack>
 							<Group>
 								<Checkbox
-									// checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.DISTANCE].active}
+									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.DISTANCE].active}
 									label='Charge per mile'
 									className='w-48'
 									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.DISTANCE}.active`)}
@@ -94,7 +99,7 @@ const Financial = ({ settings }) => {
 							</Group>
 							<Group>
 								<Checkbox
-									// checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.PACKAGE].active}
+									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.PACKAGE].active}
 									label='Charge per pallet'
 									className='w-48'
 									{...quoteConfigForm.getInputProps(`rateChargeRules.${ChargeUnitType.PACKAGE}.active`)}
@@ -148,4 +153,4 @@ const Financial = ({ settings }) => {
 	);
 };
 
-export default Financial;
+export default Financial

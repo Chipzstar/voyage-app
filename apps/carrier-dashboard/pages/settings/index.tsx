@@ -32,7 +32,7 @@ const settings = () => {
 					<Organisation carrierInfo={profile}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.FINANCIAL}>
-					<Financial settings={settings}/>
+					<Financial carrierInfo={profile} settings={settings}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
 					<Documents carrierInfo={profile}/>

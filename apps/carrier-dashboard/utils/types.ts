@@ -127,9 +127,9 @@ export interface Carrier {
 }
 
 export enum ChargeUnitType {
+	DISTANCE = 'DISTANCE',
 	WEIGHT = 'WEIGHT',
-	PACKAGE = 'PACKAGE',
-	DISTANCE = 'DISTANCE'
+	PACKAGE = 'PACKAGE'
 }
 
 type ChargeRule = {
