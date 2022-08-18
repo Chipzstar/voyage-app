@@ -14,7 +14,7 @@ import PaymentCardForm from 'apps/carrier-dashboard/components/PaymentCardForm';
 import PaymentStatus from '../../../components/PaymentStatus';
 import axios from 'axios';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_API_KEY);
+const stripePromise = loadStripe(String(process.env.NEXT_PUBLIC_STRIPE_API_KEY));
 
 const Financial = ({ settings, carrierInfo, clientSecret }) => {
 	const dispatch = useDispatch<AppDispatch>();
