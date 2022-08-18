@@ -1,5 +1,4 @@
 import TabBar from '../../layout/TabBar';
-import axios from 'axios';
 import { PUBLIC_PATHS, SETTINGS_TABS } from '../../utils/constants'
 import React from 'react'
 import { Container, Tabs } from '@mantine/core'
