@@ -9,12 +9,13 @@ import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
 import { Check, X } from 'tabler-icons-react';
 import { ChargeUnitType, Settings } from 'apps/carrier-dashboard/utils/types';
-import { defaultSettings } from '../../../utils/constants';
+import { defaultSettings, STRIPE_PUBLIC_KEY } from '../../../utils/constants';
 import PaymentCardForm from 'apps/carrier-dashboard/components/PaymentCardForm';
 import PaymentStatus from '../../../components/PaymentStatus';
 import axios from 'axios';
 
-const stripePromise = loadStripe(String(process.env.NEXT_PUBLIC_STRIPE_API_KEY));
+const stripePromise = loadStripe(String(STRIPE_PUBLIC_KEY));
+console.log(STRIPE_PUBLIC_KEY)
 
 const Financial = ({ settings, carrierInfo, clientSecret }) => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -32,7 +33,7 @@ const Financial = ({ settings, carrierInfo, clientSecret }) => {
 
 	const submitPaymentInfo = useCallback(async paymentIntent => {
 		try {
-			console.log(paymentIntent)
+			console.log(paymentIntent);
 			await axios.put(`/api/stripe/payment-method/${paymentIntent.payment_method}`, {
 				customer: carrierInfo.stripe.customerId
 			});
@@ -42,9 +43,9 @@ const Financial = ({ settings, carrierInfo, clientSecret }) => {
 					paymentMethodId: paymentIntent.payment_method
 				}
 			});
-			return "Payment Added successfully";
+			return 'Payment Added successfully';
 		} catch (e) {
-			throw(e)
+			throw e;
 		}
 	}, []);
 

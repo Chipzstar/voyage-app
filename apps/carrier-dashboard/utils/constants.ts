@@ -25,6 +25,8 @@ import mbxClient from '@mapbox/mapbox-sdk'
 
 moment.tz.setDefault('Europe/London');
 
+export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY || 'pk_test_51LXPkaEqdCHY4B77SWShCyp3LDZXzgVCfNmIk9mvQfIHYZLOt9sLBFQN9af8EZDLimKj5sCTE3Y1vwkPR99fCYbq008YylFuKb';
+
 export const mapboxClient = mbxClient({
 	accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
 });
