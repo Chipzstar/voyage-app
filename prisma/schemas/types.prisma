@@ -13,8 +13,8 @@ type Address {
 }
 
 type TimeWindow {
-    start Int
-    end Int
+    start Int @db.Long
+    end Int @db.Long
 }
 
 type Dimensions {
@@ -37,7 +37,7 @@ type ShipmentDelivery {
     window TimeWindow?
 }
 
-type Package {
+type PackageInfo {
 	weight Int
 	quantity Int
 	dimensions Dimensions

@@ -5,7 +5,7 @@ interface selectInput {
 	value: string;
 	label: string
 }
-
+// functions
 export function capitalize(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
@@ -36,5 +36,6 @@ export function includesCaseInsensitive(this: string, str: string): boolean {
 	return this.toLowerCase().includes(str.toLowerCase())
 }
 
+//constants
 export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 export const numericId = customAlphabet('1234567890');

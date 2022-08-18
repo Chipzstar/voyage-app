@@ -27,7 +27,7 @@ model Load {
     rate Int
     pickup LoadLocation
     delivery LoadLocation
-    package Package
+    packageInfo PackageInfo
     carrierInfo CarrierInfo?
     hamzat HamzatType?
     vehicleType VehicleType

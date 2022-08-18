@@ -106,7 +106,7 @@ const marketplace = () => {
 								</div>
 								<div>
 									<span className='lowercase'>
-										{shipment.package.weight} kg of {shipment.package.packageType}s
+										{shipment.packageInfo.weight} kg of {shipment.packageInfo.packageType}s
 									</span>
 								</div>
 							</div>

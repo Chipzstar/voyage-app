@@ -13,6 +13,7 @@ import { authOptions } from '../api/auth/[...nextauth]'
 import { getToken } from 'next-auth/jwt'
 import { PUBLIC_PATHS } from '../../utils/constants'
 import { useSelector } from 'react-redux'
+import { Load } from '../../utils/types';
 
 const TAB_LABELS = {
 	UPCOMING: 'upcoming',
@@ -60,7 +61,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
 		let loads = await fetchLoads(token?.carrierId, prisma)
 		store.dispatch(setCarrier(carrier));
-		console.log(loads)
+		loads.forEach((load: Load) => {
+			console.log("id", load.loadId, "-> \tpickup start", load.pickup.window.start)
+		})
 		store.dispatch(setLoads(loads));
 	}
 	return {

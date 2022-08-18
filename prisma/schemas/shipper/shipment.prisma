@@ -56,6 +56,6 @@ model Shipment {
     rate Int
     pickup ShipmentPickup
     delivery ShipmentDelivery
-    package Package
+    packageInfo PackageInfo
     carrierInfo CarrierInfo?
 }

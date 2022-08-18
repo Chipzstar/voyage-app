@@ -15,12 +15,14 @@ function genFullAddress(location: Location) {
 }
 
 export function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[]): Load {
+	console.log('PICKUP DATE', values.pickupDate);
+	console.log('--------------------------------------------------');
 	const pickup: LoadLocation = {
 		...values.pickupLocation,
 		fullAddress: genFullAddress(values.pickupLocation),
 		window: {
-			start: moment(values.pickupDate).unix(),
-			end: moment(values.pickupDate).add(1, 'hour').unix()
+			start: values.pickupDate,
+			end: moment.unix(values.pickupDate).add(1, 'hour').unix()
 		}
 	};
 	const delivery: LoadLocation = {
@@ -53,7 +55,7 @@ export function generateLoad(profile, values: NewBooking, drivers: Driver[], con
 		rate: calculateRate(values.weight, values.quantity),
 		pickup,
 		delivery,
-		package: {
+		packageInfo: {
 			weight: values.weight,
 			quantity: values.quantity,
 			dimensions: {
@@ -265,7 +267,7 @@ export async function fetchLoads(carrierId, prisma) {
 	return loads;
 }
 
-export async function fetchSettings(carrierId, prisma){
+export async function fetchSettings(carrierId, prisma) {
 	return await prisma.settings.findFirst({
 		where: {
 			carrierId: {
@@ -355,7 +357,7 @@ export async function uploadFile({ id, file, documentType }) {
 		Object.entries({ ...fields, file }).forEach(([key, value]: [string, string]) => {
 			formData.append(key, value);
 		});
-		console.log(formData)
+		console.log(formData);
 
 		const upload = await fetch(url, {
 			method: 'POST',
@@ -364,13 +366,13 @@ export async function uploadFile({ id, file, documentType }) {
 
 		if (upload.ok) {
 			console.log('Uploaded successfully!');
-			return upload
+			return upload;
 		} else {
 			console.error('Upload failed.', upload.status);
-			return upload
+			return upload;
 		}
 	} catch (error) {
-		console.error(error)
-		throw error
+		console.error(error);
+		throw error;
 	}
 }

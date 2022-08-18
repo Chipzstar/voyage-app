@@ -43,15 +43,8 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 		</Anchor>
 	));
 
-	const { pickup, delivery, packageInfo, carrierInfo, customer, trackingHistory } = useMemo(() => {
-		return {
-			customer: loads[pageIndex]?.customer,
-			pickup: loads[pageIndex]?.pickup,
-			delivery: loads[pageIndex]?.delivery,
-			packageInfo: loads[pageIndex]?.package,
-			carrierInfo: loads[pageIndex]?.carrierInfo,
-			trackingHistory: loads[pageIndex]?.trackingHistory ?? []
-		};
+	const load: Load = useMemo(() => {
+		return loads[pageIndex]
 	}, [loads, pageIndex]);
 
 	return (
@@ -101,43 +94,46 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 										<div className='flex'>
 											<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
 												<Text>
-													{moment.unix(pickup.window.start).format('HH:mm a')} - {moment.unix(pickup.window.end).format('HH:mm a')}
+													{moment.unix(load.pickup.window.start).format('HH:mm a')} - {moment.unix(load.pickup.window.end).format('HH:mm a')}
 												</Text>
 											</Badge>
 										</div>
-										<Text>{pickup.street}</Text>
-										<Text>{pickup.city}</Text>
-										<Text transform='uppercase'>{pickup.postcode}</Text>
+										<Text>{load.pickup.street}</Text>
+										<Text>{load.pickup.city}</Text>
+										<Text transform='uppercase'>{load.pickup.postcode}</Text>
 									</div>
 									<div className='space-y-2'>
 										<span className='page-subheading'>Dropoff</span>
 										<div className='flex'>
 											<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
-												<Text>{delivery.window?.start ? moment.unix(delivery.window.start).format('HH:mm a') : 'Estimating...'}</Text>
+												<Text>{load.delivery.window?.start ? moment.unix(load.delivery.window.start).format('HH:mm a') : 'Estimating...'}</Text>
 											</Badge>
 										</div>
-										<Text>{delivery.street}</Text>
-										<Text>{delivery.city}</Text>
-										<Text transform='uppercase'>{delivery.postcode}</Text>
+										<Text>{load.delivery.street}</Text>
+										<Text>{load.delivery.city}</Text>
+										<Text transform='uppercase'>{load.delivery.postcode}</Text>
 									</div>
 									<div className='space-y-2'>
 										<span className='page-subheading'>Customer</span>
-										<p>{customer?.company}</p>
-										<p>{customer?.name}</p>
+										<p>{load.customer?.company}</p>
+										<p>{load.customer?.name}</p>
 									</div>
 									<div className='space-y-2'>
 										<span className='page-subheading'>Driver</span>
-										<p>{carrierInfo?.driverName}</p>
-										<p>{carrierInfo?.driverPhone}</p>
-										<p className='capitalize'>{sanitize(carrierInfo?.vehicleType.toLowerCase())}</p>
+										<p>{load.carrierInfo?.driverName}</p>
+										<p>{load.carrierInfo?.driverPhone}</p>
+										<p className='capitalize'>{sanitize(load.carrierInfo?.vehicleType.toLowerCase())}</p>
 									</div>
 									<div className='space-y-2 col-span-2'>
 										<span className='page-subheading'>Package Details</span>
 										<p>
-											<Pluralize singular={packageInfo?.packageType.toLowerCase()} count={packageInfo?.quantity ?? 1} />
+											<Pluralize singular={load.packageInfo?.packageType.toLowerCase()} count={load.packageInfo?.quantity ?? 1} />
 										</p>
 										<p>
-											{packageInfo?.weight} kg &nbsp;/&nbsp; {packageInfo?.dimensions.length} x {packageInfo?.dimensions.width} x {packageInfo?.dimensions.height} cm
+											{load.packageInfo?.weight} kg &nbsp;/&nbsp; {load.packageInfo?.dimensions.length} x {load.packageInfo?.dimensions.width} x {load.packageInfo?.dimensions.height} cm
+										</p>
+										<p>
+											{load.packageInfo?.description}
 										</p>
 									</div>
 								</section>
@@ -145,9 +141,9 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 							<aside className='border border-voyage-grey p-5'>
 								<header className='page-subheading'>Summary</header>
 								<div className='pt-8'>
-									<Timeline active={trackingHistory.length - 1} bulletSize={18} lineWidth={2}>
-										{trackingHistory.map((event, index) => (
-											<Timeline.Item key={index} title={capitalize(event.status.toLowerCase())} active={index < trackingHistory.length - 1}>
+									<Timeline active={load.trackingHistory.length - 1} bulletSize={18} lineWidth={2}>
+										{load.trackingHistory.map((event, index) => (
+											<Timeline.Item key={index} title={capitalize(event.status.toLowerCase())} active={index < load.trackingHistory.length - 1}>
 												<Text color='dimmed' size='sm'>
 													{EVENT_DESCRIPTIONS[event.status]}
 												</Text>

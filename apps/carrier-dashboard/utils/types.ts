@@ -1,12 +1,4 @@
-import {
-	CarrierInfo,
-	HAZMAT_TYPES,
-	Package,
-	PACKAGE_TYPE,
-	ShipmentTimeWindow,
-	STATUS,
-	UnixTimestamp,
-} from '@voyage-app/shared-types'
+import { CarrierInfo, HAZMAT_TYPES, Package, PACKAGE_TYPE, STATUS, UnixTimestamp } from '@voyage-app/shared-types';
 
 export enum TeamRole {
 	ADMIN = 'ADMIN',
@@ -286,6 +278,11 @@ export interface NewBooking {
 	description: string;
 }
 
+export interface LoadTimeWindow {
+	start: number;
+	end: number;
+}
+
 export interface LoadLocation {
 	fullAddress?: string;
 	street: string;
@@ -295,7 +292,7 @@ export interface LoadLocation {
 	country: string;
 	note?: string;
 	location?: Geolocation
-	window?: ShipmentTimeWindow;
+	window?: LoadTimeWindow;
 }
 
 export interface Load {
@@ -322,7 +319,7 @@ export interface Load {
 		phone: string;
 	};
 	vehicleType: VEHICLE_TYPES
-	package: Package;
+	packageInfo: Package;
 	carrierInfo: CarrierInfo;
 	hazmat?: HAZMAT_TYPES;
 	trackingHistory: Tracking[]

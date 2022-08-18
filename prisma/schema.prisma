@@ -83,8 +83,8 @@ type Address {
 }
 
 type TimeWindow {
-  start Int
-  end   Int
+  start Int @db.Long
+  end   Int @db.Long
 }
 
 type Dimensions {
@@ -107,7 +107,7 @@ type ShipmentDelivery {
   window       TimeWindow?
 }
 
-type Package {
+type PackageInfo {
   weight      Int
   quantity    Int
   dimensions  Dimensions
@@ -279,7 +279,7 @@ model Shipment {
   rate               Int
   pickup             ShipmentPickup
   delivery           ShipmentDelivery
-  package            Package
+  packageInfo        PackageInfo
   carrierInfo        CarrierInfo?
 }
 model Shipper {
@@ -438,7 +438,7 @@ model Load {
   rate             Int
   pickup           LoadLocation
   delivery         LoadLocation
-  package          Package
+  packageInfo      PackageInfo
   carrierInfo      CarrierInfo?
   hamzat           HamzatType?
   vehicleType      VehicleType

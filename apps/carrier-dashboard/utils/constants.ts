@@ -379,7 +379,7 @@ export const SAMPLE_LOADS: Load[] = [
 		internalPONumber: 'PO 931-977981-8760',
 		customerPONumber: 'PO 931-977981-8760',
 		rate: 550.21,
-		package: {
+		packageInfo: {
 			weight: 19000,
 			quantity: 1,
 			packageType: PACKAGE_TYPE.PALLET,
@@ -443,7 +443,7 @@ export const SAMPLE_LOADS: Load[] = [
 		internalPONumber: 'PO 931-977981-8760',
 		customerPONumber: 'PO 931-977981-8760',
 		rate: 550.21,
-		package: {
+		packageInfo: {
 			weight: 14000,
 			quantity: 1,
 			packageType: PACKAGE_TYPE.PALLET,
@@ -507,7 +507,7 @@ export const SAMPLE_LOADS: Load[] = [
 		internalPONumber: 'PO 931-977981-8760',
 		customerPONumber: 'PO 931-977981-8760',
 		rate: 550.21,
-		package: {
+		packageInfo: {
 			weight: 9000,
 			quantity: 1,
 			packageType: PACKAGE_TYPE.PALLET,
@@ -571,7 +571,7 @@ export const SAMPLE_LOADS: Load[] = [
 		internalPONumber: 'PO 931-977981-8760',
 		customerPONumber: 'PO 931-977981-8760',
 		rate: 550.21,
-		package: {
+		packageInfo: {
 			weight: 9000,
 			quantity: 1,
 			packageType: PACKAGE_TYPE.PALLET,
@@ -635,7 +635,7 @@ export const SAMPLE_LOADS: Load[] = [
 		internalPONumber: 'PO 931-977981-8760',
 		customerPONumber: 'PO 931-977981-8760',
 		rate: 550.21,
-		package: {
+		packageInfo: {
 			weight: 9000,
 			quantity: 1,
 			packageType: PACKAGE_TYPE.PALLET,
@@ -699,7 +699,7 @@ export const SAMPLE_LOADS: Load[] = [
 		internalPONumber: 'PO 931-977981-8760',
 		customerPONumber: 'PO 931-977981-8760',
 		rate: 550.21,
-		package: {
+		packageInfo: {
 			weight: 15000,
 			quantity: 1,
 			packageType: PACKAGE_TYPE.PALLET,
@@ -1068,4 +1068,3 @@ export const SAMPLE_DOCUMENTS: Document[] = [
 		location: 'https://github.com/'
 	},
 ]
-

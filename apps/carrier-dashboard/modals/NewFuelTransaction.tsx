@@ -2,10 +2,12 @@ import React, { useCallback } from 'react';
 import { Modal, SimpleGrid, TextInput, Text, Button, Group, Stack, Select, Divider, NumberInput, NativeSelect } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { PACKAGE_TYPE, SelectInputData } from '@voyage-app/shared-types';
-import { SAMPLE_DRIVERS } from '../utils/constants';
 import { DatePicker } from '@mantine/dates';
+import { useDrivers } from '../store/feature/driverSlice';
+import { useSelector } from 'react-redux';
 
 const NewFuelTransaction = ({ opened, onClose }) => {
+	const drivers = useSelector(useDrivers)
 	const form = useForm({
 		initialValues: {}
 	});
@@ -54,7 +56,7 @@ const NewFuelTransaction = ({ opened, onClose }) => {
 					<Select
 						label='Driver'
 						placeholder='Select a Driver'
-						data={Object.values(SAMPLE_DRIVERS).map(
+						data={Object.values(drivers).map(
 							(item): SelectInputData => ({
 								label: item.firstName + ' ' + item.lastName,
 								value: item.driverId
