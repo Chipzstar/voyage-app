@@ -56,6 +56,8 @@
     "@pulumi/gcp": "^6.32.0",
     "@pulumi/pulumi": "^3.37.2",
     "@reduxjs/toolkit": "1.8.4",
+    "@stripe/react-stripe-js": "^1.10.0",
+    "@stripe/stripe-js": "^1.35.0",
     "@tabler/icons": "^1.79.0",
     "antd": "^4.21.6",
     "axios": "^0.27.2",
@@ -90,6 +92,7 @@
     "react-redux": "^7.2.8",
     "redux": "^4.2.0",
     "regenerator-runtime": "0.13.7",
+    "stripe": "^10.2.0",
     "tabler-icons-react": "^1.52.0",
     "tslib": "^2.3.0"
   },

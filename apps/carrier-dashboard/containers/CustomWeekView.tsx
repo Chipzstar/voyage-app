@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-big-calendar';
 import TimeGrid from 'react-big-calendar/lib/TimeGrid';
 import * as dates from 'date-arithmetic'
-import moment from 'moment';
 
 export default function CustomWeekView({ date, localizer, max = localizer.endOf(new Date(), 'day'), min = localizer.startOf(new Date(), 'day'), scrollToTime = localizer.startOf(new Date(), 'day'), ...props }) {
 	const currRange = useMemo(() => CustomWeekView.range(date, { localizer }), [date, localizer]);

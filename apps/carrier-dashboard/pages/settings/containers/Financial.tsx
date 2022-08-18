@@ -1,27 +1,56 @@
-import React, { useCallback, useEffect } from 'react';
-import { Button, Checkbox, Container, Group, NumberInput, Stack, TextInput } from '@mantine/core';
+import React, { useCallback } from 'react';
+import { Button, Checkbox, Container, Group, NumberInput, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDispatch } from 'react-redux';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { createSettings, updateSettings } from '../../../store/feature/settingsSlice';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
 import { Check, X } from 'tabler-icons-react';
 import { ChargeUnitType, Settings } from 'apps/carrier-dashboard/utils/types';
-import { defaultSettings } from '../../../utils/constants'
+import { defaultSettings } from '../../../utils/constants';
+import PaymentCardForm from 'apps/carrier-dashboard/components/PaymentCardForm';
+import PaymentStatus from '../../../components/PaymentStatus';
+import axios from 'axios';
 
-const Financial = ({ settings, carrierInfo }) => {
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_API_KEY);
+
+const Financial = ({ settings, carrierInfo, clientSecret }) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const initialValues: Settings = {
 		id: settings?.id ?? undefined,
 		carrierId: settings?.carrierId ?? carrierInfo?.id ?? undefined,
 		rateChargeRules: settings?.rateChargeRules ?? defaultSettings.rateChargeRules
 	};
+	const options: StripeElementsOptions = {
+		clientSecret: clientSecret,
+		appearance: {
+			theme: 'stripe'
+		}
+	};
+
+	const submitPaymentInfo = useCallback(async paymentIntent => {
+		try {
+			console.log(paymentIntent)
+			await axios.put(`/api/stripe/payment-method/${paymentIntent.payment_method}`, {
+				customer: carrierInfo.stripe.customerId
+			});
+			await axios.put(`/api/carrier/${carrierInfo.id}`, {
+				stripe: {
+					...carrierInfo.stripe,
+					paymentMethodId: paymentIntent.payment_method
+				}
+			});
+			return "Payment Added successfully";
+		} catch (e) {
+			throw(e)
+		}
+	}, []);
 
 	const quoteConfigForm = useForm({
 		initialValues
 	});
-
-	useEffect(() => console.log("init:", settings), [settings]);
 
 	const submitQuoteSettings = useCallback(values => {
 		settings.id
@@ -40,10 +69,10 @@ const Financial = ({ settings, carrierInfo }) => {
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			<div className='grid grid-cols-2 h-full py-6'>
-				<section className='flex flex-col h-full justify-center items-center border-r border-voyage-grey'>
+			<div className='grid h-full grid-cols-2 py-6'>
+				<section className='border-voyage-grey flex h-full flex-col items-center justify-center border-r'>
 					<header className='page-header my-6'>Payment Settings</header>
-					<form>
+					{/*<form>
 						<Group px={20}>
 							<TextInput label='Card Info' placeholder='1234 1234 1234 1234' />
 							<Group>
@@ -73,13 +102,19 @@ const Financial = ({ settings, carrierInfo }) => {
 						<Stack align='center' py={20}>
 							<Button className='bg-secondary hover:bg-secondary-600'>Save Changes</Button>
 						</Stack>
-					</form>
+					</form>*/}
+					{options.clientSecret && (
+						<Elements stripe={stripePromise} options={options}>
+							<PaymentCardForm onSave={submitPaymentInfo} />
+							<PaymentStatus />
+						</Elements>
+					)}
 				</section>
-				<section className='flex flex-col h-full justify-center items-center border-l border-voyage-grey'>
+				<section className='border-voyage-grey flex h-full flex-col items-center justify-center border-l'>
 					<header className='page-header my-6'>Quote Settings</header>
 					<form onSubmit={quoteConfigForm.onSubmit(submitQuoteSettings)}>
 						<Stack>
-							<Group position="center">
+							<Group position='center'>
 								<Checkbox
 									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.DISTANCE].active}
 									label='Charge per mile'
@@ -100,7 +135,7 @@ const Financial = ({ settings, carrierInfo }) => {
 									icon={<span className='text-voyage-grey'>£</span>}
 								/>
 							</Group>
-							<Group position="center">
+							<Group position='center'>
 								<Checkbox
 									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.PACKAGE].active}
 									label='Charge per pallet'
@@ -122,7 +157,7 @@ const Financial = ({ settings, carrierInfo }) => {
 								/>
 							</Group>
 
-							<Group position="center">
+							<Group position='center'>
 								<Checkbox
 									checked={quoteConfigForm.values.rateChargeRules[ChargeUnitType.WEIGHT].active}
 									label='Charge per kg'
@@ -156,4 +191,4 @@ const Financial = ({ settings, carrierInfo }) => {
 	);
 };
 
-export default Financial
+export default Financial;

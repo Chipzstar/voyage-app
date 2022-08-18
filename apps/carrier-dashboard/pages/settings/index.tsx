@@ -1,6 +1,7 @@
 import TabBar from '../../layout/TabBar';
+import axios from 'axios';
 import { PUBLIC_PATHS, SETTINGS_TABS } from '../../utils/constants'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Container, Tabs } from '@mantine/core'
 import Organisation from './containers/Organisation'
 import Financial from './containers/Financial'
@@ -14,6 +15,9 @@ import { setCarrier, useCarrier } from '../../store/feature/profileSlice'
 import { useSelector } from 'react-redux';
 import Documents from './containers/Documents';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice'
+import Stripe from 'stripe';
+import { CURRENCY, formatAmountForStripe } from '../../utils/stripe';
+import { Carrier } from '../../utils/types';
 
 const TAB_LABELS = {
 	ORGANIZATION: SETTINGS_TABS[0].value,
@@ -21,7 +25,7 @@ const TAB_LABELS = {
 	DOCUMENTS: SETTINGS_TABS[2].value,
 }
 
-const settings = () => {
+const settings = ({clientSecret}) => {
 	const profile = useSelector(useCarrier)
 	const settings = useSelector(useSettings)
 
@@ -32,7 +36,7 @@ const settings = () => {
 					<Organisation carrierInfo={profile}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.FINANCIAL}>
-					<Financial carrierInfo={profile} settings={settings}/>
+					<Financial carrierInfo={profile} settings={settings} clientSecret={clientSecret}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
 					<Documents carrierInfo={profile}/>
@@ -46,6 +50,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
+	let clientSecret = null
 	if (!session) {
 		return {
 			redirect: {
@@ -55,14 +60,32 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id || token?.carrierId) {
-		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
+		let carrier: Carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setSettings(settings));
+		// fetch clientSecret from stripe payment intent
+		const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+			apiVersion: '2022-08-01'
+		});
+		const formattedAmount = formatAmountForStripe(1, CURRENCY)
+		const params: Stripe.PaymentIntentCreateParams = {
+			payment_method_types: ['card'],
+			setup_future_usage: 'off_session',
+			amount: formattedAmount,
+			currency: CURRENCY,
+			customer: carrier.stripe.customerId
+		};
+		const payment_intent: Stripe.PaymentIntent = await stripe.paymentIntents.create(
+			params
+		);
+		console.log(payment_intent)
+		clientSecret = payment_intent.client_secret;
 	}
 	return {
 		props: {
-			session
+			session,
+			clientSecret
 		}
 	};
 });

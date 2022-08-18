@@ -75,8 +75,8 @@ const Documents = ({ carrierInfo }) => {
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>
 					<SimpleGrid>
-						{SAMPLE_DOCUMENTS.map(doc => (
-							<Paper shadow='md' p='md' withBorder className='w-full bg-transparent'>
+						{SAMPLE_DOCUMENTS.map((doc, index) => (
+							<Paper key={index} shadow='md' p='md' withBorder className='w-full bg-transparent'>
 								<Stack>
 									<Group position='apart'>
 										<div>
