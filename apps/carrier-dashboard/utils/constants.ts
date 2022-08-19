@@ -68,6 +68,10 @@ export const SETTINGS_TABS = [
 		label: 'Organisation'
 	},
 	{
+		value: 'workflows',
+		label: 'Workflows'
+	},
+	{
 		value: 'financial',
 		label: 'Financial'
 	},

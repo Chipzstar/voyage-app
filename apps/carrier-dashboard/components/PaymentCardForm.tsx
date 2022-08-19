@@ -1,11 +1,12 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Group, Stack, Text } from '@mantine/core';
+import { Button, Loader, Stack, Text } from '@mantine/core';
 import classNames from 'classnames';
 import { notifyError, notifySuccess } from '../utils/functions';
 import { Check, X } from 'tabler-icons-react';
 
 const PaymentCardForm = ({ onSave }) => {
+	const [loading, setLoading] = useState(false);
 	const stripe = useStripe();
 	const elements = useElements();
 
@@ -26,9 +27,11 @@ const PaymentCardForm = ({ onSave }) => {
 		// We don't want to let default form submission happen here,
 		// which would refresh the page.
 		event.preventDefault();
+		setLoading(true);
 		if (!stripe || !elements) {
 			// Stripe.js has not yet loaded.
 			// Make sure to disable form submission until Stripe.js has loaded.
+			setLoading(false);
 			return;
 		}
 		try {
@@ -48,6 +51,7 @@ const PaymentCardForm = ({ onSave }) => {
 				// details incomplete)
 				setErrorMessage(error.message);
 				notifyError('confirm-payment-failure', `Failed to confirm your payment method: ${error.message}`, <X size={20} />);
+				setLoading(false)
 				return;
 			} else if (paymentIntent) {
 				// Your customer will be redirected to your `return_url`. For some payment
@@ -55,20 +59,22 @@ const PaymentCardForm = ({ onSave }) => {
 				// site first to authorize the payment, then redirected to the `return_url`.
 				await onSave(paymentIntent);
 				notifySuccess('confirm-payment-success', `Your payment method has been authorized`, <Check size={20} />);
+				setLoading(false)
 				return
 			}
 		} catch (err) {
 			notifyError('confirm-payment-failure', `Failed to confirm your payment method: ${err.message}`, <X size={20} />);
+			setLoading(false)
 		}
 	};
 
 	return (
 		<form onSubmit={handleSubmit}>
 			<PaymentElement />
-			<Group py={4}>{errorMessage && <Text color='red'>{errorMessage}</Text>}</Group>
 			<Stack align='center' py={20}>
-				<Button disabled={!stripe} type='submit' className={submitButton}>
-					Submit
+				<Button size="md" disabled={!stripe} type='submit' className={submitButton}>
+					<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
+					<Text>Submit</Text>
 				</Button>
 			</Stack>
 		</form>

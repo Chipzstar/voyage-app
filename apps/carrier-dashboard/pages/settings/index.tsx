@@ -17,11 +17,13 @@ import { setSettings, useSettings } from '../../store/feature/settingsSlice'
 import Stripe from 'stripe';
 import { CURRENCY, formatAmountForStripe } from '../../utils/stripe';
 import { Carrier } from '../../utils/types';
+import Workflows from './Workflows';
 
 const TAB_LABELS = {
 	ORGANIZATION: SETTINGS_TABS[0].value,
-	FINANCIAL: SETTINGS_TABS[1].value,
-	DOCUMENTS: SETTINGS_TABS[2].value,
+	WORKFLOWS: SETTINGS_TABS[1].value,
+	FINANCIAL: SETTINGS_TABS[2].value,
+	DOCUMENTS: SETTINGS_TABS[3].value,
 }
 
 const settings = ({clientSecret}) => {
@@ -33,6 +35,9 @@ const settings = ({clientSecret}) => {
 			<TabBar tabLabels={SETTINGS_TABS} defaultTab={SETTINGS_TABS[0].value}>
 				<Tabs.Panel value={TAB_LABELS.ORGANIZATION}>
 					<Organisation carrierInfo={profile}/>
+				</Tabs.Panel>
+				<Tabs.Panel value={TAB_LABELS.WORKFLOWS}>
+					<Workflows carrierInfo={profile} settings={settings}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.FINANCIAL}>
 					<Financial carrierInfo={profile} settings={settings} clientSecret={clientSecret}/>

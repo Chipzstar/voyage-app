@@ -9,53 +9,53 @@ export enum TeamRole {
 }
 
 export enum VEHICLE_STATUS {
-	IDLE = "IDLE",
-	OCCUPIED = "OCCUPIED",
-	ON_THE_ROAD = "ON_THE_ROAD",
-	FULL_CAPACITY = "FULL_CAPACITY",
+	IDLE = 'IDLE',
+	OCCUPIED = 'OCCUPIED',
+	ON_THE_ROAD = 'ON_THE_ROAD',
+	FULL_CAPACITY = 'FULL_CAPACITY'
 }
 
 export enum VEHICLE_TYPES {
-	DRY_VAN='DRY_VAN',
+	DRY_VAN = 'DRY_VAN',
 	TAIL_LIFT = 'TAIL_LIFT',
 	JUMBO_TRAILER = 'JUMBO_TRAILER',
 	FLATBED_TRAILER = 'FLATBED_TRAILER',
 	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
 	ARCTIC_TRUCK = 'ARCTIC_TRUCK',
-	OTHER= 'OTHER',
+	OTHER = 'OTHER'
 }
 
 export enum FuelType {
-	PETROL="PETROL",
-	DIESEL="DIESEL",
-	ELECTRIC="ELECTRIC",
-	HYBRID="HYBRID",
-	ALTERNATIVE="ALTERNATIVE",
+	PETROL = 'PETROL',
+	DIESEL = 'DIESEL',
+	ELECTRIC = 'ELECTRIC',
+	HYBRID = 'HYBRID',
+	ALTERNATIVE = 'ALTERNATIVE'
 }
 
 export enum FuelMeasurementUnit {
-	LITRE="LITRE",
-	GALLON="GALLON",
+	LITRE = 'LITRE',
+	GALLON = 'GALLON'
 }
 
 export enum DRIVER_STATUS {
-	OFFLINE="OFFLINE",
-	AVAILABLE="AVAILABLE",
-	BUSY="BUSY",
-	UNVERIFIED="UNVERIFIED",
+	OFFLINE = 'OFFLINE',
+	AVAILABLE = 'AVAILABLE',
+	BUSY = 'BUSY',
+	UNVERIFIED = 'UNVERIFIED'
 }
 
 export enum INVOICE_STATUS {
-	PAID="paid",
-	OVERDUE="overdue",
-	INVOICED="invoiced",
-	SHORT_PAID="short-paid",
+	PAID = 'paid',
+	OVERDUE = 'overdue',
+	INVOICED = 'invoiced',
+	SHORT_PAID = 'short-paid'
 }
 
 export enum AccountType {
-	SMALL_SHIPPER="SMALL_SHIPPER",
-	MEDIUM_SHIPPER="MEDIUM_SHIPPER",
-	LARGE_SHIPPER="LARGE_SHIPPER",
+	SMALL_SHIPPER = 'SMALL_SHIPPER',
+	MEDIUM_SHIPPER = 'MEDIUM_SHIPPER',
+	LARGE_SHIPPER = 'LARGE_SHIPPER'
 }
 
 export enum MapType {
@@ -64,41 +64,48 @@ export enum MapType {
 }
 
 export type Address = {
-	addressLine1: string,
-	addressLine2?: string,
-   city: string,
-	region?: string,
-	postcode: string,
-	country?: string,
-}
+	addressLine1: string;
+	addressLine2?: string;
+	city: string;
+	region?: string;
+	postcode: string;
+	country?: string;
+};
 
-type Stripe = {
-	customerId: string,
-	paymentMethodId: string,
-}
+export type StripeDetails = {
+	customerId: string;
+	paymentMethod?: {
+		id: string;
+		fingerprint: string;
+		brand: string;
+		expMonth: number;
+		expYear: number;
+		last4: string;
+	};
+};
 
 type Tracking = {
-	status: STATUS,
-	timestamp: UnixTimestamp
-}
+	status: STATUS;
+	timestamp: UnixTimestamp;
+};
 
 type Geolocation = {
-	type: "Point",
-	coordinates: [number, number]
-}
+	type: 'Point';
+	coordinates: [number, number];
+};
 
 export enum DocumentType {
-	UK_HGV_OPERATORS_LICENSE="UK_HGV_OPERATORS_LICENSE",
-	GOODS_IN_TRANSIT_INSURANCE="GOODS_IN_TRANSIT_INSURANCE",
-	LIABILITY_INSURANCE="LIABILITY_INSURANCE"
+	UK_HGV_OPERATORS_LICENSE = 'UK_HGV_OPERATORS_LICENSE',
+	GOODS_IN_TRANSIT_INSURANCE = 'GOODS_IN_TRANSIT_INSURANCE',
+	LIABILITY_INSURANCE = 'LIABILITY_INSURANCE'
 }
 
 export interface CarrierDocument {
-	type: DocumentType,
+	type: DocumentType;
 	document: {
-		filename: string,
-		location: string,
-	}
+		filename: string;
+		location: string;
+	};
 }
 
 export interface Carrier {
@@ -113,9 +120,9 @@ export interface Carrier {
 	email: string;
 	company: string;
 	address: Address;
-   phone: string;
-	stripe?: Stripe;
-	documents?: CarrierDocument
+	phone: string;
+	stripe?: StripeDetails;
+	documents?: CarrierDocument;
 }
 
 export enum ChargeUnitType {
@@ -126,19 +133,19 @@ export enum ChargeUnitType {
 
 type ChargeRule = {
 	active: boolean;
-	value: Number
-}
+	value: Number;
+};
 
 export interface RateChargeRules {
 	[ChargeUnitType.DISTANCE]: ChargeRule;
-	[ChargeUnitType.WEIGHT]: ChargeRule
-	[ChargeUnitType.PACKAGE]: ChargeRule
+	[ChargeUnitType.WEIGHT]: ChargeRule;
+	[ChargeUnitType.PACKAGE]: ChargeRule;
 }
 
 export interface Settings {
 	id: string;
 	carrierId: string;
-	rateChargeRules: RateChargeRules
+	rateChargeRules: RateChargeRules;
 }
 
 export interface Driver {
@@ -165,7 +172,7 @@ export interface Driver {
 	addressLine2: string;
 	city: string;
 	region?: string;
-   postcode: string;
+	postcode: string;
 	fleetId?: string;
 	notes?: string;
 }
@@ -181,7 +188,7 @@ export interface Member {
 	firstName: string;
 	lastName: string;
 	email: string;
-   phone: string;
+	phone: string;
 	role: TeamRole;
 	isActive: boolean;
 }
@@ -194,20 +201,20 @@ export interface Vehicle {
 	vehicleId: string;
 	currentDriver?: string;
 	vehicleType: VEHICLE_TYPES;
-   vehicleName: string;
+	vehicleName: string;
 	regNumber: string;
 	vin: string;
 	engineNumber?: string;
 	yearOfManufacture?: string;
 	colour?: string;
 	fuelType: FuelType;
-	fuelMeasurementUnit: FuelMeasurementUnit
+	fuelMeasurementUnit: FuelMeasurementUnit;
 	image?: string;
 	dimensions?: {
 		length: number;
 		width: number;
 		height: number;
-	}
+	};
 	make: string;
 	model: string;
 	notes?: string;
@@ -217,7 +224,7 @@ export interface Vehicle {
 export interface Contact {
 	name: string;
 	email: string;
-   phone: string;
+	phone: string;
 	notes?: string;
 }
 
@@ -225,14 +232,14 @@ export interface Customer {
 	id: string;
 	userId: string;
 	carrierId: string;
-	createdAt: UnixTimestamp,
-   customerId: string;
+	createdAt: UnixTimestamp;
+	customerId: string;
 	accountType: AccountType;
 	companyName: string;
 	fullName: string;
 	firstName?: string;
 	lastName?: string;
-   email: string;
+	email: string;
 	phone: string;
 	billingEmail: string;
 	addressLine1: string;
@@ -249,7 +256,7 @@ export interface Customer {
 export interface Location {
 	street: string;
 	city: string;
-   region?: string;
+	region?: string;
 	postcode: string;
 	country: string;
 	lat?: number;
@@ -258,7 +265,7 @@ export interface Location {
 }
 
 export interface NewBooking {
-	createdAt: UnixTimestamp,
+	createdAt: UnixTimestamp;
 	carrierId: string;
 	internalPONumber?: string;
 	customerPONumber?: string;
@@ -291,7 +298,7 @@ export interface LoadLocation {
 	postcode: string;
 	country: string;
 	note?: string;
-	location?: Geolocation
+	location?: Geolocation;
 	window?: LoadTimeWindow;
 }
 
@@ -318,11 +325,11 @@ export interface Load {
 		name: string;
 		phone: string;
 	};
-	vehicleType: VEHICLE_TYPES
+	vehicleType: VEHICLE_TYPES;
 	packageInfo: Package;
 	carrierInfo: CarrierInfo;
 	hazmat?: HAZMAT_TYPES;
-	trackingHistory: Tracking[]
+	trackingHistory: Tracking[];
 }
 
 export interface Document {
@@ -330,7 +337,7 @@ export interface Document {
 	carrierId: string;
 	createdAt?: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
-	type: DocumentType
+	type: DocumentType;
 	filename: string;
 	filepath: string;
 	location: string;

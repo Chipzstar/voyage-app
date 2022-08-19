@@ -13,7 +13,6 @@ export default async function handler(req, res) {
 	const payload = req.body;
 	console.log("PAYLOAD", payload)
 	const { id } = req.query
-	console.table({ID: id})
 	if (req.method === 'POST') {
 		try {
 			const carrier = await prisma.carrier.create({

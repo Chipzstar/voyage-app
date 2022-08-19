@@ -7,13 +7,19 @@ export default async function handler(
 ) {
 	await runMiddleware(req, res, cors)
 	if (req.method === 'PUT') {
-		const { id } = req.query;
+		const {id} = req.query;
 		const payload = req.body;
 		console.log(id, payload)
 		try {
 			// Attach the payment method to the customer.
 			const result = await stripe.paymentMethods.attach(<string>id, {
 				...payload
+			})
+			// set payment method as default source for customer invoices
+			await stripe.customers.update(payload.customer, {
+				invoice_settings: {
+					default_payment_method: <string>id
+				}
 			})
 			console.log(result)
 			res.status(200).json(result);

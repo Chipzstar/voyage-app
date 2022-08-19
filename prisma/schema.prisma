@@ -68,9 +68,18 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+type PaymentMethod {
+  id          String
+  brand       String
+  fingerprint String
+  last4       String
+  expMonth    Int
+  expYear     Int
+}
+
 type Stripe {
-  customerId      String
-  paymentMethodId String
+  customerId    String
+  paymentMethod PaymentMethod?
 }
 
 type Address {

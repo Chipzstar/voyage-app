@@ -116,7 +116,7 @@ export function notifyError(id: string, message: string, icon: JSX.Element) {
 }
 
 export async function fetchProfile(userId, carrierId, prisma) {
-	const carrier = await prisma.carrier.findFirst({
+	return await prisma.carrier.findFirst({
 		where: {
 			OR: [
 				{
@@ -130,13 +130,20 @@ export async function fetchProfile(userId, carrierId, prisma) {
 					}
 				}
 			]
+		},
+		select: {
+			id: true,
+			carrierId: true,
+			fullName: true,
+			firstname: true,
+			lastname: true,
+			company: true,
+			address: true,
+			email: true,
+			phone: true,
+			stripe: true
 		}
 	});
-	if (carrier) {
-		carrier.createdAt = moment(carrier.createdAt).unix();
-		carrier.updatedAt = moment(carrier.updatedAt).unix();
-	}
-	return carrier;
 }
 
 export async function fetchMembers(userId, carrierId, prisma) {
