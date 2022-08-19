@@ -40,7 +40,7 @@ const settings = ({clientSecret}) => {
 					<Workflows carrierInfo={profile} settings={settings}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.FINANCIAL}>
-					<Financial carrierInfo={profile} settings={settings} clientSecret={clientSecret}/>
+					<Financial carrierInfo={profile} clientSecret={clientSecret}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
 					<Documents carrierInfo={profile}/>

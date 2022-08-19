@@ -19,8 +19,6 @@ const PaymentCardForm = ({ onSave }) => {
 		[stripe]
 	);
 
-	const [errorMessage, setErrorMessage] = useState(null);
-
 	useEffect(() => console.log(elements ? elements['_commonOptions'].clientSecret.clientSecret : elements), [elements]);
 
 	const handleSubmit = async event => {
@@ -49,7 +47,6 @@ const PaymentCardForm = ({ onSave }) => {
 				// This point will only be reached if there is an immediate error when
 				// confirming the payment. Show error to your customer (for example, payment
 				// details incomplete)
-				setErrorMessage(error.message);
 				notifyError('confirm-payment-failure', `Failed to confirm your payment method: ${error.message}`, <X size={20} />);
 				setLoading(false)
 				return;

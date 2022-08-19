@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import axios from 'axios';
 import { Center, Container, Group, Button } from '@mantine/core';
 import { useDispatch } from 'react-redux';
@@ -16,7 +16,7 @@ import UpdateCardForm from '../../components/UpdateCardForm';
 
 const stripePromise = loadStripe(String(STRIPE_PUBLIC_KEY));
 
-const Financial = ({ settings, carrierInfo, clientSecret }) => {
+const Financial = ({ carrierInfo, clientSecret }) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const options: StripeElementsOptions = {
 		clientSecret: clientSecret,
