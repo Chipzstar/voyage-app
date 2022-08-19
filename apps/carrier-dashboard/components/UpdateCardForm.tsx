@@ -1,7 +1,7 @@
 import { Button, Group, Divider, Modal, Box, Text, Loader } from '@mantine/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { notifyError, notifySuccess } from '../../../utils/functions';
+import { notifyError, notifySuccess } from '../utils/functions';
 import { Check, X } from 'tabler-icons-react';
 
 const CARD_ELEMENT_OPTIONS = {
@@ -26,10 +26,6 @@ const UpdateCardForm = ({ opened, onClose, clientSecret, onUpdate }) => {
 	const [processing, setProcessing] = useState(false);
 	const stripe = useStripe()
 	const elements = useElements()
-
-	useEffect(() => {
-		console.log(clientSecret)
-	}, [clientSecret]);
 
 	const handleSubmit = useCallback(async ev => {
 		ev.preventDefault();

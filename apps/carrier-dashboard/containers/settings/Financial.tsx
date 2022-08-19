@@ -5,14 +5,14 @@ import { useDispatch } from 'react-redux';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, PaymentMethod, StripeElementsOptions } from '@stripe/stripe-js';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
-import { STRIPE_PUBLIC_KEY } from '../../../utils/constants';
+import { STRIPE_PUBLIC_KEY } from '../../utils/constants';
 import PaymentCardForm from 'apps/carrier-dashboard/components/PaymentCardForm';
-import PaymentStatus from '../../../components/PaymentStatus';
+import PaymentStatus from '../../components/PaymentStatus';
 import Cards from 'react-credit-cards';
-import { StripeDetails } from '../../../utils/types';
-import { updateCarrier } from '../../../store/feature/profileSlice';
+import { StripeDetails } from '../../utils/types';
+import { updateCarrier } from '../../store/feature/profileSlice';
 import moment from 'moment';
-import UpdateCardForm from '../components/UpdateCardForm';
+import UpdateCardForm from '../../components/UpdateCardForm';
 
 const stripePromise = loadStripe(String(STRIPE_PUBLIC_KEY));
 
@@ -56,9 +56,9 @@ const Financial = ({ settings, carrierInfo, clientSecret }) => {
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			{clientSecret && <Elements stripe={stripePromise} options={options}>
-				<UpdateCardForm opened={updateCardModal} onClose={() => showUpdateCardModal(false)} clientSecret={clientSecret} onUpdate={submitPaymentInfo} />
-			</Elements>}
+			<Elements stripe={stripePromise} options={options}>
+				{options.clientSecret && <UpdateCardForm opened={updateCardModal} onClose={() => showUpdateCardModal(false)} clientSecret={clientSecret} onUpdate={submitPaymentInfo} />}
+			</Elements>
 			<Center className='flex h-full flex-col'>
 				<section className='border-voyage-grey flex h-full flex-col items-center justify-center'>
 					<header className='page-header my-6'>Payment Details</header>

@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Center, Container, Group, Loader, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { updateCarrier } from '../../../store/feature/profileSlice';
+import { updateCarrier } from '../../store/feature/profileSlice';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../store';
-import { notifyError, notifySuccess } from '../../../utils/functions';
+import { AppDispatch } from '../../store';
+import { notifyError, notifySuccess } from '../../utils/functions';
 import { Check, X } from 'tabler-icons-react';
-import { Carrier } from '../../../utils/types';
+import { Carrier } from '../../utils/types';
 
 interface OrganisationProps {
 	carrierInfo: Carrier;

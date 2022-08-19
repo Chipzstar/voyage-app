@@ -2,8 +2,8 @@ import TabBar from '../../layout/TabBar';
 import { PUBLIC_PATHS, SETTINGS_TABS } from '../../utils/constants'
 import React from 'react'
 import { Container, Tabs } from '@mantine/core'
-import Organisation from './containers/Organisation'
-import Financial from './containers/Financial'
+import Organisation from '../../containers/settings/Organisation'
+import Financial from '../../containers/settings/Financial'
 import { wrapper } from '../../store'
 import { unstable_getServerSession } from 'next-auth'
 import { authOptions } from '../api/auth/[...nextauth]'
@@ -12,12 +12,12 @@ import { fetchProfile, fetchSettings } from '../../utils/functions'
 import prisma from '../../db'
 import { setCarrier, useCarrier } from '../../store/feature/profileSlice'
 import { useSelector } from 'react-redux';
-import Documents from './containers/Documents';
+import Documents from '../../containers/settings/Documents';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice'
 import Stripe from 'stripe';
 import { CURRENCY, formatAmountForStripe } from '../../utils/stripe';
 import { Carrier } from '../../utils/types';
-import Workflows from './Workflows';
+import Workflows from '../../containers/settings/Workflows';
 
 const TAB_LABELS = {
 	ORGANIZATION: SETTINGS_TABS[0].value,

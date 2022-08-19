@@ -3,9 +3,9 @@ import { Badge, Button, Card, Center, Container, Group, Loader, Paper, Radio, Si
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
-import { notifySuccess, uploadFile } from '../../../utils/functions';
-import { DocumentType, Document } from '../../../utils/types';
-import { SAMPLE_DOCUMENTS } from '../../../utils/constants';
+import { notifySuccess, uploadFile } from '../../utils/functions';
+import { DocumentType, Document } from '../../utils/types';
+import { SAMPLE_DOCUMENTS } from '../../utils/constants';
 
 interface FormValues {
 	id: string;
