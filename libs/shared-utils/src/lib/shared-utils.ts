@@ -1,5 +1,6 @@
 import { customAlphabet } from 'nanoid';
 import moment from 'moment';
+import { ChargeUnitType } from '../../../../apps/carrier-dashboard/utils/types';
 
 interface selectInput {
 	value: string;
@@ -25,8 +26,28 @@ export function calculateRate(
 		PACKAGE: { active: true, value: 25.7 }
 	}
 ) {
-	const sum = weight * rates.WEIGHT.value + numPallets * rates.PACKAGE.value + miles * rates.DISTANCE.value;
-	return Number((sum / 3).toPrecision(2));
+	let total = Object.entries(rates).reduce((prev, [key, rate]) => {
+		let newVal = prev
+		if (!rate.active) return prev;
+		switch (key) {
+			case ChargeUnitType.DISTANCE:
+				newVal += (miles * rate.value)
+				console.log("New value:", newVal)
+				return newVal
+			case ChargeUnitType.WEIGHT:
+				newVal += (weight * rate.value)
+				console.log("New value:", newVal)
+				return newVal
+			case ChargeUnitType.PACKAGE:
+				newVal += (weight * numPallets * rate.value)
+				console.log("New value:", newVal)
+				return newVal
+			default:
+				return prev;
+		}
+	}, 0);
+	// const sum = weight * rates.WEIGHT.value + numPallets * rates.PACKAGE.value + miles * rates.DISTANCE.value;
+	return Number((total / 3).toPrecision(2));
 }
 
 export function uniqueArray(array: selectInput[], key) {

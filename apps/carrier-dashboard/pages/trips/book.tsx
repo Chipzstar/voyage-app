@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from '@mantine/form';
 import moment from 'moment/moment';
@@ -35,26 +35,46 @@ const items = [
 	</Anchor>
 ));
 
-const QuoteEstimate = ({ quote, onClose, onSubmit }) => {
-	const [newRate, setNewRate] = useState(quote?.load?.rate)
+const QuoteEstimate = ({
+	opened,
+	load = {
+		rate: 0,
+		customer: {
+			company: ''
+		}
+	},
+	onClose,
+	onSubmit
+}) => {
+	const [newRate, setNewRate] = useState(load.rate);
+
+	useEffect(() => setNewRate(load.rate), [load]);
+
 	return (
-		<Modal opened={quote.show} onClose={onClose} title='Estimated Rate' centered padding="md" classNames={{
-			title: "text-xl font-semibold"
-		}}>
+		<Modal
+			opened={opened}
+			onClose={onClose}
+			title='Estimated Rate'
+			centered
+			padding='md'
+			classNames={{
+				title: 'text-xl font-semibold'
+			}}
+		>
 			<Paper radius='md' p='md'>
 				<Text size='lg'>
-					We will charge {quote.load?.customer?.company} £{Number(newRate)} for this load
+					We will charge {load?.customer?.company} £{Number(newRate)} for this load
 				</Text>
 				<Text color='dimmed' size='xs' className='flex w-72 flex-wrap'>
 					Click "Confirm" to charge this rate, otherwise enter a new value using the form below
 				</Text>
 				<Divider my='md' />
-				<NumberInput my="md" radius={0} precision={2} min={0} max={1000000} value={newRate} onChange={setNewRate}/>
+				<NumberInput label='Your custom rate' my='md' radius={0} precision={2} min={0} max={100000} value={newRate} onChange={setNewRate} />
 				<Group position='right'>
 					<Button variant='outline' color='gray' onClick={onClose}>
 						Cancel
 					</Button>
-					<Button variant='filled' className='bg-secondary' onClick={() => onSubmit({...quote.load, rate: newRate})}>
+					<Button variant='filled' className='bg-secondary' onClick={() => onSubmit({ ...load, rate: newRate })}>
 						Confirm
 					</Button>
 				</Group>
@@ -65,7 +85,7 @@ const QuoteEstimate = ({ quote, onClose, onSubmit }) => {
 
 const book = props => {
 	const [loading, setLoading] = useState(false);
-	const [suggestedQuote, showSuggestedQuote] = useState({ show: false, load: null });
+	const [suggestedQuote, showSuggestedQuote] = useState({ show: false, load: undefined });
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
@@ -135,28 +155,31 @@ const book = props => {
 		}
 	}, []);
 
-	const confirmRate = useCallback(async (load) => {
-		try {
-			showSuggestedQuote(prevState => ({...prevState, show: false}))
-			await dispatch(createLoad(load)).unwrap();
-			notifySuccess('new-load-success', "You've booked a new load", <Check size={20} />);
-			setTimeout(() => {
-				router.push(PATHS.TRIPS);
+	const confirmRate = useCallback(
+		async load => {
+			try {
+				showSuggestedQuote(prevState => ({ ...prevState, show: false }));
+				await dispatch(createLoad(load)).unwrap();
+				notifySuccess('new-load-success', "You've booked a new load", <Check size={20} />);
+				setTimeout(() => {
+					router.push(PATHS.TRIPS);
+					setLoading(false);
+				}, 500);
+			} catch (err) {
+				console.error(err);
+				notifyError('new-load-failure', `There was an error creating your load. ${err.message}`, <X size={20} />);
 				setLoading(false);
-			}, 500);
-		} catch (err) {
-			console.error(err);
-			notifyError('new-load-failure', `There was an error creating your load. ${err.message}`, <X size={20} />);
-			setLoading(false);
-		}
-	}, [suggestedQuote])
+			}
+		},
+		[suggestedQuote]
+	);
 
 	return (
 		<ContentContainer>
 			<section className='sticky top-0 z-50 flex items-center space-x-4 bg-white pt-4 pb-8' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
-			<QuoteEstimate quote={suggestedQuote} onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))} onSubmit={confirmRate}/>
+			<QuoteEstimate opened={suggestedQuote.show} load={suggestedQuote.load} onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))} onSubmit={confirmRate} />
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 gap-20 lg:grid-cols-4'>
 				<div id='book-form-container' className='col-span-3 flex flex-col space-y-5'>
 					<div id='load-type' className='grid grid-cols-1 gap-6'>

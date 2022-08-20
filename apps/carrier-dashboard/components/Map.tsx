@@ -10,9 +10,16 @@ interface MapProps {
 	type: MapType;
 	height?: number;
 	customers?: unknown[];
-	route?: {
-		type: 'LineString';
-		coordinates: [];
+	geoJSON?: {
+		type: 'geojson',
+		data: {
+			type: 'Feature',
+			properties: {},
+			geometry: {
+				type: 'LineString';
+				coordinates: [];
+			}
+		}
 	};
 	tripId?: string;
 }
@@ -21,21 +28,20 @@ const Map = ({
 	height = 500,
 	customers = [],
 	type = MapType.DASHBOARD,
-	route = {
-		type: 'LineString',
-		coordinates: []
-	},
-	tripId
-}: MapProps) => {
-	const [pageIsMounted, setPageIsMounted] = useState(false);
-	const [geoJSON, setGeoJSON] = useState({
+	geoJSON = {
 		type: 'geojson',
 		data: {
 			type: 'Feature',
 			properties: {},
-			geometry: route
+			geometry: {
+				type: 'LineString',
+				coordinates: []
+			}
 		}
-	});
+	},
+	tripId
+}: MapProps) => {
+	const [pageIsMounted, setPageIsMounted] = useState(false);
 	const map = useRef(null);
 
 	useEffect(() => {
@@ -85,13 +91,19 @@ const Map = ({
 	}, [customers]);
 
 	useEffect(() => {
-		if (map.current && type === MapType.ORDER) {
+		console.log("new GeoJSON", tripId, "->", geoJSON)
+		if (type === MapType.ORDER) {
+			if (map.current.getSource('route')){
+				const geoJsonSource = map.current.getSource('route');
+				console.log("new geoJSON source", geoJsonSource)
+				geoJsonSource.setData(geoJSON.data)
+			}
 			map.current.on('load', () => {
-				map.current.addSource(`route_${tripId}`, geoJSON);
+				map.current.addSource('route', geoJSON);
 				map.current.addLayer({
 					id: `route_${tripId}`,
 					type: 'line',
-					source: `route_${tripId}`,
+					source: 'route',
 					layout: {
 						'line-join': 'round',
 						'line-cap': 'round'
@@ -103,7 +115,7 @@ const Map = ({
 				});
 			});
 		}
-	}, [type, tripId]);
+	}, [type, tripId, geoJSON]);
 
 	return <div id='map-container' style={{ height: `calc(100vh - ${height}px)`, width: '100%' }} />;
 };

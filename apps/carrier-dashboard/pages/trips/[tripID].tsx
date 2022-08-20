@@ -166,7 +166,7 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 								height={215}
 								customers={[loads[pageIndex]]}
 								type={MapType.ORDER}
-								route={geoJSON}
+								geoJSON={geoJSON}
 								tripId={loadId}
 							/>
 						</div>
@@ -194,8 +194,15 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	let pageIndex = loads.findIndex((item: Load) => item.loadId === params.tripID);
 	// fetch mapbox route directions between pickup and dropoff
 	let geoJSON = {
-		type: 'LineString',
-		coordinates: []
+		type: 'geojson',
+		data: {
+			type: 'Feature',
+			properties: {},
+			geometry: {
+				type: 'LineString',
+				coordinates: []
+			}
+		}
 	};
 
 	if (pageIndex !== -1) {
@@ -207,7 +214,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			path: `/directions/v5/${profile}/${coordinates}?geometries=geojson`
 		});
 		const response = await request.send();
-		geoJSON = response.body.routes[0].geometry;
+		geoJSON.data.geometry = response.body.routes[0].geometry;
+		console.log(geoJSON)
 	}
 	return {
 		props: {
