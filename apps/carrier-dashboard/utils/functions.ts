@@ -267,6 +267,9 @@ export async function fetchLoads(carrierId, prisma) {
 			carrierId: {
 				equals: carrierId
 			}
+		},
+		orderBy: {
+			createdAt: 'desc'
 		}
 	});
 	loads = loads.map(load => ({

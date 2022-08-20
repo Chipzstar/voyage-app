@@ -4,22 +4,13 @@ import { useForm } from '@mantine/form';
 import moment from 'moment/moment';
 import { PACKAGE_TYPE, SelectInputData } from '@voyage-app/shared-types';
 import { Calendar, Check, ChevronDown, X } from 'tabler-icons-react';
-import { Anchor, Breadcrumbs, Loader, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { Anchor, Breadcrumbs, Paper, Loader, Modal, NumberInput, Select, Textarea, TextInput, Text, Divider, Button, Group } from '@mantine/core';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
 import Link from 'next/link';
 import ContentContainer from '../../layout/ContentContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { NewBooking, TeamRole, VEHICLE_TYPES } from '../../utils/types';
-import {
-	fetchCustomers,
-	fetchDrivers,
-	fetchMembers,
-	fetchProfile,
-	fetchSettings,
-	generateLoad,
-	notifyError,
-	notifySuccess
-} from '../../utils/functions';
+import { fetchCustomers, fetchDrivers, fetchMembers, fetchProfile, fetchSettings, generateLoad, notifyError, notifySuccess } from '../../utils/functions';
 import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
 import { setMembers, useMembers } from '../../store/feature/memberSlice';
 import { setCustomers, useCustomers } from '../../store/feature/customerSlice';
@@ -44,15 +35,44 @@ const items = [
 	</Anchor>
 ));
 
+const QuoteEstimate = ({ quote, onClose, onSubmit }) => {
+	const [newRate, setNewRate] = useState(quote?.load?.rate)
+	return (
+		<Modal opened={quote.show} onClose={onClose} title='Estimated Rate' centered padding="md" classNames={{
+			title: "text-xl font-semibold"
+		}}>
+			<Paper radius='md' p='md'>
+				<Text size='lg'>
+					We will charge {quote.load?.customer?.company} £{Number(newRate)} for this load
+				</Text>
+				<Text color='dimmed' size='xs' className='flex w-72 flex-wrap'>
+					Click "Confirm" to charge this rate, otherwise enter a new value using the form below
+				</Text>
+				<Divider my='md' />
+				<NumberInput my="md" radius={0} precision={2} min={0} max={1000000} value={newRate} onChange={setNewRate}/>
+				<Group position='right'>
+					<Button variant='outline' color='gray' onClick={onClose}>
+						Cancel
+					</Button>
+					<Button variant='filled' className='bg-secondary' onClick={() => onSubmit({...quote.load, rate: newRate})}>
+						Confirm
+					</Button>
+				</Group>
+			</Paper>
+		</Modal>
+	);
+};
+
 const book = props => {
 	const [loading, setLoading] = useState(false);
+	const [suggestedQuote, showSuggestedQuote] = useState({ show: false, load: null });
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
 	const team = useSelector(useMembers);
 	const customers = useSelector(useCustomers);
 	const profile = useSelector(useCarrier);
-	const settings = useSelector(useSettings)
+	const settings = useSelector(useSettings);
 
 	const initialValues: NewBooking = {
 		createdAt: undefined,
@@ -107,6 +127,17 @@ const book = props => {
 		try {
 			const load = await generateLoad(profile, values, drivers, team, customers, settings);
 			console.log('OUTPUT:', load);
+			showSuggestedQuote(prevState => ({ show: true, load }));
+		} catch (err) {
+			console.error(err);
+			notifyError('new-load-failure', `There was an error creating your load. ${err.message}`, <X size={20} />);
+			setLoading(false);
+		}
+	}, []);
+
+	const confirmRate = useCallback(async (load) => {
+		try {
+			showSuggestedQuote(prevState => ({...prevState, show: false}))
 			await dispatch(createLoad(load)).unwrap();
 			notifySuccess('new-load-success', "You've booked a new load", <Check size={20} />);
 			setTimeout(() => {
@@ -118,13 +149,14 @@ const book = props => {
 			notifyError('new-load-failure', `There was an error creating your load. ${err.message}`, <X size={20} />);
 			setLoading(false);
 		}
-	}, []);
+	}, [suggestedQuote])
 
 	return (
 		<ContentContainer>
 			<section className='sticky top-0 z-50 flex items-center space-x-4 bg-white pt-4 pb-8' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
+			<QuoteEstimate quote={suggestedQuote} onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))} onSubmit={confirmRate}/>
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 gap-20 lg:grid-cols-4'>
 				<div id='book-form-container' className='col-span-3 flex flex-col space-y-5'>
 					<div id='load-type' className='grid grid-cols-1 gap-6'>
@@ -217,15 +249,15 @@ const book = props => {
 						<div className='flex flex-col space-y-6'>
 							<header className='form-header'>Delivery</header>
 							<div className=''>
-								<TextInput id="delivery-street-address" required size='sm' radius={0} placeholder='Street Address' {...form.getInputProps('deliveryLocation.street')} />
+								<TextInput id='delivery-street-address' required size='sm' radius={0} placeholder='Street Address' {...form.getInputProps('deliveryLocation.street')} />
 							</div>
 							<div className='grid grid-cols-1 gap-y-6 gap-x-6 lg:grid-cols-2'>
-								<TextInput id="delivery-city" required size='sm' radius={0} placeholder='Town / City' {...form.getInputProps('deliveryLocation.city')} />
-								<TextInput id="delivery region" size='sm' radius={0} placeholder='Region' {...form.getInputProps('deliveryLocation.region')} />
+								<TextInput id='delivery-city' required size='sm' radius={0} placeholder='Town / City' {...form.getInputProps('deliveryLocation.city')} />
+								<TextInput id='delivery region' size='sm' radius={0} placeholder='Region' {...form.getInputProps('deliveryLocation.region')} />
 							</div>
 							<div className='grid grid-cols-1 gap-y-6 gap-x-6 lg:grid-cols-2'>
-								<TextInput id="delivery-postcode" required size='sm' radius={0} placeholder='Postal Code' {...form.getInputProps('deliveryLocation.postcode')} />
-								<TextInput id="delivery-country" readOnly size='sm' radius={0} placeholder='Country' {...form.getInputProps('deliveryLocation.country')} />
+								<TextInput id='delivery-postcode' required size='sm' radius={0} placeholder='Postal Code' {...form.getInputProps('deliveryLocation.postcode')} />
+								<TextInput id='delivery-country' readOnly size='sm' radius={0} placeholder='Country' {...form.getInputProps('deliveryLocation.country')} />
 							</div>
 							<div className=''>
 								<Textarea radius={0} placeholder='Note' {...form.getInputProps('deliveryLocation.note')} />
@@ -398,7 +430,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		let members = await fetchMembers(session.id, token?.carrierId, prisma);
 		let drivers = await fetchDrivers(session.id, token?.carrierId, prisma);
 		let customers = await fetchCustomers(session.id, token?.carrierId, prisma);
-		let settings = await fetchSettings(token?.carrierId, prisma)
+		let settings = await fetchSettings(token?.carrierId, prisma);
 		store.dispatch(setMembers(members));
 		store.dispatch(setDrivers(drivers));
 		store.dispatch(setCustomers(customers));
