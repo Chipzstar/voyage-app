@@ -50,6 +50,21 @@ export default async function handler(req, res) {
 	else if (req.method === 'PUT'){
 		try {
 			let { id, ...rest } = payload
+			// update stripe details of the customer
+			const stripeCustomer = await stripe.customers.update(rest.customerId, {
+				name: rest.fullName,
+				email: rest.email,
+				phone: rest.phone,
+				description: rest.companyName,
+				address: {
+					line1: rest.addressLine1,
+					line2: rest.addressLine2,
+					city: rest.city,
+					postal_code: rest.postcode,
+					country: rest.country
+				}
+			})
+			console.log("Stripe Customer", stripeCustomer)
 			const customer = await prisma.customer.update({
 				where: {
 					id
@@ -58,7 +73,7 @@ export default async function handler(req, res) {
 					...rest,
 				}
 			});
-			console.log(customer);
+			console.log("Prisma Customer", customer);
 			res.json(customer);
 		} catch (err) {
 			console.log(err)
@@ -67,12 +82,16 @@ export default async function handler(req, res) {
 	}
 	else if (req.method === 'DELETE'){
 		try {
+			// delete customer in db
 			const result = await prisma.customer.delete({
 				where: {
 					id
 				}
 			});
 			console.log(result)
+			// delete customer from stripe
+			const stripeCustomer = await stripe.customers.del(result.customerId)
+			console.log(stripeCustomer)
 			res.json({success: true})
 		} catch (err) {
 			console.error(err)
