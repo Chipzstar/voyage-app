@@ -1,20 +1,20 @@
-import { Customer, Driver, Load, LoadLocation, Location, Member, NewBooking } from './types';
+import { Customer, Driver, Load, LoadLocation, Location, Member, NewBooking, Settings } from './types';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { calculateRate, numericId } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
 import { PLACE_TYPES } from './constants';
+import axios from 'axios';
 
 function genFullAddress(location: Location) {
 	let fullAddress = '';
 	Object.entries(location).forEach(([key, value]) => {
 		if (key !== 'note') fullAddress += value + ' ';
 	});
-	console.log(fullAddress);
 	return fullAddress;
 }
 
-export function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[]): Load {
+export async function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[], settings: Settings): Promise<Load> {
 	console.log('PICKUP DATE', values.pickupDate);
 	console.log('--------------------------------------------------');
 	const pickup: LoadLocation = {
@@ -32,6 +32,9 @@ export function generateLoad(profile, values: NewBooking, drivers: Driver[], con
 	const driver = drivers.find(driver => driver.driverId === values.driverId);
 	const controller = controllers.find(controller => controller.memberId === values.controllerId);
 	const customer = customers.find(customers => customers.customerId === values.customerId);
+
+	const { distance } = (await axios.get(`/api/utils/distance-matrix?pickupAddress=${pickup.fullAddress}&deliverAddress=${delivery.fullAddress}`)).data;
+	console.table(distance);
 
 	return {
 		id: undefined,
@@ -52,7 +55,7 @@ export function generateLoad(profile, values: NewBooking, drivers: Driver[], con
 		status: STATUS.NEW,
 		internalPONumber: values.internalPONumber,
 		customerPONumber: values.customerPONumber,
-		rate: calculateRate(values.weight, values.quantity),
+		rate: calculateRate(values.weight, values.quantity, distance, settings?.rateChargeRules),
 		pickup,
 		delivery,
 		packageInfo: {

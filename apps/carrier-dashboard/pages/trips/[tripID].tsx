@@ -51,7 +51,7 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 		<ContentContainer>
 			<PageNav items={items} />
 			<div className='px-4 flex flex-col h-full'>
-				<header className='flex flex-row items-center justify-between mb-8 py-3'>
+				<section className='flex flex-row items-center justify-between mb-8 py-3'>
 					<h2 className='text-2xl uppercase'>{loadId}</h2>
 					<div className='flex flex-row justify-between space-x-8'>
 						<Button
@@ -83,13 +83,13 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 							<span className='text-lg'>Next</span>
 						</Button>
 					</div>
-				</header>
+				</section>
 				<main className='grow'>
 					<div className='grid grid-cols-1 lg:grid-cols-2 gap-x-10'>
 						<div className='grid grid-cols-1 gap-y-8 place-content-start'>
 							<aside className='border border-voyage-grey p-5 flex flex-col space-y-4'>
 								<section className='grid grid-cols-1 lg:grid-cols-3 gap-y-6'>
-									<div className='space-y-2'>
+									<div className='flex flex-col space-y-2'>
 										<span className='page-subheading'>Pickup</span>
 										<div className='flex'>
 											<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
@@ -102,7 +102,7 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 										<Text>{load.pickup.city}</Text>
 										<Text transform='uppercase'>{load.pickup.postcode}</Text>
 									</div>
-									<div className='space-y-2'>
+									<div className='flex flex-col space-y-2'>
 										<span className='page-subheading'>Dropoff</span>
 										<div className='flex'>
 											<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
@@ -113,28 +113,33 @@ const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 										<Text>{load.delivery.city}</Text>
 										<Text transform='uppercase'>{load.delivery.postcode}</Text>
 									</div>
-									<div className='space-y-2'>
+									<div className='flex flex-col space-y-2'>
 										<span className='page-subheading'>Customer</span>
 										<p>{load.customer?.company}</p>
 										<p>{load.customer?.name}</p>
 									</div>
-									<div className='space-y-2'>
+									<div className='flex flex-col space-y-2'>
 										<span className='page-subheading'>Driver</span>
 										<p>{load.carrierInfo?.driverName}</p>
 										<p>{load.carrierInfo?.driverPhone}</p>
 										<p className='capitalize'>{sanitize(load.carrierInfo?.vehicleType.toLowerCase())}</p>
 									</div>
-									<div className='space-y-2 col-span-2'>
-										<span className='page-subheading'>Package Details</span>
+									<div className='flex flex-col space-y-2'>
+										<span className='page-subheading'>Package</span>
 										<p>
 											<Pluralize singular={load.packageInfo?.packageType.toLowerCase()} count={load.packageInfo?.quantity ?? 1} />
 										</p>
 										<p>
-											{load.packageInfo?.weight} kg &nbsp;/&nbsp; {load.packageInfo?.dimensions.length} x {load.packageInfo?.dimensions.width} x {load.packageInfo?.dimensions.height} cm
+											{load.packageInfo?.weight} kg
 										</p>
+										<p>{load.packageInfo?.dimensions.length} x {load.packageInfo?.dimensions.width} x {load.packageInfo?.dimensions.height} cm</p>
 										<p>
 											{load.packageInfo?.description}
 										</p>
+									</div>
+									<div className="flex flex-col space-y-2">
+										<span className='page-subheading'>Rate</span>
+										<span className="text-xl">£{load.rate.toFixed(2)}</span>
 									</div>
 								</section>
 							</aside>

@@ -32,7 +32,6 @@ const Financial = ({ carrierInfo, clientSecret }) => {
 
 	const submitPaymentInfo = useCallback(async paymentIntent => {
 		try {
-			console.log(paymentIntent);
 			const paymentMethod: PaymentMethod = (await axios.put(`/api/stripe/payment-method/${paymentIntent.payment_method}`, {
 				customer: carrierInfo.stripe.customerId
 			})).data;

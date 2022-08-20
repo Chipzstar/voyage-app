@@ -133,7 +133,7 @@ export enum ChargeUnitType {
 
 type ChargeRule = {
 	active: boolean;
-	value: Number;
+	value: number;
 };
 
 export interface RateChargeRules {
