@@ -121,11 +121,11 @@ const book = props => {
 		description: '',
 		internalPONumber: '',
 		customerPONumber: '',
-		height: 0,
-		length: 0,
-		width: 0,
-		weight: 0,
-		quantity: 0,
+		height: null,
+		length: null,
+		width: null,
+		weight: null,
+		quantity: 1,
 		packageType: PACKAGE_TYPE.PALLET
 	};
 
@@ -320,6 +320,19 @@ const book = props => {
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<Select
+										onCreate={query =>
+											router.push(
+												{
+													pathname: `${PATHS.NEW_ACCOUNT}`,
+													query: { companyName: query }
+												},
+												'',
+												{ scroll: true }
+											)
+										}
+										getCreateLabel={query => `+ Create ${query}`}
+										creatable
+										searchable
 										required
 										size='md'
 										radius={0}
@@ -329,7 +342,7 @@ const book = props => {
 										styles={{ rightSection: { pointerEvents: 'none' } }}
 										data={customers.map(
 											(customer): SelectInputData => ({
-												value: customer.customerId,
+												value: customer.id,
 												label: capitalize(sanitize(customer.companyName))
 											})
 										)}
@@ -384,7 +397,7 @@ const book = props => {
 										data={drivers.map(
 											(driver): SelectInputData => ({
 												label: driver.fullName,
-												value: driver.driverId
+												value: driver.id
 											})
 										)}
 										{...form.getInputProps('driverId')}
@@ -412,7 +425,7 @@ const book = props => {
 											.map(
 												(member): SelectInputData => ({
 													label: member.firstName + ' ' + member.lastName,
-													value: member.memberId
+													value: member.id
 												})
 											)}
 										{...form.getInputProps('controllerId')}

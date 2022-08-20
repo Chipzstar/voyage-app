@@ -39,7 +39,7 @@ const items = [
 	</Anchor>
 ));
 
-const create = ({ customerId, session }) => {
+const create = ({ customerId, companyName, session }) => {
 	const [loading, setLoading] = useState(false);
 	const { height } = useWindowSize();
 	const dispatch = useDispatch<AppDispatch>();
@@ -62,7 +62,7 @@ const create = ({ customerId, session }) => {
 		addressLine2: customer?.addressLine2 ?? '',
 		billingEmail: customer?.billingEmail ?? '',
 		city: customer?.city ?? '',
-		companyName: customer?.companyName ?? '',
+		companyName: companyName || customer?.companyName || '',
 		country: customer?.country ?? 'UK',
 		email: customer?.email ?? '',
 		extraContacts: customer?.extraContacts ?? [],
@@ -173,7 +173,7 @@ const create = ({ customerId, session }) => {
 								<TextInput label='Tax ID Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('taxIDNumber')} />
 							</div>
 							<div>
-								<TextInput label='Invoice Email' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('billingEmail')} />
+								<TextInput required label='Invoice Email' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('billingEmail')} />
 							</div>
 							<div>
 								<Select
@@ -268,6 +268,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	return {
 		props: {
 			session,
+			companyName: query?.companyName ?? '',
 			customerId: query?.customerId ?? null
 		}
 	};

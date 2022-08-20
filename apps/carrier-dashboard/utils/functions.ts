@@ -15,8 +15,6 @@ function genFullAddress(location: Location) {
 }
 
 export async function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[], settings: Settings): Promise<Load> {
-	console.log('PICKUP DATE', values.pickupDate);
-	console.log('--------------------------------------------------');
 	const pickup: LoadLocation = {
 		...values.pickupLocation,
 		fullAddress: genFullAddress(values.pickupLocation),
@@ -29,12 +27,11 @@ export async function generateLoad(profile, values: NewBooking, drivers: Driver[
 		fullAddress: genFullAddress(values.deliveryLocation),
 		...values.deliveryLocation
 	};
-	const driver = drivers.find(driver => driver.driverId === values.driverId);
-	const controller = controllers.find(controller => controller.memberId === values.controllerId);
-	const customer = customers.find(customers => customers.customerId === values.customerId);
+	const driver = drivers.find(driver => driver.id === values.driverId);
+	const controller = controllers.find(controller => controller.id === values.controllerId);
+	const customer = customers.find(customers => customers.id === values.customerId);
 
 	const { distance } = (await axios.get(`/api/utils/distance-matrix?pickupAddress=${pickup.fullAddress}&deliverAddress=${delivery.fullAddress}`)).data;
-	console.table(distance);
 
 	return {
 		id: undefined,

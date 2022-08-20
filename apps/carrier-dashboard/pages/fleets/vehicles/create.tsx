@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import PageNav from '../../../layout/PageNav';
-import { Anchor, FileInput, Loader, NumberInput, Select, TextInput } from '@mantine/core';
+import { Anchor, Loader, NumberInput, Select, TextInput } from '@mantine/core';
 import Link from 'next/link';
 import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';

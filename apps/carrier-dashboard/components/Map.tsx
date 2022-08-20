@@ -3,24 +3,25 @@ import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import { Load, MapType } from '../utils/types';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-
 mapboxgl.accessToken = MAPBOX_TOKEN;
+
+interface MapGeoJson {
+	type: 'geojson' | 'image',
+	data: {
+		type: 'Feature',
+		properties: {},
+		geometry: {
+			type: 'LineString';
+			coordinates: [];
+		}
+	}
+};
 
 interface MapProps {
 	type: MapType;
 	height?: number;
 	customers?: unknown[];
-	geoJSON?: {
-		type: 'geojson',
-		data: {
-			type: 'Feature',
-			properties: {},
-			geometry: {
-				type: 'LineString';
-				coordinates: [];
-			}
-		}
-	};
+	geoJSON?: MapGeoJson
 	tripId?: string;
 }
 
