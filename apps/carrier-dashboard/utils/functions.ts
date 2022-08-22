@@ -1,7 +1,18 @@
-import { Customer, Driver, Load, LoadLocation, Location, Member, NewBooking, Settings } from './types';
+import {
+	ChargeUnitType,
+	Customer,
+	Driver,
+	Load,
+	LoadLocation,
+	Location,
+	Member,
+	NewBooking,
+	RateChargeRules,
+	Settings
+} from './types';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
-import { calculateRate, numericId } from '@voyage-app/shared-utils';
+import { numericId } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
 import { PLACE_TYPES } from './constants';
 import axios from 'axios';
@@ -14,7 +25,39 @@ function genFullAddress(location: Location) {
 	return fullAddress;
 }
 
+export function calculateRate(
+	weight,
+	numPallets,
+	miles = 300,
+	rates: RateChargeRules
+) {
+	console.log(rates)
+	let total = Object.entries(rates).reduce((prev, [key, rate]) => {
+		let newVal = prev
+		if (!rate.active) return prev;
+		switch (key) {
+			case ChargeUnitType.DISTANCE:
+				newVal += (miles * rate.value)
+				console.log("New value:", newVal)
+				return newVal
+			case ChargeUnitType.WEIGHT:
+				newVal += (weight * rate.value)
+				console.log("New value:", newVal)
+				return newVal
+			case ChargeUnitType.PACKAGE:
+				newVal += (weight * numPallets * rate.value)
+				console.log("New value:", newVal)
+				return newVal
+			default:
+				return prev;
+		}
+	}, 0);
+	// const sum = weight * rates.WEIGHT.value + numPallets * rates.PACKAGE.value + miles * rates.DISTANCE.value;
+	return Number((total / 3).toPrecision(2));
+}
+
 export async function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[], settings: Settings): Promise<Load> {
+	console.log("Rate Rules", settings?.rateChargeRules)
 	const pickup: LoadLocation = {
 		...values.pickupLocation,
 		fullAddress: genFullAddress(values.pickupLocation),

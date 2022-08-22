@@ -93,7 +93,8 @@ const create = ({ vehicleName, vehicleId }) => {
 					})
 			: dispatch(createVehicle(values))
 					.unwrap()
-					.then(() => {
+					.then((res) => {
+						console.log('new vehicle', res);
 						notifySuccess('new-vehicle-success', 'A new vehicle has been added to your account!', <Check size={20} />);
 						setTimeout(() => {
 							router.push(PATHS.VEHICLES);

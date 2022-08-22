@@ -184,6 +184,7 @@ type LoadLocation {
 type CustomerInfo {
   id      String
   name    String
+  email   String?
   company String
 }
 
