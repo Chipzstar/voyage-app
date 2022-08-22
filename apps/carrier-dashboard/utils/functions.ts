@@ -41,6 +41,7 @@ export async function generateLoad(profile, values: NewBooking, drivers: Driver[
 		customer: {
 			id: customer?.customerId,
 			name: customer?.fullName,
+			email: customer?.billingEmail || customer?.email,
 			company: customer?.companyName
 		},
 		driver: {

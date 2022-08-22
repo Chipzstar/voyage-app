@@ -36,7 +36,7 @@ const customers = () => {
 
 	const openConfirmModal = (id: string, name) =>
 		modals.openConfirmModal({
-			title: 'Delete Vehicle',
+			title: 'Delete Customer',
 			children: (
 				<Text size='md'>
 					You have selected <strong>{name}</strong>

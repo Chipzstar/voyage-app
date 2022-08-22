@@ -215,7 +215,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		});
 		const response = await request.send();
 		geoJSON.data.geometry = response.body.routes[0].geometry;
-		console.log(geoJSON)
 	}
 	return {
 		props: {

@@ -96,7 +96,6 @@ const Map = ({
 		if (type === MapType.ORDER) {
 			if (map.current.getSource('route')){
 				const geoJsonSource = map.current.getSource('route');
-				console.log("new geoJSON source", geoJsonSource)
 				geoJsonSource.setData(geoJSON.data)
 			}
 			map.current.on('load', () => {

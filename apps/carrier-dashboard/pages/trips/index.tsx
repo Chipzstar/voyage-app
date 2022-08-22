@@ -61,9 +61,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
 		let loads = await fetchLoads(token?.carrierId, prisma)
 		store.dispatch(setCarrier(carrier));
-		loads.forEach((load: Load) => {
-			console.log("id", load.loadId, "-> \tpickup start", load.pickup.window.start)
-		})
 		store.dispatch(setLoads(loads));
 	}
 	return {

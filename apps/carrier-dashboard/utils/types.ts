@@ -302,6 +302,13 @@ export interface LoadLocation {
 	window?: LoadTimeWindow;
 }
 
+export interface LoadCustomer {
+	id: string;
+	name: string;
+	email?: string;
+	company: string;
+}
+
 export interface Load {
 	id: string;
 	carrierId: string;
@@ -315,11 +322,7 @@ export interface Load {
 	rate: number;
 	pickup: LoadLocation;
 	delivery: LoadLocation;
-	customer?: {
-		id: string;
-		name: string;
-		company: string;
-	};
+	customer?: LoadCustomer
 	driver?: {
 		id: string;
 		name: string;
