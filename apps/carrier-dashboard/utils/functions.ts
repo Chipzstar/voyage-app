@@ -107,7 +107,7 @@ export function notifyError(id: string, message: string, icon: JSX.Element) {
 		disallowClose: true,
 		onClose: () => console.log('unmounted'),
 		onOpen: () => console.log('mounted'),
-		autoClose: 3000,
+		autoClose: 5000,
 		title: 'Error',
 		message,
 		color: 'red',

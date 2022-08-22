@@ -1,3 +1,14 @@
+type BankAccount {
+    id          String
+    fingerprint String
+    country     String
+    currency    String
+    accountHolderName String
+    last4       String
+    sortCode    String
+    status      String
+}
+
 type PaymentMethod {
     id          String
     brand       String
@@ -8,8 +19,9 @@ type PaymentMethod {
 }
 
 type Stripe {
-    customerId String
+    accountId String
     paymentMethod PaymentMethod?
+    bankAccount BankAccount?
 }
 
 type Address {

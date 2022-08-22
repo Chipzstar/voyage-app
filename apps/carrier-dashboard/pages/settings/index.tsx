@@ -14,8 +14,6 @@ import { setCarrier, useCarrier } from '../../store/feature/profileSlice'
 import { useSelector } from 'react-redux';
 import Documents from '../../containers/settings/Documents';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice'
-import Stripe from 'stripe';
-import { CURRENCY, formatAmountForStripe } from '../../utils/stripe';
 import { Carrier } from '../../utils/types';
 import Workflows from '../../containers/settings/Workflows';
 
@@ -26,7 +24,7 @@ const TAB_LABELS = {
 	DOCUMENTS: SETTINGS_TABS[3].value,
 }
 
-const settings = ({clientSecret}) => {
+const settings = () => {
 	const profile = useSelector(useCarrier)
 	const settings = useSelector(useSettings)
 
@@ -40,7 +38,7 @@ const settings = ({clientSecret}) => {
 					<Workflows carrierInfo={profile} settings={settings}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.FINANCIAL}>
-					<Financial carrierInfo={profile} clientSecret={clientSecret}/>
+					<Financial carrierInfo={profile}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
 					<Documents carrierInfo={profile}/>
@@ -54,7 +52,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
-	let clientSecret = null
 	if (!session) {
 		return {
 			redirect: {
@@ -68,28 +65,10 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		let settings = await fetchSettings(token?.carrierId, prisma);
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setSettings(settings));
-		// fetch clientSecret from stripe payment intent
-		const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-			apiVersion: '2022-08-01'
-		});
-		const formattedAmount = formatAmountForStripe(1, CURRENCY)
-		const params: Stripe.PaymentIntentCreateParams = {
-			payment_method_types: ['card'],
-			setup_future_usage: 'off_session',
-			amount: formattedAmount,
-			currency: CURRENCY,
-			customer: carrier.stripe.customerId
-		};
-		const payment_intent: Stripe.PaymentIntent = await stripe.paymentIntents.create(
-			params
-		);
-		console.log(payment_intent)
-		clientSecret = payment_intent.client_secret;
 	}
 	return {
 		props: {
-			session,
-			clientSecret
+			session
 		}
 	};
 });

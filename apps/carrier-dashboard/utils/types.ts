@@ -72,8 +72,21 @@ export type Address = {
 	country?: string;
 };
 
+export interface BankAccount {
+	id: string;
+	country: string;
+	fingerprint: string;
+	currency: string;
+	accountHolderName: string;
+	last4: string;
+	sortCode: string;
+	status: string;
+}
+
+export type BankAccountForm = Omit<BankAccount, "fingerprint" | "status"> & { accountId: string }
+
 export type StripeDetails = {
-	customerId: string;
+	accountId: string;
 	paymentMethod?: {
 		id: string;
 		fingerprint: string;
@@ -82,6 +95,7 @@ export type StripeDetails = {
 		expYear: number;
 		last4: string;
 	};
+	bankAccount?: BankAccount
 };
 
 type Tracking = {

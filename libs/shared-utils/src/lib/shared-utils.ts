@@ -1,12 +1,15 @@
-import { customAlphabet } from 'nanoid';
 import moment from 'moment';
-import { ChargeUnitType } from '../../../../apps/carrier-dashboard/utils/types';
 
 interface selectInput {
 	value: string;
 	label: string;
 }
 
+export enum ChargeUnitType {
+	DISTANCE = 'DISTANCE',
+	WEIGHT = 'WEIGHT',
+	PACKAGE = 'PACKAGE'
+}
 // functions
 export function capitalize(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
@@ -66,7 +69,3 @@ export function sortByDate(data, order = 'desc') {
 export function includesCaseInsensitive(this: string, str: string): boolean {
 	return this.toLowerCase().includes(str.toLowerCase());
 }
-
-//constants
-export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
-export const numericId = customAlphabet('1234567890');
