@@ -127,7 +127,7 @@ const index = ({ initialState }) => {
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments pending' />} />
 					</Tabs.Panel>
 					<Tabs.Panel value={TAB_LABELS.IN_TRANSIT} className='text-lg'>
-						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments in -transit' />} />
+						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments in transit' />} />
 					</Tabs.Panel>
 					<Tabs.Panel value={TAB_LABELS.COMPLETED} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message={'No shipments completed'} />} />
