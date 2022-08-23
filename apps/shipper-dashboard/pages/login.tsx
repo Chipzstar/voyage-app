@@ -46,7 +46,6 @@ const login = ({ csrfToken, ...props }) => {
 		}
 	}, []);
 
-	// @ts-ignore
 	return (
 		<div className='flex flex-row'>
 			<div className='flex'>

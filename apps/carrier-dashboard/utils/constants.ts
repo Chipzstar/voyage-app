@@ -19,7 +19,8 @@ export const localizer = momentLocalizer(moment);
 export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
 
 export const PUBLIC_PATHS = {
-	LOGIN: '/login'
+	LOGIN: '/login',
+	SIGNUP: '/signup',
 };
 
 export const PATHS = {

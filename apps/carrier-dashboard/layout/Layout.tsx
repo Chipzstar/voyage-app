@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Sidebar from './Sidebar';
 import { useRouter } from 'next/router';
 import { PUBLIC_PATHS } from '../utils/constants';
 
 const Layout = ({ children }) => {
 	const router = useRouter();
+	const isAuthScreen = useMemo(() => ![PUBLIC_PATHS.LOGIN, PUBLIC_PATHS.SIGNUP].includes(router.pathname), [router.pathname]);
 	return (
-		<div className='min-h-screen flex relative'>
-			{!router.pathname.includes(PUBLIC_PATHS.LOGIN) && (
-				<aside className='h-screen sticky top-0 relative' aria-label='Sidebar'>
+		<div className='relative flex min-h-screen'>
+			{isAuthScreen && (
+				<aside className='relative sticky top-0 h-screen' aria-label='Sidebar'>
 					<Sidebar />
 				</aside>
 			)}
