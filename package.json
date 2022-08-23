@@ -96,7 +96,8 @@
     "regenerator-runtime": "0.13.7",
     "stripe": "^10.2.0",
     "tabler-icons-react": "^1.52.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@computas/nx-yarn": "^1.0.0",
@@ -123,6 +124,7 @@
     "@types/node": "18.7.5",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.5",
+    "@types/yup": "^0.32.0",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "autoprefixer": "10.4.8",
@@ -159,4 +161,3 @@
     "singleQuote": true
   }
 }
-
