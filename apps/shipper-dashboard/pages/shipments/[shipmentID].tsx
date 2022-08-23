@@ -12,44 +12,19 @@ import { useSelector } from 'react-redux';
 import { store } from '../../store';
 import { setShipments } from '../../store/features/shipmentsSlice';
 import { Shipment } from '../../utils/types';
+import { fetchShipments } from '../../utils/functions';
+import { getToken } from 'next-auth/jwt';
 
 export async function getServerSideProps({ req, res, params }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
 	let pageIndex = 0;
 	// fetch all shipments for the current user
-	let shipments = await prisma.shipment.findMany({
-		where: {
-			userId: {
-				equals: session.id
-			}
-		},
-		orderBy: {
-			createdAt: 'desc'
-		}
-	});
-	shipments = shipments.map(shipment => ({
-		...shipment,
-		createdAt: moment(shipment.createdAt).unix(),
-		updatedAt: moment(shipment.updatedAt).unix()
-	}));
-	// set them in memory
+	const shipments = await fetchShipments(token?.shipperId, prisma);
 	store.dispatch(setShipments(shipments));
-	// find the first shipment with matching shipment ID
-	const shipment = await prisma.shipment.findFirst({
-		where: {
-			userId: {
-				equals: session.id
-			},
-			shipmentId: {
-				equals: params.shipmentID
-			}
-		}
-	});
-	if (shipment) {
-		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
-		console.table({ pageIndex });
-	}
+	pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
+	console.table({ pageIndex });
 	return {
 		props: {
 			initialState: store.getState(),
@@ -64,13 +39,13 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 	const shipments: Shipment[] = useSelector(state => state['shipments']);
 
 	return (
-		<div className='p-4 h-screen'>
-			<div className='px-4 flex flex-col h-full'>
-				<section className='flex items-center space-x-4 mb-8' role='button' onClick={() => router.back()}>
+		<div className='h-screen p-4'>
+			<div className='flex h-full flex-col px-4'>
+				<section className='mb-8 flex items-center space-x-4' role='button' onClick={() => router.back()}>
 					<ChevronLeft size={48} strokeWidth={2} color={'black'} />
 					<span className='page-header'>Shipments</span>
 				</section>
-				<header className='flex flex-row items-center justify-between mb-8 py-3'>
+				<header className='mb-8 flex flex-row items-center justify-between py-3'>
 					<h2 className='text-2xl uppercase'>{shipmentId}</h2>
 					<div className='flex flex-row justify-between space-x-8'>
 						<Button
@@ -104,9 +79,9 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 					</div>
 				</header>
 				<main className='grow'>
-					<div className='grid grid-cols-1 lg:grid-cols-2 gap-x-10'>
-						<div className='grid grid-cols-1 gap-y-8 place-content-start'>
-							<aside className='border border-voyage-grey p-5 flex flex-col space-y-4'>
+					<div className='grid grid-cols-1 gap-x-10 lg:grid-cols-2'>
+						<div className='grid grid-cols-1 place-content-start gap-y-8'>
+							<aside className='border-voyage-grey flex flex-col space-y-4 border p-5'>
 								<div className='flex flex-row items-center'>
 									<header className='shipment-header'>Provider</header>
 								</div>
@@ -115,7 +90,7 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 									<p className='text-lg'>{shipments[pageIndex]?.carrier?.name}</p>
 									<p className='text-lg'>{shipments[pageIndex]?.carrier?.location}</p>
 								</div>
-								<div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+								<div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Contact</span>
 										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverName}</p>
@@ -129,7 +104,7 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 									</div>
 								</div>
 							</aside>
-							<aside className='border border-voyage-grey p-5'>
+							<aside className='border-voyage-grey border p-5'>
 								<header className='shipment-header'>Summary</header>
 								<div className='pt-8'>
 									<Timeline active={1} bulletSize={24} lineWidth={2}>

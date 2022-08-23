@@ -7,8 +7,7 @@ export const authOptions = {
 	adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
-			id: 'credentials',
-			name: 'Credentials',
+			name: 'credentials',
 			credentials: {
 				email: { label: 'email', type: 'email' },
 				password: { label: 'password', type: 'password' }
@@ -24,12 +23,18 @@ export const authOptions = {
 					}
 				});
 				if (user) {
+					const shipper = await prisma.shipper.findFirst({
+						where: {
+							userId: {
+								equals: user.id
+							}
+						}
+					});
 					// Any object returned will be saved in `user` property of the JWT
-					return user;
-				} else {
-					// If you return null then an error will be displayed advising the user to check their details.
-					return null;
+					return { ...user, shipperId: shipper?.id ?? null };
 				}
+				// If you return null then an error will be displayed advising the user to check their details.
+				return null;
 			}
 		})
 	],
@@ -38,20 +43,22 @@ export const authOptions = {
 		signIn: '/login'
 	},
 	callbacks: {
-		async jwt({token, user, account, profile, isNewUser }) {
+		async jwt({ token, user, account, profile, isNewUser }) {
 			if (user) {
 				token.id = user.id;
 				token.email = user.email;
+				token.shipperId = user?.shipperId
 			}
 			return token;
 		},
 		async session({ session, token }) {
-			if (token){
-				session.id = token.id
+			if (token) {
+				session.id = token.id;
 			}
 			return session;
 		}
 	},
+	secret: process.env.NEXTAUTH_SECRET,
 	session: {
 		// Set to jwt in order to CredentialsProvider works properly
 		strategy: 'jwt',
@@ -60,7 +67,7 @@ export const authOptions = {
 	jwt: {
 		encryption: true
 	},
-	debug: true
+	debug: process.env.NODE_ENV !== 'production'
 };
 
 // @ts-ignore

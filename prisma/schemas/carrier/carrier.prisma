@@ -12,7 +12,7 @@ model Carrier {
     address     Address
     email       String
     phone       String
-    stripe      Stripe?
+    stripe      CarrierStripe?
     documents   Document[]
     loads       Load[]
     drivers     Driver[]

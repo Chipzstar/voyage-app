@@ -64,6 +64,8 @@ export const locationSlice = createSlice({
 	}
 });
 
+export const useLocation = (state) => state['locations']
+
 export const { setLocations, addLocation, editLocation, removeLocation } = locationSlice.actions;
 
 export default locationSlice.reducer;

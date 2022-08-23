@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import OperatingHoursForm from '../modals/OperatingHoursForm';
 import { Select, Textarea, TextInput } from '@mantine/core';
 import { Location, LocationTimeWindow, LocationType, OperatingHoursState } from '../utils/types';
 import moment from 'moment';
-import { formList, useForm } from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_OPERATING_HOURS, PATHS } from '../utils/constants';
 import { nanoid } from 'nanoid';
@@ -13,27 +13,16 @@ import getStore, { AppDispatch } from '../store';
 import prisma from '../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
+import { fetchLocations } from '../utils/functions';
 
 export async function getServerSideProps({ req, res, query }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({req})
 	const store = getStore();
 	if (session.id) {
-		let locations = await prisma.location.findMany({
-			where: {
-				userId: {
-					equals: session.id
-				}
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		locations = locations.map(location => ({
-			...location,
-			createdAt: moment(location.createdAt).unix(),
-			updatedAt: moment(location.updatedAt).unix()
-		}));
+		const locations = await fetchLocations(token?.shipperId, prisma)
 		store.dispatch(setLocations(locations));
 	}
 	return {
@@ -68,7 +57,7 @@ const location = ({ locationId, locationName }) => {
 			country: location?.country || '',
 			pickupInstructions: location?.pickupInstructions || '',
 			deliveryInstructions: location?.deliveryInstructions || '',
-			operatingHours: location ? formList([...location.operatingHours]) : formList([...DEFAULT_OPERATING_HOURS])
+			operatingHours: location ? [...location.operatingHours] : [...DEFAULT_OPERATING_HOURS]
 		}
 	});
 

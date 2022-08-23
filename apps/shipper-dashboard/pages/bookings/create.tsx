@@ -1,25 +1,45 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
+import { Calendar, CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
 import { numericId } from '@voyage-app/shared-utils';
 import { LocationType, NewBooking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
-import DateTimePicker from '../../components/DateTimePickerBase';
-import { PATHS } from 'apps/shipper-dashboard/utils/constants';
+import { DateTimePicker } from '@voyage-app/shared-ui-components';
+import { PATHS, PUBLIC_PATHS } from 'apps/shipper-dashboard/utils/constants';
 import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
-import { generateShipment } from '../../utils/functions';
+import { fetchLocations, generateShipment } from '../../utils/functions';
 import { createBooking } from '../../store/features/bookingsSlice';
-import { AppDispatch } from 'apps/shipper-dashboard/store';
+import getStore, { AppDispatch } from 'apps/shipper-dashboard/store';
+import { getToken } from 'next-auth/jwt';
+import prisma from '../../db';
+import { setLocations } from '../../store/features/locationSlice';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps({ req, res, query }) {
+	const store = getStore();
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	const locations = await fetchLocations(token?.shipperId, prisma);
+	store.dispatch(setLocations(locations));
 	return {
 		props: {
-			bookingID: context.query?.bookingId || ''
+			bookingID: query?.bookingId || '',
+			initialState: store.getState()
 		} // will be passed to the page component as props
 	};
 }
@@ -73,6 +93,7 @@ const create = props => {
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
 	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_CARRIER), [locations]);
+
 	const pickupData = useMemo(() => {
 		switch (form.values.serviceType) {
 			case SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE:
@@ -311,11 +332,14 @@ const create = props => {
 								Recurring
 							</button>
 						</div>
-						<div className='flex flex-col space-y-4'>
+						<div className='flex flex-col'>
 							<p className='font-normal'>Select a pickup date, and we’ll calculate a delivery date based on transit time.</p>
 							<div className='flex flex-row items-center space-x-6'>
 								<DateTimePicker
 									radius={0}
+									error={form.errors['pickupDate']}
+									allowLevelChange={false}
+									icon={<Calendar size={16} />}
 									size='md'
 									placeholder='Pickup Date'
 									inputFormat={'DD-MMM-YYYY HH:mm a'}

@@ -10,8 +10,8 @@ import { store } from '../store';
 import prisma from '../db';
 import { setShipments } from '../store/features/shipmentsSlice';
 import { PUBLIC_PATHS } from '../utils/constants';
-import { getSession } from 'next-auth/react'
 import { getToken } from 'next-auth/jwt'
+import { fetchShipments } from '../utils/functions';
 
 export function Index(props) {
 	const dispatch = useDispatch();
@@ -38,7 +38,6 @@ export async function getServerSideProps({ req, res }) {
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req })
 	console.log("\nHOMEPAGE")
-	console.log(session)
 	console.log(token)
 	if (!session) {
 		return {
@@ -49,21 +48,7 @@ export async function getServerSideProps({ req, res }) {
 		};
 	}
 	if (session.id) {
-		let shipments = await prisma.shipment.findMany({
-			where: {
-				userId: {
-					equals: session.id
-				}
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		shipments = shipments.map(shipment => ({
-			...shipment,
-			createdAt: moment(shipment.createdAt).unix(),
-			updatedAt: moment(shipment.updatedAt).unix()
-		}));
+		const shipments = await fetchShipments(token?.shipperId, prisma)
 		store.dispatch(setShipments(shipments));
 	}
 	return {

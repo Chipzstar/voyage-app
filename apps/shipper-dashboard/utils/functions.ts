@@ -1,8 +1,19 @@
 import { Delivery, Location, NewBooking, Pickup, Shipment, STATUS } from './types'
 import moment from 'moment';
-import { numericId, calculateRate } from '@voyage-app/shared-utils'
+import { numericId } from '@voyage-app/shared-utils'
+import prisma from '../db';
 
-export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Omit<Shipment, "id"> {
+export function calculateRate(
+	weight,
+	numPallets,
+	miles = 300,
+) {
+	const sum = weight * 0.02 + numPallets * 25.7 + miles * 4.2;
+	console.log("Estimated rate:", `£${sum}`)
+	return sum
+}
+
+export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Shipment {
 	const pickup: Pickup = {
 		facilityId: pickupLocation.id,
 		facilityName: pickupLocation.name,
@@ -17,7 +28,9 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 		facilityName: deliveryLocation.name,
 		location: `${deliveryLocation.addressLine1} ${deliveryLocation.postcode}`
 	}
+
 	return {
+		id: undefined,
 		shipmentId: `VOY-ID${numericId(3)}`,
 		createdAt: values.createdAt,
 		bookingStatus: 'Booked',
@@ -59,4 +72,42 @@ export function filterByTimeRange(data: [], range: [Date, Date]){
 		const curr = moment.unix(createdAt);
 		return curr.isBefore(endDate) && curr.isAfter(startDate)
 	})
+}
+
+export async function fetchShipments(shipperId, prisma) {
+	let shipments = await prisma.shipment.findMany({
+		where: {
+			shipperId: {
+				equals: shipperId
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+	shipments = shipments.map(shipment => ({
+		...shipment,
+		createdAt: moment(shipment.createdAt).unix(),
+		updatedAt: moment(shipment.updatedAt).unix()
+	}));
+	return shipments
+}
+
+export async function fetchLocations(shipperId, prisma){
+	let locations = await prisma.location.findMany({
+		where: {
+			shipperId: {
+				equals: shipperId
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+	locations = locations.map(location => ({
+		...location,
+		createdAt: moment(location.createdAt).unix(),
+		updatedAt: moment(location.updatedAt).unix()
+	}));
+	return locations
 }

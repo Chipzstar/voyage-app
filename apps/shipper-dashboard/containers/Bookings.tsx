@@ -26,7 +26,6 @@ const Bookings = () => {
 		shipments: state['shipments']
 	}));
 	bookings.sort((a, b) => b.createdAt - a.createdAt);
-	shipments.sort((a, b) => b.createdAt - a.createdAt);
 
 	const rows = bookings
 		.map((element: NewBooking) => (
@@ -65,7 +64,7 @@ const Bookings = () => {
 		);
 
 	return (
-		<div className='py-5 booking-container'>
+		<div className='py-5 flex flex-col grow'>
 			<DataGrid rows={rows} headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']} emptyContent={<Empty />} />
 		</div>
 	);

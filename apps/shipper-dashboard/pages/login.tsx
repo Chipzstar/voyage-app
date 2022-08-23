@@ -1,4 +1,3 @@
-import { InferGetServerSidePropsType } from 'next';
 import React, { useCallback } from 'react';
 import { useForm } from '@mantine/form';
 import { Button, PasswordInput, Text, TextInput } from '@mantine/core';
@@ -9,8 +8,9 @@ import { PATHS } from '../utils/constants';
 import prisma from '../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
+import moment from 'moment';
 
-const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const login = ({ csrfToken, ...props }) => {
 	const router = useRouter();
 	const form = useForm({
 		initialValues: {
@@ -50,13 +50,13 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 	return (
 		<div className='flex flex-row'>
 			<div className='flex'>
-				<img src='/static/images/login-wallpaper.svg' alt='' className='object-cover h-screen' />
+				<img src='/static/images/login-wallpaper.svg' alt='' className='h-screen object-cover' />
 			</div>
-			<div className='grow flex my-auto justify-center'>
-				<form onSubmit={form.onSubmit(handleSignIn)} action='' className='flex flex-col space-y-8 w-196'>
-					<figure className='flex flex-row justify-center space-x-4 items-center'>
+			<div className='my-auto flex grow justify-center'>
+				<form onSubmit={form.onSubmit(handleSignIn)} action='' className='w-196 flex flex-col space-y-8'>
+					<figure className='flex flex-row items-center justify-center space-x-4'>
 						<img src={'/static/images/favicon.svg'} alt='' />
-						<span className='text-2xl font-bold mb-1'>voyage</span>
+						<span className='mb-1 text-2xl font-bold'>voyage</span>
 					</figure>
 					<div>
 						<TextInput
@@ -79,7 +79,7 @@ const login = ({ csrfToken, ...props }: InferGetServerSidePropsType<typeof getSe
 							classNames={{
 								root: 'bg-black'
 							}}
-							className='text-normal text-white text-center w-full h-12'
+							className='text-normal h-12 w-full text-center text-white'
 						>
 							<Text color='white' size='lg'>
 								Log in
@@ -107,7 +107,18 @@ export async function getServerSideProps({ req, res }) {
 		};
 	}
 	const csrfToken = await getCsrfToken();
-	const users = await prisma.user.findMany({});
+	const users = (await prisma.user.findMany({
+		where: {
+			shipperId: {
+				is: {
+					shipperId: {}
+				}
+			}
+		}
+	})).map(user => ({
+		...user,
+		emailVerified: moment(user.emailVerified).unix()
+	}));
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

@@ -10,7 +10,6 @@ import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Provider } from 'react-redux';
 import getStore from '../store';
-import TabContextProvider from '../context/TabContext';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 
 import Router from 'next/router';
@@ -45,16 +44,12 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 						<Layout>
 							<Head>
 								<Favicon />
-								<meta name='viewport'
-									  content='minimum-scale=1, initial-scale=1, width=device-width' />
+								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 								<title>Shipper Dashboard</title>
 							</Head>
-
-							<TabContextProvider>
-								<main className='app'>
-									<Component {...pageProps} />
-								</main>
-							</TabContextProvider>
+							<main className='app'>
+								<Component {...pageProps} />
+							</main>
 						</Layout>
 					</ModalsProvider>
 				</MantineProvider>

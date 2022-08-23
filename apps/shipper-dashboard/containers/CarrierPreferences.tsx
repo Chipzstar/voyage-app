@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Radio, RadioGroup, Switch } from '@mantine/core';
+import { Radio, Switch } from '@mantine/core';
 import VehicleOptions from '../modals/VehicleOptions';
 
 const CarrierPreferences = () => {
@@ -22,12 +22,12 @@ const CarrierPreferences = () => {
 						<span className='font-normal'>Communicate selection criteria for provided quotes from carriers</span>
 					</div>
 					<div>
-						<RadioGroup required orientation='vertical' color='gray'>
+						<Radio.Group required orientation='vertical' color='gray'>
 							<Radio value='price' label='Lowest price' />
 							<Radio value='fast-delivery-eta' label='Fastest delivery time' />
 							<Radio value='early-pickup-eta' label='Earliest pickup time' />
 							<Radio value='late-pickup-eta' label='Latest pickup time' />
-						</RadioGroup>
+						</Radio.Group>
 					</div>
 				</div>
 				<div className='flex flex-col space-y-4'>
@@ -36,7 +36,7 @@ const CarrierPreferences = () => {
 						<span className='font-normal'>Communicate vehicle type selection preferences</span>
 					</div>
 					<div>
-						<RadioGroup required orientation='vertical' color='gray'>
+						<Radio.Group required orientation='vertical' color='gray'>
 							<Radio value='cargo-van' label='Cargo Van' onClick={() => {
 								setTitle('cargo-van')
 								showOptions(true)
@@ -53,7 +53,7 @@ const CarrierPreferences = () => {
 								setTitle('semi-trailer-truck')
 								showOptions(true)
 							}} />
-						</RadioGroup>
+						</Radio.Group>
 					</div>
 				</div>
 				<div className='flex flex-col space-y-4'>
@@ -62,12 +62,12 @@ const CarrierPreferences = () => {
 						<span className='font-normal'>Control how your shipments should be optimized</span>
 					</div>
 					<div>
-						<RadioGroup required orientation='vertical' color='gray'>
+						<Radio.Group required orientation='vertical' color='gray'>
 							<Radio value='mileage' label='Minimize drive time' />
 							<Radio value='punctual' label='Arrive on time' />
 							<Radio value='cost' label='Minimize cost' />
 							<Radio value='minimize-co2e' label='Minimize CO2e' />
-						</RadioGroup>
+						</Radio.Group>
 					</div>
 				</div>
 			</div>

@@ -7,8 +7,8 @@ enum LocationType {
 model Location {
     id String @id @default(auto()) @map("_id") @db.ObjectId
 	locationId String @unique
-	user User   @relation(fields: [userId], references: [id])
-    userId String @db.ObjectId
+	shipper Shipper  @relation(fields: [shipperId], references: [id])
+    shipperId String @db.ObjectId
 	name String
 	createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

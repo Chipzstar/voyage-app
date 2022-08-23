@@ -18,10 +18,15 @@ type PaymentMethod {
     expYear     Int
 }
 
-type Stripe {
+type CarrierStripe {
     accountId String
     paymentMethod PaymentMethod?
     bankAccount BankAccount?
+}
+
+type ShipperStripe {
+    customerId String
+    paymentMethod PaymentMethod?
 }
 
 type Address {

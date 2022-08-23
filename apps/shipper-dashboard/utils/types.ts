@@ -150,6 +150,7 @@ export interface OperatingHoursState {
 export interface Location {
 	id: string;
 	locationId: string;
+	shipperId: string
 	name: string;
 	type: LocationType;
 	addressLine1: string;

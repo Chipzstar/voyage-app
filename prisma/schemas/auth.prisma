@@ -36,7 +36,6 @@ model User {
   firstname     String?
   lastname      String?
   password      String   /// @encrypted
-  location      Location[]
   carrierId     Carrier?
   shipperId     Shipper?
   drivers       Driver[]

@@ -1,17 +1,18 @@
 model Shipper {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-    shipperId String @unique
-    user User @relation(fields: [userId], references: [id])
-    userId String @unique @db.ObjectId
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    fullName String
-    firstname String
-    lastname String
-    company String
-    address Address
-    email String
-    phone String
-    stripe Stripe?
-    shipment Shipment[]
+    id              String @id @default(auto()) @map("_id") @db.ObjectId
+    shipperId       String @unique
+    user            User @relation(fields: [userId], references: [id])
+    userId          String @unique @db.ObjectId
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    fullName        String
+    firstname       String
+    lastname        String
+    company         String
+    address         Address
+    email           String
+    phone           String
+    stripe          ShipperStripe?
+    shipment        Shipment[]
+    location        Location[]
 }

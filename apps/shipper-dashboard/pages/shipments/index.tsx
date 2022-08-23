@@ -12,6 +12,8 @@ import { selectAllShipments, setShipments } from '../../store/features/shipments
 import { useSelector } from 'react-redux';
 import { store } from '../../store';
 import prisma from '../../db';
+import { fetchShipments } from '../../utils/functions';
+import { getToken } from 'next-auth/jwt';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
@@ -19,13 +21,28 @@ const Empty = ({ message }) => (
 	</div>
 );
 
+const TAB_LABELS = {
+	ALL: 'ALL',
+	PENDING: 'PENDING',
+	IN_TRANSIT: 'IN_TRANSIT',
+	COMPLETED: 'COMPLETED',
+}
+
+const STATUS_MAP = {
+	ALL: Object.values(STATUS),
+	PENDING: [STATUS.NEW , STATUS.PENDING],
+	IN_TRANSIT: [STATUS.AT_PICKUP, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.EN_ROUTE],
+	COMPLETED: [STATUS.COMPLETED],
+}
+
 const index = ({ initialState }) => {
 	const router = useRouter();
 	const shipments = useSelector(selectAllShipments);
-	const [activeTab, setActiveTab] = useState({ index: 0, statuses: Object.values(STATUS) });
+	const [activeTab, setActiveTab] = useState<string | null>(TAB_LABELS.ALL);
+	const [statuses, setStatuses] = useState(Object.values(STATUS))
 
 	const rows = shipments
-		.filter(element => activeTab.statuses.includes(element.status))
+		.filter(element => statuses.includes(element.status))
 		.map((element, index) => {
 			const statusClass = classNames({
 				'py-1.5': true,
@@ -90,28 +107,29 @@ const index = ({ initialState }) => {
 					<h2 className='page-header'>Shipment History</h2>
 				</section>
 				<Tabs
-					grow
-					active={activeTab.index}
-					onTabChange={(value, key) => {
-						console.log(key);
-						// @ts-ignore
-						setActiveTab(prevState => ({
-							...prevState,
-							index: value,
-							statuses: key.split(' ')
-						}));
+					value={activeTab}
+					onTabChange={(value) => {
+						setActiveTab(value)
+						setStatuses(STATUS_MAP[value])
 					}}
 				>
-					<Tabs.Tab label='All' tabKey={Object.values(STATUS).join(' ')} className='text-lg'>
+					<Tabs.List grow>
+						<Tabs.Tab value={TAB_LABELS.ALL}>All</Tabs.Tab>
+						<Tabs.Tab value={TAB_LABELS.PENDING}>Pending</Tabs.Tab>
+						<Tabs.Tab value={TAB_LABELS.IN_TRANSIT}>In Progress</Tabs.Tab>
+						<Tabs.Tab value={TAB_LABELS.COMPLETED}>Completed</Tabs.Tab>
+					</Tabs.List>
+
+					<Tabs.Panel value={TAB_LABELS.ALL} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments created' />} />
-					</Tabs.Tab>
-					<Tabs.Tab label='Pending' tabKey={[STATUS.NEW, STATUS.PENDING].join(' ')} className='text-lg'>
+					</Tabs.Panel>
+					<Tabs.Tab value={TAB_LABELS.PENDING} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments pending' />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='In Progress' tabKey={[STATUS.EN_ROUTE, STATUS.AT_PICKUP, STATUS.DISPATCHED, STATUS.AT_DROPOFF].join(' ')} className='text-lg'>
+					<Tabs.Tab value='In Progress' className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments in -transit' />} />
 					</Tabs.Tab>
-					<Tabs.Tab label='Completed' tabKey={[STATUS.COMPLETED].join(' ')} className='text-lg'>
+					<Tabs.Tab value='Completed' className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message={'No shipments completed'} />} />
 					</Tabs.Tab>
 				</Tabs>
@@ -123,6 +141,7 @@ const index = ({ initialState }) => {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req })
 	if (!session) {
 		return {
 			redirect: {
@@ -132,21 +151,7 @@ export async function getServerSideProps({ req, res }) {
 		};
 	}
 	if (session.id) {
-		let shipments = await prisma.shipment.findMany({
-			where: {
-				userId: {
-					equals: session.id
-				}
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		shipments = shipments.map(shipment => ({
-			...shipment,
-			createdAt: moment(shipment.createdAt).unix(),
-			updatedAt: moment(shipment.updatedAt).unix()
-		}));
+		const shipments = await fetchShipments(token?.shipperId, prisma)
 		store.dispatch(setShipments(shipments));
 	}
 	return {
