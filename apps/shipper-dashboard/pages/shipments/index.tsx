@@ -101,16 +101,16 @@ const index = ({ initialState }) => {
 		});
 
 	return (
-		<div className='p-4 h-screen'>
-			<div className='px-4 h-full'>
-				<section className='flex flex-row items-center justify-between mb-8 py-3 h-20'>
+		<div className='h-screen p-4'>
+			<div className='h-full px-4'>
+				<section className='mb-8 flex h-20 flex-row items-center justify-between py-3'>
 					<h2 className='page-header'>Shipment History</h2>
 				</section>
 				<Tabs
 					value={activeTab}
-					onTabChange={(value) => {
-						setActiveTab(value)
-						setStatuses(STATUS_MAP[value])
+					onTabChange={value => {
+						setActiveTab(value);
+						setStatuses(STATUS_MAP[value]);
 					}}
 				>
 					<Tabs.List grow>
@@ -123,15 +123,15 @@ const index = ({ initialState }) => {
 					<Tabs.Panel value={TAB_LABELS.ALL} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments created' />} />
 					</Tabs.Panel>
-					<Tabs.Tab value={TAB_LABELS.PENDING} className='text-lg'>
+					<Tabs.Panel value={TAB_LABELS.PENDING} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments pending' />} />
-					</Tabs.Tab>
-					<Tabs.Tab value='In Progress' className='text-lg'>
+					</Tabs.Panel>
+					<Tabs.Panel value={TAB_LABELS.IN_TRANSIT} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message='No shipments in -transit' />} />
-					</Tabs.Tab>
-					<Tabs.Tab value='Completed' className='text-lg'>
+					</Tabs.Panel>
+					<Tabs.Panel value={TAB_LABELS.COMPLETED} className='text-lg'>
 						<DataGrid rows={rows} headings={['Shipment ID', 'Status', 'Pickup', 'Delivery', '']} emptyContent={<Empty message={'No shipments completed'} />} />
-					</Tabs.Tab>
+					</Tabs.Panel>
 				</Tabs>
 			</div>
 		</div>

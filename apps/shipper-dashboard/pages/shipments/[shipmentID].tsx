@@ -3,7 +3,7 @@ import { Timeline, Text, Button } from '@mantine/core';
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { PATHS } from '../../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
 import moment from 'moment';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
@@ -19,6 +19,14 @@ export async function getServerSideProps({ req, res, params }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
 	let pageIndex = 0;
 	// fetch all shipments for the current user
 	const shipments = await fetchShipments(token?.shipperId, prisma);
