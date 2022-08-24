@@ -1,23 +1,29 @@
 import React, { useCallback, useState } from 'react';
 import { useForm, yupResolver } from '@mantine/form';
 import { signupSchema1 } from '../../validation';
-import { Anchor, Button, Loader, Text, Stack, Center, Tooltip, TextInput, Group, PasswordInput, Box } from '@mantine/core';
+import { Anchor, Box, Button, Center, Group, Loader, PasswordInput, Stack, Text, TextInput, Tooltip } from '@mantine/core';
 import Link from 'next/link';
-import { PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
-import { Check, InfoCircle } from 'tabler-icons-react';
-import { notifySuccess } from '../../utils/functions';
+import { phoneUtil, PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
+import { PhoneNumberFormat as PNF } from "google-libphonenumber";
+import { InfoCircle } from 'tabler-icons-react';
+import { saveNewCarrier } from '../../store/feature/profileSlice';
+import { AppDispatch } from '../../store';
+import { useDispatch } from 'react-redux';
+import { NewCarrier } from '../../utils/types';
 
 const Step1 = ({ nextStep }) => {
 	const [opened, setOpened] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const form = useForm({
+	const dispatch = useDispatch<AppDispatch>();
+	const form = useForm<Partial<NewCarrier>>({
 		initialValues: {
+			fullName: '',
 			firstname: '',
 			lastname: '',
-			companyName: '',
+			company: '',
 			email: '',
 			phone: '',
-			crn: '',
+			crn: undefined,
 			jobTitle: '',
 			website: '',
 			password: '',
@@ -28,10 +34,21 @@ const Step1 = ({ nextStep }) => {
 
 	const handleSignUp = useCallback(values => {
 		setLoading(true);
+		const number = phoneUtil.parseAndKeepRawInput(values.phone, 'GB');
+		if (phoneUtil.getRegionCodeForNumber(number) === 'GB') {
+			const E164Number = phoneUtil.format(number, PNF.E164);
+			console.log('E164Number:', E164Number);
+			values.phone = E164Number;
+		}
+		values.fullName = `${values.firstname} ${values.lastname}`;
+		dispatch(saveNewCarrier(values));
 		setTimeout(() => {
-			notifySuccess("account-creation-success", "Account created!", <Check size={20} />)
-			setTimeout(() => nextStep(), 1000)
-		}, 4000);
+			nextStep();
+			setLoading(false);
+		}, 3000);
+		/*console.error(err);
+		notifyError('new-account-failure', `There was a problem signing you up. ${err.message}`, <X size={20} />);
+		setLoading(false);*/
 	}, []);
 
 	const valid = form.values.password.trim().length >= 6;
@@ -52,9 +69,9 @@ const Step1 = ({ nextStep }) => {
 						<TextInput size='md' radius={0} placeholder='Company Phone Number' {...form.getInputProps('phone')} />
 					</Group>
 					<Group grow pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Legal Company Name' {...form.getInputProps('companyName')} />
+						<TextInput size='md' radius={0} placeholder='Legal Company Name' {...form.getInputProps('company')} />
 						<TextInput
-							type="number"
+							type='number'
 							size='md'
 							radius={0}
 							placeholder='CRN'

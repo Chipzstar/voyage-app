@@ -10,6 +10,13 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  webpack: (config, options) => {
+    config.experiments = {
+      topLevelAwait: true,
+      layers: true
+    };
+    return config;
+  }
 };
 
 module.exports = withNx(nextConfig);

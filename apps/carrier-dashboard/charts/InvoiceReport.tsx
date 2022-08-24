@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
 import { createStyles, ScrollArea, Table } from '@mantine/core';
 import { SAMPLE_INVOICES } from '../utils/constants';
 

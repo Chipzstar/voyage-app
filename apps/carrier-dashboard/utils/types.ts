@@ -72,6 +72,16 @@ export type Address = {
 	country?: string;
 };
 
+//TODO - Overwrite type 'Address' with 'NewAddress'
+export type NewAddress = {
+	line1: string;
+	line2?: string;
+	city: string;
+	region?: string;
+	postcode: string;
+	country?: string;
+};
+
 export interface BankAccount {
 	id: string;
 	country: string;
@@ -358,4 +368,19 @@ export interface Document {
 	filename: string;
 	filepath: string;
 	location: string;
+}
+
+export interface NewCarrier {
+	fullName: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+	company: string;
+	phone: string;
+	jobTitle: string;
+	crn: string;
+	website?: string
+	password: string;
+	confirmPassword: string;
+	address: Address;
 }

@@ -9,6 +9,7 @@ import { Box, Center, ScrollArea, Stepper, Text } from '@mantine/core';
 import { Check, X } from 'tabler-icons-react';
 import Step1 from '../containers/signup/Step1';
 import Step2 from '../containers/signup/Step2';
+import Step3 from '../containers/signup/Step3';
 
 const requirements = [
 	{ re: /[0-9]/, label: 'Includes number' },
@@ -40,28 +41,6 @@ function getStrength(password: string) {
 	return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0);
 }
 
-const SignupProgress = ({ active, setActive, nextStep, prevStep }) => {
-	return (
-		<Stepper active={active} onStepClick={setActive} breakpoint='sm' size="sm" px="xl" classNames={{
-			steps: "sticky top-0 z-50 bg-white mb-2"
-		}}>
-			<Stepper.Step label='First step' description='Create an account' allowStepSelect={active > 0}>
-				<Step1 nextStep={nextStep}/>
-			</Stepper.Step>
-			<Stepper.Step label='Second step' description='Business Address' allowStepSelect={active > 1}>
-				<Step2 nextStep={nextStep} prevStep={prevStep}/>
-			</Stepper.Step>
-			<Stepper.Step label='Third step' description='Management Directors' allowStepSelect={active > 1}>
-				Step 2 content: Verify email
-			</Stepper.Step>
-			<Stepper.Step label='Final step' description='Get full access' allowStepSelect={active > 2}>
-				Step 3 content: Get full access
-			</Stepper.Step>
-			<Stepper.Completed>Completed, click back button to get to previous step</Stepper.Completed>
-		</Stepper>
-	);
-};
-
 const signup = () => {
 	const [active, setActive] = useState(0);
 	const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
@@ -72,7 +51,23 @@ const signup = () => {
 				<img src='/static/images/login-wallpaper.svg' alt='' className='h-screen object-cover' />
 			</div>
 			<ScrollArea type='auto' className='h-screen grow py-4'>
-				<SignupProgress active={active} setActive={setActive} nextStep={nextStep} prevStep={prevStep} />
+				<Stepper active={active} onStepClick={setActive} breakpoint='sm' size='sm' px='xl' classNames={{
+					steps: 'sticky top-0 z-50 bg-white mb-2'
+				}}>
+					<Stepper.Step label='First step' description='Create an account' allowStepSelect={active > 0}>
+						<Step1 nextStep={nextStep} />
+					</Stepper.Step>
+					<Stepper.Step label='Second step' description='Business Address' allowStepSelect={active > 1}>
+						<Step2 nextStep={nextStep} prevStep={prevStep} />
+					</Stepper.Step>
+					<Stepper.Step label='Third step' description='Management Directors' allowStepSelect={active > 1}>
+
+					</Stepper.Step>
+					<Stepper.Step label='Final step' description='Get full access' allowStepSelect={active > 2}>
+						Step 3 content: Get full access
+					</Stepper.Step>
+					<Stepper.Completed>Completed, click back button to get to previous step</Stepper.Completed>
+				</Stepper>
 			</ScrollArea>
 		</div>
 	);

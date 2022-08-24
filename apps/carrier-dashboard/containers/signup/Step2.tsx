@@ -1,32 +1,96 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, yupResolver } from '@mantine/form';
 import { signupSchema2 } from '../../validation';
-import { Anchor, Box, Button, Loader, Stack, Text, TextInput } from '@mantine/core';
+import { Anchor, Box, Button, Loader, Select, Stack, Text, TextInput } from '@mantine/core';
 import Link from 'next/link';
-import { PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
-import { Check } from 'tabler-icons-react';
-import { notifySuccess } from '../../utils/functions';
+import { PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/utils/constants';
+import { loadStripe } from '@stripe/stripe-js';
+import { useSelector } from 'react-redux';
+import { useNewCarrier } from '../../store/feature/profileSlice';
+import { NewAddress } from '../../utils/types';
+import { countries } from '@voyage-app/shared-utils';
+import { SelectInputData } from '@voyage-app/shared-types';
+import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
+import { Check, X } from 'tabler-icons-react';
+import axios from 'axios';
+
+const Stripe = await loadStripe(String(STRIPE_PUBLIC_KEY));
 
 const Step1 = ({ nextStep, prevStep }) => {
 	const [loading, setLoading] = useState(false);
-	const form = useForm({
+	const newCarrier = useSelector(useNewCarrier);
+
+	useEffect(() => console.log(newCarrier), [newCarrier]);
+
+	const form = useForm<NewAddress>({
 		initialValues: {
 			line1: '',
 			line2: '',
 			city: '',
 			region: '',
 			postcode: '',
-			country: ''
+			country: 'GB'
 		},
 		validate: yupResolver(signupSchema2)
 	});
 
-	const handleSignUp = useCallback(values => {
+	const handleSignUp = useCallback(async (values: NewAddress) => {
 		setLoading(true);
-		setTimeout(() => {
-			notifySuccess('account-creation-success', 'Account created!', <Check size={20} />);
-			nextStep();
-		}, 5000);
+		try {
+			// generate secure tokens to create account + person in stripe
+			const accountResult = await Stripe.createToken('account', {
+				business_type: 'company',
+				company: {
+					name: newCarrier.company,
+					phone: newCarrier.phone,
+					tax_id: newCarrier.crn,
+					address: {
+						line1: values.line1,
+						line2: values.line2,
+						city: values.city,
+						state: values.region,
+						postal_code: values.postcode,
+						country: values.country
+					}
+				},
+				tos_shown_and_accepted: true
+			});
+			console.log("Account", accountResult);
+			// @ts-ignore
+			const personResult = await Stripe.createToken('person', {
+				person: {
+					first_name: newCarrier.firstname,
+					last_name: newCarrier.lastname,
+					email: newCarrier.email,
+					phone: newCarrier.phone,
+					nationality: values.country,
+					relationship: {
+						title: newCarrier.jobTitle,
+						representative: true
+					},
+					address: {
+						line1: values.line1,
+						line2: values.line2,
+						city: values.city,
+						state: values.region,
+						postal_code: values.postcode,
+						country: values.country
+					}
+				}
+			});
+			console.log("Person", personResult);
+			await axios.post('/api/stripe/accounts', accountResult.token)
+			notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />)
+			setTimeout(() => {
+				setLoading(false)
+				nextStep()
+			}, 500)
+		} catch (err) {
+			console.error(err);
+			notifyError('create-business-address-failed', `There was an error creating the business address: ${err.message}`, <X size={20} />);
+			setLoading(false);
+		}
+		setTimeout(() => nextStep(), 4000);
 	}, []);
 
 	return (
@@ -38,22 +102,34 @@ const Step1 = ({ nextStep, prevStep }) => {
 				</figure>
 				<Stack>
 					<Box pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Address Line 1' {...form.getInputProps('line1')} />
+						<TextInput autoComplete="address-line1" size='md' radius={0} placeholder='Address Line 1' {...form.getInputProps('line1')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Address Line 2' {...form.getInputProps('line2')} />
+						<TextInput autoComplete="address-line2" size='md' radius={0} placeholder='Address Line 2' {...form.getInputProps('line2')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput size='md' radius={0} placeholder='City' {...form.getInputProps('city')} />
+						<TextInput autoComplete="address-level1" size='md' radius={0} placeholder='City' {...form.getInputProps('city')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Region' {...form.getInputProps('region')} />
+						<TextInput autoComplete="address-level2" size='md' radius={0} placeholder='Region' {...form.getInputProps('region')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Postcode' {...form.getInputProps('postcode')} />
+						<TextInput autoComplete="postal-code" size='md' radius={0} placeholder='Postcode' {...form.getInputProps('postcode')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Country' {...form.getInputProps('country')} />
+						<Select
+							searchable
+							placeholder='Country'
+							radius={0}
+							size='md'
+							data={countries.map(
+								(country): SelectInputData => ({
+									label: country.name,
+									value: country.code
+								})
+							)}
+							{...form.getInputProps('country')}
+						/>
 					</Box>
 				</Stack>
 				<div className='flex flex-col items-center space-y-4'>

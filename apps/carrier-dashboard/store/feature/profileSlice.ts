@@ -1,9 +1,20 @@
-import { BankAccountForm, Carrier } from '../../utils/types';
+import { BankAccountForm, Carrier, NewCarrier } from '../../utils/types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../index'
 import axios from 'axios'
 
 const initialState = {}
+
+export const createCarrier = createAsyncThunk('carrier/createCarrier', async (payload: NewCarrier, thunkAPI) => {
+	try {
+		const newCarrier = (await axios.post(`/api/carrier`, payload)).data
+		thunkAPI.dispatch(setCarrier(newCarrier))
+		return newCarrier
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+})
 
 export const updateCarrier = createAsyncThunk('carrier/updateCarrier', async (payload: Carrier, thunkAPI) => {
 	try {
@@ -52,12 +63,20 @@ export const profileSlice = createSlice({
 				...state,
 				...action.payload
 			}
+		},
+		saveNewCarrier: (state, action: PayloadAction<Partial<NewCarrier>>) => {
+			return {
+				...state,
+				...action.payload
+			}
 		}
 	}
 })
 
 export const useCarrier = (state: AppState) : Carrier => state['profile']
 
-export const { setCarrier, editCarrier } = profileSlice.actions;
+export const useNewCarrier = (state: AppState) : NewCarrier => state['profile']
+
+export const { setCarrier, editCarrier, saveNewCarrier } = profileSlice.actions;
 
 export default profileSlice.reducer;

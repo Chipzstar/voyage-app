@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React  from 'react';
 import { createStyles, Card, RingProgress, Group, Text, Stack } from '@mantine/core';
 
 const useStyles = createStyles(theme => ({
@@ -102,7 +101,5 @@ const DowntimeReport = props => {
 		</Card>
 	);
 };
-
-DowntimeReport.propTypes = {}
 
 export default DowntimeReport
