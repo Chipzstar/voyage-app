@@ -23,6 +23,7 @@ export const signupSchema2 = Yup.object({
 });
 
 
+
 /*export const signupSchema1 = z
 	.object({
 		firstname: z.string({

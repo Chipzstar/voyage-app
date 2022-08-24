@@ -79,7 +79,8 @@ const Step1 = ({ nextStep, prevStep }) => {
 				}
 			});
 			console.log("Person", personResult);
-			await axios.post('/api/stripe/accounts', accountResult.token)
+			const account = (await axios.post('/api/stripe/accounts', accountResult.token)).data
+			await axios.post(`/api/stripe/accounts/${account.id}/person`, personResult.token)
 			notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />)
 			setTimeout(() => {
 				setLoading(false)

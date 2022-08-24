@@ -43,17 +43,22 @@ function getStrength(password: string) {
 
 const signup = () => {
 	const [active, setActive] = useState(0);
-	const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
-	const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+	const nextStep = () => setActive(current => (current < 3 ? current + 1 : current));
+	const prevStep = () => setActive(current => (current > 0 ? current - 1 : current));
 	return (
 		<div className='flex flex-row overflow-hidden'>
-			<div className='flex'>
-				<img src='/static/images/login-wallpaper.svg' alt='' className='h-screen object-cover' />
-			</div>
-			<ScrollArea type='auto' className='h-screen grow py-4'>
-				<Stepper active={active} onStepClick={setActive} breakpoint='sm' size='sm' px='xl' classNames={{
-					steps: 'sticky top-0 z-50 bg-white mb-2'
-				}}>
+			<img src='/static/images/login-wallpaper.svg' alt='' className='h-screen object-cover' />
+			<ScrollArea type='auto' className='h-screen flex-1 grow py-4'>
+				<Stepper
+					active={active}
+					onStepClick={setActive}
+					breakpoint='sm'
+					size='sm'
+					px='xl'
+					classNames={{
+						steps: 'sticky top-0 z-50 bg-white mb-2'
+					}}
+				>
 					<Stepper.Step label='First step' description='Create an account' allowStepSelect={active > 0}>
 						<Step1 nextStep={nextStep} />
 					</Stepper.Step>
@@ -61,7 +66,7 @@ const signup = () => {
 						<Step2 nextStep={nextStep} prevStep={prevStep} />
 					</Stepper.Step>
 					<Stepper.Step label='Third step' description='Management Directors' allowStepSelect={active > 1}>
-
+						<Step3 nextStep={nextStep} prevStep={prevStep} />
 					</Stepper.Step>
 					<Stepper.Step label='Final step' description='Get full access' allowStepSelect={active > 2}>
 						Step 3 content: Get full access
