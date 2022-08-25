@@ -3,17 +3,13 @@ import { cors, runMiddleware, stripe } from '../../../../index';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	await runMiddleware(req, res, cors);
-	if (req.method === 'POST') {
+	if (req.method === 'PUT') {
+		const token = req.body;
 		try {
-			const { accountId } = req.query;
-			console.log(req.body);
-			const { id } = req.body;
-			const person = await stripe.accounts.createPerson(
-				<string>accountId, // id of the account created earlier
-				{
-					person_token: id
-				}
-			);
+			const { accountId, personId } = req.query;
+			let person = await stripe.accounts.updatePerson(<string>accountId, <string>personId, {
+				person_token: token.id
+			});
 			console.log(person);
 			res.status(201).json(person);
 		} catch (err) {
@@ -21,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			res.status(500).json({ statusCode: 500, message: err.message });
 		}
 	} else {
-		res.setHeader('Allow', 'POST');
+		res.setHeader('Allow', 'PUT');
 		res.status(405).end('Method Not Allowed');
 	}
 }

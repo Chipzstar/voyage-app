@@ -3,12 +3,13 @@ import * as Yup from 'yup';
 export const signupSchema1 = Yup.object({
 	firstname: Yup.string().required("First name is required"),
 	lastname: Yup.string().required("Last name is required"),
+	dob: Yup.string().required("Dob is required"),
 	company: Yup.string().required("Company name is required"),
 	phone: Yup.string().required("Phone is required"),
 	crn: Yup.number().required("Company number is required"),
 	jobTitle: Yup.string().required("Job title is required"),
 	email: Yup.string().email().required("Email is required"),
-	website: Yup.string().url("Website must be a valid URL").nullable(),
+	website: Yup.string().required("Website / social profile is required"),
 	password: Yup.string().required('Password is required'),
 	confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
 });

@@ -5,21 +5,22 @@ import { Anchor, Box, Button, Loader, Select, Stack, Text, TextInput } from '@ma
 import Link from 'next/link';
 import { PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/utils/constants';
 import { loadStripe } from '@stripe/stripe-js';
-import { useSelector } from 'react-redux';
-import { useNewCarrier } from '../../store/feature/profileSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveNewCarrier, useNewCarrier } from '../../store/feature/profileSlice';
 import { NewAddress } from '../../utils/types';
-import { countries } from '@voyage-app/shared-utils';
+import { countries, isValidUrl } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
 import { Check, X } from 'tabler-icons-react';
 import axios from 'axios';
+import moment from 'moment';
 
 const Stripe = await loadStripe(String(STRIPE_PUBLIC_KEY));
 
 const Step1 = ({ nextStep, prevStep }) => {
 	const [loading, setLoading] = useState(false);
 	const newCarrier = useSelector(useNewCarrier);
-
+	const dispatch = useDispatch();
 	useEffect(() => console.log(newCarrier), [newCarrier]);
 
 	const form = useForm<NewAddress>({
@@ -38,6 +39,8 @@ const Step1 = ({ nextStep, prevStep }) => {
 		setLoading(true);
 		try {
 			// generate secure tokens to create account + person in stripe
+			const isUrlValid = isValidUrl(newCarrier.website);
+			// @ts-ignore
 			const accountResult = await Stripe.createToken('account', {
 				business_type: 'company',
 				company: {
@@ -55,10 +58,15 @@ const Step1 = ({ nextStep, prevStep }) => {
 				},
 				tos_shown_and_accepted: true
 			});
-			console.log("Account", accountResult);
+			console.log('Account', accountResult);
 			// @ts-ignore
 			const personResult = await Stripe.createToken('person', {
 				person: {
+					dob: {
+						day: moment(newCarrier.dob).date(),
+						month: moment(newCarrier.dob).month(),
+						year: moment(newCarrier.dob).year()
+					},
 					first_name: newCarrier.firstname,
 					last_name: newCarrier.lastname,
 					email: newCarrier.email,
@@ -78,20 +86,29 @@ const Step1 = ({ nextStep, prevStep }) => {
 					}
 				}
 			});
-			console.log("Person", personResult);
-			const account = (await axios.post('/api/stripe/accounts', accountResult.token)).data
-			await axios.post(`/api/stripe/accounts/${account.id}/person`, personResult.token)
-			notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />)
+			console.log('Person', personResult);
+			const account = (
+				await axios.post('/api/stripe/accounts', {
+					token: accountResult.token,
+					business_profile: {
+						mcc: '4214',
+						url: isUrlValid ? newCarrier.website : '',
+						product_description: !isUrlValid ? newCarrier.website : ''
+					}
+				})
+			).data;
+			const person = (await axios.post(`/api/stripe/accounts/${account.id}/person`, personResult.token)).data;
+			dispatch(saveNewCarrier({ accountId: account.id, personId: person.id }));
+			notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />);
 			setTimeout(() => {
-				setLoading(false)
-				nextStep()
-			}, 500)
+				setLoading(false);
+				nextStep();
+			}, 500);
 		} catch (err) {
 			console.error(err);
 			notifyError('create-business-address-failed', `There was an error creating the business address: ${err.message}`, <X size={20} />);
 			setLoading(false);
 		}
-		setTimeout(() => nextStep(), 4000);
 	}, []);
 
 	return (
@@ -103,19 +120,19 @@ const Step1 = ({ nextStep, prevStep }) => {
 				</figure>
 				<Stack>
 					<Box pb='xs'>
-						<TextInput autoComplete="address-line1" size='md' radius={0} placeholder='Address Line 1' {...form.getInputProps('line1')} />
+						<TextInput autoComplete='address-line1' size='md' radius={0} placeholder='Address Line 1' {...form.getInputProps('line1')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput autoComplete="address-line2" size='md' radius={0} placeholder='Address Line 2' {...form.getInputProps('line2')} />
+						<TextInput autoComplete='address-line2' size='md' radius={0} placeholder='Address Line 2' {...form.getInputProps('line2')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput autoComplete="address-level1" size='md' radius={0} placeholder='City' {...form.getInputProps('city')} />
+						<TextInput autoComplete='address-level1' size='md' radius={0} placeholder='City' {...form.getInputProps('city')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput autoComplete="address-level2" size='md' radius={0} placeholder='Region' {...form.getInputProps('region')} />
+						<TextInput autoComplete='address-level2' size='md' radius={0} placeholder='Region' {...form.getInputProps('region')} />
 					</Box>
 					<Box pb='xs'>
-						<TextInput autoComplete="postal-code" size='md' radius={0} placeholder='Postcode' {...form.getInputProps('postcode')} />
+						<TextInput autoComplete='postal-code' size='md' radius={0} placeholder='Postcode' {...form.getInputProps('postcode')} />
 					</Box>
 					<Box pb='xs'>
 						<Select

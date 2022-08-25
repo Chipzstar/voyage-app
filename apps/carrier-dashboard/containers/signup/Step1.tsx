@@ -4,12 +4,13 @@ import { signupSchema1 } from '../../validation';
 import { Anchor, Box, Button, Center, Group, Loader, PasswordInput, Stack, Text, TextInput, Tooltip } from '@mantine/core';
 import Link from 'next/link';
 import { phoneUtil, PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
-import { PhoneNumberFormat as PNF } from "google-libphonenumber";
-import { InfoCircle } from 'tabler-icons-react';
+import { PhoneNumberFormat as PNF } from 'google-libphonenumber';
+import { Calendar, InfoCircle } from 'tabler-icons-react';
 import { saveNewCarrier } from '../../store/feature/profileSlice';
 import { AppDispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { NewCarrier } from '../../utils/types';
+import { DatePicker } from '@mantine/dates';
 
 const Step1 = ({ nextStep }) => {
 	const [opened, setOpened] = useState(false);
@@ -17,6 +18,7 @@ const Step1 = ({ nextStep }) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const form = useForm<Partial<NewCarrier>>({
 		initialValues: {
+			dob: '',
 			fullName: '',
 			firstname: '',
 			lastname: '',
@@ -65,11 +67,33 @@ const Step1 = ({ nextStep }) => {
 						<TextInput size='md' radius={0} placeholder='Last Name' {...form.getInputProps('lastname')} />
 					</Group>
 					<Group grow pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Work Email' {...form.getInputProps('email')} />
+						<TextInput type='email' size='md' radius={0} placeholder='Work Email' {...form.getInputProps('email')} />
 						<TextInput size='md' radius={0} placeholder='Company Phone Number' {...form.getInputProps('phone')} />
 					</Group>
 					<Group grow pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Legal Company Name' {...form.getInputProps('company')} />
+						<TextInput
+							size='md'
+							radius={0}
+							placeholder='Legal Company Name'
+							{...form.getInputProps('company')}
+							rightSection={
+								<Tooltip
+									multiline
+									width={250}
+									title='Companies House Registration Number'
+									label="The name must exactly match the name associated with your company's tax ID"
+									position='top-end'
+									withArrow
+									transition='pop-bottom-right'
+								>
+									<Text color='dimmed' sx={{ cursor: 'help' }}>
+										<Center>
+											<InfoCircle size={18} />
+										</Center>
+									</Text>
+								</Tooltip>
+							}
+						/>
 						<TextInput
 							type='number'
 							size='md'
@@ -95,11 +119,33 @@ const Step1 = ({ nextStep }) => {
 							{...form.getInputProps('crn')}
 						/>
 					</Group>
-					<Box pb='xs'>
+					<Group grow pb='xs'>
+						<DatePicker size='md' radius={0} placeholder='Date of birth' {...form.getInputProps('dob')} icon={<Calendar size={18} />} />
 						<TextInput size='md' radius={0} placeholder='Job Title / Role' {...form.getInputProps('jobTitle')} />
-					</Box>
+					</Group>
 					<Box pb='xs'>
-						<TextInput size='md' radius={0} placeholder='Company Website' {...form.getInputProps('website')} />
+						<TextInput
+							size='md'
+							radius={0}
+							placeholder='Company Website'
+							{...form.getInputProps('website')}
+							rightSection={
+								<Tooltip
+									multiline
+									width={250}
+									label='No website? You can share an app store link, a business social media profile, or add a product description instead.'
+									position='top-end'
+									withArrow
+									transition='pop-bottom-right'
+								>
+									<Text color='dimmed' sx={{ cursor: 'help' }}>
+										<Center>
+											<InfoCircle size={18} />
+										</Center>
+									</Text>
+								</Tooltip>
+							}
+						/>
 					</Box>
 					<Box pb='xs'>
 						<Tooltip label={valid ? 'All good!' : 'Password must include at least 6 characters'} position='bottom-start' withArrow opened={opened} color={valid ? 'teal' : undefined}>

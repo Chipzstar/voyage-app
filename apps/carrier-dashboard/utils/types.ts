@@ -371,6 +371,9 @@ export interface Document {
 }
 
 export interface NewCarrier {
+	accountId: string;
+	personId: string;
+	dob: string;
 	fullName: string;
 	firstname: string;
 	lastname: string;
@@ -383,4 +386,14 @@ export interface NewCarrier {
 	password: string;
 	confirmPassword: string;
 	address: Address;
+}
+
+export interface NewBusinessMember {
+	fullName: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+	jobTitle: string;
+	dob: string;
+	address: NewAddress;
 }

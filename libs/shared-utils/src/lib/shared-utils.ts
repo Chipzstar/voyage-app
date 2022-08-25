@@ -29,3 +29,12 @@ export function sortByDate(data, order = 'desc') {
 export function includesCaseInsensitive(this: string, str: string): boolean {
 	return this.toLowerCase().includes(str.toLowerCase());
 }
+
+export function isValidUrl(urlString) {
+	try {
+		return Boolean(new URL(urlString));
+	}
+	catch(e){
+		return false;
+	}
+}
