@@ -64,16 +64,6 @@ export enum MapType {
 }
 
 export type Address = {
-	addressLine1: string;
-	addressLine2?: string;
-	city: string;
-	region?: string;
-	postcode: string;
-	country?: string;
-};
-
-//TODO - Overwrite type 'Address' with 'NewAddress'
-export type NewAddress = {
 	line1: string;
 	line2?: string;
 	city: string;
@@ -395,5 +385,5 @@ export interface NewBusinessMember {
 	email: string;
 	jobTitle: string;
 	dob: string;
-	address: NewAddress;
+	address: Address;
 }

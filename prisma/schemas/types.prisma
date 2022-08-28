@@ -20,6 +20,7 @@ type PaymentMethod {
 
 type CarrierStripe {
     accountId String
+    personId String?
     paymentMethod PaymentMethod?
     bankAccount BankAccount?
 }
@@ -30,8 +31,8 @@ type ShipperStripe {
 }
 
 type Address {
-    addressLine1 String
-    addressLine2 String?
+    line1 String
+    line2 String?
     city String
     region String?
     postcode String

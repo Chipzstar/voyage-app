@@ -9,7 +9,7 @@ import { Box, Center, ScrollArea, Stepper, Text } from '@mantine/core';
 import { Check, X } from 'tabler-icons-react';
 import Step1 from '../containers/signup/Step1';
 import Step2 from '../containers/signup/Step2';
-import Step3 from '../containers/signup/Step3';
+import Step4 from '../containers/signup/Step4';
 
 const requirements = [
 	{ re: /[0-9]/, label: 'Includes number' },
@@ -43,7 +43,7 @@ function getStrength(password: string) {
 
 const signup = () => {
 	const [active, setActive] = useState(0);
-	const nextStep = () => setActive(current => (current < 4 ? current + 1 : current));
+	const nextStep = () => setActive(current => (current < 3 ? current + 1 : current));
 	const prevStep = () => setActive(current => (current > 0 ? current - 1 : current));
 	return (
 		<div className='flex flex-row overflow-hidden'>
@@ -56,7 +56,8 @@ const signup = () => {
 					size='sm'
 					px='xl'
 					classNames={{
-						steps: 'sticky top-0 z-50 bg-white mb-2'
+						steps: 'sticky top-0 z-50 bg-white mb-2',
+						content: 'h-full'
 					}}
 				>
 					<Stepper.Step label='First step' description='Create an account' allowStepSelect={active > 0}>
@@ -65,11 +66,11 @@ const signup = () => {
 					<Stepper.Step label='Second step' description='Business Address' allowStepSelect={active > 1}>
 						<Step2 nextStep={nextStep} prevStep={prevStep} />
 					</Stepper.Step>
-					<Stepper.Step label='Third step' description='Management Directors' allowStepSelect={active > 2}>
+					{/*<Stepper.Step label='Third step' description='Management Directors' allowStepSelect={active > 2}>
 						<Step3 nextStep={nextStep} prevStep={prevStep} />
-					</Stepper.Step>
-					<Stepper.Step label='Final step' description='Get full access' allowStepSelect={active > 3}>
-						Review Business Details
+					</Stepper.Step>*/}
+					<Stepper.Step label='Final step' description='Review Information' allowStepSelect={active > 2}>
+						<Step4 prevStep={prevStep} />
 					</Stepper.Step>
 					<Stepper.Completed>Completed, click back button to get to previous step</Stepper.Completed>
 				</Stepper>

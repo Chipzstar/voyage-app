@@ -7,7 +7,7 @@ import { PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/utils/co
 import { loadStripe } from '@stripe/stripe-js';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveNewCarrier, useNewCarrier } from '../../store/feature/profileSlice';
-import { NewAddress } from '../../utils/types';
+import { Address } from '../../utils/types';
 import { countries, isValidUrl } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
@@ -23,7 +23,7 @@ const Step1 = ({ nextStep, prevStep }) => {
 	const dispatch = useDispatch();
 	useEffect(() => console.log(newCarrier), [newCarrier]);
 
-	const form = useForm<NewAddress>({
+	const form = useForm<Address>({
 		initialValues: {
 			line1: '',
 			line2: '',
@@ -35,7 +35,7 @@ const Step1 = ({ nextStep, prevStep }) => {
 		validate: yupResolver(signupSchema2)
 	});
 
-	const handleSignUp = useCallback(async (values: NewAddress) => {
+	const handleSignUp = useCallback(async (values: Address) => {
 		setLoading(true);
 		try {
 			// generate secure tokens to create account + person in stripe
@@ -62,18 +62,13 @@ const Step1 = ({ nextStep, prevStep }) => {
 			// @ts-ignore
 			const personResult = await Stripe.createToken('person', {
 				person: {
-					dob: {
-						day: moment(newCarrier.dob).date(),
-						month: moment(newCarrier.dob).month(),
-						year: moment(newCarrier.dob).year()
-					},
 					first_name: newCarrier.firstname,
 					last_name: newCarrier.lastname,
 					email: newCarrier.email,
 					phone: newCarrier.phone,
 					nationality: values.country,
 					relationship: {
-						title: newCarrier.jobTitle,
+						title: "Manager",
 						representative: true
 					},
 					address: {
@@ -91,9 +86,9 @@ const Step1 = ({ nextStep, prevStep }) => {
 				await axios.post('/api/stripe/accounts', {
 					token: accountResult.token,
 					business_profile: {
-						mcc: '4214',
-						url: isUrlValid ? newCarrier.website : '',
-						product_description: !isUrlValid ? newCarrier.website : ''
+						mcc: '4214'
+						/*url: isUrlValid ? newCarrier.website : '',
+						product_description: !isUrlValid ? newCarrier.website : ''*/
 					}
 				})
 			).data;

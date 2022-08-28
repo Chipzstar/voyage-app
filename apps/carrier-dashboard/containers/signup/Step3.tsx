@@ -120,7 +120,6 @@ const Step3 = ({ nextStep, prevStep }) => {
 
 	const handleSignUp = useCallback(async (values: BusinessManagementForm) => {
 		setLoading(true);
-		console.log(values);
 		let ownerTokens = [];
 		let directorTokens = [];
 		try {

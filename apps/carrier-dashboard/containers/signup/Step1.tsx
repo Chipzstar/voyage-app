@@ -48,9 +48,6 @@ const Step1 = ({ nextStep }) => {
 			nextStep();
 			setLoading(false);
 		}, 3000);
-		/*console.error(err);
-		notifyError('new-account-failure', `There was a problem signing you up. ${err.message}`, <X size={20} />);
-		setLoading(false);*/
 	}, []);
 
 	const valid = form.values.password.trim().length >= 6;
@@ -119,11 +116,11 @@ const Step1 = ({ nextStep }) => {
 							{...form.getInputProps('crn')}
 						/>
 					</Group>
-					<Group grow pb='xs'>
+					{/*<Group grow pb='xs'>
 						<DatePicker size='md' radius={0} placeholder='Date of birth' {...form.getInputProps('dob')} icon={<Calendar size={18} />} />
 						<TextInput size='md' radius={0} placeholder='Job Title / Role' {...form.getInputProps('jobTitle')} />
-					</Group>
-					<Box pb='xs'>
+					</Group>*/}
+					{/*<Box pb='xs'>
 						<TextInput
 							size='md'
 							radius={0}
@@ -146,7 +143,7 @@ const Step1 = ({ nextStep }) => {
 								</Tooltip>
 							}
 						/>
-					</Box>
+					</Box>*/}
 					<Box pb='xs'>
 						<Tooltip label={valid ? 'All good!' : 'Password must include at least 6 characters'} position='bottom-start' withArrow opened={opened} color={valid ? 'teal' : undefined}>
 							<PasswordInput size='md' onFocus={() => setOpened(true)} onBlur={() => setOpened(false)} placeholder='Password' radius={0} {...form.getInputProps('password')} />

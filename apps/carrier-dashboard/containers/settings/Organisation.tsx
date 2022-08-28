@@ -25,8 +25,8 @@ const Organisation = ({ carrierInfo }: OrganisationProps) => {
 		email: carrierInfo?.email ?? '',
 		phone: carrierInfo?.phone ?? '',
 		address: carrierInfo?.address ?? {
-			addressLine1: '',
-			addressLine2: '',
+			line1: '',
+			line2: '',
 			city: '',
 			region: '',
 			postcode: '',
@@ -68,8 +68,8 @@ const Organisation = ({ carrierInfo }: OrganisationProps) => {
 							<TextInput radius={0} label='Email Address' {...form.getInputProps('email')} />
 						</Group>
 						<Group grow>
-							<TextInput radius={0} label='Address Line 1' {...form.getInputProps('address.addressLine1')} />
-							<TextInput radius={0} label='Address Line 2' {...form.getInputProps('address.addressLine2')} />
+							<TextInput radius={0} label='Address Line 1' {...form.getInputProps('address.line1')} />
+							<TextInput radius={0} label='Address Line 2' {...form.getInputProps('address.line2')} />
 						</Group>
 						<Group grow>
 							<TextInput radius={0} label='City' {...form.getInputProps('address.city')} />
