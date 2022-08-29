@@ -185,7 +185,8 @@ export async function fetchProfile(userId, carrierId, prisma) {
 			address: true,
 			email: true,
 			phone: true,
-			stripe: true
+			stripe: true,
+			status: true
 		}
 	});
 }

@@ -47,7 +47,7 @@ const login = ({ csrfToken, ...props }) => {
 
 	const handleSignIn = useCallback(async values => {
 		try {
-			setLoading(true)
+			setLoading(true);
 			const { ok, error } = await signIn('credentials', {
 				email: values.email,
 				password: values.password,
@@ -62,7 +62,7 @@ const login = ({ csrfToken, ...props }) => {
 			if (error) {
 				return null;
 			}
-			setLoading(false)
+			setLoading(false);
 		} catch (error) {
 			setLoading(false);
 			// handle error here (eg. display message to user)
@@ -75,13 +75,13 @@ const login = ({ csrfToken, ...props }) => {
 		<div className='flex flex-row'>
 			<VerifyEmailAlert email={verifyEmail} onClose={() => showEmailVerification('')} />
 			<div className='flex'>
-				<img src='/static/images/login-wallpaper.svg' alt='' className='object-cover h-screen' />
+				<img src='/static/images/login-wallpaper.svg' alt='' className='h-screen object-cover' />
 			</div>
-			<div className='grow flex my-auto justify-center'>
-				<form onSubmit={form.onSubmit(handleSignIn)} action='' className='flex flex-col space-y-8 w-196'>
-					<figure className='flex flex-row justify-center space-x-2 items-center'>
+			<div className='my-auto flex grow justify-center'>
+				<form onSubmit={form.onSubmit(handleSignIn)} action='' className='w-196 flex flex-col space-y-8'>
+					<figure className='flex flex-row items-center justify-center space-x-2'>
 						<img src={'/static/images/logo.svg'} alt='' />
-						<span className='text-2xl font-bold mb-1'>voyage</span>
+						<span className='mb-1 text-2xl font-bold'>voyage</span>
 					</figure>
 					{/*<Group grow mb='md' mt='md'>
 						<Button leftIcon={<GoogleIcon />} variant='default' color='gray' onClick={() => signIn('google')}>
@@ -113,9 +113,9 @@ const login = ({ csrfToken, ...props }) => {
 							classNames={{
 								root: 'bg-black'
 							}}
-							className='text-normal text-white text-center w-full h-12'
+							className='text-normal h-12 w-full text-center text-white'
 						>
-							{loading && <Loader size="xs" className="mr-2" />}
+							{loading && <Loader size='xs' className='mr-2' />}
 							<Text color='white' size='lg'>
 								Log in
 							</Text>
@@ -143,11 +143,13 @@ export async function getServerSideProps({ req, res }) {
 		};
 	}
 	const csrfToken = await getCsrfToken();
-	const users = (await prisma.user.findMany({})).map(user => ({
-		...user,
-		emailVerified: moment(user.emailVerified).unix()
-	}));
-	console.log(users.find(user => user.email === "katherine.pena@teleworm.us"))
+	const users = await prisma.user.findMany({
+		select: {
+			email: true,
+			password: true
+		}
+	});
+	console.log(users);
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

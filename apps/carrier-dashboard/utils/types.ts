@@ -63,6 +63,14 @@ export enum MapType {
 	ORDER
 }
 
+export enum SignupStatus {
+	COMPANY_INFO="COMPANY_INFO",
+	BANK_ACCOUNT="BANK_ACCOUNT",
+	WORKFLOWS="WORKFLOWS",
+	DOCUMENTS="DOCUMENTS",
+	COMPLETE="COMPLETE",
+}
+
 export type Address = {
 	line1: string;
 	line2?: string;
@@ -137,6 +145,7 @@ export interface Carrier {
 	phone: string;
 	stripe?: StripeDetails;
 	documents?: CarrierDocument;
+	status?: SignupStatus;
 }
 
 export enum ChargeUnitType {

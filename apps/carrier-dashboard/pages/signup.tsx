@@ -40,14 +40,14 @@ function getStrength(password: string) {
 	return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0);
 }
 
-const signup = ({users}) => {
+const signup = ({ users }) => {
 	const [active, setActive] = useState(0);
 	const nextStep = () => setActive(current => (current < 3 ? current + 1 : current));
 	const prevStep = () => setActive(current => (current > 0 ? current - 1 : current));
 	return (
 		<div className='flex flex-row overflow-hidden'>
 			<img src='/static/images/login-wallpaper.svg' alt='' className='h-screen object-cover' />
-			<ScrollArea type='auto' className='h-screen flex-1 items-center grow'>
+			<ScrollArea type='auto' className='h-screen flex-1 grow items-center'>
 				<Stepper
 					active={active}
 					onStepClick={setActive}
@@ -85,21 +85,19 @@ export async function getServerSideProps({ req, res }) {
 		};
 	}
 	const csrfToken = await getCsrfToken();
-	const users = (
-		await prisma.user.findMany({
-			where: {
-				carrierId: {
-					is: {
-						carrierId: {}
-					}
+	const users = await prisma.user.findMany({
+		where: {
+			carrierId: {
+				is: {
+					carrierId: {}
 				}
 			}
-		})
-	).map(user => ({
-		...user,
-		emailVerified: moment(user.emailVerified).unix()
-	}));
-	users.forEach(user => console.log(user.email))
+		},
+		select: {
+			email: true
+		}
+	});
+	console.log(users)
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

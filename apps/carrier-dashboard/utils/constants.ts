@@ -1,11 +1,11 @@
 import moment from 'moment';
 import { PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
-import { ChargeUnitType, Document, DocumentType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
+import { ChargeUnitType, Document, DocumentType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, SignupStatus, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
 import mbxClient from '@mapbox/mapbox-sdk';
-import { PhoneNumberUtil } from "google-libphonenumber";
+import { PhoneNumberUtil } from 'google-libphonenumber';
 
 moment.tz.setDefault('Europe/London');
 
@@ -51,19 +51,19 @@ export const PATHS = {
 
 export const SETTINGS_TABS = [
 	{
-		value: 'organisation',
+		value: SignupStatus.COMPANY_INFO,
 		label: 'Organisation'
 	},
 	{
-		value: 'workflows',
+		value: SignupStatus.WORKFLOWS,
 		label: 'Workflows'
 	},
 	{
-		value: 'financial',
+		value: SignupStatus.BANK_ACCOUNT,
 		label: 'Financial'
 	},
 	{
-		value: 'documents',
+		value: SignupStatus.DOCUMENTS,
 		label: 'Documents'
 	}
 ];

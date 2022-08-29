@@ -5,6 +5,7 @@ import { PUBLIC_PATHS } from '../utils/constants';
 
 const Layout = ({ children }) => {
 	const router = useRouter();
+
 	const isAuthScreen = useMemo(() => ![PUBLIC_PATHS.LOGIN, PUBLIC_PATHS.SIGNUP].includes(router.pathname), [router.pathname]);
 	return (
 		<div className='relative flex min-h-screen'>
