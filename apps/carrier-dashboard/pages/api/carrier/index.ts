@@ -5,7 +5,7 @@ import { numericId } from '@voyage-app/shared-utils';
 export default async function handler(req, res) {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
-	const payload = req.body;
+	const { payload } = req.body;
 	console.log('PAYLOAD', payload);
 	if (req.method === 'POST') {
 		try {
@@ -21,10 +21,15 @@ export default async function handler(req, res) {
 			console.log('USER', user);
 			const carrier = await prisma.carrier.create({
 				data: {
-					...payload,
+					fullName: payload.fullname,
+					firstname: payload.firstname,
+					lastname: payload.lastname,
+					company: payload.company,
+					email: payload.email,
+					phone: payload.phone,
+					address: payload.address,
 					stripe: {
-						accountId: payload.accountId,
-						personId: payload.personId
+						accountId: payload.accountId
 					},
 					userId: user.id,
 					carrierId: `CARRIER-ID${numericId(12)}`

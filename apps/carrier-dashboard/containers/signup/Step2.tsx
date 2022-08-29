@@ -40,8 +40,6 @@ const Step1 = ({ nextStep, prevStep }) => {
 		setLoading(true);
 		try {
 			// generate secure tokens to create account + person in stripe
-			const isUrlValid = isValidUrl(newCarrier.website);
-			// @ts-ignore
 			const accountResult = await Stripe.createToken('account', {
 				business_type: 'company',
 				company: {
@@ -70,8 +68,7 @@ const Step1 = ({ nextStep, prevStep }) => {
 					}
 				})
 			).data;
-			dispatch(saveNewCarrier({ accountId: account.id } ));
-			await dispatch(createCarrier(newCarrier)).unwrap();
+			await dispatch(createCarrier({ ...newCarrier, accountId: account.id })).unwrap();
 			await signIn('credentials', {
 				email: newCarrier.email,
 				password: newCarrier.password,
