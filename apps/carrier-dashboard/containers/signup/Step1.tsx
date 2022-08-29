@@ -5,12 +5,11 @@ import { Anchor, Box, Button, Center, Group, Loader, PasswordInput, Stack, Text,
 import Link from 'next/link';
 import { phoneUtil, PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
 import { PhoneNumberFormat as PNF } from 'google-libphonenumber';
-import { Calendar, InfoCircle } from 'tabler-icons-react';
+import { InfoCircle } from 'tabler-icons-react';
 import { saveNewCarrier } from '../../store/feature/profileSlice';
 import { AppDispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { NewCarrier } from '../../utils/types';
-import { DatePicker } from '@mantine/dates';
 
 const Step1 = ({ nextStep }) => {
 	const [opened, setOpened] = useState(false);
@@ -67,12 +66,11 @@ const Step1 = ({ nextStep }) => {
 						<TextInput type='email' size='md' radius={0} placeholder='Work Email' {...form.getInputProps('email')} />
 						<TextInput size='md' radius={0} placeholder='Company Phone Number' {...form.getInputProps('phone')} />
 					</Group>
-					<Group grow pb='xs'>
+					<Box pb='xs'>
 						<TextInput
 							size='md'
 							radius={0}
 							placeholder='Legal Company Name'
-							{...form.getInputProps('company')}
 							rightSection={
 								<Tooltip
 									multiline
@@ -90,60 +88,9 @@ const Step1 = ({ nextStep }) => {
 									</Text>
 								</Tooltip>
 							}
+							{...form.getInputProps('company')}
 						/>
-						<TextInput
-							type='number'
-							size='md'
-							radius={0}
-							placeholder='CRN'
-							rightSection={
-								<Tooltip
-									multiline
-									width={250}
-									title='Companies House Registration Number'
-									label='7 or 8-digit Company Number. Can be found at https://find-and-update.company-information.service.gov.uk/'
-									position='top-end'
-									withArrow
-									transition='pop-bottom-right'
-								>
-									<Text color='dimmed' sx={{ cursor: 'help' }}>
-										<Center>
-											<InfoCircle size={18} />
-										</Center>
-									</Text>
-								</Tooltip>
-							}
-							{...form.getInputProps('crn')}
-						/>
-					</Group>
-					{/*<Group grow pb='xs'>
-						<DatePicker size='md' radius={0} placeholder='Date of birth' {...form.getInputProps('dob')} icon={<Calendar size={18} />} />
-						<TextInput size='md' radius={0} placeholder='Job Title / Role' {...form.getInputProps('jobTitle')} />
-					</Group>*/}
-					{/*<Box pb='xs'>
-						<TextInput
-							size='md'
-							radius={0}
-							placeholder='Company Website'
-							{...form.getInputProps('website')}
-							rightSection={
-								<Tooltip
-									multiline
-									width={250}
-									label='No website? You can share an app store link, a business social media profile, or add a product description instead.'
-									position='top-end'
-									withArrow
-									transition='pop-bottom-right'
-								>
-									<Text color='dimmed' sx={{ cursor: 'help' }}>
-										<Center>
-											<InfoCircle size={18} />
-										</Center>
-									</Text>
-								</Tooltip>
-							}
-						/>
-					</Box>*/}
+					</Box>
 					<Box pb='xs'>
 						<Tooltip label={valid ? 'All good!' : 'Password must include at least 6 characters'} position='bottom-start' withArrow opened={opened} color={valid ? 'teal' : undefined}>
 							<PasswordInput size='md' onFocus={() => setOpened(true)} onBlur={() => setOpened(false)} placeholder='Password' radius={0} {...form.getInputProps('password')} />

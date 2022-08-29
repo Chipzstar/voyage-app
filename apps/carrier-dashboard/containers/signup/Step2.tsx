@@ -6,21 +6,22 @@ import Link from 'next/link';
 import { PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/utils/constants';
 import { loadStripe } from '@stripe/stripe-js';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveNewCarrier, useNewCarrier } from '../../store/feature/profileSlice';
+import { createCarrier, saveNewCarrier, useNewCarrier } from '../../store/feature/profileSlice';
 import { Address } from '../../utils/types';
 import { countries, isValidUrl } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { notifyError, notifySuccess } from 'apps/carrier-dashboard/utils/functions';
 import { Check, X } from 'tabler-icons-react';
 import axios from 'axios';
-import moment from 'moment';
+import { signIn } from 'next-auth/react';
+import { AppDispatch } from 'apps/carrier-dashboard/store';
 
 const Stripe = await loadStripe(String(STRIPE_PUBLIC_KEY));
 
 const Step1 = ({ nextStep, prevStep }) => {
 	const [loading, setLoading] = useState(false);
 	const newCarrier = useSelector(useNewCarrier);
-	const dispatch = useDispatch();
+	const dispatch = useDispatch<AppDispatch>();
 	useEffect(() => console.log(newCarrier), [newCarrier]);
 
 	const form = useForm<Address>({
@@ -46,7 +47,6 @@ const Step1 = ({ nextStep, prevStep }) => {
 				company: {
 					name: newCarrier.company,
 					phone: newCarrier.phone,
-					tax_id: newCarrier.crn,
 					address: {
 						line1: values.line1,
 						line2: values.line2,
@@ -60,28 +60,6 @@ const Step1 = ({ nextStep, prevStep }) => {
 			});
 			console.log('Account', accountResult);
 			// @ts-ignore
-			const personResult = await Stripe.createToken('person', {
-				person: {
-					first_name: newCarrier.firstname,
-					last_name: newCarrier.lastname,
-					email: newCarrier.email,
-					phone: newCarrier.phone,
-					nationality: values.country,
-					relationship: {
-						title: "Manager",
-						representative: true
-					},
-					address: {
-						line1: values.line1,
-						line2: values.line2,
-						city: values.city,
-						state: values.region,
-						postal_code: values.postcode,
-						country: values.country
-					}
-				}
-			});
-			console.log('Person', personResult);
 			const account = (
 				await axios.post('/api/stripe/accounts', {
 					token: accountResult.token,
@@ -92,8 +70,13 @@ const Step1 = ({ nextStep, prevStep }) => {
 					}
 				})
 			).data;
-			const person = (await axios.post(`/api/stripe/accounts/${account.id}/person`, personResult.token)).data;
-			dispatch(saveNewCarrier({ accountId: account.id, personId: person.id }));
+			dispatch(saveNewCarrier({ accountId: account.id } ));
+			await dispatch(createCarrier(newCarrier)).unwrap();
+			await signIn('credentials', {
+				email: newCarrier.email,
+				password: newCarrier.password,
+				redirect: false
+			});
 			notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />);
 			setTimeout(() => {
 				setLoading(false);

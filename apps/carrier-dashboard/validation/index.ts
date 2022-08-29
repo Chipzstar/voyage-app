@@ -6,7 +6,7 @@ export const signupSchema1 = Yup.object({
 	// dob: Yup.string().required("Dob is required"),
 	company: Yup.string().required("Company name is required"),
 	phone: Yup.string().required("Phone is required"),
-	crn: Yup.number().required("Company number is required"),
+	// crn: Yup.number().required("Company number is required"),
 	// jobTitle: Yup.string().required("Job title is required"),
 	email: Yup.string().email().required("Email is required"),
 	// website: Yup.string().required("Website / social profile is required"),

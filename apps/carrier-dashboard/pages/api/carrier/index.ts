@@ -10,11 +10,13 @@ export default async function handler(req, res) {
 	if (req.method === 'POST') {
 		try {
 			const user = await prisma.user.create({
-				email: payload.email,
-				password: payload.password,
-				firstname: payload.firstname,
-				lastname: payload.lastname,
-				name: payload.firstname + ' ' + payload.lastname
+				data: {
+					email: payload.email,
+					password: payload.password,
+					firstname: payload.firstname,
+					lastname: payload.lastname,
+					name: payload.firstname + ' ' + payload.lastname
+				}
 			});
 			console.log('USER', user);
 			const carrier = await prisma.carrier.create({

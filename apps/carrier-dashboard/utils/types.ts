@@ -362,16 +362,16 @@ export interface Document {
 
 export interface NewCarrier {
 	accountId: string;
-	personId: string;
-	dob: string;
+	personId?: string;
+	dob?: string;
 	fullName: string;
 	firstname: string;
 	lastname: string;
 	email: string;
 	company: string;
 	phone: string;
-	jobTitle: string;
-	crn: string;
+	jobTitle?: string;
+	crn?: string;
 	website?: string
 	password: string;
 	confirmPassword: string;
