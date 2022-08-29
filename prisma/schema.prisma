@@ -327,6 +327,14 @@ model Shipper {
   shipment  Shipment[]
   location  Location[]
 }
+enum SignupStatus {
+  COMPANY_INFO
+  BANK_ACCOUNT
+  WORKFLOWS
+  DOCUMENTS
+  COMPLETE
+}
+
 model Carrier {
   id        String         @id @default(auto()) @map("_id") @db.ObjectId
   carrierId String         @unique
@@ -349,6 +357,7 @@ model Carrier {
   vehicles  Vehicle[]
   customers Customer[]
   settings  Settings?
+  status    SignupStatus?
 }
 enum AccountType {
   SMALL_SHIPPER

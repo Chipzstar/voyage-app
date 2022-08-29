@@ -4,7 +4,7 @@ import { PATHS } from '../utils/constants';
 import { getCsrfToken } from 'next-auth/react';
 import prisma from '../db';
 import moment from 'moment/moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Center, ScrollArea, Stepper, Text } from '@mantine/core';
 import { Check, X } from 'tabler-icons-react';
 import Step1 from '../containers/signup/Step1';
@@ -99,7 +99,7 @@ export async function getServerSideProps({ req, res }) {
 		...user,
 		emailVerified: moment(user.emailVerified).unix()
 	}));
-	console.log(users)
+	users.forEach(user => console.log(user.email))
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

@@ -34,21 +34,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			console.log('************************************************');
 			// update the stripe details in db
 			if (bankAccount.object !== 'card') {
+				console.log(jwtToken)
 				const updatedCarrier = await prisma.carrier.update({
 					where: {
 						id: jwtToken?.carrierId
 					},
 					data: {
 						stripe: {
-							bankAccount: {
-								id: bankAccount.id,
-								fingerprint: bankAccount.fingerprint,
-								sortCode: bankAccount.routing_number,
-								last4: bankAccount.last4,
-								accountHolderName: bankAccount.account_holder_name,
-								currency: bankAccount.currency,
-								country: bankAccount.country,
-								status: bankAccount.status
+							set: {
+								accountId,
+								bankAccount: {
+									id: bankAccount.id,
+									fingerprint: bankAccount.fingerprint,
+									sortCode: bankAccount.routing_number,
+									last4: bankAccount.last4,
+									accountHolderName: bankAccount.account_holder_name,
+									currency: bankAccount.currency,
+									country: bankAccount.country,
+									status: bankAccount.status
+								}
 							}
 						}
 					}
@@ -58,6 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			}
 			res.status(400).json({ statusCode: 400, message: "Wrong External Account of type 'card' was created" })
 		} catch (err) {
+			console.error(err)
 			res.status(500).json({ statusCode: 500, message: err.message });
 		}
 	} else {

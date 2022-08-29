@@ -46,6 +46,7 @@ const Step1 = ({ existingUsers, nextStep }) => {
 		// check if email is already taken
 		if (existingUsers.some(user => user.email === values.email)) {
 			notifyError('step1-signup-failure', `The email ${values.email} is already taken. Please provide another email address`, <X size={20} />)
+			setLoading(false);
 			return;
 		}
 		dispatch(saveNewCarrier(values));

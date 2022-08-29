@@ -52,6 +52,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
+	console.log("SESSION: ", session)
+	console.log("TOKEN: ", token)
 	if (!session) {
 		return {
 			redirect: {
