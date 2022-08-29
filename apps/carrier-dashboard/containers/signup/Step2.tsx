@@ -68,7 +68,7 @@ const Step1 = ({ nextStep, prevStep }) => {
 					}
 				})
 			).data;
-			await dispatch(createCarrier({ ...newCarrier, accountId: account.id })).unwrap();
+			await dispatch(createCarrier({ ...newCarrier, address: values, accountId: account.id })).unwrap();
 			await signIn('credentials', {
 				email: newCarrier.email,
 				password: newCarrier.password,
