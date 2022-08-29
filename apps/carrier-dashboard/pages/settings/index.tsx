@@ -1,36 +1,40 @@
 import TabBar from '../../layout/TabBar';
-import { PUBLIC_PATHS, SETTINGS_TABS } from '../../utils/constants'
-import React from 'react'
-import { Container, Tabs } from '@mantine/core'
-import Organisation from '../../containers/settings/Organisation'
-import Financial from '../../containers/settings/Financial'
-import { wrapper } from '../../store'
-import { unstable_getServerSession } from 'next-auth'
-import { authOptions } from '../api/auth/[...nextauth]'
-import { getToken } from 'next-auth/jwt'
-import { fetchProfile, fetchSettings } from '../../utils/functions'
-import prisma from '../../db'
-import { setCarrier, useCarrier } from '../../store/feature/profileSlice'
+import { PUBLIC_PATHS, SETTINGS_TABS } from '../../utils/constants';
+import React, { useMemo } from 'react';
+import { Container, Tabs } from '@mantine/core';
+import Organisation from '../../containers/settings/Organisation';
+import Financial from '../../containers/settings/Financial';
+import { wrapper } from '../../store';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
+import { fetchProfile, fetchSettings } from '../../utils/functions';
+import prisma from '../../db';
+import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
 import { useSelector } from 'react-redux';
 import Documents from '../../containers/settings/Documents';
-import { setSettings, useSettings } from '../../store/feature/settingsSlice'
-import { Carrier } from '../../utils/types';
+import { setSettings, useSettings } from '../../store/feature/settingsSlice';
+import { Carrier, SignupStatus } from '../../utils/types';
 import Workflows from '../../containers/settings/Workflows';
 
 const TAB_LABELS = {
 	ORGANIZATION: SETTINGS_TABS[0].value,
 	WORKFLOWS: SETTINGS_TABS[1].value,
 	FINANCIAL: SETTINGS_TABS[2].value,
-	DOCUMENTS: SETTINGS_TABS[3].value,
-}
+	DOCUMENTS: SETTINGS_TABS[3].value
+};
 
 const settings = () => {
 	const profile = useSelector(useCarrier)
 	const settings = useSelector(useSettings)
+	
+	const defaultTab = useMemo(() => {
+		return profile.status !== SignupStatus.COMPLETE ? profile.status : SETTINGS_TABS[0].value
+	}, [profile])
 
 	return (
 		<Container fluid px={0} className="h-full">
-			<TabBar tabLabels={SETTINGS_TABS} defaultTab={SETTINGS_TABS[0].value} status={profile.status}>
+			<TabBar tabLabels={SETTINGS_TABS} defaultTab={defaultTab} status={profile.status}>
 				<Tabs.Panel value={TAB_LABELS.ORGANIZATION}>
 					<Organisation carrierInfo={profile}/>
 				</Tabs.Panel>
