@@ -15,10 +15,12 @@ import { Check, X } from 'tabler-icons-react';
 import axios from 'axios';
 import { signIn } from 'next-auth/react';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
+import { useRouter } from 'next/router';
 
 const Stripe = await loadStripe(String(STRIPE_PUBLIC_KEY));
 
 const Step1 = ({ nextStep, prevStep }) => {
+	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const newCarrier = useSelector(useNewCarrier);
 	const dispatch = useDispatch<AppDispatch>();
@@ -69,16 +71,23 @@ const Step1 = ({ nextStep, prevStep }) => {
 				})
 			).data;
 			await dispatch(createCarrier({ ...newCarrier, address: values, accountId: account.id })).unwrap();
-			await signIn('credentials', {
+			setLoading(true)
+			const { ok, error } = await signIn('credentials', {
 				email: newCarrier.email,
 				password: newCarrier.password,
 				redirect: false
 			});
-			notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />);
-			setTimeout(() => {
+			if (ok) {
+				notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />);
+				await router.replace('/');
 				setLoading(false);
-				nextStep();
-			}, 500);
+				return;
+			}
+			if (error) {
+				console.log(error)
+				notifyError('signin-from-signup-form-failed', `There was an error signing you in, ${error}`, <X size={20} />);
+				return null;
+			}
 		} catch (err) {
 			console.error(err);
 			notifyError('create-business-address-failed', `There was an error creating the business address: ${err.message}`, <X size={20} />);

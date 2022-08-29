@@ -4,7 +4,7 @@ import { PATHS } from '../utils/constants';
 import { getCsrfToken } from 'next-auth/react';
 import prisma from '../db';
 import moment from 'moment/moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Center, ScrollArea, Stepper, Text } from '@mantine/core';
 import { Check, X } from 'tabler-icons-react';
 import Step1 from '../containers/signup/Step1';
@@ -40,7 +40,7 @@ function getStrength(password: string) {
 	return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0);
 }
 
-const signup = () => {
+const signup = ({users}) => {
 	const [active, setActive] = useState(0);
 	const nextStep = () => setActive(current => (current < 3 ? current + 1 : current));
 	const prevStep = () => setActive(current => (current > 0 ? current - 1 : current));
@@ -61,7 +61,7 @@ const signup = () => {
 					}}
 				>
 					<Stepper.Step label='First step' description='Create an account' allowStepSelect={active > 0}>
-						<Step1 nextStep={nextStep} />
+						<Step1 existingUsers={users} nextStep={nextStep} />
 					</Stepper.Step>
 					<Stepper.Step label='Second step' description='Business Address' allowStepSelect={active > 1}>
 						<Step2 nextStep={nextStep} prevStep={prevStep} />
@@ -88,9 +88,9 @@ export async function getServerSideProps({ req, res }) {
 	const users = (
 		await prisma.user.findMany({
 			where: {
-				shipperId: {
+				carrierId: {
 					is: {
-						shipperId: {}
+						carrierId: {}
 					}
 				}
 			}
@@ -99,6 +99,7 @@ export async function getServerSideProps({ req, res }) {
 		...user,
 		emailVerified: moment(user.emailVerified).unix()
 	}));
+	console.log(users)
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

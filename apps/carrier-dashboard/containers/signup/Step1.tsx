@@ -5,13 +5,14 @@ import { Anchor, Box, Button, Center, Group, Loader, PasswordInput, Stack, Text,
 import Link from 'next/link';
 import { phoneUtil, PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
 import { PhoneNumberFormat as PNF } from 'google-libphonenumber';
-import { InfoCircle } from 'tabler-icons-react';
+import { InfoCircle, X } from 'tabler-icons-react';
 import { saveNewCarrier } from '../../store/feature/profileSlice';
 import { AppDispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { NewCarrier } from '../../utils/types';
+import { notifyError } from '../../utils/functions';
 
-const Step1 = ({ nextStep }) => {
+const Step1 = ({ existingUsers, nextStep }) => {
 	const [opened, setOpened] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
@@ -42,6 +43,11 @@ const Step1 = ({ nextStep }) => {
 			values.phone = E164Number;
 		}
 		values.fullName = `${values.firstname} ${values.lastname}`;
+		// check if email is already taken
+		if (existingUsers.some(user => user.email === values.email)) {
+			notifyError('step1-signup-failure', `The email ${values.email} is already taken. Please provide another email address`, <X size={20} />)
+			return;
+		}
 		dispatch(saveNewCarrier(values));
 		setTimeout(() => {
 			nextStep();

@@ -35,7 +35,7 @@ model User {
   sessions      Session[]
   firstname     String?
   lastname      String?
-  password      String   /// @encrypted
+  password      String
   carrierId     Carrier?
   shipperId     Shipper?
   drivers       Driver[]

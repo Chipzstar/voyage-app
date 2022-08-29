@@ -147,6 +147,7 @@ export async function getServerSideProps({ req, res }) {
 		...user,
 		emailVerified: moment(user.emailVerified).unix()
 	}));
+	console.log(users.find(user => user.email === "katherine.pena@teleworm.us"))
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,
