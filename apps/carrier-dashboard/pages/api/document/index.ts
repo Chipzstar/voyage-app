@@ -11,7 +11,7 @@ const generateV4ReadSignedUrl = (filepath) => {
 		const options = {
 			version: 'v4',
 			action: 'read',
-			expires: Date.now() + 604800 * 1000, // 7 days
+			expires: Date.now() + 604800 * 950, // 7 days
 		};
 		// Get a v4 signed URL for reading the file
 		const file = BUCKET.file(filepath)

@@ -73,10 +73,13 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 					if (documents.length >= 2) {
 						setActivation(true)
 					}
+				}).catch(err =>{
+					notifyError('store-document-failure', `An error occurred while saving your document, ${err.message}`, <X size={20} />);
+					setLoading(false);
 				})
 			})
 			.catch(err => {
-				notifyError('upload-document-success', `An error occurred while uploading, ${err.message}`, <X size={20} />);
+				notifyError('upload-document-failure', `An error occurred while uploading your document, ${err.message}`, <X size={20} />);
 				setLoading(false);
 			});
 	}, []);
