@@ -27,7 +27,7 @@ const Empty = () => {
 	);
 };
 
-const DocumentInfo = ({ form, fileInfo }: { form: UseFormReturnType<NewDocument>; fileInfo: File | null }) => {
+const DocumentInfo = ({ fileInfo }: { fileInfo: File | null }) => {
 	return (
 		<Group>
 			<Text size='xl'>{fileInfo?.name}</Text>
@@ -74,9 +74,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 						if (documents.length >= 2) {
 							dispatch(updateCarrier({ ...carrierInfo, status: SignupStatus.COMPLETE }))
 								.unwrap()
-								.then(() => {
-									setActivation(true);
-								});
+								.then(() => setActivation(true));
 						}
 					})
 					.catch(err => {
@@ -162,7 +160,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 								<Dropzone.Reject>
 									<X size={50} color={theme.colors.red[theme.colorScheme === 'dark' ? 4 : 6]} />
 								</Dropzone.Reject>
-								<Dropzone.Idle>{form.values.file ? <DocumentInfo form={form} fileInfo={form.values.file} /> : <Empty />}</Dropzone.Idle>
+								<Dropzone.Idle>{form.values.file ? <DocumentInfo fileInfo={form.values.file} /> : <Empty />}</Dropzone.Idle>
 							</Group>
 						</Dropzone>
 					</Stack>
