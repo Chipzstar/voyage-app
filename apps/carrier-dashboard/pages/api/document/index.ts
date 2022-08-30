@@ -11,7 +11,7 @@ const generateV4ReadSignedUrl = (filepath) => {
 		const options = {
 			version: 'v4',
 			action: 'read',
-			expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+			expires: Date.now() + 604800 * 1000, // 7 days
 		};
 		// Get a v4 signed URL for reading the file
 		const file = BUCKET.file(filepath)
@@ -34,6 +34,7 @@ export default async function handler(req, res) {
 	await runMiddleware(req, res, cors);
 	const token = await getToken({req})
 	const payload = req.body;
+	console.log(payload)
 	if (req.method === 'POST') {
 		try {
 			// generate a signed download URL for the user

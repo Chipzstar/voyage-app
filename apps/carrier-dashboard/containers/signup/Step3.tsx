@@ -4,7 +4,7 @@ import { Box, Button, Center, Checkbox, CloseButton, Group, Loader, Paper, Radio
 import { Check, InfoCircle, X } from 'tabler-icons-react';
 import { useSelector } from 'react-redux';
 import { useNewCarrier } from '../../store/feature/profileSlice';
-import NewBusinessMemberForm from 'apps/carrier-dashboard/components/NewBusinessMemberForm';
+import NewBusinessMemberForm from 'apps/carrier-dashboard/modals/NewBusinessMemberForm';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_PUBLIC_KEY } from '../../utils/constants';
 import { NewBusinessMember } from '../../utils/types';

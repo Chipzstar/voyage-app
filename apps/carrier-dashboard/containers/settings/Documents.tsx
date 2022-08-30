@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { createDocument } from '../../store/feature/documentSlice';
+import AccountActivation from '../../modals/AccountActivation';
 
 const Empty = () => {
 	return (
@@ -46,6 +47,7 @@ interface DocumentsProps {
 const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(false);
+	const [activation, setActivation] = useState(false);
 	const theme = useMantineTheme();
 	const openRef = useRef<() => void>(null);
 	const form = useForm<NewDocument>({
@@ -68,6 +70,9 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 					console.log(res);
 					notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
 					setLoading(false);
+					if (documents.length >= 2) {
+						setActivation(true)
+					}
 				})
 			})
 			.catch(err => {
@@ -78,6 +83,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
+			<AccountActivation opened={activation} onClose={() => setActivation(false)}/>
 			<div className='grid h-full grid-cols-3 gap-x-10 px-4 py-6'>
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>
