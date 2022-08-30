@@ -3,7 +3,7 @@ import { Badge, Button, Card, Center, Container, Group, Loader, Paper, Radio, Si
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
-import { notifySuccess, uploadFile } from '../../utils/functions';
+import { notifyError, notifySuccess, uploadFile } from '../../utils/functions';
 import { DocumentType, Document, Carrier, NewDocument } from '../../utils/types';
 import { SAMPLE_DOCUMENTS } from '../../utils/constants';
 import axios from 'axios';
@@ -71,7 +71,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 				})
 			})
 			.catch(err => {
-				notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
+				notifyError('upload-document-success', `An error occurred while uploading, ${err.message}`, <X size={20} />);
 				setLoading(false);
 			});
 	}, []);
