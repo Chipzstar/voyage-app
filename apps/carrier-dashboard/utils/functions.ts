@@ -426,7 +426,10 @@ export async function uploadFile({ id, file, documentType }) {
 		});
 		console.log(formData);
 
-		const upload = (await axios.post(url, formData)).data;
+		const upload = await fetch(url, {
+			method: 'POST',
+			body: formData
+		});
 
 		if (upload.ok) {
 			console.log('Uploaded successfully!');
