@@ -10,12 +10,13 @@ import { wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
-import { fetchProfile, fetchSettings } from '../../utils/functions';
+import { fetchDocuments, fetchProfile, fetchSettings } from '../../utils/functions';
 import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
 import Documents from '../../containers/settings/Documents';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice';
 import { Carrier, SignupStatus } from '../../utils/types';
 import Workflows from '../../containers/settings/Workflows';
+import { setDocuments, useDocuments } from '../../store/feature/documentSlice';
 
 const TAB_LABELS = {
 	ORGANIZATION: SETTINGS_TABS[0].value,
@@ -27,6 +28,7 @@ const TAB_LABELS = {
 const settings = () => {
 	const profile = useSelector(useCarrier);
 	const settings = useSelector(useSettings);
+	const documents = useSelector(useDocuments);
 
 	const defaultTab = useMemo(() => {
 		return profile.status !== SignupStatus.COMPLETE ? profile.status : SETTINGS_TABS[0].value;
@@ -47,7 +49,7 @@ const settings = () => {
 					<Financial carrierInfo={profile} nextTab={() => setActiveTab(SignupStatus.DOCUMENTS)}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
-					<Documents carrierInfo={profile} />
+					<Documents carrierInfo={profile} documents={documents} />
 				</Tabs.Panel>
 			</TabBar>
 		</Container>
@@ -69,8 +71,10 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	if (session.id || token?.carrierId) {
 		let carrier: Carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
+		let documents = await fetchDocuments(token?.carrierId, prisma)
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setSettings(settings));
+		store.dispatch(setDocuments(documents))
 	}
 	return {
 		props: {

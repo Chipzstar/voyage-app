@@ -408,6 +408,8 @@ model Document {
   filename  String
   filepath  String
   location  String
+  status    String
+  verified  Boolean
 }
 enum DriverStatus {
   OFFLINE

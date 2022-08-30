@@ -4,14 +4,12 @@ import { useForm, UseFormReturnType } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
 import { notifySuccess, uploadFile } from '../../utils/functions';
-import { DocumentType, Document } from '../../utils/types';
+import { DocumentType, Document, Carrier, NewDocument } from '../../utils/types';
 import { SAMPLE_DOCUMENTS } from '../../utils/constants';
-
-interface FormValues {
-	id: string;
-	documentType: string;
-	file: File | null;
-}
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store';
+import { createDocument } from '../../store/feature/documentSlice';
 
 const Empty = () => {
 	return (
@@ -29,7 +27,7 @@ const Empty = () => {
 	);
 };
 
-const DocumentInfo = ({ form, fileInfo }: { form: UseFormReturnType<FormValues>; fileInfo: File | null }) => {
+const DocumentInfo = ({ form, fileInfo }: { form: UseFormReturnType<NewDocument>; fileInfo: File | null }) => {
 	return (
 		<Group>
 			<Text size='xl'>{fileInfo?.name}</Text>
@@ -40,11 +38,18 @@ const DocumentInfo = ({ form, fileInfo }: { form: UseFormReturnType<FormValues>;
 	);
 };
 
-const Documents = ({ carrierInfo }) => {
+interface DocumentsProps {
+	carrierInfo: Carrier;
+	documents: Document[];
+}
+
+const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
+	const [url, setUrl] = useState('');
+	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(false);
 	const theme = useMantineTheme();
 	const openRef = useRef<() => void>(null);
-	const form = useForm<FormValues>({
+	const form = useForm<NewDocument>({
 		initialValues: {
 			id: carrierInfo?.id ?? '',
 			documentType: '',
@@ -58,10 +63,12 @@ const Documents = ({ carrierInfo }) => {
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
 		uploadFile(values)
-			.then((res) => {
-				notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
-				console.log(res)
-				setLoading(false);
+			.then(res => {
+				dispatch(createDocument(values)).unwrap().then(() => {
+					notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
+					console.log(res);
+					setLoading(false);
+				})
 			})
 			.catch(err => {
 				notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
@@ -71,11 +78,11 @@ const Documents = ({ carrierInfo }) => {
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			<div className='grid grid-cols-3 h-full px-4 py-6 gap-x-10'>
+			<div className='grid h-full grid-cols-3 gap-x-10 px-4 py-6'>
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>
 					<SimpleGrid>
-						{SAMPLE_DOCUMENTS.map((doc, index) => (
+						{documents.map((doc, index) => (
 							<Paper key={index} shadow='md' p='md' withBorder className='w-full bg-transparent'>
 								<Stack>
 									<Group position='apart'>
@@ -93,13 +100,18 @@ const Documents = ({ carrierInfo }) => {
 										<Text color='dimmed' weight={600}>
 											Document Type
 										</Text>
-										<span className='capitalize'>{doc.type.replace(/_/g, ' ').toLowerCase()}</span>
+										<span className='capitalize'>{doc.type.replace(/_/g, ' ')}</span>
 									</div>
 								</Stack>
 								<Group position='right' mt='xs'>
-									<Button variant='default' size='xs'>
-										<Text color='dimmed'>Download</Text>
-									</Button>
+									<a href={doc.location} target='_blank' download>
+										<Button
+											variant='default'
+											size='xs'
+										>
+											<Text color='dimmed'>Download</Text>
+										</Button>
+									</a>
 									<Button variant='outline' color='red' size='xs'>
 										Remove
 									</Button>

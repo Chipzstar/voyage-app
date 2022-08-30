@@ -64,11 +64,11 @@ export enum MapType {
 }
 
 export enum SignupStatus {
-	COMPANY_INFO="COMPANY_INFO",
-	BANK_ACCOUNT="BANK_ACCOUNT",
-	WORKFLOWS="WORKFLOWS",
-	DOCUMENTS="DOCUMENTS",
-	COMPLETE="COMPLETE",
+	COMPANY_INFO = 'COMPANY_INFO',
+	BANK_ACCOUNT = 'BANK_ACCOUNT',
+	WORKFLOWS = 'WORKFLOWS',
+	DOCUMENTS = 'DOCUMENTS',
+	COMPLETE = 'COMPLETE'
 }
 
 export type Address = {
@@ -91,7 +91,7 @@ export interface BankAccount {
 	status: string;
 }
 
-export type BankAccountForm = Omit<BankAccount, "fingerprint" | "status"> & { accountId: string }
+export type BankAccountForm = Omit<BankAccount, 'fingerprint' | 'status'> & { accountId: string };
 
 export type StripeDetails = {
 	accountId: string;
@@ -103,7 +103,7 @@ export type StripeDetails = {
 		expYear: number;
 		last4: string;
 	};
-	bankAccount?: BankAccount
+	bankAccount?: BankAccount;
 };
 
 type Tracking = {
@@ -126,10 +126,10 @@ export interface CarrierDocument {
 	id: string;
 	carrierId: string;
 	type: DocumentType;
-	document: {
-		filename: string;
-		location: string;
-	};
+	filename: string;
+	filepath?: string;
+	location: string;
+	verified: boolean;
 }
 
 export interface Carrier {
@@ -347,7 +347,7 @@ export interface Load {
 	rate: number;
 	pickup: LoadLocation;
 	delivery: LoadLocation;
-	customer?: LoadCustomer
+	customer?: LoadCustomer;
 	driver?: {
 		id: string;
 		name: string;
@@ -383,7 +383,7 @@ export interface NewCarrier {
 	phone: string;
 	jobTitle?: string;
 	crn?: string;
-	website?: string
+	website?: string;
 	password: string;
 	confirmPassword: string;
 	address: Address;
@@ -397,4 +397,10 @@ export interface NewBusinessMember {
 	jobTitle: string;
 	dob: string;
 	address: Address;
+}
+
+export interface NewDocument {
+	id: string;
+	documentType: string;
+	file: File | null;
 }

@@ -1,15 +1,4 @@
-import {
-	ChargeUnitType,
-	Customer,
-	Driver,
-	Load,
-	LoadLocation,
-	Location,
-	Member,
-	NewBooking,
-	RateChargeRules,
-	Settings
-} from './types';
+import { ChargeUnitType, Customer, Driver, Load, LoadLocation, Location, Member, NewBooking, RateChargeRules, Settings } from './types';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { numericId } from '@voyage-app/shared-utils';
@@ -322,6 +311,29 @@ export async function fetchLoads(carrierId, prisma) {
 	return loads;
 }
 
+export async function fetchDocuments(carrierId, prisma) {
+	return await prisma.document.findMany({
+		where: {
+			carrierId: {
+				equals: carrierId
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		},
+		select: {
+			id: true,
+			carrierId: true,
+			type: true,
+			filename: true,
+			filepath: true,
+			location: true,
+			status: true,
+			verified: true
+		}
+	});
+}
+
 export async function fetchSettings(carrierId, prisma) {
 	return await prisma.settings.findFirst({
 		where: {
@@ -405,7 +417,7 @@ export function validateAddress(pickup, dropoff) {
 export async function uploadFile({ id, file, documentType }) {
 	try {
 		const filename = encodeURIComponent(file.name);
-		const res = await fetch(`/api/upload-url?id=${id}&filename=${filename}&type=${documentType}`);
+		const res = await fetch(`/api/gcp/upload-url?id=${id}&filename=${filename}&type=${documentType}`);
 		const { url, fields } = await res.json();
 		const formData = new FormData();
 
@@ -414,13 +426,11 @@ export async function uploadFile({ id, file, documentType }) {
 		});
 		console.log(formData);
 
-		const upload = await fetch(url, {
-			method: 'POST',
-			body: formData
-		});
+		const upload = (await axios.post(url, formData)).data;
 
 		if (upload.ok) {
 			console.log('Uploaded successfully!');
+			console.log(upload)
 			return upload;
 		} else {
 			console.error('Upload failed.', upload.status);

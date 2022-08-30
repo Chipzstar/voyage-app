@@ -6,6 +6,7 @@ import customerReducer from './feature/customerSlice';
 import loadReducer from './feature/loadSlice';
 import profileReducer from './feature/profileSlice';
 import settingsReducer from './feature/settingsSlice';
+import documentReducer from './feature/documentSlice';
 import { HYDRATE } from 'next-redux-wrapper';
 
 const appReducer = combineReducers({
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
 	vehicles: vehicleReducer,
 	customers: customerReducer,
 	loads: loadReducer,
+	documents: documentReducer,
 	settings: settingsReducer
 });
 
@@ -34,7 +36,8 @@ const rootReducer = (state, action) => {
 			members: action.payload.members || state.members,
 			vehicles: action.payload.vehicles || state.vehicles,
 			customers: action.payload.customers || state.customers,
-			loads: action.payload.loads || state.loads
+			loads: action.payload.loads || state.loads,
+			documents: action.payload.documents || state.documents,
 		};
 	}
 	if (['LOGOUT', 'RESET'].includes(action.type)) {
