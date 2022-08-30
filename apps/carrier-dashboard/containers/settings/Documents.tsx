@@ -1,16 +1,15 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Badge, Button, Card, Center, Container, Group, Loader, Paper, Radio, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
+import { Badge, Button, Container, Group, Loader, Paper, Radio, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm, UseFormReturnType } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
 import { notifyError, notifySuccess, uploadFile } from '../../utils/functions';
-import { DocumentType, Document, Carrier, NewDocument } from '../../utils/types';
-import { SAMPLE_DOCUMENTS } from '../../utils/constants';
-import axios from 'axios';
+import { Carrier, Document, DocumentType, NewDocument, SignupStatus } from '../../utils/types';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { createDocument } from '../../store/feature/documentSlice';
 import AccountActivation from '../../modals/AccountActivation';
+import { updateCarrier } from '../../store/feature/profileSlice';
 
 const Empty = () => {
 	return (
@@ -65,18 +64,25 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 		setLoading(true);
 		uploadFile(values)
 			.then(res => {
-				console.log(res)
-				dispatch(createDocument(values)).unwrap().then((res) => {
-					console.log(res);
-					notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
-					setLoading(false);
-					if (documents.length >= 2) {
-						setActivation(true)
-					}
-				}).catch(err =>{
-					notifyError('store-document-failure', `An error occurred while saving your document, ${err.message}`, <X size={20} />);
-					setLoading(false);
-				})
+				console.log(res);
+				dispatch(createDocument(values))
+					.unwrap()
+					.then(res => {
+						console.log(res);
+						notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
+						setLoading(false);
+						if (documents.length >= 2) {
+							dispatch(updateCarrier({ ...carrierInfo, status: SignupStatus.COMPLETE }))
+								.unwrap()
+								.then(() => {
+									setActivation(true);
+								});
+						}
+					})
+					.catch(err => {
+						notifyError('store-document-failure', `An error occurred while saving your document, ${err.message}`, <X size={20} />);
+						setLoading(false);
+					});
 			})
 			.catch(err => {
 				notifyError('upload-document-failure', `An error occurred while uploading your document, ${err.message}`, <X size={20} />);
@@ -86,7 +92,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			<AccountActivation opened={activation} onClose={() => setActivation(false)}/>
+			<AccountActivation opened={activation} onClose={() => setActivation(false)} />
 			<div className='grid h-full grid-cols-3 gap-x-10 px-4 py-6'>
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>
@@ -114,10 +120,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 								</Stack>
 								<Group position='right' mt='xs'>
 									<a href={doc.location} target='_blank' download>
-										<Button
-											variant='default'
-											size='xs'
-										>
+										<Button variant='default' size='xs'>
 											<Text color='dimmed'>Download</Text>
 										</Button>
 									</a>
