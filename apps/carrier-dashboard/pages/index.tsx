@@ -11,7 +11,7 @@ import { authOptions } from './api/auth/[...nextauth]';
 import prisma from '../db';
 import { setCarrier } from '../store/feature/profileSlice';
 import { wrapper } from '../store';
-import { fetchLoads, fetchProfile } from '../utils/functions';
+import { fetchLoads, fetchProfile, logger } from '../utils/functions';
 import { setLoads, useLoads } from '../store/feature/loadSlice';
 import { useSelector } from 'react-redux';
 import { STATUS } from '@voyage-app/shared-types';
@@ -49,6 +49,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			}
 		};
 	}
+	logger.info("Testing logtail :)");
 	if (session.id || token?.carrierId) {
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let loads = await fetchLoads(token?.carrierId, prisma);

@@ -38,6 +38,7 @@
     "@floating-ui/react-dom-interactions": "^0.9.1",
     "@google-cloud/storage": "^6.4.0",
     "@googlemaps/google-maps-services-js": "^3.3.16",
+    "@logtail/js": "^0.1.12",
     "@mantine/core": "^5.0.2",
     "@mantine/dates": "^5.0.2",
     "@mantine/dropzone": "^5.1.6",

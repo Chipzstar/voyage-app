@@ -31,7 +31,7 @@ const settings = () => {
 	const documents = useSelector(useDocuments);
 
 	const defaultTab = useMemo(() => {
-		return profile.status !== SignupStatus.COMPLETE ? profile.status : SETTINGS_TABS[0].value;
+		return profile?.status !== SignupStatus.COMPLETE ? profile.status : SETTINGS_TABS[0].value;
 	}, [profile]);
 
 	const [activeTab, setActiveTab] = useState<string | null>(defaultTab);

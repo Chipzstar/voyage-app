@@ -1,11 +1,11 @@
-import Cors from 'cors'
+import Cors from 'cors';
 import Stripe from 'stripe';
 import { Storage } from '@google-cloud/storage';
 
 // Initializing the cors middleware
 export const cors = Cors({
-	methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'],
-})
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD']
+});
 
 // Initialize stripe
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -25,11 +25,11 @@ export const storage = new Storage({
 // And to throw an error when an error happens in a middleware
 export function runMiddleware(req, res, fn) {
 	return new Promise((resolve, reject) => {
-		fn(req, res, (result) => {
+		fn(req, res, result => {
 			if (result instanceof Error) {
-				return reject(result)
+				return reject(result);
 			}
-			return resolve(result)
-		})
-	})
+			return resolve(result);
+		});
+	});
 }

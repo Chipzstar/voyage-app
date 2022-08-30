@@ -39,18 +39,6 @@ export const createBankAccount = createAsyncThunk('carrier/createBankAccount', a
 	}
 })
 
-/*export const updateBankDetails = createAsyncThunk('carrier/updateBankAccount', async (payload : BankAccountForm, thunkAPI) => {
-	try {
-		const { accountId, id, ...rest} = payload
-		const carrier = (await axios.put(`/api/stripe/accounts/${accountId}/bank-account/${id}`, rest)).data;
-		thunkAPI.dispatch(editCarrier(carrier));
-		return carrier;
-	} catch (err) {
-		console.error(err?.response?.data)
-		return thunkAPI.rejectWithValue(err?.response?.data);
-	}
-})*/
-
 export const profileSlice = createSlice({
 	name: 'profile',
 	initialState,

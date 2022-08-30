@@ -1,5 +1,6 @@
 import { ChargeUnitType, Customer, Driver, Load, LoadLocation, Location, Member, NewBooking, RateChargeRules, Settings } from './types';
 import { STATUS } from '@voyage-app/shared-types';
+import { logtail } from './clients';
 import moment from 'moment/moment';
 import { numericId } from '@voyage-app/shared-utils';
 import { showNotification } from '@mantine/notifications';
@@ -444,3 +445,37 @@ export async function uploadFile({ id, file, documentType }) {
 		throw error;
 	}
 }
+
+export const logger = (() => {
+	const isProd = process.env.NODE_ENV === 'production';
+	const print = (type, message: string, context = undefined) => {
+		if (isProd) {
+			switch (type) {
+				case 'info':
+					logtail.info(message).then(r => console.log("logtail info sent!")).catch(error => console.error(error));
+					break;
+				case 'warn':
+					logtail.warn(message, context);
+					break;
+				case 'error':
+					logtail.error(message, context);
+					break;
+				case 'debug':
+					logtail.debug(message, context);
+					break;
+				default:
+					console.log(message);
+			}
+		} else {
+			console.log(message);
+		}
+	};
+
+	return {
+		debug: print.bind(null, 'debug'),
+		info: print.bind(null, 'info'),
+		warn: print.bind(null, 'warn'),
+		error: print.bind(null, 'error'),
+		trace: print.bind(null, 'trace')
+	};
+})();

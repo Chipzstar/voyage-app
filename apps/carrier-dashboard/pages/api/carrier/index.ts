@@ -1,12 +1,12 @@
 import { cors, runMiddleware } from '../index';
 import prisma from '../../../db';
 import { numericId } from '@voyage-app/shared-utils';
+import { SignupStatus } from '../../../utils/types';
 
 export default async function handler(req, res) {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
 	const payload = req.body;
-	console.log('PAYLOAD', payload);
 	if (req.method === 'POST') {
 		try {
 			const user = await prisma.user.create({
@@ -32,7 +32,8 @@ export default async function handler(req, res) {
 						accountId: payload.accountId
 					},
 					userId: user.id,
-					carrierId: `CARRIER-ID${numericId(12)}`
+					carrierId: `CARRIER-ID${numericId(12)}`,
+					status: SignupStatus.COMPANY_INFO
 				}
 			});
 			console.log('CARRIER', carrier);

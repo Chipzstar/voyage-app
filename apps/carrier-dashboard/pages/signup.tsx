@@ -3,7 +3,6 @@ import { authOptions } from './api/auth/[...nextauth]';
 import { PATHS } from '../utils/constants';
 import { getCsrfToken } from 'next-auth/react';
 import prisma from '../db';
-import moment from 'moment/moment';
 import React, { useState } from 'react';
 import { Box, Center, ScrollArea, Stepper, Text } from '@mantine/core';
 import { Check, X } from 'tabler-icons-react';

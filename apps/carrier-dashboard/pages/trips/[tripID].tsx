@@ -3,7 +3,7 @@ import { Anchor, Badge, Button, Text, Timeline } from '@mantine/core';
 import { ChevronLeft, ChevronRight, Clock } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import Map from '../../components/Map';
-import { mapboxClient, PATHS, PUBLIC_PATHS } from '../../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
 import moment from 'moment';
 import PageNav from '../../layout/PageNav';
 import Link from 'next/link';
@@ -19,6 +19,7 @@ import { wrapper } from '../../store';
 import { capitalize, sanitize } from '@voyage-app/shared-utils';
 import Pluralize from 'react-pluralize';
 import { Load, MapType } from '../../utils/types';
+import { mapboxClient } from '../../utils/clients';
 
 const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 	const router = useRouter();

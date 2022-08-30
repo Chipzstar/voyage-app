@@ -4,7 +4,6 @@ import { alphanumericId } from '@voyage-app/shared-utils';
 import { ChargeUnitType, Document, DocumentType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, SignupStatus, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
-import mbxClient from '@mapbox/mapbox-sdk';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 
 moment.tz.setDefault('Europe/London');
@@ -12,10 +11,6 @@ moment.tz.setDefault('Europe/London');
 export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY || 'pk_test_51LXPkaEqdCHY4B77SWShCyp3LDZXzgVCfNmIk9mvQfIHYZLOt9sLBFQN9af8EZDLimKj5sCTE3Y1vwkPR99fCYbq008YylFuKb';
 
 export const phoneUtil = PhoneNumberUtil.getInstance();
-
-export const mapboxClient = mbxClient({
-	accessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-});
 
 export const localizer = momentLocalizer(moment);
 
