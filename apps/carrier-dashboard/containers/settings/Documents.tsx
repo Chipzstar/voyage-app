@@ -44,7 +44,6 @@ interface DocumentsProps {
 }
 
 const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
-	const [url, setUrl] = useState('');
 	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(false);
 	const theme = useMantineTheme();
@@ -64,9 +63,10 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 		setLoading(true);
 		uploadFile(values)
 			.then(res => {
-				dispatch(createDocument(values)).unwrap().then(() => {
-					notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
+				console.log(res)
+				dispatch(createDocument(values)).unwrap().then((res) => {
 					console.log(res);
+					notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
 					setLoading(false);
 				})
 			})
