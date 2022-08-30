@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Badge, Button, Container, Group, Loader, Paper, Radio, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
-import { useForm, UseFormReturnType } from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
 import { notifyError, notifySuccess, uploadFile } from '../../utils/functions';
