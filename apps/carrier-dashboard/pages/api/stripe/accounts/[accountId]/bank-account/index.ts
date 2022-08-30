@@ -2,14 +2,14 @@ import { cors, runMiddleware, stripe } from '../../../../index';
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../../../../db';
 import { getToken } from 'next-auth/jwt';
-import { BankAccountForm } from '../../../../../../utils/types';
+import { SignupStatus } from '../../../../../../utils/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	await runMiddleware(req, res, cors);
 	const jwtToken = await getToken({ req })
 	if (req.method === 'POST') {
 		const { accountId } = req.query;
-		const payload: Partial<BankAccountForm> = req.body;
+		const payload = req.body;
 		console.log('Account Id', accountId);
 		console.log("Payload", payload)
 		try {
@@ -54,13 +54,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 									status: bankAccount.status
 								}
 							}
-						}
+						},
+						...(payload.status === SignupStatus.BANK_ACCOUNT && {status: SignupStatus.DOCUMENTS})
 					}
 				});
 				console.log(updatedCarrier)
 				res.status(200).json(updatedCarrier);
+			} else {
+				res.status(400).json({ statusCode: 400, message: "Wrong External Account of type 'card' was created" })
 			}
-			res.status(400).json({ statusCode: 400, message: "Wrong External Account of type 'card' was created" })
 		} catch (err) {
 			console.error(err)
 			res.status(500).json({ statusCode: 500, message: err.message });

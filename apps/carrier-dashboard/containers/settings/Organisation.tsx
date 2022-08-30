@@ -6,13 +6,14 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { notifyError, notifySuccess } from '../../utils/functions';
 import { Check, X } from 'tabler-icons-react';
-import { Carrier } from '../../utils/types';
+import { Carrier, SignupStatus } from '../../utils/types';
 
 interface OrganisationProps {
 	carrierInfo: Carrier;
+	nextTab: () => void;
 }
 
-const Organisation = ({ carrierInfo }: OrganisationProps) => {
+const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 	const initialValues: Carrier = {
@@ -40,15 +41,21 @@ const Organisation = ({ carrierInfo }: OrganisationProps) => {
 	const handleSubmit = useCallback(values => {
 		console.log(values);
 		setLoading(true);
+		// CHECK IF CARRIER SIGNUP STATUS IS NOT COMPLETE, IF IT IS NOT, change status to WORKFLOWS
+		if (carrierInfo.status === SignupStatus.COMPANY_INFO) {
+			console.log("STATUS:",carrierInfo.status)
+			values.status = SignupStatus.WORKFLOWS
+		}
 		dispatch(updateCarrier(values))
 			.unwrap()
 			.then(() => {
 				notifySuccess('update-carrier-success', `Your Organisation details have been saved`, <Check size={20} />);
 				setLoading(false);
+				carrierInfo.status === SignupStatus.COMPANY_INFO && nextTab()
 			})
 			.catch(err => {
 				console.error(err);
-				notifySuccess('update-carrier-success', `Your Organisation details have been saved`, <Check size={20} />);
+				notifyError('update-carrier-error', `There was error updating your organisation details ${err.message}`, <X size={20} />);
 				setLoading(false);
 			});
 	}, []);

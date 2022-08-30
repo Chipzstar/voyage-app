@@ -94,8 +94,6 @@ const Sidebar = () => {
 	const dispatch = useDispatch();
 	const carrier = useSelector(useCarrier);
 
-	useEffect(() => console.log('SIDEBAR:', carrier.status), [carrier]);
-
 	const isDisabled = useMemo(() => carrier.status !== SignupStatus.COMPLETE, [carrier.status]);
 
 	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
@@ -150,12 +148,22 @@ const Sidebar = () => {
 	];
 
 	return isDisabled ? (
-		<div className='flex h-full w-48 flex-col items-center justify-center border-r-2 border-gray-300 bg-gray-50 py-4 lg:w-64'>
-			<Stack align="center">
+		<div className='flex h-full w-48 flex-col justify-center border-r-2 border-gray-300 bg-gray-50 py-4 lg:w-64'>
+			<Stack align="center" className="grow flex flex-col justify-center">
 				<img src='/static/images/inventory-management-system.png' alt='' />
 				<Text size="xl" weight="bold" align="center">Please complete your account registration</Text>
 			</Stack>
-
+			<div
+				role='button'
+				className='hover:bg-secondary-100 flex items-center p-4 text-base font-normal text-gray-900'
+				onClick={() => {
+					dispatch({ type: 'RESET' });
+					signOut({ callbackUrl: `${window.location.origin}/login` }).then(r => console.log('Sign Out Success!'));
+				}}
+			>
+				<Logout size={30} strokeWidth={1} color={'black'} />
+				<span className='ml-6 flex-1 whitespace-nowrap text-base md:text-lg'>Sign Out</span>
+			</div>
 		</div>
 	) : (
 		<div className='flex h-full w-48 flex-col border-r-2 border-gray-300 bg-gray-50 py-4 lg:w-64'>

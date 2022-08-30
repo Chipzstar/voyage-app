@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from '@mantine/core';
 import { SignupStatus } from '../utils/types';
 
-const TabBar = ({ tabLabels, defaultTab, status, children }) => {
-	const [activeTab, setActiveTab] = useState<string | null>(defaultTab);
+const TabBar = ({ tabLabels, activeTab, setActiveTab, status, children }) => {
+
+	useEffect(() => console.log("TabBar", activeTab), [activeTab]);
+
 	return (
 		<Tabs value={activeTab} onTabChange={(value) => status !== SignupStatus.COMPLETE ? setActiveTab(status): setActiveTab(value)}>
 			<Tabs.List grow>

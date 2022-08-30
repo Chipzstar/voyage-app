@@ -123,6 +123,8 @@ export enum DocumentType {
 }
 
 export interface CarrierDocument {
+	id: string;
+	carrierId: string;
 	type: DocumentType;
 	document: {
 		filename: string;

@@ -7,31 +7,25 @@ export default async function handler(req, res) {
 	await runMiddleware(req, res, cors);
 	// @ts-ignore
 	const token = await getToken({ req });
-	let { id, ...payload } = req.body;
+	let payload = req.body;
 	console.log('PAYLOAD', payload);
 	const { id: ID } = req.query;
-	if (req.method === 'POST') {
-		try {
-			const settings = await prisma.settings.create({
-				data: {
-					...payload,
-					carrierId: token?.carrierId
-				}
-			});
-			console.log(settings);
-			res.status(201).json(settings);
-		} catch (err) {
-			console.log(err);
-			res.status(500).send({ message: 'Internal Server Error. Please try again' });
-		}
-	} else if (req.method === 'PUT') {
+	if (req.method === 'PUT') {
+		const { id, ...rest } = payload;
 		try {
 			const settings = await prisma.settings.update({
 				where: {
-					carrierId: token?.carrierId
+					OR: [
+						{
+							id: ID
+						},
+						{
+							carrierId: token?.carrierId
+						}
+					]
 				},
 				data: {
-					...payload
+					...rest
 				}
 			});
 			console.log(settings);

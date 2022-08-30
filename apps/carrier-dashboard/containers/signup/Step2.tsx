@@ -3,7 +3,7 @@ import { useForm, yupResolver } from '@mantine/form';
 import { signupSchema2 } from '../../validation';
 import { Anchor, Box, Button, Loader, Select, Stack, Text, TextInput } from '@mantine/core';
 import Link from 'next/link';
-import { PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/utils/constants';
+import { PATHS, PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/utils/constants';
 import { loadStripe } from '@stripe/stripe-js';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCarrier, saveNewCarrier, useNewCarrier } from '../../store/feature/profileSlice';
@@ -79,7 +79,7 @@ const Step1 = ({ nextStep, prevStep }) => {
 			});
 			if (ok) {
 				notifySuccess('create-business-address-success', 'Business Address saved successfully!', <Check size={20} />);
-				await router.replace('/');
+				await router.replace(PATHS.SETTINGS);
 				setLoading(false);
 				return;
 			}

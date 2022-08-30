@@ -29,7 +29,7 @@ export const updateCarrier = createAsyncThunk('carrier/updateCarrier', async (pa
 
 export const createBankAccount = createAsyncThunk('carrier/createBankAccount', async (payload : BankAccountForm, thunkAPI) => {
 	try {
-		const { accountId, id, ...rest} = payload
+		const { accountId, ...rest} = payload
 		const carrier = (await axios.post(`/api/stripe/accounts/${accountId}/bank-account`, rest)).data;
 		thunkAPI.dispatch(editCarrier(carrier));
 		return carrier;
@@ -58,7 +58,7 @@ export const profileSlice = createSlice({
 		setCarrier: (state, action: PayloadAction<Carrier>) => {
 			return action.payload;
 		},
-		editCarrier: (state, action: PayloadAction<Carrier>) => {
+		editCarrier: (state, action: PayloadAction<Partial<Carrier>>) => {
 			return {
 				...state,
 				...action.payload

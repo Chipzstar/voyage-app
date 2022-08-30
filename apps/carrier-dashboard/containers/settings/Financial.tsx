@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Center, Container, Group, Loader, Select, Stack, TextInput } from '@mantine/core';
 import { useDispatch } from 'react-redux';
-import { PaymentMethod } from '@stripe/stripe-js';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
-import { BankAccountForm, StripeDetails } from '../../utils/types';
-import { createBankAccount, updateCarrier } from '../../store/feature/profileSlice';
+import { BankAccountForm, Carrier, SignupStatus } from '../../utils/types';
+import { createBankAccount } from '../../store/feature/profileSlice';
 import { useForm } from '@mantine/form';
 import { countries } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
@@ -13,8 +11,8 @@ import { notifyError, notifySuccess } from '../../utils/functions';
 import { Check, X } from 'tabler-icons-react';
 
 const formatAccNumber = (accNumber: string): string => {
-	return accNumber ? '****' + accNumber : undefined
-}
+	return accNumber ? '****' + accNumber : undefined;
+};
 
 const formatCode = codeText => {
 	return codeText
@@ -24,7 +22,12 @@ const formatCode = codeText => {
 		.join('-');
 };
 
-const Financial = ({ carrierInfo }) => {
+interface FinancialProps {
+	carrierInfo: Carrier;
+	nextTab: () => void;
+}
+
+const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 
@@ -35,51 +38,29 @@ const Financial = ({ carrierInfo }) => {
 	const form = useForm<BankAccountForm>({
 		initialValues: {
 			accountId: carrierInfo?.stripe?.accountId ?? '',
-			id: bankAccount?.id ?? '',
+			id: bankAccount?.id ?? undefined,
 			currency: bankAccount?.currency ?? 'GBP',
 			country: bankAccount?.country ?? 'GB',
-			accountHolderName: bankAccount?.accountHolderName ??'',
+			accountHolderName: bankAccount?.accountHolderName ?? '',
 			sortCode: bankAccount?.sortCode ?? '',
-			last4: formatAccNumber(bankAccount?.last4) ?? '',
+			last4: formatAccNumber(bankAccount?.last4) ?? ''
 		}
 	});
 
-	const submitPaymentInfo = useCallback(async paymentIntent => {
-		try {
-			const paymentMethod: PaymentMethod = (
-				await axios.put(`/api/stripe/payment-method/${paymentIntent.payment_method}`, {
-					customer: carrierInfo.stripe.customerId
-				})
-			).data;
-			let data: StripeDetails = {
-				...carrierInfo.stripe,
-				paymentMethod: {
-					id: paymentMethod.id ?? paymentIntent.payment_method,
-					fingerprint: paymentMethod.card.fingerprint,
-					brand: paymentMethod.card.brand,
-					last4: paymentMethod.card.last4,
-					expMonth: paymentMethod.card.exp_month,
-					expYear: paymentMethod.card.exp_year
-				}
-			};
-			await dispatch(updateCarrier({ ...carrierInfo, stripe: data })).unwrap();
-			return 'Payment Added successfully';
-		} catch (e) {
-			throw e;
-		}
-	}, []);
-
 	const handleSubmit = useCallback(async values => {
+		setLoading(true)
 		values.sortCode = formatCode(values.sortCode);
-		let payload = {...values, accountId: carrierInfo?.stripe.accountId }
-		console.log(payload)
+		let payload = { ...values, accountId: carrierInfo?.stripe.accountId, status: carrierInfo.status };
+		console.log(payload);
 		try {
 			const carrier = await dispatch(createBankAccount(payload)).unwrap();
-			notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />)
-		}
-		catch (e) {
-			console.error(e)
-			notifyError('update-bank-details-failed', e.message, <X size={20} />)
+			notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />);
+			carrierInfo.status === SignupStatus.BANK_ACCOUNT && nextTab();
+			setLoading(false)
+		} catch (e) {
+			console.error(e);
+			notifyError('update-bank-details-failed', e.message, <X size={20} />);
+			setLoading(false)
 		}
 	}, []);
 
@@ -92,23 +73,32 @@ const Financial = ({ carrierInfo }) => {
 						<Stack className='md:w-196'>
 							<TextInput required label='Account Holder Name' radius={0} {...form.getInputProps('accountHolderName')} />
 							<Group grow>
-								<TextInput required={!bankAccount} disabled={bankAccount} label='Sort Code' radius={0} minLength={6} maxLength={6} value={form.values.sortCode} onChange={event => form.setFieldValue('sortCode', event.currentTarget.value)} />
-								<TextInput required={!bankAccount} disabled={bankAccount} label='Account Number' radius={0} minLength={8} {...form.getInputProps('last4')} />
+								<TextInput
+									required={!bankAccount}
+									disabled={!!bankAccount}
+									label='Sort Code'
+									radius={0}
+									minLength={6}
+									maxLength={6}
+									value={form.values.sortCode}
+									onChange={event => form.setFieldValue('sortCode', event.currentTarget.value)}
+								/>
+								<TextInput required={!bankAccount} disabled={!!bankAccount} label='Account Number' radius={0} minLength={8} {...form.getInputProps('last4')} />
 							</Group>
 							<Group grow>
 								<Select
 									required={!bankAccount}
-									disabled={bankAccount}
+									disabled={!!bankAccount}
 									searchable
 									label='Country'
 									radius={0}
-									{...form.getInputProps('country')}
 									data={countries.map(
 										(country): SelectInputData => ({
 											label: country.name,
 											value: country.code
 										})
 									)}
+									{...form.getInputProps('country')}
 								/>
 								<Select disabled={bankAccount} required={!bankAccount} searchable readOnly label='Currency' radius={0} data={['GBP', 'EUR', 'USD']} {...form.getInputProps('currency')} />
 							</Group>
@@ -124,14 +114,9 @@ const Financial = ({ carrierInfo }) => {
 									<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
 									<span>Save Changes</span>
 								</Button>
-								<Button
-									size='md'
-									type='button'
-									color="red"
-									className="bg-red-500 hover:bg-red-600"
-								>
+								{!!bankAccount && <Button disabled size='md' type='button' color='red' className='bg-red-500 hover:bg-red-600'>
 									<span>Delete Bank Account</span>
-								</Button>
+								</Button>}
 							</Group>
 						</Stack>
 					</form>
