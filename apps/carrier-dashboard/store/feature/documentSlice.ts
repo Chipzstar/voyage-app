@@ -6,12 +6,11 @@ const initialState = [];
 
 export const createDocument = createAsyncThunk('document/createDocument', async (payload: NewDocument, thunkAPI) => {
 	try {
-		const filename = encodeURIComponent(payload.file.name);
 		const document = (
 			await axios.post('/api/document', {
 				type: payload.documentType,
-				filename,
-				filepath: `${payload.id}/${payload.documentType}/${filename}`,
+				filename: payload.file.name,
+				filepath: `${payload.id}/${payload.documentType}/${payload.file.name}`,
 				status: 'PENDING',
 				verified: false
 			})
