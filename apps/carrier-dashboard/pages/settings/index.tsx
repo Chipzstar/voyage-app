@@ -6,16 +6,16 @@ import { useSelector } from 'react-redux';
 import { Container, Tabs } from '@mantine/core';
 import Organisation from '../../containers/settings/Organisation';
 import Financial from '../../containers/settings/Financial';
+import Workflows from '../../containers/settings/Workflows';
+import Documents from '../../containers/settings/Documents';
 import { wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { fetchDocuments, fetchProfile, fetchSettings } from '../../utils/functions';
 import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
-import Documents from '../../containers/settings/Documents';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice';
 import { Carrier, SignupStatus } from '../../utils/types';
-import Workflows from '../../containers/settings/Workflows';
 import { setDocuments, useDocuments } from '../../store/feature/documentSlice';
 
 const TAB_LABELS = {
