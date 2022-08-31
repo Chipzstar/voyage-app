@@ -11,9 +11,9 @@ import prisma from '../../db';
 import { useSelector } from 'react-redux';
 import { store } from '../../store';
 import { setShipments } from '../../store/features/shipmentsSlice';
-import { Shipment } from '../../utils/types';
 import { fetchShipments } from '../../utils/functions';
 import { getToken } from 'next-auth/jwt';
+import { Shipment } from '@voyage-app/shared-types';
 
 export async function getServerSideProps({ req, res, params }) {
 	// @ts-ignore
@@ -95,20 +95,20 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 								</div>
 								<div className='space-y-2'>
 									<span className='text-2xl font-medium'>Carrier</span>
-									<p className='text-lg'>{shipments[pageIndex]?.carrier?.name}</p>
-									<p className='text-lg'>{shipments[pageIndex]?.carrier?.location}</p>
+									<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.name}</p>
+									<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.location}</p>
 								</div>
 								<div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Contact</span>
-										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverName}</p>
-										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverPhone}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverName}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverPhone}</p>
 									</div>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Driver</span>
-										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverName}</p>
-										<p className='text-lg'>{shipments[pageIndex]?.carrier?.driverPhone}</p>
-										<p className='text-lg'>{shipments[pageIndex]?.carrier?.vehicle}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverName}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverPhone}</p>
+										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.vehicleId}</p>
 									</div>
 								</div>
 							</aside>
