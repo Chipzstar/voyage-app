@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Bar } from 'react-chartjs-2';
-import { PACKAGE_TYPE, Shipment, UnixTimestamp } from '../utils/types';
+import { PACKAGE_TYPE, UnixTimestamp } from '../utils/types';
 import moment from 'moment';
 import { filterByTimeRange } from '../utils/functions';
+import { Shipment } from '@voyage-app/shared-types';
 
 const TotalPallets = ({ range, genLabels }) => {
 	const shipments = useSelector(state => state['shipments']);
@@ -15,9 +16,9 @@ const TotalPallets = ({ range, genLabels }) => {
 			const startOfDay = moment.unix(timestamp).unix()
 			const endOfDay = moment.unix(timestamp).endOf('day').unix()
 			// filter by time interval and package type == PALLET
-			let palletShipments = filteredShipments.filter(({ createdAt, package: { packageType } }: Shipment) => packageType === PACKAGE_TYPE.PALLET && moment(createdAt).isAfter(startOfDay) && moment(createdAt).isBefore(endOfDay));
+			let palletShipments = filteredShipments.filter(({ createdAt, packageInfo: { packageType } }: Shipment) => packageType === PACKAGE_TYPE.PALLET && moment(createdAt).isAfter(startOfDay) && moment(createdAt).isBefore(endOfDay));
 			// calculate total number pallets for the data point
-			return palletShipments.reduce((prev, curr: Shipment) => prev + curr.package.quantity, 0)
+			return palletShipments.reduce((prev, curr: Shipment) => prev + curr.packageInfo.quantity, 0)
 		})
 	}, [shipments, range]);
 

@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
 import { filterByTimeRange } from '../utils/functions';
 import { useSelector } from 'react-redux';
-import { DateRange, Shipment } from '../utils/types';
+import { DateRange } from '../utils/types';
 import moment from 'moment';
+import { Shipment } from '@voyage-app/shared-types';
 
 type InputProps = {
 	range: DateRange,
