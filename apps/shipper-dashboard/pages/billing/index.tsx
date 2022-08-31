@@ -2,9 +2,10 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { STATUS } from '../../utils/types';
 import { Shipment } from '@voyage-app/shared-types';
+import { useShipments } from '../../store/features/shipmentsSlice';
 
 const Billing = () => {
-	const shipments = useSelector(state => state['shipments']);
+	const shipments = useSelector(useShipments);
 
 	const totalBalance = useMemo(() => {
 		const total = shipments.reduce((prev: number, curr: Shipment) => {

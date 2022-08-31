@@ -5,8 +5,8 @@ import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import CustomWeekView from '../../containers/CustomWeekView';
 import { useSelector } from 'react-redux';
-import { Shipment } from '../../utils/types';
 import { PATHS } from '../../utils/constants';
+import { Shipment } from '@voyage-app/shared-types';
 
 const localizer = momentLocalizer(moment);
 

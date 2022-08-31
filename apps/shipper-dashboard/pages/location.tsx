@@ -9,30 +9,12 @@ import { DEFAULT_OPERATING_HOURS, PATHS } from '../utils/constants';
 import { nanoid } from 'nanoid';
 import { createLocation, setLocations, updateLocation } from '../store/features/locationSlice';
 import { useRouter } from 'next/router';
-import getStore, { AppDispatch } from '../store';
 import prisma from '../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { fetchLocations } from '../utils/functions';
-
-export async function getServerSideProps({ req, res, query }) {
-	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions);
-	const token = await getToken({req})
-	const store = getStore();
-	if (session.id) {
-		const locations = await fetchLocations(token?.shipperId, prisma)
-		store.dispatch(setLocations(locations));
-	}
-	return {
-		props: {
-			locationId: query?.locationId || '',
-			locationName: query?.locationName || '',
-			initialState: store.getState()
-		} // will be passed to the page component as props
-	};
-}
+import { AppDispatch, wrapper } from '../store';
 
 const location = ({ locationId, locationName }) => {
 	const router = useRouter();
@@ -274,5 +256,21 @@ const location = ({ locationId, locationName }) => {
 		</div>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res, query }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({req})
+	if (session.id) {
+		const locations = await fetchLocations(token?.shipperId, prisma)
+		store.dispatch(setLocations(locations));
+	}
+	return {
+		props: {
+			locationId: query?.locationId || '',
+			locationName: query?.locationName || ''
+		} // will be passed to the page component as props
+	};
+})
 
 export default location;
