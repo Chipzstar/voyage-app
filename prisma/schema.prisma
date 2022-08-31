@@ -300,10 +300,11 @@ model Shipment {
   status             STATUS
   serviceType        SERVICE_TYPE
   schedulingType     SCHEDULING_TYPE
+  shipmentType       SHIPMENT_TYPE
   activitiesRequired SHIPMENT_ACTIVITY[]
   internalPONumber   String?             @default("")
   customerPONumber   String?             @default("")
-  rate               Int
+  rate               Float
   pickup             ShipmentPickup
   delivery           ShipmentDelivery
   packageInfo        PackageInfo
@@ -474,7 +475,7 @@ model Load {
   status           STATUS
   internalPONumber String?           @default("")
   customerPONumber String?           @default("")
-  rate             Int
+  rate             Float
   pickup           LoadLocation
   delivery         LoadLocation
   packageInfo      PackageInfo

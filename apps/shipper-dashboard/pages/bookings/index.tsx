@@ -4,11 +4,11 @@ import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
 import Bookings from '../../containers/Bookings';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
-import getStore from '../../store';
 import prisma from '../../db';
 import { setShipments } from '../../store/features/shipmentsSlice';
 import { getToken } from 'next-auth/jwt';
 import { fetchShipments } from '../../utils/functions';
+import { wrapper } from '../../store';
 
 const bookings = () => {
 	const router = useRouter();
@@ -32,11 +32,10 @@ const bookings = () => {
 	);
 };
 
-export async function getServerSideProps({ req, res }) {
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({req, res}) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
-	const token = await getToken(({req}))
-	const store = getStore();
+	const token = await getToken({req})
 	if (!session) {
 		return {
 			redirect: {
@@ -45,15 +44,15 @@ export async function getServerSideProps({ req, res }) {
 			}
 		};
 	}
-	if (session.id) {
+	if (session.id || token?.shipperId) {
 		const shipments = await fetchShipments(token?.shipperId, prisma)
 		store.dispatch(setShipments(shipments));
 	}
 	return {
 		props: {
-			initialState: store.getState()
+			session
 		}
 	};
-}
+})
 
 export default bookings;

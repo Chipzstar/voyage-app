@@ -1,12 +1,14 @@
 import { runMiddleware, cors } from '../index';
-import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
+import prisma from '../../../db';
 
 export default async function handler(req, res) {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
 	// @ts-ignore
 	const token = await getToken({ req });
+	console.log("TOKEN")
+	console.table(token)
 	const payload = req.body;
 	if (req.method === 'POST') {
 		try {
@@ -19,7 +21,8 @@ export default async function handler(req, res) {
 			console.log(shipment);
 			res.json(shipment);
 		} catch (err) {
-			res.status(400).json({ status: 400, message: 'An error occurred!' })
+			console.error(err)
+			res.status(400).json({ status: 400, message: err.message })
 		}
 	} else {
 		res.status(404).json({ status: 404, message: 'Unrecognised HTTP method used' });

@@ -143,7 +143,6 @@ const book = props => {
 	const handleSubmit = useCallback(async values => {
 		console.log('INPUT:', values);
 		setLoading(true);
-		values.createdAt = moment().unix();
 		try {
 			const load = await generateLoad(profile, values, drivers, team, customers, settings);
 			console.log('OUTPUT:', load);

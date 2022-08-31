@@ -8,13 +8,13 @@ import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
-import { Provider } from 'react-redux';
-import getStore from '../store';
+import { wrapper } from '../store';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
+
 //Binding events.
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -29,33 +29,30 @@ moment.updateLocale('en', {
 moment.locale('en');
 
 function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
-	const store = getStore(pageProps.initialState);
 	return (
-		<Provider store={store}>
-			<AuthProvider session={session}>
-				<MantineProvider
-					withGlobalStyles
-					withNormalizeCSS
-					theme={{
-						colorScheme: 'light'
-					}}
-				>
-					<ModalsProvider>
-						<Layout>
-							<Head>
-								<Favicon />
-								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-								<title>Shipper Dashboard</title>
-							</Head>
-							<main className='app'>
-								<Component {...pageProps} />
-							</main>
-						</Layout>
-					</ModalsProvider>
-				</MantineProvider>
-			</AuthProvider>
-		</Provider>
+		<AuthProvider session={session}>
+			<MantineProvider
+				withGlobalStyles
+				withNormalizeCSS
+				theme={{
+					colorScheme: 'light'
+				}}
+			>
+				<ModalsProvider>
+					<Layout>
+						<Head>
+							<Favicon />
+							<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+							<title>Shipper Dashboard</title>
+						</Head>
+						<main className='app'>
+							<Component {...pageProps} />
+						</main>
+					</Layout>
+				</ModalsProvider>
+			</MantineProvider>
+		</AuthProvider>
 	);
 }
 
-export default App;
+export default wrapper.withRedux(App);

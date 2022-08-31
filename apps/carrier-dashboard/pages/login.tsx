@@ -8,7 +8,7 @@ import prisma from '../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { PATHS } from '../utils/constants';
-import moment from 'moment/moment';
+import { getToken } from 'next-auth/jwt';
 
 const VerifyEmailAlert = ({ email, onClose }) => {
 	return (
@@ -83,15 +83,6 @@ const login = ({ csrfToken, ...props }) => {
 						<img src={'/static/images/logo.svg'} alt='' />
 						<span className='mb-1 text-2xl font-bold'>voyage</span>
 					</figure>
-					{/*<Group grow mb='md' mt='md'>
-						<Button leftIcon={<GoogleIcon />} variant='default' color='gray' onClick={() => signIn('google')}>
-							Google
-						</Button>
-						<Button disabled={process.env.NODE_ENV === 'development'} component='a' leftIcon={<TwitterIcon size={16} color='#00ACEE' />} variant='default' onClick={() => signIn('twitter')}>
-							Twitter
-						</Button>
-					</Group>
-					<Divider label='Or continue with email' labelPosition='center' my='lg' />*/}
 					<div>
 						<TextInput
 							name='csrfToken'
@@ -133,6 +124,7 @@ const login = ({ csrfToken, ...props }) => {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({req})
 	console.log(session);
 	if (session?.user) {
 		return {

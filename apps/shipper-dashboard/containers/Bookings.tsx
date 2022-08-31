@@ -4,7 +4,8 @@ import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { NewBooking, Shipment } from '../utils/types'
+import { NewBooking } from '../utils/types'
+import { Shipment } from '@voyage-app/shared-types';
 
 const Empty = () => {
 	const router = useRouter();
@@ -52,7 +53,7 @@ const Bookings = () => {
 						<td>{element.bookingStatus}</td>
 						<td>£{element.rate}</td>
 						{[minWindow, maxWindow].includes(NaN) ? <td>Estimating</td> : <td>{`${minWindow} - ${maxWindow} hours`}</td>}
-						<td>{element.carrier?.name || "-"}</td>
+						<td>{element.carrierInfo?.name || "-"}</td>
 						<td role='button'>
 							<span className='text-secondary' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.shipmentId}`)}>
 								View in shipments

@@ -44,14 +44,6 @@ export interface Dimensions {
 	height: number;
 }
 
-export interface Package {
-	weight: number,
-	quantity: number,
-	dimensions: Dimensions,
-	packageType: PACKAGE_TYPE,
-	description: string,
-}
-
 //types
 export type Coordinates = [longitude: number, latitude: number]
 
@@ -100,33 +92,6 @@ export enum PACKAGE_TYPE {
 	BOX = 'BOX',
 	CONTAINER = 'CONTAINER',
 	SKIDS = 'SKID',
-}
-
-export interface Carrier {
-	name: string
-	driverName: string,
-	driverPhone: string,
-	location?: Coordinates,
-	vehicle?: string
-}
-
-export interface Shipment {
-	id: string;
-	shipmentId: string,
-	createdAt: UnixTimestamp;
-	bookingStatus: string;
-	status: STATUS;
-	serviceType: SERVICE_TYPE;
-	shipmentType: SHIPMENT_TYPE;
-	schedulingType: SCHEDULING_TYPE;
-	activitiesRequired: SHIPMENT_ACTIVITY[];
-	internalPONumber: string;
-	customerPONumber: string;
-	rate: number;
-	pickup: Pickup;
-	delivery: Delivery;
-	package: Package;
-	carrier: Carrier;
 }
 
 export interface LocationTimeWindow {
@@ -179,7 +144,7 @@ export interface NewBooking {
 	length: number;
 	width: number;
 	packageType: PACKAGE_TYPE;
-	pickupDate?: any;
+	pickupDate?: number;
 	pickupLocation: string;
 	deliveryLocation: string;
 	description: string;

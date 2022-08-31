@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import { Loader, MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Calendar, CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
-import { numericId } from '@voyage-app/shared-utils';
 import { LocationType, NewBooking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
@@ -14,38 +13,16 @@ import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
 import { fetchLocations, generateShipment } from '../../utils/functions';
 import { createBooking } from '../../store/features/bookingsSlice';
-import getStore, { AppDispatch } from 'apps/shipper-dashboard/store';
+import { AppDispatch, wrapper } from '../../store';
 import { getToken } from 'next-auth/jwt';
 import prisma from '../../db';
 import { setLocations } from '../../store/features/locationSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 
-export async function getServerSideProps({ req, res, query }) {
-	const store = getStore();
-	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions);
-	const token = await getToken({ req });
-	if (!session) {
-		return {
-			redirect: {
-				destination: PUBLIC_PATHS.LOGIN,
-				permanent: false
-			}
-		};
-	}
-	const locations = await fetchLocations(token?.shipperId, prisma);
-	store.dispatch(setLocations(locations));
-	return {
-		props: {
-			bookingID: query?.bookingId || '',
-			initialState: store.getState()
-		} // will be passed to the page component as props
-	};
-}
-
-const create = props => {
+const create = ({bookingID}) => {
 	const router = useRouter();
+	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 	const { locations, bookings } = useSelector(state => ({
 		locations: state['locations'],
@@ -54,31 +31,39 @@ const create = props => {
 	const [isFTL, setFTL] = useState(false);
 
 	const booking = useMemo(() => {
-		return bookings.find((booking: NewBooking) => booking.id === props.bookingID);
+		return bookings.find((booking: NewBooking) => booking.id === bookingID);
 	}, [bookings]);
 
 	const form = useForm({
 		initialValues: {
-			id: booking?.id || `VOY-ID${numericId(3)}`,
-			createdAt: booking?.createdAt || moment().unix(),
-			serviceType: booking?.serviceType || '',
-			shipmentType: booking?.shipmentType || '',
-			schedulingType: booking?.schedulingType || '',
+			id: booking?.id ?? undefined,
+			createdAt: booking?.createdAt ?? undefined,
+			serviceType: booking?.serviceType ?? '',
+			shipmentType: booking?.shipmentType ?? '',
+			schedulingType: booking?.schedulingType ?? '',
 			activitiesRequired: booking?.activitiesRequired ? booking.activitiesRequired : [],
-			internalPONumber: booking?.internalPONumber || '',
-			customerPONumber: booking?.customerPONumber || '',
-			weight: booking?.weight || 0,
-			quantity: booking?.quantity || 1,
-			height: booking?.height || 1,
-			length: booking?.length || 1,
-			width: booking?.width || 1,
-			packageType: booking?.packageType || '',
-			pickupDate: booking?.pickupDate || null,
-			pickupLocation: booking?.pickupLocation || '',
-			deliveryLocation: booking?.deliveryLocation || '',
-			description: booking?.description || '',
-			notes: booking?.notes || ''
-		}
+			internalPONumber: booking?.internalPONumber ?? '',
+			customerPONumber: booking?.customerPONumber ?? '',
+			weight: booking?.weight ?? 0,
+			quantity: booking?.quantity ?? 1,
+			height: booking?.height ?? 1,
+			length: booking?.length ?? 1,
+			width: booking?.width ?? 1,
+			packageType: booking?.packageType ?? PACKAGE_TYPE.PALLET,
+			pickupDate: booking?.pickupDate ?? null,
+			pickupLocation: booking?.pickupLocation ?? '',
+			deliveryLocation: booking?.deliveryLocation ?? '',
+			description: booking?.description ?? '',
+			notes: booking?.notes ?? ''
+		},
+		validate: (values) => ({
+			pickupLocation: !values.pickupLocation ? 'Please choose a pickup location': null,
+			deliveryLocation: !values.deliveryLocation ? 'Please choose a delivery location': null,
+			pickupDate: !values.pickupDate ? 'Please select a date for pickup' : null,
+			schedulingType: !values.schedulingType ? 'Please provide the schedule-type for this shipment' : null,
+			shipmentType: !values.shipmentType ? 'Please provide a Shipment Type' : null,
+			serviceType: !values.serviceType ? 'Please provide a Service Type': null
+		})
 	});
 
 	const inputButton = classNames({
@@ -140,14 +125,19 @@ const create = props => {
 	};
 
 	const handleSubmit = useCallback(
-		values => {
+		async values => {
+			setLoading(true)
 			const pickupLocation = locations.find(({ id }) => id === values.pickupLocation);
 			const deliveryLocation = locations.find(({ id }) => id === values.deliveryLocation);
-			// update the createdAt timestamp
-			values.createdAt = moment().unix();
-			const shipment = generateShipment(values, pickupLocation, deliveryLocation);
-			dispatch(createShipment(shipment));
-			router.push(PATHS.SHIPMENTS).then(() => console.log('Navigated to shipments page'));
+			try {
+				const shipment = generateShipment(values, pickupLocation, deliveryLocation);
+				dispatch(createShipment(shipment));
+				setLoading(false);
+				router.push(PATHS.SHIPMENTS).then(() => console.log('Navigated to shipments page'));
+			} catch (err) {
+				console.error(err)
+				setLoading(false);
+			}
 		},
 		[locations]
 	);
@@ -184,6 +174,7 @@ const create = props => {
 							>
 								Direct to carrier injections
 							</button>
+							{form.errors.serviceType && <span className="text-red-500">{form.errors.serviceType}</span>}
 						</div>
 					</div>
 					<div className='grid grid-cols-1 gap-6'>
@@ -198,6 +189,7 @@ const create = props => {
 							<button type='button' className={`${inputButton} ${form.values.shipmentType === 'LPS' && 'bg-secondary text-white'}`} onClick={() => handleFTL(false, SHIPMENT_TYPE.LESS_THAN_PALLET_SIZE)}>
 								Less than pallet size
 							</button>
+							{form.errors.shipmentType && <span className="text-red-500">{form.errors.shipmentType}</span>}
 						</div>
 					</div>
 					<div className='grid grid-cols-1 gap-6'>
@@ -325,12 +317,13 @@ const create = props => {
 					<div className='grid grid-cols-1 gap-6'>
 						<header className='quote-header'>Scheduling</header>
 						<div className='grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
-							<button type='button' className={`${inputButton} ${form.values.schedulingType === 'one-time' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.ONE_TIME)}>
+							<button type='button' className={`${inputButton} ${form.values.schedulingType === SCHEDULING_TYPE.ONE_TIME && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.ONE_TIME)}>
 								One-time
 							</button>
-							<button type='button' className={`${inputButton} ${form.values.schedulingType === 'recurring' && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.RECURRING)}>
+							<button type='button' className={`${inputButton} ${form.values.schedulingType === SCHEDULING_TYPE.RECURRING && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.RECURRING)}>
 								Recurring
 							</button>
+							{form.errors.schedulingType && <span className="text-red-500">{form.errors.schedulingType}</span>}
 						</div>
 						<div className='flex flex-col'>
 							<p className='font-normal'>Select a pickup date, and we’ll calculate a delivery date based on transit time.</p>
@@ -401,7 +394,8 @@ const create = props => {
 				<div id='button-container' className='flex flex-col flex-wrap justify-center space-y-8'>
 					{!!form.values.weight && !!form.values.pickupDate && <span className='text-4xl text-center w-auto'>£345.00</span>}
 					<button type='submit' className='voyage-button w-auto'>
-						Book
+						<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
+						<span>Book</span>
 					</button>
 					<button
 						type='button'
@@ -421,5 +415,26 @@ const create = props => {
 		</div>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res, query }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	const locations = await fetchLocations(token?.shipperId, prisma);
+	store.dispatch(setLocations(locations));
+	return {
+		props: {
+			bookingID: query?.bookingId || ''
+		} // will be passed to the page component as props
+	};
+})
 
 export default create

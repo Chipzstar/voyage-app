@@ -3,18 +3,16 @@ import CalendarFilter from '../components/CalendarFilter';
 import DashboardPanels from '../components/DashboardPanels';
 import Map from '../components/Map';
 import moment from 'moment';
-import { useDispatch } from 'react-redux';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
-import { store } from '../store';
 import prisma from '../db';
 import { setShipments } from '../store/features/shipmentsSlice';
 import { PUBLIC_PATHS } from '../utils/constants';
 import { getToken } from 'next-auth/jwt'
 import { fetchShipments } from '../utils/functions';
+import { wrapper } from '../store';
 
-export function Index(props) {
-	const dispatch = useDispatch();
+const Index = (props) => {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
 
 	return (
@@ -33,7 +31,7 @@ export function Index(props) {
 	);
 }
 
-export async function getServerSideProps({ req, res }) {
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req })
@@ -53,10 +51,9 @@ export async function getServerSideProps({ req, res }) {
 	}
 	return {
 		props: {
-			session,
-			initialState: store.getState()
+			session
 		}
 	};
-}
+})
 
 export default Index;

@@ -4,18 +4,18 @@ import moment from 'moment';
 import Map from '../components/Map';
 import TruckLoadTimeline from '../components/TruckLoadTimeline';
 import PageHeader from '../layout/PageHeader';
-import { PUBLIC_PATHS } from '../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../utils/constants';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import { authOptions } from './api/auth/[...nextauth]';
 import prisma from '../db';
 import { setCarrier } from '../store/feature/profileSlice';
 import { wrapper } from '../store';
-import { fetchLoads, fetchProfile, logger } from '../utils/functions';
+import { fetchLoads, fetchProfile } from '../utils/functions';
 import { setLoads, useLoads } from '../store/feature/loadSlice';
 import { useSelector } from 'react-redux';
 import { STATUS } from '@voyage-app/shared-types';
-import { MapType } from '../utils/types';
+import { MapType, SignupStatus } from '../utils/types';
 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
@@ -41,6 +41,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
+	// check if the user is authenticated, it not, redirect back to login page
 	if (!session) {
 		return {
 			redirect: {
@@ -49,7 +50,15 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			}
 		};
 	}
-	logger.info("Testing logtail :)");
+	// check if the user has not completed account registration, if not redirect to settings page
+	if (token?.status !== SignupStatus.COMPLETE) {
+		return {
+			redirect: {
+				destination: PATHS.SETTINGS,
+				permanent: false
+			}
+		};
+	}
 	if (session.id || token?.carrierId) {
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let loads = await fetchLoads(token?.carrierId, prisma);

@@ -131,7 +131,6 @@ export interface CarrierInfo {
 
 export interface Shipment {
 	id: string;
-	source: string;
 	shipmentId: string,
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
@@ -146,7 +145,7 @@ export interface Shipment {
 	rate: number;
 	pickup: Pickup;
 	delivery: Delivery;
-	package: Package;
-	carrier: CarrierInfo;
+	packageInfo: Package;
+	carrierInfo: Partial<CarrierInfo>;
 }
 

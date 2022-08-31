@@ -24,7 +24,7 @@ model Load {
     status STATUS
     internalPONumber String? @default("")
     customerPONumber String? @default("")
-    rate Int
+    rate Float
     pickup LoadLocation
     delivery LoadLocation
     packageInfo PackageInfo

@@ -1,7 +1,7 @@
-import { Delivery, Location, NewBooking, Pickup, Shipment, STATUS } from './types'
+import { Delivery, Location, NewBooking, Pickup, STATUS } from './types'
 import moment from 'moment';
 import { numericId } from '@voyage-app/shared-utils'
-import prisma from '../db';
+import { Shipment } from '@voyage-app/shared-types';
 
 export function calculateRate(
 	weight,
@@ -14,13 +14,14 @@ export function calculateRate(
 }
 
 export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Shipment {
+	console.log(values.pickupDate)
 	const pickup: Pickup = {
 		facilityId: pickupLocation.id,
 		facilityName: pickupLocation.name,
 		location: `${pickupLocation.addressLine1} ${pickupLocation.postcode}`,
 		window: {
-			start: moment(values.pickupDate).unix(),
-			end: moment(values.pickupDate).add(1, "hour").unix()
+			start: values.pickupDate,
+			end: moment.unix(values.pickupDate).add(1, "hour").unix()
 		}
 	};
 	const delivery: Delivery = {
@@ -31,7 +32,7 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 
 	return {
 		id: undefined,
-		shipmentId: `VOY-ID${numericId(3)}`,
+		shipmentId: `VOY-ID${numericId(8)}`,
 		createdAt: values.createdAt,
 		bookingStatus: 'Booked',
 		status: STATUS.NEW,
@@ -44,7 +45,7 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 		rate: calculateRate(values.weight, values.quantity),
 		pickup,
 		delivery,
-		package: {
+		packageInfo: {
 			weight: values.weight,
 			quantity: values.quantity,
 			dimensions: {
@@ -55,11 +56,11 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 			packageType: values.packageType,
 			description: values.description
 		},
-		carrier: {
+		carrierInfo: {
 			name: 'HBCS Logistics',
+			driverId: '',
 			driverName: 'Tony Soprano',
 			driverPhone: '+447592136042',
-			vehicle: 'Ford Trailer Truck',
 			location: [-1.778197, 52.412811]
 		}
 	};
@@ -110,4 +111,23 @@ export async function fetchLocations(shipperId, prisma){
 		updatedAt: moment(location.updatedAt).unix()
 	}));
 	return locations
+}
+
+export async function fetchBookings(shipperId, prisma){
+	let bookings = await prisma.booking.findMany({
+		where: {
+			shipperId: {
+				equals: shipperId
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+	bookings = bookings.map(booking => ({
+		...booking,
+		createdAt: moment(booking.createdAt).unix(),
+		updatedAt: moment(booking.updatedAt).unix()
+	}));
+	return bookings
 }

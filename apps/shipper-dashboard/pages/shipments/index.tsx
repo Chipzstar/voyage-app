@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import moment from 'moment';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { selectAllShipments, setShipments } from '../../store/features/shipmentsSlice';
+import { useShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useSelector } from 'react-redux';
 import { store } from '../../store';
 import prisma from '../../db';
@@ -37,7 +37,7 @@ const STATUS_MAP = {
 
 const index = ({ initialState }) => {
 	const router = useRouter();
-	const shipments = useSelector(selectAllShipments);
+	const shipments = useSelector(useShipments);
 	const [activeTab, setActiveTab] = useState<string | null>(TAB_LABELS.ALL);
 	const [statuses, setStatuses] = useState(Object.values(STATUS))
 

@@ -39,7 +39,7 @@ export const authOptions = {
 						}
 					});
 					// Any object returned will be saved in `user` property of the JWT
-					return {...user, carrierId: carrier?.id ?? null};
+					return {...user, carrierId: carrier?.id ?? null, status: carrier?.status ?? null};
 				} else {
 					// If you return null then an error will be displayed advising the user to check their details.
 					return null;

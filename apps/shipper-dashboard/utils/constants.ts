@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { OperatingHoursState } from './types';
 
+export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
+
 export const PUBLIC_PATHS = {
 	LOGIN: '/login'
 }
