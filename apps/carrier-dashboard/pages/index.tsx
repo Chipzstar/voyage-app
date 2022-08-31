@@ -41,6 +41,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
+	console.log(token)
 	// check if the user is authenticated, it not, redirect back to login page
 	if (!session) {
 		return {

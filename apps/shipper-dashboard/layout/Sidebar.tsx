@@ -33,7 +33,7 @@ const Sidebar = () => {
         <div className='w-48 lg:w-64 h-full overflow-y-auto py-4 bg-gray-50 flex flex-col border-r-2 border-gray-300'>
             <Link href={PATHS.HOME}>
                 <div role='button' className='flex flex-row items-center pl-4 mb-7'>
-                    <img src='/static/images/favicon.svg' className='mr-3 h-6 sm:h-7' alt='Voyage Logo'/>
+                    <img src='/static/images/logo.svg' className='mr-3 h-6 sm:h-7' alt='Voyage Logo'/>
                     <span className='self-center text-2xl font-semibold whitespace-nowrap mb-0.5'>voyage</span>
                 </div>
             </Link>

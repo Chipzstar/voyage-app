@@ -54,7 +54,7 @@ const login = ({ csrfToken, ...props }) => {
 			<div className='my-auto flex grow justify-center'>
 				<form onSubmit={form.onSubmit(handleSignIn)} action='' className='w-196 flex flex-col space-y-8'>
 					<figure className='flex flex-row items-center justify-center space-x-4'>
-						<img src={'/static/images/favicon.svg'} alt='' />
+						<img src={'/static/images/logo.svg'} alt='' />
 						<span className='mb-1 text-2xl font-bold'>voyage</span>
 					</figure>
 					<div>

@@ -41,7 +41,7 @@ const calendar = () => {
 				defaultView={Views.WEEK}
 				localizer={localizer}
 				events={shipments.map((shipment: Shipment) => ({
-					id: shipment.id,
+					id: shipment.shipmentId,
 					title: `${shipment.pickup.facilityName} → ${shipment.delivery.facilityName}`,
 					bgColor: '#ff7f50',
 					allDay: false,

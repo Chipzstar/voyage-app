@@ -1,4 +1,4 @@
-import { Node as Logtail } from '@logtail/js';
+const { Node: Logtail } = require('@logtail/js');
 import mbxClient from '@mapbox/mapbox-sdk';
 
 // Initialize logtail

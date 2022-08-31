@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from '@mantine/core';
 import CarrierPreferences from '../../containers/CarrierPreferences';
 import Locations from '../../containers/Locations';
@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux';
 
 const workflows = () => {
 	const router = useRouter();
-	const [activeTab, setActiveTab] = useState<string | null>('workflows');
+	const [activeTab, setActiveTab] = useState<string | null>(router.asPath.split('#')[1] ?? 'preferences');
 	const locations = useSelector(useLocation)
 
 	return (
@@ -26,10 +26,10 @@ const workflows = () => {
 					setActiveTab(value)
 				}}>
 					<Tabs.List grow>
-						<Tabs.Tab value="workflows">Carrier Preferences</Tabs.Tab>
+						<Tabs.Tab value="preferences">Carrier Preferences</Tabs.Tab>
 						<Tabs.Tab value="locations">Locations</Tabs.Tab>
 					</Tabs.List>
-					<Tabs.Panel value='workflows'>
+					<Tabs.Panel value='preferences'>
 						<CarrierPreferences />
 					</Tabs.Panel>
 					<Tabs.Panel value='locations'>

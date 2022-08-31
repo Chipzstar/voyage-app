@@ -66,6 +66,7 @@ export const authOptions = {
 				token.id = user.id;
 				token.email = user.email;
 				token.carrierId = user?.carrierId
+				token.status = user?.status
 			}
 			return token;
 		},
