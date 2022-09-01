@@ -16,7 +16,8 @@ export const createLocation = createAsyncThunk('location/createLocation', async 
 
 export const updateLocation = createAsyncThunk('location/updateLocation', async (payload: Location, thunkAPI) => {
 	try {
-		const location = (await axios.put(`/api/location/${payload.id}`, payload)).data;
+		const { id, ...rest} = payload
+		const location = (await axios.put(`/api/location/${id}`, rest)).data;
 		thunkAPI.dispatch(editLocation(location));
 		return location;
 	} catch (err) {

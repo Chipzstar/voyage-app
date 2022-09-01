@@ -8,7 +8,8 @@ export default async function handler(req, res) {
 	// @ts-ignore
 	const token = await getToken({req})
 	const payload = req.body;
-	const { id } = req.query
+	const { id } = req.query;
+	console.log(id)
 	if (req.method === 'POST') {
 		try {
 			const location = await prisma.location.create({
@@ -20,6 +21,7 @@ export default async function handler(req, res) {
 			console.log(location);
 			res.json(location);
 		} catch (err) {
+			console.error(err)
 			res.status(400).json({ status: 400, message: 'An error occurred!' })
 		}
 	} else if (req.method === 'PUT'){
@@ -35,6 +37,7 @@ export default async function handler(req, res) {
 			console.log(location);
 			res.json(location);
 		} catch (err) {
+			console.error(err)
 			res.status(400).json({ status: 400, message: 'An error occurred!' })
 		}
 	} else if (req.method === 'DELETE'){
