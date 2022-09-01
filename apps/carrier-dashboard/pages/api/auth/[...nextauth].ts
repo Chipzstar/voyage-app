@@ -64,7 +64,6 @@ export const authOptions = {
 		async jwt({ token, user, account, profile, isNewUser }) {
 			if (user) {
 				token.id = user.id;
-				token.email = user.email;
 				token.carrierId = user?.carrierId
 				token.status = user?.status
 			}

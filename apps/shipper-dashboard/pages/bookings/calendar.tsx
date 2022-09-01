@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';

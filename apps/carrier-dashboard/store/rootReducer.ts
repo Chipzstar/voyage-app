@@ -4,6 +4,7 @@ import driverReducer from './feature/driverSlice';
 import vehicleReducer from './feature/vehicleSlice';
 import customerReducer from './feature/customerSlice';
 import loadReducer from './feature/loadSlice';
+import shipmentReducer from './feature/shipmentSlice';
 import profileReducer from './feature/profileSlice';
 import settingsReducer from './feature/settingsSlice';
 import documentReducer from './feature/documentSlice';
@@ -16,6 +17,7 @@ const appReducer = combineReducers({
 	vehicles: vehicleReducer,
 	customers: customerReducer,
 	loads: loadReducer,
+	shipments: shipmentReducer,
 	documents: documentReducer,
 	settings: settingsReducer
 });
@@ -37,6 +39,7 @@ const rootReducer = (state, action) => {
 			vehicles: action.payload.vehicles || state.vehicles,
 			customers: action.payload.customers || state.customers,
 			loads: action.payload.loads || state.loads,
+			shipments: action.payload.shipments || state.shipments,
 			documents: action.payload.documents || state.documents,
 		};
 	}

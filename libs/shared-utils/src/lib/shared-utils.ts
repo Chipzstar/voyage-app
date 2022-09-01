@@ -38,3 +38,22 @@ export function isValidUrl(urlString) {
 		return false;
 	}
 }
+
+export async function fetchShipments(shipperId, prisma) {
+	let shipments = await prisma.shipment.findMany({
+		where: {
+			shipperId: {
+				equals: shipperId
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+	shipments = shipments.map(shipment => ({
+		...shipment,
+		createdAt: moment(shipment.createdAt).unix(),
+		updatedAt: moment(shipment.updatedAt).unix()
+	}));
+	return shipments
+}

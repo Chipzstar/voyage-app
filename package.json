@@ -113,7 +113,7 @@
     "@nrwl/nx-cloud": "14.6.0",
     "@nrwl/react": "14.6.0-rc.2",
     "@nrwl/web": "14.6.0-rc.2",
-    "@nrwl/workspace": "14.6.0",
+    "@nrwl/workspace": "14.6.1",
     "@nx-tools/nx-prisma": "^3.0.1",
     "@prisma-utils/prismerge": "^1.6.2",
     "@redux-devtools/core": "^3.13.1",
@@ -160,3 +160,4 @@
     "singleQuote": true
   }
 }
+

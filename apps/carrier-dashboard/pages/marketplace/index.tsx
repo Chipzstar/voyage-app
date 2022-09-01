@@ -1,17 +1,25 @@
 import React, { useMemo, useState } from 'react';
-import { ActionIcon, Anchor, Button, Select, SimpleGrid, Text } from '@mantine/core';
+import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
-import { SAMPLE_LOADS } from '../../utils/constants';
-import { EQUIPMENT_TYPES, SelectInputData} from '@voyage-app/shared-types';
+import { ActionIcon, Anchor, Button, Select, SimpleGrid, Text } from '@mantine/core';
+import { SAMPLE_LOADS, PUBLIC_PATHS } from '../../utils/constants';
+import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
 import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
 import { DateRangePicker } from '@mantine/dates';
-import ContentContainer from '../../layout/ContentContainer'
-import PageNav from '../../layout/PageNav'
-import { Load } from '../../utils/types'
+import ContentContainer from '../../layout/ContentContainer';
+import PageNav from '../../layout/PageNav';
+import { useSelector } from 'react-redux';
+import { wrapper } from '../../store';
+import { useShipments, setShipments } from '../../store/feature/shipmentSlice';
+import { unstable_getServerSession } from 'next-auth';
+import { authOptions } from '../../../shipper-dashboard/pages/api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
+import { fetchShipments } from '@voyage-app/shared-utils';
 
 const marketplace = () => {
+	const shipments = useSelector(useShipments);
 	const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
 	const items = [
 		{ title: 'Home', href: '/' },
@@ -40,8 +48,8 @@ const marketplace = () => {
 
 	return (
 		<ContentContainer>
-			<PageNav items={items}/>
-			<form className='flex flex-row pb-8 space-x-3'>
+			<PageNav items={items} />
+			<form className='flex flex-row space-x-3 pb-8'>
 				<div className='flex'>
 					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />
 					<Select size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} />
@@ -76,29 +84,31 @@ const marketplace = () => {
 					<Text size='sm'>Clear</Text>
 				</Button>
 			</form>
-			<div className='space-y-3 mb-5'>
+			<div className='mb-5 space-y-3'>
 				<header className='page-subheading'>{SAMPLE_LOADS.length} Loads available for you</header>
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
-				{SAMPLE_LOADS.map((shipment: Load, index) => (
-					<main key={index} className='border border-voyage-grey p-3 space-y-3'>
+				{shipments.map((shipment: Shipment, index) => (
+					<main key={index} className='border-voyage-grey space-y-3 border p-3'>
 						<section className='flex space-x-8'>
-							<div className='flex flex-col space-y-1 flex-wrap'>
+							<div className='flex flex-col flex-wrap space-y-1'>
 								<span className='font-medium'>John Lewis Warehouse</span>
-								<span>{shipment.pickup.street} {shipment.pickup.city}</span>
-								<span className='text-sm'>{moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}</span>
+								<span>{shipment.pickup.location}</span>
+								<span className='text-sm'>
+									{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
+								</span>
 							</div>
 							<div className='flex items-center'>
 								<ArrowRight size={20} />
 							</div>
-							<div className='flex flex-col space-y-1 flex-wrap'>
+							<div className='flex flex-col flex-wrap space-y-1'>
 								<span className='font-medium'>Packfleet</span>
-								<span>{shipment.delivery.street} {shipment.delivery.postcode}</span>
-								<span className='text-sm'>{moment.unix(shipment.delivery.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery.window.end).format('HH:mm')}</span>
+								<span>{shipment.delivery.location}</span>
+								{shipment.delivery?.window ? <span className='text-sm'>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</span> : null}
 							</div>
 						</section>
-						<section className='flex justify-between items-center'>
+						<section className='flex items-center justify-between'>
 							<div className='flex items-center'>
 								<div className='flex items-center space-x-3'>
 									<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
@@ -111,18 +121,11 @@ const marketplace = () => {
 								</div>
 							</div>
 							<div className='flex items-center space-x-3'>
-								<span className='font-semibold text-2xl'>{`£${shipment.rate}`}</span>
-								<ActionIcon
-									size='md'
-									variant='filled'
-									radius='lg'
-									classNames={{
-										root: 'bg-gray-400'
-									}}
-								>
-									<Message size={20} />
+								<span className='text-2xl font-semibold'>{`£${shipment.rate}`}</span>
+								<ActionIcon color='dark' size='md'>
+									<Message size={19} />
 								</ActionIcon>
-								<button className='voyage-button md:w-32 h-10'>Book</button>
+								<button className='voyage-button h-10 md:w-32'>Book</button>
 							</div>
 						</section>
 					</main>
@@ -131,5 +134,26 @@ const marketplace = () => {
 		</ContentContainer>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	if (session.id) {
+		const shipments = await fetchShipments(token?.shipperId, prisma);
+		store.dispatch(setShipments(shipments));
+	}
+	return {
+		props: {}
+	};
+});
 
 export default marketplace;

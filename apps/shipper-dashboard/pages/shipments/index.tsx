@@ -10,10 +10,10 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { useShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useSelector } from 'react-redux';
-import { store } from '../../store';
 import prisma from '../../db';
 import { fetchShipments } from '../../utils/functions';
 import { getToken } from 'next-auth/jwt';
+import { wrapper } from '../../../carrier-dashboard/store';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
@@ -138,7 +138,7 @@ const index = ({ initialState }) => {
 	);
 };
 
-export async function getServerSideProps({ req, res }) {
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req })
@@ -156,9 +156,9 @@ export async function getServerSideProps({ req, res }) {
 	}
 	return {
 		props: {
-			initialState: store.getState()
+
 		}
 	};
-}
+})
 
 export default index;
