@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { wrapper } from '../../store';
 import { useShipments, setShipments } from '../../store/feature/shipmentSlice';
 import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from '../../../shipper-dashboard/pages/api/auth/[...nextauth]';
+import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { fetchShipments } from '@voyage-app/shared-utils';
 

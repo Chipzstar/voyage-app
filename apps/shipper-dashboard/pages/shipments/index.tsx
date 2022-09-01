@@ -11,7 +11,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { useShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useSelector } from 'react-redux';
 import prisma from '../../db';
-import { fetchShipments } from '../../utils/functions';
+import { fetchShipments } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { wrapper } from '../../../carrier-dashboard/store';
 

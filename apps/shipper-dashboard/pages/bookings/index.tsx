@@ -7,7 +7,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import prisma from '../../db';
 import { setShipments } from '../../store/features/shipmentsSlice';
 import { getToken } from 'next-auth/jwt';
-import { fetchShipments } from '../../utils/functions';
+import { fetchShipments } from '@voyage-app/shared-utils';
 import { wrapper } from '../../store';
 
 const bookings = () => {

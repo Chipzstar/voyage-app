@@ -11,7 +11,7 @@ import prisma from '../../db';
 import { useSelector } from 'react-redux';
 import { store } from '../../store';
 import { setShipments } from '../../store/features/shipmentsSlice';
-import { fetchShipments } from '../../utils/functions';
+import { fetchShipments } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { Shipment } from '@voyage-app/shared-types';
 

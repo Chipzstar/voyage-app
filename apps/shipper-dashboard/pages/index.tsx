@@ -9,7 +9,7 @@ import prisma from '../db';
 import { setShipments } from '../store/features/shipmentsSlice';
 import { PUBLIC_PATHS } from '../utils/constants';
 import { getToken } from 'next-auth/jwt'
-import { fetchShipments } from '../utils/functions';
+import { fetchShipments } from '@voyage-app/shared-utils';
 import { wrapper } from '../store';
 
 const Index = (props) => {
