@@ -3,7 +3,7 @@ import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
 import { ActionIcon, Anchor, Button, Select, SimpleGrid, Text } from '@mantine/core';
-import { SAMPLE_LOADS, PUBLIC_PATHS } from '../../utils/constants';
+import { PUBLIC_PATHS } from '../../utils/constants';
 import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
 import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
@@ -31,17 +31,17 @@ const marketplace = () => {
 	));
 
 	const uniquePickupLocations = useMemo(() => {
-		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({
-			value: item.pickup.street,
-			label: item.pickup.street
+		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
+			value: item.pickup.facilityId,
+			label: item.pickup.facilityName
 		}));
 		return uniqueArray(labels, 'value');
 	}, []);
 
 	const uniqueDeliveryLocations = useMemo(() => {
-		const labels: SelectInputData[] = SAMPLE_LOADS.map((item, index) => ({
-			value: item.delivery.street,
-			label: item.delivery.street
+		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
+			value: item.delivery.facilityId,
+			label: item.delivery.facilityName
 		}));
 		return uniqueArray(labels, 'value');
 	}, []);
@@ -85,7 +85,7 @@ const marketplace = () => {
 				</Button>
 			</form>
 			<div className='mb-5 space-y-3'>
-				<header className='page-subheading'>{SAMPLE_LOADS.length} Loads available for you</header>
+				<header className='page-subheading'>{shipments.length} Loads available for you</header>
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
