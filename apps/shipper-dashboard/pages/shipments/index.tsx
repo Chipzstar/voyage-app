@@ -35,7 +35,7 @@ const STATUS_MAP = {
 	COMPLETED: [STATUS.COMPLETED],
 }
 
-const index = ({ initialState }) => {
+const index = () => {
 	const router = useRouter();
 	const shipments = useSelector(useShipments);
 	const [activeTab, setActiveTab] = useState<string | null>(TAB_LABELS.ALL);

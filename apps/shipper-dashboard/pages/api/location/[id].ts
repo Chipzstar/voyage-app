@@ -1,13 +1,12 @@
 import { runMiddleware, cors } from '../index';
+import { getToken } from 'next-auth/jwt'
 import prisma from '../../../db';
-import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]';
 
 export default async function handler(req, res) {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
 	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions)
+	const token = await getToken({req})
 	const payload = req.body;
 	const { id } = req.query
 	if (req.method === 'POST') {
@@ -15,7 +14,7 @@ export default async function handler(req, res) {
 			const location = await prisma.location.create({
 				data: {
 					...payload,
-					userId: session.id,
+					shipperId: token?.shipperId,
 				}
 			});
 			console.log(location);

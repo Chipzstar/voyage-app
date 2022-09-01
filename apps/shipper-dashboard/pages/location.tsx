@@ -26,19 +26,21 @@ const location = ({ locationId, locationName }) => {
 		return locationId ? locations.find((loc: Location) => loc.locationId === locationId) : null;
 	}, [locations]);
 
-	const form = useForm({
+	const form = useForm<Location>({
 		initialValues: {
+			id: location?.id ?? undefined,
+			shipperId: location?.shipperId ?? undefined,
 			locationId: locationId || `location_${nanoid(16)}`,
 			name: locationName || location?.name || '',
-			type: location ? location.type : LocationType.WAREHOUSE,
-			addressLine1: location?.addressLine1 || '',
-			addressLine2: location?.addressLine2 || '',
-			city: location?.city || '',
-			postcode: location?.postcode || '',
-			region: location?.region || '',
-			country: location?.country || '',
-			pickupInstructions: location?.pickupInstructions || '',
-			deliveryInstructions: location?.deliveryInstructions || '',
+			type: location?.type || LocationType.WAREHOUSE,
+			addressLine1: location?.addressLine1 ?? '',
+			addressLine2: location?.addressLine2 ?? '',
+			city: location?.city ?? '',
+			postcode: location?.postcode ?? '',
+			region: location?.region ?? '',
+			country: location?.country ?? '',
+			pickupInstructions: location?.pickupInstructions ?? '',
+			deliveryInstructions: location?.deliveryInstructions ?? '',
 			operatingHours: location ? [...location.operatingHours] : [...DEFAULT_OPERATING_HOURS]
 		}
 	});
@@ -46,12 +48,12 @@ const location = ({ locationId, locationName }) => {
 	const handleSubmit = useCallback((values) => {
 		console.log(values);
 		// if location already exists, perform location UPDATE, otherwise perform location CREATE
-		if (locationId) {
+		if (location) {
 			dispatch(updateLocation(values))
 				.unwrap()
 				.then(res => {
 					console.log('RESULT', res);
-					router.push(`${PATHS.WORKFLOWS}#1`);
+					router.push(`${PATHS.WORKFLOWS}#locations`);
 				})
 				.catch(err => {
 					console.error(err);
@@ -62,7 +64,7 @@ const location = ({ locationId, locationName }) => {
 				.unwrap()
 				.then(res => {
 					console.log('RESULT', res);
-					router.push(`${PATHS.WORKFLOWS}#1`);
+					router.push(`${PATHS.WORKFLOWS}#locations`);
 				})
 				.catch(err => {
 					console.error(err);

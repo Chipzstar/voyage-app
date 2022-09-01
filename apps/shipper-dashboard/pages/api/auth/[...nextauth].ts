@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import prisma from '../../../db';
+import { DEBUG_MODE } from '../../../utils/constants';
 
 export const authOptions = {
 	adapter: PrismaAdapter(prisma),
@@ -67,7 +68,7 @@ export const authOptions = {
 	jwt: {
 		encryption: true
 	},
-	debug: process.env.NODE_ENV !== 'production'
+	debug: DEBUG_MODE
 };
 
 // @ts-ignore

@@ -5,10 +5,10 @@ import { Lock, Mail } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import { getCsrfToken, signIn } from 'next-auth/react';
 import { PATHS } from '../utils/constants';
-import prisma from '../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import moment from 'moment';
+import prisma from '../db';
 
 const login = ({ csrfToken, ...props }) => {
 	const router = useRouter();
