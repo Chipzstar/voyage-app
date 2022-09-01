@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import prisma from '../../db';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
-import { wrapper } from '../../../carrier-dashboard/store';
+import { wrapper } from '../../store';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
