@@ -43,7 +43,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 			>
 				<NotificationsProvider position='top-right'>
 					<ModalsProvider>
-						<Layout>
+						<Layout session={session}>
 							<Head>
 								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 								<Favicon />
