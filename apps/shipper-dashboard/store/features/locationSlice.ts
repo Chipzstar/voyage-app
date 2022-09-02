@@ -10,7 +10,8 @@ export const createLocation = createAsyncThunk('location/createLocation', async 
 		thunkAPI.dispatch(addLocation(location));
 		return location;
 	} catch (err) {
-		thunkAPI.rejectWithValue(err.message);
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 });
 

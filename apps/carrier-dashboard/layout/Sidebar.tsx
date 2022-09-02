@@ -4,7 +4,7 @@ import { PATHS } from '../utils/constants';
 import Link from 'next/link';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Badge, ScrollArea, Stack, Text } from '@mantine/core';
 import { useCarrier } from '../store/feature/profileSlice';
@@ -90,11 +90,16 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 };
 
 const Sidebar = () => {
+	const {data: session} = useSession()
 	const router = useRouter();
 	const dispatch = useDispatch();
 	const carrier = useSelector(useCarrier);
 
-	const isDisabled = useMemo(() => carrier.status !== SignupStatus.COMPLETE, [carrier.status]);
+	const signupComplete = useMemo(() => {
+		console.log("Session status:", session?.status)
+		console.log("Carrier status:", carrier?.status)
+		return [session?.status, carrier.status].includes(SignupStatus.COMPLETE)
+	}, [session, carrier.status]);
 
 	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
 	const Menu: NavMenu[] = [
@@ -147,25 +152,7 @@ const Sidebar = () => {
 		{ title: 'Settings', href: PATHS.SETTINGS, isActive: router.pathname.includes(PATHS.SETTINGS) }
 	];
 
-	return isDisabled ? (
-		<div className='flex h-full w-48 flex-col justify-center border-r-2 border-gray-300 bg-gray-50 py-4 lg:w-64'>
-			<Stack align="center" className="grow flex flex-col justify-center">
-				<img src='/static/images/inventory-management-system.png' alt='' />
-				<Text size="xl" weight="bold" align="center">Please complete your account registration</Text>
-			</Stack>
-			<div
-				role='button'
-				className='hover:bg-secondary-100 flex items-center p-4 text-base font-normal text-gray-900'
-				onClick={() => {
-					dispatch({ type: 'RESET' });
-					signOut({ callbackUrl: `${window.location.origin}/login` }).then(r => console.log('Sign Out Success!'));
-				}}
-			>
-				<Logout size={30} strokeWidth={1} color={'black'} />
-				<span className='ml-6 flex-1 whitespace-nowrap text-base md:text-lg'>Sign Out</span>
-			</div>
-		</div>
-	) : (
+	return signupComplete ? (
 		<div className='flex h-full w-48 flex-col border-r-2 border-gray-300 bg-gray-50 py-4 lg:w-64'>
 			<Link href={PATHS.HOME}>
 				<div role='button' className='mb-7 flex flex-row items-center pl-6'>
@@ -180,6 +167,26 @@ const Sidebar = () => {
 					)}
 				</ul>
 			</ScrollArea>
+			<div
+				role='button'
+				className='hover:bg-secondary-100 flex items-center p-4 text-base font-normal text-gray-900'
+				onClick={() => {
+					dispatch({ type: 'RESET' });
+					signOut({ callbackUrl: `${window.location.origin}/login` }).then(r => console.log('Sign Out Success!'));
+				}}
+			>
+				<Logout size={30} strokeWidth={1} color={'black'} />
+				<span className='ml-6 flex-1 whitespace-nowrap text-base md:text-lg'>Sign Out</span>
+			</div>
+		</div>
+	) : (
+		<div className='flex h-full w-48 flex-col justify-center border-r-2 border-gray-300 bg-gray-50 py-4 lg:w-64'>
+			<Stack align='center' className='flex grow flex-col justify-center'>
+				<img src='/static/images/inventory-management-system.png' alt='' />
+				<Text size='xl' weight='bold' align='center'>
+					Please complete your account registration
+				</Text>
+			</Stack>
 			<div
 				role='button'
 				className='hover:bg-secondary-100 flex items-center p-4 text-base font-normal text-gray-900'

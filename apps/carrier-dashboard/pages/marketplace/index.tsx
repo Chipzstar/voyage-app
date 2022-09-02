@@ -93,7 +93,7 @@ const marketplace = () => {
 					<main key={index} className='border-voyage-grey space-y-3 border p-3'>
 						<section className='flex space-x-8'>
 							<div className='flex flex-col flex-wrap space-y-1'>
-								<span className='font-medium'>John Lewis Warehouse</span>
+								<span className='font-medium'>{shipment.pickup.facilityName}</span>
 								<span>{shipment.pickup.location}</span>
 								<span className='text-sm'>
 									{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
@@ -103,7 +103,7 @@ const marketplace = () => {
 								<ArrowRight size={20} />
 							</div>
 							<div className='flex flex-col flex-wrap space-y-1'>
-								<span className='font-medium'>Packfleet</span>
+								<span className='font-medium'>{shipment.delivery.facilityName}</span>
 								<span>{shipment.delivery.location}</span>
 								{shipment.delivery?.window ? <span className='text-sm'>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</span> : null}
 							</div>

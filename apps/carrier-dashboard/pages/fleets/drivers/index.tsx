@@ -10,7 +10,7 @@ import { Empty } from '@voyage-app/shared-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDriver, setDrivers, useDrivers } from '../../../store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
-import { fetchDrivers, notifyError, notifySuccess } from '../../../utils/functions'
+import { fetchDrivers, notifyError, notifySuccess } from '../../../utils/functions';
 import _ from 'lodash';
 import { AppDispatch, wrapper } from '../../../store';
 import { getToken } from 'next-auth/jwt';
