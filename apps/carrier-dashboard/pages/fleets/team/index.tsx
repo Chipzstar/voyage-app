@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteMember, setMembers, updateMember, useMembers } from '../../../store/feature/memberSlice';
 import { TeamRole } from '../../../utils/types';
-import { capitalize, sanitize } from '@voyage-app/shared-utils';
+import { capitalize, notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';
@@ -19,7 +19,7 @@ import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { getToken } from 'next-auth/jwt';
-import { fetchMembers, notifyError, notifySuccess } from '../../../utils/functions';
+import { fetchMembers } from '../../../utils/functions';
 
 const team = () => {
 	const modals = useModals();

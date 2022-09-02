@@ -6,7 +6,7 @@ import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
 import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react'
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
-import { sanitize } from '@voyage-app/shared-utils';
+import { notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCustomers, deleteCustomer, setCustomers } from '../../../store/feature/customerSlice';
 import { useModals } from '@mantine/modals';
@@ -17,7 +17,7 @@ import { getToken } from 'next-auth/jwt';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
-import { fetchCustomers, notifyError, notifySuccess } from '../../../utils/functions'
+import { fetchCustomers } from '../../../utils/functions'
 
 const customers = () => {
 	const modals = useModals();

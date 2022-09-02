@@ -8,7 +8,7 @@ import PageNav from '../../../layout/PageNav';
 import ContentContainer from '../../../layout/ContentContainer';
 import { Check, Trash, User, X } from 'tabler-icons-react';
 import { SelectInputData } from '@voyage-app/shared-types';
-import { alphanumericId, capitalize, sanitize } from '@voyage-app/shared-utils';
+import { alphanumericId, capitalize, notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { createCustomer, setCustomers, updateCustomer, useCustomers } from '../../../store/feature/customerSlice';
@@ -20,7 +20,6 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
-import { notifyError, notifySuccess } from '../../../utils/functions';
 
 const emptyContact: Contact = {
 	name: '',

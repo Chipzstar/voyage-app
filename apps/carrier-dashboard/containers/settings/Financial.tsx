@@ -5,9 +5,8 @@ import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { BankAccountForm, Carrier, SignupStatus } from '../../utils/types';
 import { createBankAccount } from '../../store/feature/profileSlice';
 import { useForm } from '@mantine/form';
-import { countries } from '@voyage-app/shared-utils';
+import { countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
-import { notifyError, notifySuccess } from '../../utils/functions';
 import { Check, X } from 'tabler-icons-react';
 
 const formatAccNumber = (accNumber: string): string => {

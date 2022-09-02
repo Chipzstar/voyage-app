@@ -11,7 +11,7 @@ import { Calendar, Check, X } from 'tabler-icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createDriver, setDrivers, updateDriver, useDrivers } from '../../../store/feature/driverSlice';
 import Router, { useRouter } from 'next/router';
-import { alphanumericId } from '@voyage-app/shared-utils';
+import { alphanumericId, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { setVehicles, useVehicles } from '../../../store/feature/vehicleSlice';
 import moment from 'moment';
@@ -21,7 +21,7 @@ import prisma from '../../../db';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
-import { fetchDrivers, notifyError, notifySuccess } from '../../../utils/functions'
+import { fetchDrivers } from '../../../utils/functions'
 import { useSession } from "next-auth/react"
 
 const items = [

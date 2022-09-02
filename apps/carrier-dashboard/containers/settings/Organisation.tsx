@@ -4,9 +4,9 @@ import { useForm } from '@mantine/form';
 import { updateCarrier } from '../../store/feature/profileSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
-import { notifyError, notifySuccess } from '../../utils/functions';
 import { Check, X } from 'tabler-icons-react';
 import { Carrier, SignupStatus } from '../../utils/types';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 interface OrganisationProps {
 	carrierInfo: Carrier;

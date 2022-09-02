@@ -2,8 +2,8 @@ import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Loader, Stack, Text } from '@mantine/core';
 import classNames from 'classnames';
-import { notifyError, notifySuccess } from '../utils/functions';
 import { Check, X } from 'tabler-icons-react';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 const PaymentCardForm = ({ onSave }) => {
 	const [loading, setLoading] = useState(false);

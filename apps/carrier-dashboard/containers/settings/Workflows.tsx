@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { useForm } from '@mantine/form';
 import { createSettings, updateSettings } from '../../store/feature/settingsSlice';
-import { notifyError, notifySuccess } from '../../utils/functions';
 import { Check, X } from 'tabler-icons-react';
 import { Center, Container, Stack, Group, Checkbox, Button, NumberInput } from '@mantine/core';
 import { Carrier, ChargeUnitType, Settings, SignupStatus } from '../../utils/types';
 import { defaultSettings } from '../../utils/constants';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 interface WorkflowsProps {
 	carrierInfo: Carrier;

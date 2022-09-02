@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { showNotification } from '@mantine/notifications';
 
 interface selectInput {
 	value: string;
@@ -56,4 +57,34 @@ export async function fetchShipments(shipperId, prisma) {
 		updatedAt: moment(shipment.updatedAt).unix()
 	}));
 	return shipments
+}
+
+export function notifySuccess(id: string, message: string, icon: JSX.Element) {
+	showNotification({
+		id,
+		disallowClose: true,
+		onClose: () => console.log('unmounted'),
+		onOpen: () => console.log('mounted'),
+		autoClose: 3000,
+		title: 'Success',
+		message,
+		color: 'green',
+		icon,
+		loading: false
+	});
+}
+
+export function notifyError(id: string, message: string, icon: JSX.Element) {
+	showNotification({
+		id,
+		disallowClose: true,
+		onClose: () => console.log('unmounted'),
+		onOpen: () => console.log('mounted'),
+		autoClose: 5000,
+		title: 'Error',
+		message,
+		color: 'red',
+		icon,
+		loading: false
+	});
 }

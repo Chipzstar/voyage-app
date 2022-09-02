@@ -1,8 +1,8 @@
 import { Box, Button, Divider, Group, Loader, Modal, Text } from '@mantine/core';
 import React, { useCallback, useState } from 'react';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { notifyError, notifySuccess } from '../utils/functions';
 import { Check, X } from 'tabler-icons-react';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 const CARD_ELEMENT_OPTIONS = {
 	style: {

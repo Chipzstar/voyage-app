@@ -17,7 +17,8 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
-import { fetchVehicles, notifyError, notifySuccess } from '../../../utils/functions';
+import { fetchVehicles } from '../../../utils/functions';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 const vehicles = () => {
 	const modals = useModals();

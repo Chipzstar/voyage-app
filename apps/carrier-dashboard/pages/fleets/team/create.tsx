@@ -6,7 +6,7 @@ import { PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
 import { Member, TeamRole } from '../../../utils/types';
-import { alphanumericId, capitalize } from '@voyage-app/shared-utils';
+import { alphanumericId, capitalize, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { createMember, setMembers, updateMember, useMembers } from '../../../store/feature/memberSlice'
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +19,6 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
-import { notifyError, notifySuccess } from '../../../utils/functions';
 import { getToken } from 'next-auth/jwt'
 
 const items = [

@@ -9,8 +9,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_PUBLIC_KEY } from '../../utils/constants';
 import { NewBusinessMember } from '../../utils/types';
 import moment from 'moment';
-import { notifyError, notifySuccess } from '../../utils/functions';
 import axios from 'axios';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 const MEMBER_TYPES = {
 	OWNER: 'owner',

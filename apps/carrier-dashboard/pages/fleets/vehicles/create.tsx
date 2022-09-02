@@ -7,7 +7,7 @@ import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
 import { FuelMeasurementUnit, FuelType, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from '../../../utils/types';
 import dayjs from 'dayjs';
-import { alphanumericId, capitalize, getYears, sanitize } from '@voyage-app/shared-utils';
+import { alphanumericId, capitalize, getYears, notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import PageHeader from '../../../layout/PageHeader';
 import { Check, Upload, X } from 'tabler-icons-react';
@@ -20,7 +20,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import moment from 'moment';
-import { fetchVehicles, notifyError, notifySuccess } from '../../../utils/functions';
+import { fetchVehicles } from '../../../utils/functions';
 import { getToken } from 'next-auth/jwt';
 import { useSession } from 'next-auth/react';
 

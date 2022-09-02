@@ -3,13 +3,14 @@ import { Badge, Button, Container, Group, Loader, Paper, Radio, SimpleGrid, Stac
 import { useForm } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
-import { notifyError, notifySuccess, uploadFile } from '../../utils/functions';
+import { uploadFile } from '../../utils/functions';
 import { Carrier, Document, DocumentType, NewDocument, SignupStatus } from '../../utils/types';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { createDocument } from '../../store/feature/documentSlice';
 import AccountActivation from '../../modals/AccountActivation';
 import { updateCarrier } from '../../store/feature/profileSlice';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 const Empty = () => {
 	return (

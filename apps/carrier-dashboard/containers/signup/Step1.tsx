@@ -10,7 +10,7 @@ import { saveNewCarrier } from '../../store/feature/profileSlice';
 import { AppDispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { NewCarrier } from '../../utils/types';
-import { notifyError } from '../../utils/functions';
+import { notifyError } from '@voyage-app/shared-utils';
 
 const Step1 = ({ existingUsers, nextStep }) => {
 	const [opened, setOpened] = useState(false);
