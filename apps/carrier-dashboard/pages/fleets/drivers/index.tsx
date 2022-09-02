@@ -175,7 +175,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let drivers = await fetchDrivers(session.id, token?.carrierId, prisma)
+		let drivers = await fetchDrivers(token?.carrierId, prisma)
 		store.dispatch(setDrivers(drivers));
 	}
 	return {
