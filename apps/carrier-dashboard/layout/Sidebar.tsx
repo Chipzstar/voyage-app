@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Logout } from 'tabler-icons-react';
 import { PATHS } from '../utils/constants';
 import Link from 'next/link';
@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Badge, ScrollArea, Stack, Text } from '@mantine/core';
+import { ScrollArea, Stack, Text } from '@mantine/core';
 import { useCarrier } from '../store/feature/profileSlice';
 import { SignupStatus } from '../utils/types';
 
@@ -73,11 +73,6 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 								<Link href={option.href}>
 									<div className='group flex w-full items-center p-2 pl-11 text-base font-normal text-gray-900 transition duration-75'>
 										<span>{option.title}</span>
-										{option.href === PATHS.MARKETPLACE && (
-											<Badge className='ml-1' color='green'>
-												Coming Soon
-											</Badge>
-										)}
 									</div>
 								</Link>
 							</li>
@@ -90,16 +85,12 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 };
 
 const Sidebar = () => {
-	const {data: session} = useSession()
+	const { data: session } = useSession()
 	const router = useRouter();
 	const dispatch = useDispatch();
 	const carrier = useSelector(useCarrier);
 
-	const signupComplete = useMemo(() => {
-		console.log("Session status:", session?.status)
-		console.log("Carrier status:", carrier?.status)
-		return [session?.status, carrier.status].includes(SignupStatus.COMPLETE)
-	}, [session, carrier.status]);
+	const signupComplete = useMemo(() => [session?.status, carrier.status].includes(SignupStatus.COMPLETE), [session, carrier.status]);
 
 	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
 	const Menu: NavMenu[] = [

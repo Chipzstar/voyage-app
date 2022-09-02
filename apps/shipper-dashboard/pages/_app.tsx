@@ -8,6 +8,7 @@ import moment from 'moment-timezone';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
+import { NotificationsProvider } from '@mantine/notifications';
 import { wrapper } from '../store';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 
@@ -38,18 +39,20 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 					colorScheme: 'light'
 				}}
 			>
-				<ModalsProvider>
-					<Layout>
-						<Head>
-							<Favicon />
-							<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
-							<title>Shipper Dashboard</title>
-						</Head>
-						<main className='app'>
-							<Component {...pageProps} />
-						</main>
-					</Layout>
-				</ModalsProvider>
+				<NotificationsProvider position='top-right'>
+					<ModalsProvider>
+						<Layout>
+							<Head>
+								<Favicon />
+								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
+								<title>Shipper Dashboard</title>
+							</Head>
+							<main className='app'>
+								<Component {...pageProps} />
+							</main>
+						</Layout>
+					</ModalsProvider>
+				</NotificationsProvider>
 			</MantineProvider>
 		</AuthProvider>
 	);

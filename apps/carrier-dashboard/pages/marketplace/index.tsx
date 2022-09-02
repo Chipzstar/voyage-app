@@ -152,7 +152,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		store.dispatch(setShipments(shipments));
 	}
 	return {
-		props: {}
+		props: {
+			session
+		}
 	};
 });
 

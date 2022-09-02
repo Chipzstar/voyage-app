@@ -1,22 +1,25 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import OperatingHoursForm from '../modals/OperatingHoursForm';
-import { Select, Textarea, TextInput } from '@mantine/core';
+import { Loader, Select, Textarea, TextInput } from '@mantine/core';
 import { Location, LocationTimeWindow, LocationType, OperatingHoursState } from '../utils/types';
 import moment from 'moment';
 import { useForm } from '@mantine/form';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_OPERATING_HOURS, PATHS } from '../utils/constants';
+import prisma from '../db';
 import { nanoid } from 'nanoid';
 import { createLocation, setLocations, updateLocation } from '../store/features/locationSlice';
 import { useRouter } from 'next/router';
-import prisma from '../db';
+import { getToken } from 'next-auth/jwt';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
-import { getToken } from 'next-auth/jwt';
 import { fetchLocations } from '../utils/functions';
 import { AppDispatch, wrapper } from '../store';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
+import { Check, X } from 'tabler-icons-react';
 
 const location = ({ locationId, locationName }) => {
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
 	const locations = useSelector(state => state['locations']);
@@ -46,29 +49,33 @@ const location = ({ locationId, locationName }) => {
 	});
 
 	const handleSubmit = useCallback((values) => {
-		console.log(values);
+		setLoading(true)
 		// if location already exists, perform location UPDATE, otherwise perform location CREATE
 		if (location) {
 			dispatch(updateLocation(values))
 				.unwrap()
 				.then(res => {
 					console.log('RESULT', res);
-					router.push(`${PATHS.WORKFLOWS}#locations`);
+					notifySuccess('update-location-success', 'Location updated successfully!', <Check size={20} />)
+					setLoading(false)
+					setTimeout(() => router.push(`${PATHS.WORKFLOWS}#locations`), 500);
 				})
 				.catch(err => {
-					console.error(err);
-					alert(err.message);
+					notifyError('update-location-failure', `Location could not be updated, ${err.message}`, <X size={20} />);
+					setLoading(false)
 				});
 		} else {
 			dispatch(createLocation(values))
 				.unwrap()
 				.then(res => {
 					console.log('RESULT', res);
-					router.push(`${PATHS.WORKFLOWS}#locations`);
+					notifySuccess('create-location-success', 'Location was created successfully!', <Check size={20} />)
+					setLoading(false)
+					setTimeout(() => router.push(`${PATHS.WORKFLOWS}#locations`), 500);
 				})
 				.catch(err => {
-					console.error(err);
-					alert(err.message);
+					notifyError('create-location-failure', `We were unable to create this location, ${err.message}`, <X size={20} />);
+					setLoading(false)
 				});
 		}
 	}, [locationId]);
@@ -245,7 +252,8 @@ const location = ({ locationId, locationName }) => {
 					</div>
 					<div id='submit-container' className='col-span-2 space-x-8'>
 						<button type='submit' className='voyage-button w-64 h-14 text-lg'>
-							Save
+							<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
+							<span>Save</span>
 						</button>
 						<button type='button'
 								className='voyage-button w-64 h-14 text-lg bg-transparent text-black hover:bg-stone-100'
