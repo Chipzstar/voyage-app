@@ -84,13 +84,11 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 	);
 };
 
-const Sidebar = () => {
-	const { data: session } = useSession()
+const Sidebar = ({session}) => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const carrier = useSelector(useCarrier);
 
-	const signupComplete = useMemo(() => [session?.status, carrier.status].includes(SignupStatus.COMPLETE), [session, carrier.status]);
+	const signupComplete = useMemo(() => session?.status === SignupStatus.COMPLETE, [session]);
 
 	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
 	const Menu: NavMenu[] = [
