@@ -15,7 +15,7 @@ import { getToken } from 'next-auth/jwt';
 import { fetchDocuments, fetchProfile, fetchSettings } from '../../utils/functions';
 import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice';
-import { Carrier, SignupStatus } from '../../utils/types';
+import { SignupStatus } from '../../utils/types';
 import { setDocuments, useDocuments } from '../../store/feature/documentSlice';
 
 const TAB_LABELS = {
@@ -69,7 +69,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id || token?.carrierId) {
-		let carrier: Carrier = await fetchProfile(session.id, token?.carrierId, prisma);
+		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
 		let documents = await fetchDocuments(token?.carrierId, prisma)
 		store.dispatch(setCarrier(carrier));

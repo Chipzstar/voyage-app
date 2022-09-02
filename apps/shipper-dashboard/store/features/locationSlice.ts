@@ -6,6 +6,7 @@ const initialState = [];
 
 export const createLocation = createAsyncThunk('location/createLocation', async (payload: Partial<Location>, thunkAPI) => {
 	try {
+		console.log(payload)
 		const location = (await axios.post(`/api/location/${payload.locationId}`, payload)).data;
 		thunkAPI.dispatch(addLocation(location));
 		return location;

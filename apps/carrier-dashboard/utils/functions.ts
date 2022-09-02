@@ -13,29 +13,24 @@ function genFullAddress(location: Location) {
 	return fullAddress;
 }
 
-export function calculateRate(
-	weight,
-	numPallets,
-	miles = 300,
-	rates: RateChargeRules
-) {
-	console.log(rates)
+export function calculateRate(weight, numPallets, miles = 300, rates: RateChargeRules) {
+	console.log(rates);
 	let total = Object.entries(rates).reduce((prev, [key, rate]) => {
-		let newVal = prev
+		let newVal = prev;
 		if (!rate.active) return prev;
 		switch (key) {
 			case ChargeUnitType.DISTANCE:
-				newVal += (miles * rate.value)
-				console.log("New value:", newVal)
-				return newVal
+				newVal += miles * rate.value;
+				console.log('New value:', newVal);
+				return newVal;
 			case ChargeUnitType.WEIGHT:
-				newVal += (weight * rate.value)
-				console.log("New value:", newVal)
-				return newVal
+				newVal += weight * rate.value;
+				console.log('New value:', newVal);
+				return newVal;
 			case ChargeUnitType.PACKAGE:
-				newVal += (weight * numPallets * rate.value)
-				console.log("New value:", newVal)
-				return newVal
+				newVal += weight * numPallets * rate.value;
+				console.log('New value:', newVal);
+				return newVal;
 			default:
 				return prev;
 		}
@@ -45,7 +40,7 @@ export function calculateRate(
 }
 
 export async function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[], settings: Settings): Promise<Load> {
-	console.log("Rate Rules", settings?.rateChargeRules)
+	console.log('Rate Rules', settings?.rateChargeRules);
 	const pickup: LoadLocation = {
 		...values.pickupLocation,
 		fullAddress: genFullAddress(values.pickupLocation),
@@ -149,21 +144,12 @@ export async function fetchProfile(userId, carrierId, prisma) {
 	});
 }
 
-export async function fetchMembers(userId, carrierId, prisma) {
+export async function fetchMembers(carrierId, prisma) {
 	let members = await prisma.member.findMany({
 		where: {
-			OR: [
-				{
-					carrierId: {
-						equals: carrierId
-					}
-				},
-				{
-					userId: {
-						equals: userId
-					}
-				}
-			]
+			carrierId: {
+				equals: carrierId
+			}
 		},
 		orderBy: {
 			createdAt: 'desc'
@@ -205,21 +191,12 @@ export async function fetchVehicles(userId, carrierId, prisma) {
 	return vehicles;
 }
 
-export async function fetchDrivers(userId, carrierId, prisma) {
+export async function fetchDrivers(carrierId, prisma) {
 	let drivers = await prisma.driver.findMany({
 		where: {
-			OR: [
-				{
-					carrierId: {
-						equals: carrierId
-					}
-				},
-				{
-					userId: {
-						equals: userId
-					}
-				}
-			]
+			carrierId: {
+				equals: carrierId
+			}
 		},
 		orderBy: {
 			createdAt: 'desc'
@@ -402,7 +379,7 @@ export async function uploadFile({ id, file, documentType }) {
 
 		if (upload.ok) {
 			console.log('Uploaded successfully!');
-			console.log(upload)
+			console.log(upload);
 			return upload;
 		} else {
 			console.error('Upload failed.', upload.status);

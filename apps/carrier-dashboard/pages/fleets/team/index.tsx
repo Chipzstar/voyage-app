@@ -183,7 +183,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let members = await fetchMembers(session.id, token?.carrierId, prisma)
+		let members = await fetchMembers(token?.carrierId, prisma)
 		store.dispatch(setMembers(members));
 	}
 	return {

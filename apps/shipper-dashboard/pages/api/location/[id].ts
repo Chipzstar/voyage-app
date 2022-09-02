@@ -9,13 +9,12 @@ export default async function handler(req, res) {
 	const token = await getToken({req})
 	const payload = req.body;
 	const { id } = req.query;
-	console.log(id)
 	if (req.method === 'POST') {
 		try {
 			const location = await prisma.location.create({
 				data: {
 					...payload,
-					shipperId: token?.shipperId,
+					shipperId: payload.shipperId ?? token?.shipperId,
 				}
 			});
 			console.log(location);
@@ -42,7 +41,6 @@ export default async function handler(req, res) {
 		}
 	} else if (req.method === 'DELETE'){
 		try {
-			console.log(prisma)
 			const result = await prisma.location.delete({
 				where: {
 					id

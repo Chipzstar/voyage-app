@@ -2,11 +2,11 @@ import React, { useMemo, useState } from 'react';
 import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
-import { ActionIcon, Anchor, Button, Select, SimpleGrid, Text } from '@mantine/core';
+import { ActionIcon, Anchor, Badge, Button, Group, Select, SimpleGrid, Text } from '@mantine/core';
 import { PUBLIC_PATHS } from '../../utils/constants';
 import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types';
-import { ArrowRight, Calendar, Message } from 'tabler-icons-react';
-import { capitalize, uniqueArray } from '@voyage-app/shared-utils';
+import { ArrowRight, Calendar, Clock, Message } from 'tabler-icons-react';
+import { capitalize, sanitize, uniqueArray } from '@voyage-app/shared-utils';
 import { DateRangePicker } from '@mantine/dates';
 import ContentContainer from '../../layout/ContentContainer';
 import PageNav from '../../layout/PageNav';
@@ -16,19 +16,30 @@ import { useShipments, setShipments } from '../../store/feature/shipmentSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
+import Pluralize from 'react-pluralize';
 import { fetchShipments } from '@voyage-app/shared-utils';
+import AssignDriverModal from '../../modals/AssignDriverModal';
+import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
+
+import { setMembers, useMembers } from '../../store/feature/memberSlice';
+import { fetchDrivers, fetchMembers } from '../../utils/functions';
+
+const items = [
+	{ title: 'Home', href: '/' },
+	{ title: 'Marketplace', href: '/marketplace' }
+].map((item, index) => (
+	<Anchor component={Link} href={item.href} key={index}>
+		<span className='hover:text-secondary hover:underline'>{item.title}</span>
+	</Anchor>
+));
 
 const marketplace = () => {
 	const shipments = useSelector(useShipments);
+	const drivers = useSelector(useDrivers);
+	const members = useSelector(useMembers);
+	const [reviewModal, showReviewModal] = useState({ show: false, loadInfo: null });
+	const [assignmentModal, showAssignmentModal] = useState(false);
 	const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
-	const items = [
-		{ title: 'Home', href: '/' },
-		{ title: 'Marketplace', href: '/marketplace' }
-	].map((item, index) => (
-		<Anchor component={Link} href={item.href} key={index}>
-			<span className='hover:text-secondary hover:underline'>{item.title}</span>
-		</Anchor>
-	));
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
@@ -49,6 +60,7 @@ const marketplace = () => {
 	return (
 		<ContentContainer>
 			<PageNav items={items} />
+			<AssignDriverModal opened={assignmentModal} onClose={() => showAssignmentModal(false)} team={members} drivers={drivers} onSubmit={values => alert(JSON.stringify(values))} />
 			<form className='flex flex-row space-x-3 pb-8'>
 				<div className='flex'>
 					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />
@@ -85,7 +97,9 @@ const marketplace = () => {
 				</Button>
 			</form>
 			<div className='mb-5 space-y-3'>
-				<header className='page-subheading'>{shipments.length} Loads available for you</header>
+				<header className='page-subheading'>
+					<Pluralize singular={'Load'} count={shipments.length ?? 1} /> available for you
+				</header>
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
@@ -95,9 +109,11 @@ const marketplace = () => {
 							<div className='flex flex-col flex-wrap space-y-1'>
 								<span className='font-medium'>{shipment.pickup.facilityName}</span>
 								<span>{shipment.pickup.location}</span>
-								<span className='text-sm'>
-									{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
-								</span>
+								<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
+									<Text>
+										{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
+									</Text>
+								</Badge>
 							</div>
 							<div className='flex items-center'>
 								<ArrowRight size={20} />
@@ -105,7 +121,21 @@ const marketplace = () => {
 							<div className='flex flex-col flex-wrap space-y-1'>
 								<span className='font-medium'>{shipment.delivery.facilityName}</span>
 								<span>{shipment.delivery.location}</span>
-								{shipment.delivery?.window ? <span className='text-sm'>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</span> : null}
+								{shipment.delivery?.window ? (
+									<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
+										<Text>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</Text>
+									</Badge>
+								) : null}
+							</div>
+							<div className='flex flex-col flex-wrap space-y-1'>
+								<span className='font-medium'>Equipment Required</span>
+								<SimpleGrid spacing="xs" cols={2} >
+									{shipment.activitiesRequired.map(item => (
+										<Badge size='sm' variant='outline' color='gray'>
+											<Text>{capitalize(sanitize(item))}</Text>
+										</Badge>
+									))}
+								</SimpleGrid>
 							</div>
 						</section>
 						<section className='flex items-center justify-between'>
@@ -125,7 +155,9 @@ const marketplace = () => {
 								<ActionIcon color='dark' size='md'>
 									<Message size={19} />
 								</ActionIcon>
-								<button className='voyage-button h-10 md:w-32'>Book</button>
+								<button className='voyage-button h-10 md:w-32' onClick={() => showAssignmentModal(true)}>
+									Book
+								</button>
 							</div>
 						</section>
 					</main>
@@ -148,8 +180,12 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		const shipments = await fetchShipments(token?.shipperId, prisma);
+		const shipments = await fetchShipments(undefined, prisma);
+		const drivers = await fetchDrivers(token?.carrierId, prisma);
+		const members = await fetchMembers(token?.carrierId, prisma);
 		store.dispatch(setShipments(shipments));
+		store.dispatch(setDrivers(drivers));
+		store.dispatch(setMembers(members));
 	}
 	return {
 		props: {

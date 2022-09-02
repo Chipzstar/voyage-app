@@ -84,11 +84,15 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 	);
 };
 
-const Sidebar = ({session}) => {
+const Sidebar = () => {
+	const { data: session } = useSession()
 	const router = useRouter();
 	const dispatch = useDispatch();
 
-	const signupComplete = useMemo(() => session?.status === SignupStatus.COMPLETE, [session]);
+	const signupComplete = useMemo(() => {
+		console.log("SESSION:", session?.status)
+		return session?.status === SignupStatus.COMPLETE
+	}, [session]);
 
 	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
 	const Menu: NavMenu[] = [

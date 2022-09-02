@@ -219,6 +219,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	return {
 		props: {
+			session,
 			loadId: params.tripID,
 			pageIndex,
 			geoJSON

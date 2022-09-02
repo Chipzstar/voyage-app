@@ -227,7 +227,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
-		let drivers = await fetchDrivers(session.id, token?.carrierId, prisma)
+		let drivers = await fetchDrivers(token?.carrierId, prisma)
 		store.dispatch(setDrivers(drivers));
 		let vehicles = await prisma.vehicle.findMany({
 			where: {

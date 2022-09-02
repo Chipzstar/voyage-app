@@ -386,7 +386,7 @@ const book = props => {
 								</header>
 								<div className='flex flex-row items-center space-x-6'>
 									<Select
-										requred
+										required
 										size='md'
 										radius={0}
 										placeholder='Select driver'
@@ -462,8 +462,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	if (session.id) {
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
-		let members = await fetchMembers(session.id, token?.carrierId, prisma);
-		let drivers = await fetchDrivers(session.id, token?.carrierId, prisma);
+		let members = await fetchMembers(token?.carrierId, prisma);
+		let drivers = await fetchDrivers(token?.carrierId, prisma);
 		let customers = await fetchCustomers(session.id, token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
 		store.dispatch(setMembers(members));
