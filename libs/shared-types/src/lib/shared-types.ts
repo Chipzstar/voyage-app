@@ -131,7 +131,8 @@ export interface CarrierInfo {
 
 export interface Shipment {
 	id: string;
-	shipmentId: string,
+	shipperId: string;
+	shipmentId: string;
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
 	bookingStatus: string;

@@ -84,7 +84,6 @@ const AssignDriverModal = ({ opened, onClose, onSubmit, drivers, team, title = '
 						<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
 						<span>Continue</span>
 					</Button>
-
 				</div>
 			</form>
 		</Modal>

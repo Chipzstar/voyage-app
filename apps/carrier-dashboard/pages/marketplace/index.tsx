@@ -1,17 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
-import { ActionIcon, Anchor, Badge, Button, Group, Select, SimpleGrid, Text } from '@mantine/core';
+import { ActionIcon, Anchor, Badge, Button, Select, SimpleGrid, Text } from '@mantine/core';
 import { PUBLIC_PATHS } from '../../utils/constants';
 import { EQUIPMENT_TYPES, SelectInputData, Shipment } from '@voyage-app/shared-types';
-import { ArrowRight, Calendar, Clock, Message } from 'tabler-icons-react';
-import { capitalize, sanitize, uniqueArray } from '@voyage-app/shared-utils';
+import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
+import { capitalize, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
 import { DateRangePicker } from '@mantine/dates';
 import ContentContainer from '../../layout/ContentContainer';
 import PageNav from '../../layout/PageNav';
-import { useSelector } from 'react-redux';
-import { wrapper } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, wrapper } from '../../store';
 import { useShipments, setShipments } from '../../store/feature/shipmentSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
@@ -20,9 +20,11 @@ import Pluralize from 'react-pluralize';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import AssignDriverModal from '../../modals/AssignDriverModal';
 import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
-
 import { setMembers, useMembers } from '../../store/feature/memberSlice';
 import { fetchDrivers, fetchMembers } from '../../utils/functions';
+import ReviewModal from '../../modals/ReviewModal';
+import { createLoad } from '../../store/feature/loadSlice';
+import axios from 'axios';
 
 const items = [
 	{ title: 'Home', href: '/' },
@@ -33,13 +35,15 @@ const items = [
 	</Anchor>
 ));
 
-const marketplace = () => {
+const marketplace = ({ session }) => {
 	const shipments = useSelector(useShipments);
 	const drivers = useSelector(useDrivers);
 	const members = useSelector(useMembers);
-	const [reviewModal, showReviewModal] = useState({ show: false, loadInfo: null });
+	const dispatch = useDispatch<AppDispatch>();
+	const [reviewModal, showReviewModal] = useState(false);
 	const [assignmentModal, showAssignmentModal] = useState(false);
 	const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
+	const [selectedShipment, setSelectedShipment] = useState(null);
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
@@ -57,10 +61,37 @@ const marketplace = () => {
 		return uniqueArray(labels, 'value');
 	}, []);
 
+	const handleSubmit = useCallback(async values => {
+		try {
+			alert(JSON.stringify(values));
+			const newLoad = (
+				await axios.post(`/api/shipment/convert/${selectedShipment?.shipperId}`, {
+					selectedShipment,
+					values
+				})
+			).data;
+			console.log(newLoad)
+			await dispatch(createLoad(newLoad)).unwrap();
+			notifySuccess('convert-shipment-to-load-success', 'You have successfully booked this load', <Check size={20} />);
+		} catch (err) {
+			console.error(err);
+			notifyError('convert-shipment-to-load-failure', `${err.message}`, <X size={20} />)
+		}
+	}, []);
+
 	return (
 		<ContentContainer>
 			<PageNav items={items} />
-			<AssignDriverModal opened={assignmentModal} onClose={() => showAssignmentModal(false)} team={members} drivers={drivers} onSubmit={values => alert(JSON.stringify(values))} />
+			<ReviewModal
+				opened={reviewModal}
+				onClose={() => showReviewModal(false)}
+				onSubmit={async values => {
+					alert(JSON.stringify(values));
+					showAssignmentModal(true);
+				}}
+				loadInfo={selectedShipment}
+			/>
+			<AssignDriverModal opened={assignmentModal} onClose={() => showAssignmentModal(false)} team={members} drivers={drivers} onSubmit={handleSubmit} />
 			<form className='flex flex-row space-x-3 pb-8'>
 				<div className='flex'>
 					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />
@@ -129,7 +160,7 @@ const marketplace = () => {
 							</div>
 							<div className='flex flex-col flex-wrap space-y-1'>
 								<span className='font-medium'>Equipment Required</span>
-								<SimpleGrid spacing="xs" cols={2} >
+								<SimpleGrid spacing='xs' cols={2}>
 									{shipment.activitiesRequired.map(item => (
 										<Badge size='sm' variant='outline' color='gray'>
 											<Text>{capitalize(sanitize(item))}</Text>
@@ -151,11 +182,17 @@ const marketplace = () => {
 								</div>
 							</div>
 							<div className='flex items-center space-x-3'>
-								<span className='text-2xl font-semibold'>{`£${shipment.rate}`}</span>
+								<span className='text-2xl font-semibold'>{`£${shipment.rate.toFixed(2)}`}</span>
 								<ActionIcon color='dark' size='md'>
 									<Message size={19} />
 								</ActionIcon>
-								<button className='voyage-button h-10 md:w-32' onClick={() => showAssignmentModal(true)}>
+								<button
+									className='voyage-button h-10 md:w-32'
+									onClick={() => {
+										setSelectedShipment(shipment);
+										showReviewModal(true);
+									}}
+								>
 									Book
 								</button>
 							</div>

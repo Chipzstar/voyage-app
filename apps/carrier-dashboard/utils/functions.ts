@@ -1,5 +1,5 @@
 import { ChargeUnitType, Customer, Driver, Load, LoadLocation, Location, Member, NewBooking, RateChargeRules, Settings } from './types';
-import { STATUS } from '@voyage-app/shared-types';
+import { Shipment, STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { numericId } from '@voyage-app/shared-utils';
 import { PLACE_TYPES } from './constants';
