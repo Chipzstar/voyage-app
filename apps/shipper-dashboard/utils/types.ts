@@ -94,41 +94,6 @@ export enum PACKAGE_TYPE {
 	SKIDS = 'SKID',
 }
 
-export interface LocationTimeWindow {
-	h: number,
-	m: number
-}
-
-interface OperatingProps {
-	isActive: boolean;
-	open: LocationTimeWindow;
-	close: LocationTimeWindow;
-}
-
-export enum LocationType { WAREHOUSE= 'WAREHOUSE', STORE='STORE', LASTMILE_CARRIER='LASTMILE_CARRIER' }
-
-// Define a type for the slice state
-export interface OperatingHoursState {
-	facility: OperatingProps
-}
-
-export interface Location {
-	id: string;
-	locationId: string;
-	shipperId: string
-	name: string;
-	type: LocationType;
-	addressLine1: string;
-	addressLine2: string;
-	city: string;
-	postcode: string;
-	region: string;
-	country: string;
-	pickupInstructions: string;
-	deliveryInstructions: string;
-	operatingHours: OperatingHoursState[];
-}
-
 export interface NewBooking {
 	id: string;
 	createdAt: UnixTimestamp;

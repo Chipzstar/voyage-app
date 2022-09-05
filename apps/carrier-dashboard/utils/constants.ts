@@ -1,7 +1,7 @@
 import moment from 'moment';
-import { PACKAGE_TYPE, STATUS } from '@voyage-app/shared-types';
+import { PACKAGE_TYPE, STATUS, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
-import { ChargeUnitType, Document, DocumentType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, SignupStatus, TeamRole, Vehicle, VEHICLE_STATUS, VEHICLE_TYPES } from './types';
+import { ChargeUnitType, Document, DocumentType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, SignupStatus, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
 import { PhoneNumberUtil } from 'google-libphonenumber';

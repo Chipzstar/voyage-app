@@ -1,4 +1,4 @@
-import { CarrierInfo, HAZMAT_TYPES, Package, PACKAGE_TYPE, STATUS, UnixTimestamp } from '@voyage-app/shared-types';
+import { Address, CarrierInfo, HAZMAT_TYPES, Package, PACKAGE_TYPE, SHIPMENT_ACTIVITY, STATUS, UnixTimestamp, VEHICLE_TYPES } from '@voyage-app/shared-types';
 
 export enum TeamRole {
 	ADMIN = 'ADMIN',
@@ -13,16 +13,6 @@ export enum VEHICLE_STATUS {
 	OCCUPIED = 'OCCUPIED',
 	ON_THE_ROAD = 'ON_THE_ROAD',
 	FULL_CAPACITY = 'FULL_CAPACITY'
-}
-
-export enum VEHICLE_TYPES {
-	DRY_VAN = 'DRY_VAN',
-	TAIL_LIFT = 'TAIL_LIFT',
-	JUMBO_TRAILER = 'JUMBO_TRAILER',
-	FLATBED_TRAILER = 'FLATBED_TRAILER',
-	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
-	ARCTIC_TRUCK = 'ARCTIC_TRUCK',
-	OTHER = 'OTHER'
 }
 
 export enum FuelType {
@@ -70,15 +60,6 @@ export enum SignupStatus {
 	DOCUMENTS = 'DOCUMENTS',
 	COMPLETE = 'COMPLETE'
 }
-
-export type Address = {
-	line1: string;
-	line2?: string;
-	city: string;
-	region?: string;
-	postcode: string;
-	country?: string;
-};
 
 export interface BankAccount {
 	id: string;
@@ -345,6 +326,7 @@ export interface Load {
 	internalPONumber?: string;
 	customerPONumber?: string;
 	rate: number;
+	mileage?: number;
 	pickup: LoadLocation;
 	delivery: LoadLocation;
 	customer?: LoadCustomer;
@@ -353,7 +335,7 @@ export interface Load {
 		name: string;
 		phone: string;
 	};
-	vehicleType: VEHICLE_TYPES;
+	vehicleType: VEHICLE_TYPES | SHIPMENT_ACTIVITY;
 	packageInfo: Package;
 	carrierInfo: CarrierInfo;
 	hazmat?: HAZMAT_TYPES;

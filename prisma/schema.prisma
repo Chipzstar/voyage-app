@@ -305,6 +305,7 @@ model Shipment {
   internalPONumber   String?             @default("")
   customerPONumber   String?             @default("")
   rate               Float
+  mileage            Float?
   pickup             ShipmentPickup
   delivery           ShipmentDelivery
   packageInfo        PackageInfo
@@ -426,17 +427,18 @@ model Driver {
   carrier        Carrier      @relation(fields: [carrierId], references: [id])
   carrierId      String       @db.ObjectId
   driverId       String
-  vehicleId      String?
+  vehicle        Vehicle      @relation(fields: [vehicleId], references: [id])
+  vehicleId      String
   fullName       String
   firstName      String
   lastName       String
   email          String
-  dob            Int?
+  dob            Int?         @db.Long
   defaultPhone   String
   primaryPhone   String
   secondaryPhone String?
   companyName    String
-  hireDate       Int?
+  hireDate       Int?         @db.Long
   isActive       Boolean
   addressLine1   String
   addressLine2   String?
@@ -476,6 +478,7 @@ model Load {
   internalPONumber String?           @default("")
   customerPONumber String?           @default("")
   rate             Float
+  mileage          Float?
   pickup           LoadLocation
   delivery         LoadLocation
   packageInfo      PackageInfo
@@ -578,4 +581,5 @@ model Vehicle {
   model               String
   notes               String?
   status              VehicleStatus
+  drivers             Driver[]
 }

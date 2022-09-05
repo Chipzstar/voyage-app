@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Location } from '../../utils/types';
 import axios from 'axios';
+import { Location } from '@voyage-app/shared-types';
 
 const initialState = [];
 

@@ -87,7 +87,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 				notifyError('upload-document-failure', `An error occurred while uploading your document, ${err.message}`, <X size={20} />);
 				setLoading(false);
 			});
-	}, []);
+	}, [documents, carrierInfo]);
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>

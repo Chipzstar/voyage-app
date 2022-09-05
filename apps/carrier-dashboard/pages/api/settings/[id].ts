@@ -48,6 +48,7 @@ export default async function handler(req, res) {
 			res.status(400).json({ success: false });
 		}
 	} else {
-		res.status(404).json({ status: 404, message: 'Unrecognised HTTP method used' });
+		res.setHeader('Allow', 'PUT');
+		res.status(405).end('Method Not Allowed');
 	}
 }

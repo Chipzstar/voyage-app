@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Loader, Modal, Select } from '@mantine/core';
 import { ChevronDown } from 'tabler-icons-react';
-import { TeamRole } from '../utils/types';
+import { Driver, Member, TeamRole } from '../utils/types';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { useForm } from '@mantine/form';
 
@@ -24,12 +24,16 @@ const AssignDriverModal = ({ opened, onClose, onSubmit, drivers, team, title = '
 			onClose={onClose}
 			title={title}
 			classNames={{
-				title: 'page-subheading'
+				title: 'font-semibold text-xl'
 			}}
+			padding="lg"
 		>
-			<form onSubmit={form.onSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-				<div className='flex flex-row items-center space-x-6'>
+			<form onSubmit={form.onSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-2 gap-8 gap-x-12">
+				<div className='flex flex-row items-center'>
 					<Select
+						classNames={{
+							root: 'w-full'
+						}}
 						required
 						size='md'
 						radius={0}
@@ -38,7 +42,7 @@ const AssignDriverModal = ({ opened, onClose, onSubmit, drivers, team, title = '
 						rightSectionWidth={30}
 						styles={{ rightSection: { pointerEvents: 'none' } }}
 						data={drivers.map(
-							(driver): SelectInputData => ({
+							(driver: Driver): SelectInputData => ({
 								label: driver.fullName,
 								value: driver.id
 							})
@@ -46,8 +50,11 @@ const AssignDriverModal = ({ opened, onClose, onSubmit, drivers, team, title = '
 						{...form.getInputProps('driverId')}
 					/>
 				</div>
-				<div className='flex flex-row items-center space-x-6'>
+				<div className='flex flex-row items-center'>
 					<Select
+						classNames={{
+							root: 'w-full'
+						}}
 						required
 						size='md'
 						radius={0}
@@ -58,8 +65,8 @@ const AssignDriverModal = ({ opened, onClose, onSubmit, drivers, team, title = '
 						data={team
 							.filter(item => item.role === TeamRole.CONTROLLER)
 							.map(
-								(member): SelectInputData => ({
-									label: member.firstName + ' ' + member.lastName,
+								(member: Member): SelectInputData => ({
+									label: member.fullName,
 									value: member.id
 								})
 							)}
@@ -82,7 +89,7 @@ const AssignDriverModal = ({ opened, onClose, onSubmit, drivers, team, title = '
 						}}
 					>
 						<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
-						<span>Continue</span>
+						<span>Confirm</span>
 					</Button>
 				</div>
 			</form>

@@ -6,8 +6,8 @@ import { TimeInput } from '@mantine/dates';
 import { Clock } from 'tabler-icons-react';
 import { useForm } from '@mantine/form';
 import moment from 'moment';
-import { OperatingHoursState } from '../utils/types';
 import { DEFAULT_OPERATING_HOURS } from '../utils/constants';
+import { OperatingHoursState } from '@voyage-app/shared-types';
 
 const OperatingHoursForm = ({ opened, onClose, onSave, operatingHours = null }) => {
 	const form = useForm({

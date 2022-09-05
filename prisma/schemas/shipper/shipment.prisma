@@ -55,6 +55,7 @@ model Shipment {
     internalPONumber String? @default("")
     customerPONumber String? @default("")
     rate Float
+    mileage Float?
     pickup ShipmentPickup
     delivery ShipmentDelivery
     packageInfo PackageInfo

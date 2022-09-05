@@ -53,4 +53,5 @@ model Vehicle {
     model String
     notes String?
     status VehicleStatus
+    drivers Driver[]
 }

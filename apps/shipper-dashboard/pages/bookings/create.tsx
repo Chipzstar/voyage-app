@@ -4,8 +4,15 @@ import { useForm } from '@mantine/form';
 import { Calendar, CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
-import { PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
-import { LocationType, NewBooking } from '../../utils/types';
+import {
+	LocationType,
+	PACKAGE_TYPE,
+	SCHEDULING_TYPE,
+	SERVICE_TYPE,
+	SHIPMENT_ACTIVITY,
+	SHIPMENT_TYPE
+} from '@voyage-app/shared-types';
+import { NewBooking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
 import { PATHS, PUBLIC_PATHS } from 'apps/shipper-dashboard/utils/constants';

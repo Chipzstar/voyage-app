@@ -7,9 +7,8 @@ import { PATHS, PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/u
 import { loadStripe } from '@stripe/stripe-js';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCarrier, saveNewCarrier, useNewCarrier } from '../../store/feature/profileSlice';
-import { Address } from '../../utils/types';
 import { countries, isValidUrl, notifyError, notifySuccess } from '@voyage-app/shared-utils';
-import { SelectInputData } from '@voyage-app/shared-types';
+import { Address, SelectInputData } from '@voyage-app/shared-types';
 import { Check, X } from 'tabler-icons-react';
 import axios from 'axios';
 import { signIn } from 'next-auth/react';

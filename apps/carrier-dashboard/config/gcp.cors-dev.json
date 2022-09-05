@@ -10,11 +10,5 @@
 		"method": ["GET", "POST", "PUT", "DELETE"],
 		"responseHeader": ["Content-Type"],
 		"maxAgeSeconds": 3600
-	},
-	{
-		"origin": ["https://carrier-app-staging.onrender.com"],
-		"method": ["GET", "POST", "PUT", "DELETE"],
-		"responseHeader": ["Content-Type"],
-		"maxAgeSeconds": 3600
 	}
 ]

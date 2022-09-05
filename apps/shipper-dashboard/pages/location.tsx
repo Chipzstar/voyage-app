@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import OperatingHoursForm from '../modals/OperatingHoursForm';
 import { Loader, Select, Textarea, TextInput } from '@mantine/core';
-import { Location, LocationTimeWindow, LocationType, OperatingHoursState } from '../utils/types';
 import moment from 'moment';
 import { useForm } from '@mantine/form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +15,13 @@ import { fetchLocations } from '../utils/functions';
 import { AppDispatch, wrapper } from '../store';
 import { alphanumericId, countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { Check, X } from 'tabler-icons-react';
-import { SelectInputData } from '@voyage-app/shared-types';
+import {
+	Location,
+	LocationTimeWindow,
+	LocationType,
+	OperatingHoursState,
+	SelectInputData
+} from '@voyage-app/shared-types';
 
 const location = ({ locationId, locationName }) => {
 	const [loading, setLoading] = useState(false);

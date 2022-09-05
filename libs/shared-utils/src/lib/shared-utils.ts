@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { showNotification } from '@mantine/notifications';
+import { Client, TravelMode, UnitSystem } from '@googlemaps/google-maps-services-js';
 
 interface selectInput {
 	value: string;
@@ -87,4 +88,36 @@ export function notifyError(id: string, message: string, icon: JSX.Element) {
 		icon,
 		loading: false
 	});
+}
+
+const GMapsClient = new Client();
+
+export async function calculateJobDistance(origin, destination, GMAPS_API_KEY) {
+	console.log('PICKUP:', origin);
+	console.log('DROPOFF:', destination);
+	try {
+		const distanceMatrix = (
+			await GMapsClient.distancematrix({
+				params: {
+					key: GMAPS_API_KEY,
+					origins: [origin],
+					destinations: [destination],
+					units: UnitSystem.imperial,
+					mode: TravelMode.driving
+				},
+				responseType: 'json'
+			})
+		).data;
+		console.log(distanceMatrix.rows[0].elements[0]);
+		let distance = Number(distanceMatrix.rows[0].elements[0].distance.text.split(' ')[0]);
+		let unit = distanceMatrix.rows[0].elements[0].distance.text.split(' ')[1];
+		if (unit === 'ft') distance = 4;
+		console.log('================================================');
+		console.log('JOB DISTANCE');
+		console.log(distance + ' miles');
+		console.log('================================================');
+		return distance;
+	} catch (err) {
+		throw err;
+	}
 }

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { OperatingHoursState } from './types';
+import { OperatingHoursState } from '@voyage-app/shared-types';
 
 export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
 

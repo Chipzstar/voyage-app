@@ -25,6 +25,7 @@ model Load {
     internalPONumber String? @default("")
     customerPONumber String? @default("")
     rate Float
+    mileage Float?
     pickup LoadLocation
     delivery LoadLocation
     packageInfo PackageInfo

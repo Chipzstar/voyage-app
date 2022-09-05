@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Location, LocationType } from '../utils/types';
 import { useRouter } from 'next/router';
 import { deleteLocation, useLocation } from '../store/features/locationSlice';
 import { useModals } from '@mantine/modals';
@@ -8,6 +7,7 @@ import { Text } from '@mantine/core';
 import { PATHS } from '../utils/constants';
 import PropTypes from 'prop-types';
 import { AppDispatch } from '../store';
+import { Location, LocationType } from '@voyage-app/shared-types';
 
 const LocationItem = ({ name, onDelete, onEdit }) => {
 	return (

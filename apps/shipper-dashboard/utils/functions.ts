@@ -1,7 +1,7 @@
-import { Delivery, Location, NewBooking, Pickup, STATUS } from './types'
+import { Delivery, NewBooking, Pickup, STATUS } from './types'
 import moment from 'moment';
 import { numericId } from '@voyage-app/shared-utils'
-import { Shipment } from '@voyage-app/shared-types';
+import { Location, Shipment } from '@voyage-app/shared-types';
 
 export function calculateRate(
 	weight,
