@@ -85,8 +85,7 @@ const marketplace = ({ session }) => {
 			<ReviewModal
 				opened={reviewModal}
 				onClose={() => showReviewModal(false)}
-				onSubmit={async values => {
-					alert(JSON.stringify(values));
+				onSubmit={() => {
 					showAssignmentModal(true);
 				}}
 				loadInfo={selectedShipment}
