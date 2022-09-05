@@ -32,6 +32,7 @@ export function generateShipment(values: NewBooking, pickupLocation: Location, d
 
 	return {
 		id: undefined,
+		shipperId: undefined,
 		shipmentId: `VOY-ID${numericId(8)}`,
 		createdAt: values.createdAt,
 		bookingStatus: 'Booked',
