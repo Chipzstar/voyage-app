@@ -156,6 +156,7 @@ export interface Shipment {
 	internalPONumber: string;
 	customerPONumber: string;
 	rate: number;
+	mileage?: number;
 	pickup: Pickup;
 	delivery: Delivery;
 	packageInfo: Package;

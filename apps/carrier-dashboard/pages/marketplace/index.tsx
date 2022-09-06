@@ -1,18 +1,19 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
-import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, Select, SimpleGrid, Text } from '@mantine/core';
 import { PUBLIC_PATHS } from '../../utils/constants';
-import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-app/shared-types';
+import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
 import { capitalize, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
+import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, MultiSelect, Select, SimpleGrid, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
+import { useForm } from '@mantine/form';
 import ContentContainer from '../../layout/ContentContainer';
 import PageNav from '../../layout/PageNav';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, wrapper } from '../../store';
-import { setShipments, updateShipment, useShipments } from '../../store/feature/shipmentSlice';
+import { setShipments, updateShipment } from '../../store/feature/shipmentSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
@@ -25,6 +26,7 @@ import { fetchDrivers, fetchMembers } from '../../utils/functions';
 import ReviewModal from '../../modals/ReviewModal';
 import { createLoad } from '../../store/feature/loadSlice';
 import axios from 'axios';
+import _ from 'lodash';
 
 const items = [
 	{ title: 'Home', href: '/' },
@@ -35,15 +37,23 @@ const items = [
 	</Anchor>
 ));
 
+interface FilterFormProps {
+	pickup: string;
+	delivery: string;
+	miles: string;
+	dateRange: [Date | null, Date | null];
+	equipment: SHIPMENT_ACTIVITY[];
+}
+
 const marketplace = ({ session }) => {
 	const [loading, setLoading] = useState(false);
 	const shipments = useSelector(state => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW));
+	const [filteredShipments, setFilteredShipments] = useState(shipments);
 	const drivers = useSelector(useDrivers);
 	const members = useSelector(useMembers);
 	const dispatch = useDispatch<AppDispatch>();
 	const [reviewModal, showReviewModal] = useState(false);
 	const [assignmentModal, showAssignmentModal] = useState(false);
-	const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
 	const [selectedShipment, setSelectedShipment] = useState(null);
 
 	const uniquePickupLocations = useMemo(() => {
@@ -90,6 +100,48 @@ const marketplace = ({ session }) => {
 		[selectedShipment]
 	);
 
+	const form = useForm<FilterFormProps>({
+		initialValues: {
+			pickup: '',
+			delivery: '',
+			miles: String(Number.POSITIVE_INFINITY),
+			dateRange: [null, null],
+			equipment: []
+		}
+	});
+
+	const debouncedSearch = useCallback(
+		_.debounce((values: FilterFormProps) => {
+			setFilteredShipments(
+				shipments.filter((s: Shipment) => {
+					let isValid = true;
+					if (values.pickup && s.pickup.facilityId !== values.pickup) return false;
+					if (values.delivery && s.delivery.facilityId !== values.delivery) return false;
+					if (Number(values.miles) && s.mileage > Number(values.miles)) return false;
+					if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
+					if (values.dateRange.every((date: Date | null) => date)) {
+						// console.log(moment.unix(s.pickup.window.start).format("DD-MM-YYYY HH:mm"))
+						// console.log(moment.unix(s.pickup.window.end).format("DD-MM-YYYY HH:mm"))
+						console.log(moment(values.dateRange[0]).startOf('day').format("DD-MM-YYYY HH:mm"))
+						console.log(moment(values.dateRange[1]).endOf('day').format("DD-MM-YYYY HH:mm"))
+						if (moment.unix(s.pickup.window.start).isBefore(moment(values.dateRange[0]).startOf("day"), 'm') || moment.unix(s.pickup.window.end).isAfter(moment(values.dateRange[1]).endOf('day'), 'm')) return false;
+					}
+					return isValid;
+				})
+			);
+		}, 300),
+		[shipments]
+	);
+
+	useEffect(() => {
+		return () => debouncedSearch.cancel();
+	}, [debouncedSearch]);
+
+	useEffect(() => {
+		console.log(form.values)
+		debouncedSearch(form.values)
+	}, [form.values]);
+
 	return (
 		<ContentContainer>
 			<LoadingOverlay loader={<CustomLoader text='Creating Load...' />} visible={loading} overlayBlur={2} />
@@ -106,27 +158,35 @@ const marketplace = ({ session }) => {
 			<AssignDriverModal opened={assignmentModal} onClose={() => showAssignmentModal(false)} team={members} drivers={drivers} onSubmit={handleSubmit} />
 			<form className='flex flex-row space-x-3 pb-8'>
 				<div className='flex'>
-					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} />
-					<Select size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} />
+					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} {...form.getInputProps('pickup')} />
+					<Select size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} {...form.getInputProps('delivery')} />
 				</div>
 				<Select
-					defaultValue={'100mi'}
 					classNames={{
 						root: 'w-32'
 					}}
 					size='sm'
-					data={['10mi', '20mi', '50mi', '100mi', '200mi', '300mi']}
+					data={[
+						{ label: 'Any', value: String(Number.POSITIVE_INFINITY) },
+						{ label: '10mi', value: '10' },
+						{ label: '20mi', value: '20' },
+						{ label: '50mi', value: '50' },
+						{ label: '100mi', value: '100' },
+						{ label: '200mi', value: '200' },
+						{ label: '300mi', value: '300' }
+					]}
+					{...form.getInputProps('miles')}
 				/>
 				<DateRangePicker
+					amountOfMonths={2}
 					placeholder='Select dates'
 					classNames={{
 						root: 'grow'
 					}}
 					icon={<Calendar size={16} />}
-					value={value}
-					onChange={setValue}
+					{...form.getInputProps('dateRange')}
 				/>
-				<Select
+				<MultiSelect
 					placeholder='All equipments'
 					data={Object.values(SHIPMENT_ACTIVITY).map(
 						(item): SelectInputData => ({
@@ -134,84 +194,86 @@ const marketplace = ({ session }) => {
 							label: capitalize(item.replace(/_/g, ' '))
 						})
 					)}
+					clearButtonLabel='Clear selection'
+					clearable
+					{...form.getInputProps('equipment')}
 				/>
-				<Button variant='outline'>
+				<Button variant='outline' onClick={() => form.reset()}>
 					<Text size='sm'>Clear</Text>
 				</Button>
 			</form>
 			<div className='mb-5 space-y-3'>
 				<header className='page-subheading'>
-					<Pluralize singular={'Load'} count={shipments.length ?? 1} /> available for you
+					<Pluralize singular={'Load'} count={filteredShipments.length ?? 0} /> available for you
 				</header>
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
-				{shipments
-					.map((shipment: Shipment, index) => (
-						<main key={index} className='border-voyage-grey space-y-3 border p-3'>
-							<section className='flex space-x-8'>
-								<div className='flex flex-col flex-wrap space-y-1'>
-									<span className='font-medium'>{shipment.pickup.facilityName}</span>
-									<span>{shipment.pickup.location}</span>
+				{filteredShipments.map((shipment: Shipment, index) => (
+					<main key={index} className='border-voyage-grey space-y-3 border p-3'>
+						<section className='flex space-x-8'>
+							<div className='flex flex-col flex-wrap space-y-1'>
+								<span className='font-medium'>{shipment.pickup.facilityName}</span>
+								<span>{shipment.pickup.location}</span>
+								<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
+									<Text>
+										{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
+									</Text>
+								</Badge>
+							</div>
+							<div className='flex flex-col justify-center items-center'>
+								<Text size="sm" color="gray" weight={600}>
+									{shipment.mileage} mi
+								</Text>
+								<ArrowRight size={20} />
+							</div>
+							<div className='flex flex-col flex-wrap space-y-1'>
+								<span className='font-medium'>{shipment.delivery.facilityName}</span>
+								<span>{shipment.delivery.location}</span>
+								{shipment.delivery?.window ? (
 									<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
-										<Text>
-											{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
-										</Text>
+										<Text>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</Text>
 									</Badge>
-								</div>
-								<div className='flex items-center'>
-									<ArrowRight size={20} />
-								</div>
-								<div className='flex flex-col flex-wrap space-y-1'>
-									<span className='font-medium'>{shipment.delivery.facilityName}</span>
-									<span>{shipment.delivery.location}</span>
-									{shipment.delivery?.window ? (
-										<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
-											<Text>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</Text>
+								) : null}
+							</div>
+							<div className='flex flex-col flex-wrap space-y-1'>
+								<span className='font-medium'>Equipment Required</span>
+								<SimpleGrid spacing='xs' cols={2}>
+									{shipment.activitiesRequired.map((item, index) => (
+										<Badge key={index} size='sm' variant='outline' color='gray'>
+											<Text>{capitalize(sanitize(item))}</Text>
 										</Badge>
-									) : null}
-								</div>
-								<div className='flex flex-col flex-wrap space-y-1'>
-									<span className='font-medium'>Equipment Required</span>
-									<SimpleGrid spacing='xs' cols={2}>
-										{shipment.activitiesRequired.map((item, index) => (
-											<Badge key={index} size='sm' variant='outline' color='gray'>
-												<Text>{capitalize(sanitize(item))}</Text>
-											</Badge>
-										))}
-									</SimpleGrid>
-								</div>
-							</section>
-							<section className='flex items-center justify-between'>
-								<div className='flex items-center'>
-									<div className='flex items-center space-x-3'>
-										<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
-										<span className='font-medium'>{shipment.carrierInfo.vehicleType}</span>
-									</div>
-									<div>
-										<span className='lowercase'>
-											{shipment.packageInfo.weight} kg of {shipment.packageInfo.packageType}s
-										</span>
-									</div>
-								</div>
+									))}
+								</SimpleGrid>
+							</div>
+						</section>
+						<section className='flex items-center justify-between'>
+							<div className='flex items-center space-x-3'>
 								<div className='flex items-center space-x-3'>
-									<span className='text-2xl font-semibold'>{`£${shipment.rate.toFixed(2)}`}</span>
-									<ActionIcon color='dark' size='md'>
-										<Message size={19} />
-									</ActionIcon>
-									<button
-										className='voyage-button h-10 md:w-32'
-										onClick={() => {
-											setSelectedShipment(shipment);
-											showReviewModal(true);
-										}}
-									>
-										Book
-									</button>
+									<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
 								</div>
-							</section>
-						</main>
-					))}
+								<span className='lowercase'>
+									{shipment.packageInfo.weight} kg of {shipment.packageInfo.packageType}s
+								</span>
+							</div>
+							<div className='flex items-center space-x-3'>
+								<span className='text-2xl font-semibold'>{`£${shipment.rate.toFixed(2)}`}</span>
+								<ActionIcon color='dark' size='md'>
+									<Message size={19} />
+								</ActionIcon>
+								<button
+									className='voyage-button h-10 md:w-32'
+									onClick={() => {
+										setSelectedShipment(shipment);
+										showReviewModal(true);
+									}}
+								>
+									Book
+								</button>
+							</div>
+						</section>
+					</main>
+				))}
 			</SimpleGrid>
 		</ContentContainer>
 	);

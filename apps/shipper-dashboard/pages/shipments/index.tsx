@@ -11,7 +11,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { useShipments, setShipments } from '../../store/features/shipmentsSlice';
 import { useSelector } from 'react-redux';
 import prisma from '../../db';
-import { fetchShipments } from '@voyage-app/shared-utils';
+import { capitalize, fetchShipments, sanitize } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { wrapper } from '../../store';
 
@@ -66,7 +66,7 @@ const index = () => {
 					</td>
 					<td colSpan={1}>
 						<div className={statusClass}>
-							<span className='lowercase capitalize'>{element.status}</span>
+							<span>{capitalize(sanitize(element.status))}</span>
 						</div>
 					</td>
 					<td colSpan={1}>
@@ -156,7 +156,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	return {
 		props: {
-
+			session
 		}
 	};
 })
