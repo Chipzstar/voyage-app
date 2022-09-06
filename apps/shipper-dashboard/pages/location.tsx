@@ -64,7 +64,7 @@ const location = ({ locationId, locationName }) => {
 						console.log('RESULT', res);
 						notifySuccess('update-location-success', 'Location updated successfully!', <Check size={20} />);
 						setLoading(false);
-						setTimeout(() => router.push(`${PATHS.WORKFLOWS}#locations`), 500);
+						setTimeout(() => router.push(`${PATHS.WORKFLOWS}#locations`), 1000);
 					})
 					.catch(err => {
 						notifyError('update-location-failure', `Location could not be updated, ${err.message}`, <X size={20} />);
@@ -77,7 +77,7 @@ const location = ({ locationId, locationName }) => {
 						console.log('RESULT', res);
 						notifySuccess('create-location-success', 'Location was created successfully!', <Check size={20} />);
 						setLoading(false);
-						setTimeout(() => router.push(`${PATHS.WORKFLOWS}#locations`), 500);
+						setTimeout(() => router.push(`${PATHS.WORKFLOWS}#locations`), 1000);
 					})
 					.catch(err => {
 						notifyError('create-location-failure', `We were unable to create this location, ${err.message}`, <X size={20} />);
