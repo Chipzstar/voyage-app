@@ -8,16 +8,17 @@ export default async function handler(req, res) {
 	// @ts-ignore
 	if (req.method === 'PUT') {
 		try {
-			const { id: shipmentId } = req.query;
+			const { id } = req.query;
 			const payload = req.body;
+			console.log("Payload")
+			console.log(payload)
+			console.log('-----------------------------------------------')
 			// find a shipment with the given id
 			const shipment: Shipment = await prisma.shipment.update({
 				where: {
-					id: shipmentId
+					id
 				},
-				data: {
-					payload
-				}
+				data: payload
 			})
 			console.log(shipment)
 			res.status(200).json(shipment);

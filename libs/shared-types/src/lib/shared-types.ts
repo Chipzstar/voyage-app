@@ -54,6 +54,7 @@ export type Coordinates = [longitude: number, latitude: number]
 export enum STATUS {
 	NEW = 'NEW',
 	PENDING = 'PENDING',
+	ACCEPTED = 'ACCEPTED',
 	DISPATCHED = 'DISPATCHED',
 	AT_PICKUP = 'AT_PICKUP',
 	LOADING = 'LOADING',

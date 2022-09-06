@@ -37,7 +37,7 @@ const items = [
 
 const marketplace = ({ session }) => {
 	const [loading, setLoading] = useState(false);
-	const shipments = useSelector(useShipments);
+	const shipments = useSelector(state => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW));
 	const drivers = useSelector(useDrivers);
 	const members = useSelector(useMembers);
 	const dispatch = useDispatch<AppDispatch>();
@@ -79,7 +79,8 @@ const marketplace = ({ session }) => {
 					})
 				)
 					.unwrap()
-					.then(() => console.log('shipment updated'));
+					.then(() => console.log('shipment updated'))
+					.catch(err => console.error(err));
 			} catch (err) {
 				console.error(err);
 				notifyError('convert-shipment-to-load-failure', `${err.message}`, <X size={20} />);
@@ -146,7 +147,6 @@ const marketplace = ({ session }) => {
 			</div>
 			<SimpleGrid cols={1}>
 				{shipments
-					.filter((shipment: Shipment) => shipment.status === STATUS.NEW)
 					.map((shipment: Shipment, index) => (
 						<main key={index} className='border-voyage-grey space-y-3 border p-3'>
 							<section className='flex space-x-8'>

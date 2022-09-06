@@ -37,7 +37,7 @@ const location = ({ locationId, locationName }) => {
 	const form = useForm<Location>({
 		initialValues: {
 			id: location?.id ?? undefined,
-			shipperId: location?.shipperId ?? '',
+			shipperId: location?.shipperId ?? undefined,
 			locationId: locationId || `LOCATION-ID${alphanumericId(8)}`,
 			name: locationName || location?.name || '',
 			type: location?.type || LocationType.WAREHOUSE,

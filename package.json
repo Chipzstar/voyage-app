@@ -52,7 +52,7 @@
     "@nivo/core": "^0.78.0",
     "@nivo/generators": "^0.78.0",
     "@nivo/pie": "^0.78.0",
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^4.3.1",
     "@pulumi/gcp": "^6.32.0",
     "@pulumi/pulumi": "^3.37.2",
     "@reduxjs/toolkit": "1.8.5",
@@ -142,7 +142,7 @@
     "postcss": "8.4.16",
     "prettier": "^2.6.2",
     "prettier-plugin-tailwindcss": "^0.1.13",
-    "prisma": "^4.2.1",
+    "prisma": "^4.3.1",
     "react-test-renderer": "18.2.0",
     "sass": "1.54.5",
     "tailwindcss": "3.1.8",
@@ -160,4 +160,3 @@
     "singleQuote": true
   }
 }
-
