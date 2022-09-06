@@ -31,7 +31,6 @@ const TruckLoadTimeline = ({ loads }) => {
 
 	const handleEventSelection = e => router.push(`${PATHS.TRIPS}/${e.id}`);
 	const handleEventPropGetter = (event, start, end, isSelected) => {
-		console.log(event.start);
 		const style = {
 			backgroundColor: event.bgColor,
 			opacity: 0.8,
@@ -46,7 +45,7 @@ const TruckLoadTimeline = ({ loads }) => {
 		<div className='py-3'>
 			<Calendar
 				components={{
-					eventWrapper: ({ event, children }) => {
+					eventWrapper: ({ children }) => {
 						const newChildren = { ...children };
 						const newChildrenProps = { ...newChildren.props };
 						newChildrenProps.className = `${newChildrenProps.className} flex flex-col px-1 rounded-lg shadow-md p-1 border border-1 text-sm z-50`;

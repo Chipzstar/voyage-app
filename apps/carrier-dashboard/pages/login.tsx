@@ -8,7 +8,6 @@ import prisma from '../db';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { PATHS } from '../utils/constants';
-import { getToken } from 'next-auth/jwt';
 
 const VerifyEmailAlert = ({ email, onClose }) => {
 	return (
@@ -140,7 +139,6 @@ export async function getServerSideProps({ req, res }) {
 			password: true
 		}
 	});
-	console.log(users);
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

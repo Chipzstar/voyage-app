@@ -39,7 +39,6 @@ const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
 	});
 
 	const handleSubmit = useCallback(values => {
-		console.log(values);
 		setLoading(true);
 		// CHECK IF CARRIER SIGNUP STATUS IS NOT COMPLETE, IF IT IS NOT, change status to WORKFLOWS
 		if (carrierInfo.status === SignupStatus.COMPANY_INFO) {

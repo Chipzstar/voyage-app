@@ -1,5 +1,5 @@
 import { ChargeUnitType, Customer, Driver, Load, LoadLocation, Location, Member, NewBooking, RateChargeRules, Settings } from './types';
-import { Shipment, STATUS } from '@voyage-app/shared-types';
+import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { numericId } from '@voyage-app/shared-utils';
 import { PLACE_TYPES } from './constants';
@@ -21,15 +21,12 @@ export function calculateRate(weight, numPallets, miles = 300, rates: RateCharge
 		switch (key) {
 			case ChargeUnitType.DISTANCE:
 				newVal += miles * rate.value;
-				console.log('New value:', newVal);
 				return newVal;
 			case ChargeUnitType.WEIGHT:
 				newVal += weight * rate.value;
-				console.log('New value:', newVal);
 				return newVal;
 			case ChargeUnitType.PACKAGE:
 				newVal += weight * numPallets * rate.value;
-				console.log('New value:', newVal);
 				return newVal;
 			default:
 				return prev;

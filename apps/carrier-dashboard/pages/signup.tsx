@@ -4,19 +4,18 @@ import { PATHS } from '../utils/constants';
 import { getCsrfToken } from 'next-auth/react';
 import prisma from '../db';
 import React, { useState } from 'react';
-import { Box, Center, ScrollArea, Stepper, Text } from '@mantine/core';
-import { Check, X } from 'tabler-icons-react';
+import { ScrollArea, Stepper } from '@mantine/core';
 import Step1 from '../containers/signup/Step1';
 import Step2 from '../containers/signup/Step2';
 
-const requirements = [
+/*const requirements = [
 	{ re: /[0-9]/, label: 'Includes number' },
 	{ re: /[a-z]/, label: 'Includes lowercase letter' },
 	{ re: /[A-Z]/, label: 'Includes uppercase letter' },
 	{ re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: 'Includes special symbol' }
-];
+];*/
 
-function PasswordRequirement({ meets, label }: { meets: boolean; label: string }) {
+/*function PasswordRequirement({ meets, label }: { meets: boolean; label: string }) {
 	return (
 		<Text color={meets ? 'teal' : 'red'} mt={5} size='sm'>
 			<Center inline>
@@ -25,9 +24,9 @@ function PasswordRequirement({ meets, label }: { meets: boolean; label: string }
 			</Center>
 		</Text>
 	);
-}
+}*/
 
-function getStrength(password: string) {
+/*function getStrength(password: string) {
 	let multiplier = password.length > 5 ? 0 : 1;
 
 	requirements.forEach(requirement => {
@@ -37,7 +36,7 @@ function getStrength(password: string) {
 	});
 
 	return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0);
-}
+}*/
 
 const signup = ({ users }) => {
 	const [active, setActive] = useState(0);
@@ -96,7 +95,6 @@ export async function getServerSideProps({ req, res }) {
 			email: true
 		}
 	});
-	console.log(users)
 	return {
 		props: {
 			csrfToken: csrfToken ?? null,

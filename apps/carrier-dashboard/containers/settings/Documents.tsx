@@ -49,7 +49,6 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 	const [loading, setLoading] = useState(false);
 	const [activation, setActivation] = useState(false);
 	const theme = useMantineTheme();
-	const openRef = useRef<() => void>(null);
 	const form = useForm<NewDocument>({
 		initialValues: {
 			id: carrierInfo?.id ?? '',
@@ -65,11 +64,9 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 		setLoading(true);
 		uploadFile(values)
 			.then(res => {
-				console.log(res);
 				dispatch(createDocument(values))
 					.unwrap()
 					.then(res => {
-						console.log(res);
 						notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
 						setLoading(false);
 						if (documents.length >= 2) {

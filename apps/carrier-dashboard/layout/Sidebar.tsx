@@ -5,9 +5,8 @@ import Link from 'next/link';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ScrollArea, Stack, Text } from '@mantine/core';
-import { useCarrier } from '../store/feature/profileSlice';
 import { SignupStatus } from '../utils/types';
 
 interface NavMenuItem {
@@ -89,10 +88,7 @@ const Sidebar = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 
-	const signupComplete = useMemo(() => {
-		console.log("SESSION:", session?.status)
-		return session?.status === SignupStatus.COMPLETE
-	}, [session]);
+	const signupComplete = useMemo(() => session?.status === SignupStatus.COMPLETE, [session]);
 
 	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
 	const Menu: NavMenu[] = [

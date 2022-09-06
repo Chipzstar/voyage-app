@@ -50,9 +50,8 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 		setLoading(true)
 		values.sortCode = formatCode(values.sortCode);
 		let payload = { ...values, accountId: carrierInfo?.stripe.accountId, status: carrierInfo.status };
-		console.log(payload);
 		try {
-			const carrier = await dispatch(createBankAccount(payload)).unwrap();
+			await dispatch(createBankAccount(payload)).unwrap();
 			notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />);
 			carrierInfo.status === SignupStatus.BANK_ACCOUNT && nextTab();
 			setLoading(false)

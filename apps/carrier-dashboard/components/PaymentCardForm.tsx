@@ -1,5 +1,5 @@
 import { PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Button, Loader, Stack, Text } from '@mantine/core';
 import classNames from 'classnames';
 import { Check, X } from 'tabler-icons-react';
@@ -18,8 +18,6 @@ const PaymentCardForm = ({ onSave }) => {
 			}),
 		[stripe]
 	);
-
-	useEffect(() => console.log(elements ? elements['_commonOptions'].clientSecret.clientSecret : elements), [elements]);
 
 	const handleSubmit = async event => {
 		// We don't want to let default form submission happen here,
@@ -43,7 +41,6 @@ const PaymentCardForm = ({ onSave }) => {
 				}
 			});
 			if (error) {
-				console.log(error);
 				// This point will only be reached if there is an immediate error when
 				// confirming the payment. Show error to your customer (for example, payment
 				// details incomplete)
