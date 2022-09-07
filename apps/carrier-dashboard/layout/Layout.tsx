@@ -66,6 +66,7 @@ const Layout = ({ session, children }) => {
 										email: profile.email,
 										external_id: profile.id,
 										metadata: {
+											type: 'Carrier',
 											phone: profile.phone,
 											company: profile.company
 										},
