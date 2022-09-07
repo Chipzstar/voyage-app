@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { useSelector } from 'react-redux';
-import { STATUS } from '../utils/types';
+import { STATUS } from '@voyage-app/shared-types';
 
 const ShipmentOverview = ({ interval }) => {
 	const shipments = useSelector(state => state['shipments']);

@@ -52,18 +52,6 @@ export type Coordinates = [longitude: number, latitude: number]
 export type DateRange = [Date, Date]
 //ENUMS
 
-export enum STATUS {
-	NEW = 'NEW',
-	PENDING = 'PENDING',
-	DISPATCHED = 'DISPATCHED',
-	AT_PICKUP = 'AT_PICKUP',
-	LOADING = 'LOADING',
-	EN_ROUTE = 'EN-ROUTE',
-	AT_DROPOFF = 'AT_DROPOFF',
-	COMPLETED = 'COMPLETED',
-	CANCELLED = 'CANCELLED'
-}
-
 export enum SERVICE_TYPE {
 	WAREHOUSE_TO_WAREHOUSE = 'W2W',
 	DIRECT_TO_STORE_DISTRIBUTION = 'D2S',

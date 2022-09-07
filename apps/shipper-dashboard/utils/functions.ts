@@ -1,7 +1,7 @@
-import { Delivery, NewBooking, Pickup, STATUS } from './types';
+import { Delivery, NewBooking, Pickup } from './types';
 import moment from 'moment';
 import { numericId } from '@voyage-app/shared-utils';
-import { Location, Shipment } from '@voyage-app/shared-types';
+import { Location, Shipment, STATUS } from '@voyage-app/shared-types';
 
 export function calculateRate(weight, numPallets, miles = 300) {
 	const sum = weight * 0.02 + numPallets * 25.7 + miles * 4.2;

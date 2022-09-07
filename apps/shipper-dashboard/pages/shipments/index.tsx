@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Tabs } from '@mantine/core';
 import DataGrid from '../../components/DataGrid';
 import { PATHS, PUBLIC_PATHS } from '../../utils/constants'
-import { STATUS } from '../../utils/types';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
 import moment from 'moment';
@@ -16,6 +15,7 @@ import { getToken } from 'next-auth/jwt';
 import { wrapper } from '../../store';
 import { fetchShipper } from '../../utils/functions';
 import { setShipper } from '../../store/features/profileSlice';
+import { STATUS } from '@voyage-app/shared-types';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
