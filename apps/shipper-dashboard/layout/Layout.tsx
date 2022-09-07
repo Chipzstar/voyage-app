@@ -11,6 +11,10 @@ const Layout = ({ children }) => {
 	const router = useRouter();
 	const isAuthScreen = useMemo(() => !router.pathname.includes(PUBLIC_PATHS.LOGIN), [router.pathname]);
 
+	const currentURL = useMemo(() => {
+		return typeof window === 'undefined' ? `${process.env.NEXTAUTH_URL}${router.pathname}` : `${window.location.origin}${router.pathname}`;
+	}, [router]);
+
 	return (
 		<div className='relative flex min-h-screen overflow-hidden'>
 			{isAuthScreen && (
@@ -55,17 +59,21 @@ const Layout = ({ children }) => {
 							}
 						}}
 						// Optionally include data about your customer here to identify them
-						customer={profile?.id ? {
-							name: profile.fullName,
-							email: profile.email,
-							external_id: profile.id,
-							metadata: {
-								type: 'Shipper',
-								phone: profile.phone,
-								company: profile.company
-							},
-							current_url: `${process.env.NEXTAUTH_URL}${router.pathname}`
-						} : undefined}
+						customer={
+							profile?.id
+								? {
+										name: profile.fullName,
+										email: profile.email,
+										external_id: profile.id,
+										metadata: {
+											type: 'Shipper',
+											phone: profile.phone,
+											company: profile.company
+										},
+										current_url: currentURL
+								  }
+								: undefined
+						}
 					/>
 				)}
 			</main>

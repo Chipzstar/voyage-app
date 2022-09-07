@@ -11,7 +11,9 @@ const Layout = ({ session, children }) => {
 	const profile = useSelector(useCarrier);
 	const isAuthScreen = useMemo(() => ![PUBLIC_PATHS.LOGIN, PUBLIC_PATHS.SIGNUP].includes(router.pathname), [router.pathname]);
 
-	useEffect(() => console.log(profile), [profile]);
+	const currentURL = useMemo(() => {
+		return typeof window === 'undefined' ? `${process.env.NEXTAUTH_URL}${router.pathname}` : `${window.location.origin}${router.pathname}`;
+	}, [router]);
 
 	return (
 		<div className='relative flex min-h-screen'>
@@ -22,51 +24,57 @@ const Layout = ({ session, children }) => {
 			)}
 			<main className='min-h-screen grow overflow-hidden'>
 				{children}
-				{isAuthScreen && <ChatWidget
-					// `accountId` is used instead of `token` in older versions
-					// of the @papercups-io/chat-widget package (before v1.2.x).
-					// You can delete this line if you are on the latest version.
-					// accountId="8d14f8d9-7027-4af7-8fb2-14ca0712e633"
-					token='8d14f8d9-7027-4af7-8fb2-14ca0712e633'
-					inbox='3793e40e-c090-4412-acd0-7e20a7dc9f8a'
-					title='Welcome to Voyage'
-					subtitle='Ask us anything in the chat window below 😊'
-					primaryColor='#3646F5'
-					position='right'
-					greeting='Hi there! How can I help you?'
-					newMessagePlaceholder='Start typing...'
-					showAgentAvailability={false}
-					agentAvailableText="We're online right now!"
-					agentUnavailableText="We're away at the moment."
-					requireEmailUpfront={false}
-					iconVariant='outlined'
-					baseUrl='https://app.papercups.io'
-					styles={{
-						toggleButton: {
-							width: 60,
-							height: 60
-						},
-						toggleContainer: {
-							zIndex: 1000000,
-							position: 'fixed'
-						},
-						chatContainer: {
-							zIndex: 10000000,
-							position: 'fixed'
+				{isAuthScreen && (
+					<ChatWidget
+						// `accountId` is used instead of `token` in older versions
+						// of the @papercups-io/chat-widget package (before v1.2.x).
+						// You can delete this line if you are on the latest version.
+						// accountId="8d14f8d9-7027-4af7-8fb2-14ca0712e633"
+						token='8d14f8d9-7027-4af7-8fb2-14ca0712e633'
+						inbox='3793e40e-c090-4412-acd0-7e20a7dc9f8a'
+						title='Welcome to Voyage'
+						subtitle='Ask us anything in the chat window below 😊'
+						primaryColor='#3646F5'
+						position='right'
+						greeting='Hi there! How can I help you?'
+						newMessagePlaceholder='Start typing...'
+						showAgentAvailability={false}
+						agentAvailableText="We're online right now!"
+						agentUnavailableText="We're away at the moment."
+						requireEmailUpfront={false}
+						iconVariant='outlined'
+						baseUrl='https://app.papercups.io'
+						styles={{
+							toggleButton: {
+								width: 60,
+								height: 60
+							},
+							toggleContainer: {
+								zIndex: 1000000,
+								position: 'fixed'
+							},
+							chatContainer: {
+								zIndex: 10000000,
+								position: 'fixed'
+							}
+						}}
+						// Optionally include data about your customer here to identify them
+						customer={
+							profile.id
+								? {
+										name: profile.fullName,
+										email: profile.email,
+										external_id: profile.id,
+										metadata: {
+											phone: profile.phone,
+											company: profile.company
+										},
+										current_url: currentURL
+								  }
+								: undefined
 						}
-					}}
-					// Optionally include data about your customer here to identify them
-					customer={profile.id ? {
-						name: profile.fullName,
-						email: profile.email,
-						external_id: profile.id,
-						metadata: {
-							phone: profile.phone,
-							company: profile.company,
-						},
-						current_url: `${process.env.NEXTAUTH_URL}${router.pathname}`
-					}: undefined}
-				/>}
+					/>
+				)}
 			</main>
 		</div>
 	);
