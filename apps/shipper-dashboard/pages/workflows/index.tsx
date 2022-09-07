@@ -9,9 +9,10 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import prisma from '../../db';
 import { setLocations, useLocation } from '../../store/features/locationSlice';
 import { getToken } from 'next-auth/jwt';
-import { fetchLocations } from '../../utils/functions';
+import { fetchLocations, fetchShipper } from '../../utils/functions';
 import { wrapper } from '../../store';
 import { useSelector } from 'react-redux';
+import { setShipper } from '../../store/features/profileSlice';
 
 const workflows = () => {
 	const router = useRouter();
@@ -53,7 +54,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			}
 		};
 	}
+	const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
 	const locations = await fetchLocations(token?.shipperId, prisma)
+	store.dispatch(setShipper(shipper))
 	store.dispatch(setLocations(locations))
 	return {
 		props: {

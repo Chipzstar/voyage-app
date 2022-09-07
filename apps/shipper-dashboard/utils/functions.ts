@@ -1,16 +1,12 @@
-import { Delivery, NewBooking, Pickup, STATUS } from './types'
+import { Delivery, NewBooking, Pickup, STATUS } from './types';
 import moment from 'moment';
-import { numericId } from '@voyage-app/shared-utils'
+import { numericId } from '@voyage-app/shared-utils';
 import { Location, Shipment } from '@voyage-app/shared-types';
 
-export function calculateRate(
-	weight,
-	numPallets,
-	miles = 300,
-) {
+export function calculateRate(weight, numPallets, miles = 300) {
 	const sum = weight * 0.02 + numPallets * 25.7 + miles * 4.2;
-	console.log("Estimated rate:", `£${sum}`)
-	return sum
+	console.log('Estimated rate:', `£${sum}`);
+	return sum;
 }
 
 export function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location) : Shipment {
@@ -76,23 +72,35 @@ export function filterByTimeRange(data: [], range: [Date, Date]){
 	})
 }
 
-export async function fetchShipments(shipperId, prisma) {
-	let shipments = await prisma.shipment.findMany({
+export async function fetchShipper(userId, shipperId, prisma){
+	return await prisma.shipper.findFirst({
 		where: {
-			shipperId: {
-				equals: shipperId
-			}
+			OR: [
+				{
+					userId: {
+						equals: userId
+					}
+				},
+				{
+					id: {
+						equals: shipperId
+					}
+				}
+			]
 		},
-		orderBy: {
-			createdAt: 'desc'
+		select: {
+			id: true,
+			shipperId: true,
+			fullName: true,
+			firstname: true,
+			lastname: true,
+			company: true,
+			address: true,
+			email: true,
+			phone: true,
+			stripe: true
 		}
 	});
-	shipments = shipments.map(shipment => ({
-		...shipment,
-		createdAt: moment(shipment.createdAt).unix(),
-		updatedAt: moment(shipment.updatedAt).unix()
-	}));
-	return shipments
 }
 
 export async function fetchLocations(shipperId, prisma){

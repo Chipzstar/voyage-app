@@ -14,6 +14,8 @@ import prisma from '../../db';
 import { capitalize, fetchShipments, sanitize } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { wrapper } from '../../store';
+import { fetchShipper } from '../../utils/functions';
+import { setShipper } from '../../store/features/profileSlice';
 
 const Empty = ({ message }) => (
 	<div className='mx-auto my-auto'>
@@ -151,6 +153,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
+		store.dispatch(setShipper(shipper))
 		const shipments = await fetchShipments(token?.shipperId, prisma)
 		store.dispatch(setShipments(shipments));
 	}

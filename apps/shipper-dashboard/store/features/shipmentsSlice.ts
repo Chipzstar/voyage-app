@@ -30,7 +30,7 @@ export const shipmentSlice = createSlice({
 	}
 });
 
-export const useShipments = state => state['shipments']
+export const useShipments = (state): Shipment[] => state['shipments']
 
 export const { setShipments, addShipment } = shipmentSlice.actions;
 

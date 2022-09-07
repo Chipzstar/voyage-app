@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { getToken } from 'next-auth/jwt';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
-import { fetchLocations } from '../utils/functions';
+import { fetchLocations, fetchShipper } from '../utils/functions';
 import { AppDispatch, wrapper } from '../store';
 import { alphanumericId, countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { Check, X } from 'tabler-icons-react';
@@ -22,6 +22,7 @@ import {
 	OperatingHoursState,
 	SelectInputData
 } from '@voyage-app/shared-types';
+import { setShipper } from '../store/features/profileSlice';
 
 const location = ({ locationId, locationName }) => {
 	const [loading, setLoading] = useState(false);
@@ -280,6 +281,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
 	if (session.id) {
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
+		store.dispatch(setShipper(shipper))
 		const locations = await fetchLocations(token?.shipperId, prisma);
 		store.dispatch(setLocations(locations));
 	}

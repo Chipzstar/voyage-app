@@ -9,6 +9,8 @@ import { setShipments } from '../../store/features/shipmentsSlice';
 import { getToken } from 'next-auth/jwt';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { wrapper } from '../../store';
+import { fetchShipper } from '../../utils/functions';
+import { setShipper } from '../../store/features/profileSlice';
 
 const bookings = () => {
 	const router = useRouter();
@@ -45,6 +47,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({re
 		};
 	}
 	if (session.id || token?.shipperId) {
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
+		store.dispatch(setShipper(shipper))
 		const shipments = await fetchShipments(token?.shipperId, prisma)
 		store.dispatch(setShipments(shipments));
 	}

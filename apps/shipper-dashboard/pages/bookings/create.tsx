@@ -18,7 +18,7 @@ import { DateTimePicker } from '@voyage-app/shared-ui-components';
 import { PATHS, PUBLIC_PATHS } from 'apps/shipper-dashboard/utils/constants';
 import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
-import { fetchLocations, generateShipment } from '../../utils/functions';
+import { fetchLocations, fetchShipper, generateShipment } from '../../utils/functions';
 import { createBooking } from '../../store/features/bookingsSlice';
 import { AppDispatch, wrapper } from '../../store';
 import { getToken } from 'next-auth/jwt';
@@ -26,6 +26,7 @@ import prisma from '../../db';
 import { setLocations } from '../../store/features/locationSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
+import { setShipper } from '../../store/features/profileSlice';
 
 const create = ({bookingID}) => {
 	const router = useRouter();
@@ -435,6 +436,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			}
 		};
 	}
+	const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
+	store.dispatch(setShipper(shipper))
 	const locations = await fetchLocations(token?.shipperId, prisma);
 	store.dispatch(setLocations(locations));
 	return {

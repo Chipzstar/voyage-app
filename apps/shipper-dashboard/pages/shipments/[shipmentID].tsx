@@ -10,41 +10,16 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import prisma from '../../db';
 import { useSelector } from 'react-redux';
 import { store } from '../../store';
-import { setShipments } from '../../store/features/shipmentsSlice';
+import { setShipments, useShipments } from '../../store/features/shipmentsSlice';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { Shipment } from '@voyage-app/shared-types';
+import { fetchShipper } from '../../utils/functions';
+import { setShipper } from '../../store/features/profileSlice';
 
-export async function getServerSideProps({ req, res, params }) {
-	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions);
-	const token = await getToken({ req });
-	if (!session) {
-		return {
-			redirect: {
-				destination: PUBLIC_PATHS.LOGIN,
-				permanent: false
-			}
-		};
-	}
-	let pageIndex = 0;
-	// fetch all shipments for the current user
-	const shipments = await fetchShipments(token?.shipperId, prisma);
-	store.dispatch(setShipments(shipments));
-	pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
-	console.table({ pageIndex });
-	return {
-		props: {
-			initialState: store.getState(),
-			shipmentId: params.shipmentID,
-			pageIndex
-		} // will be passed to the page component as props
-	};
-}
-
-const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
+const viewShipment = ({ shipmentId, pageIndex }) => {
 	const router = useRouter();
-	const shipments: Shipment[] = useSelector(state => state['shipments']);
+	const shipments = useSelector(useShipments);
 
 	return (
 		<div className='h-screen p-4'>
@@ -139,5 +114,36 @@ const viewShipment = ({ shipmentId, pageIndex, initialState }) => {
 		</div>
 	);
 };
+
+export async function getServerSideProps({ req, res, params }) {
+	// @ts-ignore
+	const session = await unstable_getServerSession(req, res, authOptions);
+	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
+	let pageIndex = 0;
+	// fetch all shipments for the current user
+	if (session.id || token?.shipperId) {
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
+		store.dispatch(setShipper(shipper))
+		const shipments = await fetchShipments(token?.shipperId, prisma);
+		store.dispatch(setShipments(shipments));
+		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
+		console.table({ pageIndex });
+	}
+	return {
+		props: {
+			session,
+			shipmentId: params.shipmentID,
+			pageIndex
+		} // will be passed to the page component as props
+	};
+}
 
 export default viewShipment;

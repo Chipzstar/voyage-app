@@ -1,16 +1,74 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Sidebar from './Sidebar';
-import {useRouter} from 'next/router';
-import {PUBLIC_PATHS} from '../utils/constants';
+import { useRouter } from 'next/router';
+import { PUBLIC_PATHS } from '../utils/constants';
+import { ChatWidget } from '@papercups-io/chat-widget';
+import { useSelector } from 'react-redux';
+import { useShipper } from '../store/features/profileSlice';
 
 const Layout = ({ children }) => {
+	const profile = useSelector(useShipper);
 	const router = useRouter();
+	const isAuthScreen = useMemo(() => !router.pathname.includes(PUBLIC_PATHS.LOGIN), [router.pathname]);
+
 	return (
-		<div className='min-h-screen flex relative overflow-hidden'>
-			{!router.pathname.includes(PUBLIC_PATHS.LOGIN) && <aside className='h-screen sticky top-0 relative' aria-label='Sidebar'>
-				<Sidebar />
-			</aside>}
-			<main className='h-screen overflow-y-auto grow'>{children}</main>
+		<div className='relative flex min-h-screen overflow-hidden'>
+			{isAuthScreen && (
+				<aside className='relative sticky top-0 h-screen' aria-label='Sidebar'>
+					<Sidebar />
+				</aside>
+			)}
+			<main className='h-screen grow overflow-y-auto'>
+				{children}
+				{isAuthScreen && (
+					<ChatWidget
+						// `accountId` is used instead of `token` in older versions
+						// of the @papercups-io/chat-widget package (before v1.2.x).
+						// You can delete this line if you are on the latest version.
+						// accountId="8d14f8d9-7027-4af7-8fb2-14ca0712e633"
+						token='8d14f8d9-7027-4af7-8fb2-14ca0712e633'
+						inbox='3793e40e-c090-4412-acd0-7e20a7dc9f8a'
+						title='Welcome to Voyage'
+						subtitle='Ask us anything in the chat window below 😊'
+						primaryColor='#3646F5'
+						position='right'
+						greeting='Hi there! How can I help you?'
+						newMessagePlaceholder='Start typing...'
+						showAgentAvailability={false}
+						agentAvailableText="We're online right now!"
+						agentUnavailableText="We're away at the moment."
+						requireEmailUpfront={false}
+						iconVariant='outlined'
+						baseUrl='https://app.papercups.io'
+						styles={{
+							toggleButton: {
+								width: 60,
+								height: 60
+							},
+							toggleContainer: {
+								zIndex: 1000000,
+								position: 'fixed'
+							},
+							chatContainer: {
+								zIndex: 10000000,
+								position: 'fixed'
+							}
+						}}
+						// Optionally include data about your customer here to identify them
+						customer={{
+							name: profile.fullName,
+							email: profile.email,
+							external_id: profile.id,
+							metadata: {
+								type: 'Shipper',
+								phone: profile.phone,
+								company: profile.company
+							},
+							current_url: `${process.env.NEXTAUTH_URL}${router.pathname}`
+						}}
+					/>
+				)}
+			</main>
 		</div>
 	);
 };

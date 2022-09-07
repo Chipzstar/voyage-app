@@ -11,6 +11,8 @@ import { PUBLIC_PATHS } from '../utils/constants';
 import { getToken } from 'next-auth/jwt'
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { wrapper } from '../store';
+import { setShipper } from '../store/features/profileSlice';
+import { fetchShipper } from '../utils/functions';
 
 const Index = (props) => {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
@@ -46,7 +48,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
 		const shipments = await fetchShipments(token?.shipperId, prisma)
+		store.dispatch(setShipper(shipper))
 		store.dispatch(setShipments(shipments));
 	}
 	return {

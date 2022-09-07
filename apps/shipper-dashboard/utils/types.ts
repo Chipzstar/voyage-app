@@ -1,3 +1,5 @@
+import { Address } from '@voyage-app/shared-types';
+
 export type UnixTimestamp = number
 
 export interface CarrierQuote {
@@ -114,4 +116,17 @@ export interface NewBooking {
 	deliveryLocation: string;
 	description: string;
 	notes: string;
+}
+
+export interface NewShipper {
+	customerId: string;
+	fullName: string;
+	firstname: string;
+	lastname: string;
+	email: string;
+	company: string;
+	phone: string;
+	password: string;
+	confirmPassword: string;
+	address: Address;
 }
