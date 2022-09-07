@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Badge, Button, Container, Group, Loader, Paper, Radio, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
@@ -103,8 +103,8 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 											</Text>
 											<span>{doc.filename}</span>
 										</div>
-										<Badge variant='gradient' gradient={{ from: 'grey', to: 'black' }}>
-											Verifying
+										<Badge variant='gradient' gradient={doc.verified ? { from: 'teal', to: 'lime', deg: 105 } : { from: 'grey', to: 'black' }}>
+											{doc.status}
 										</Badge>
 									</Group>
 									<div>

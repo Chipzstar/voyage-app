@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { PACKAGE_TYPE, STATUS, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { alphanumericId } from '@voyage-app/shared-utils';
-import { ChargeUnitType, Document, DocumentType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, SignupStatus, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
+import { ChargeUnitType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, SignupStatus, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
 import { PhoneNumberUtil } from 'google-libphonenumber';
@@ -1028,22 +1028,3 @@ export const defaultSettings: Settings = {
 		[ChargeUnitType.PACKAGE]: { active: true, value: 25.7 }
 	}
 };
-
-export const SAMPLE_DOCUMENTS: Document[] = [
-	{
-		id: '',
-		carrierId: '',
-		filename: 'Liability Insurance',
-		filepath: '/id/type/insurance.pdf',
-		type: DocumentType.LIABILITY_INSURANCE,
-		location: 'https://github.com/'
-	},
-	{
-		id: '',
-		carrierId: '',
-		filename: 'UK HGV Operators License',
-		filepath: '/id/type/insurance.pdf',
-		type: DocumentType.UK_HGV_OPERATORS_LICENSE,
-		location: 'https://github.com/'
-	}
-];

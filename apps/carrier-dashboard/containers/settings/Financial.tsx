@@ -30,9 +30,7 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
 
-	const bankAccount = useMemo(() => {
-		return carrierInfo?.stripe?.bankAccount;
-	}, [carrierInfo]);
+	const bankAccount = useMemo(() => carrierInfo?.stripe?.bankAccount, [carrierInfo]);
 
 	const form = useForm<BankAccountForm>({
 		initialValues: {

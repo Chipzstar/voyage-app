@@ -71,7 +71,7 @@ const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
 						</Group>
 						<Group grow>
 							<TextInput radius={0} label='Phone Number' {...form.getInputProps('phone')} />
-							<TextInput radius={0} label='Email Address' {...form.getInputProps('email')} />
+							<TextInput radius={0} label='Email Address' {...form.getInputProps('email')} disabled/>
 						</Group>
 						<Group grow>
 							<TextInput radius={0} label='Address Line 1' {...form.getInputProps('address.line1')} />

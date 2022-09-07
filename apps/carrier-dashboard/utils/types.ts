@@ -351,6 +351,8 @@ export interface Document {
 	filename: string;
 	filepath: string;
 	location: string;
+	status: string;
+	verified: boolean;
 }
 
 export interface NewCarrier {
