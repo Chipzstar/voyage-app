@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
 	const isAuthScreen = useMemo(() => !router.pathname.includes(PUBLIC_PATHS.LOGIN), [router.pathname]);
 
 	const currentURL = useMemo(() => {
-		return typeof window === 'undefined' ? `${process.env.NEXTAUTH_URL}${router.pathname}` : `${window.location.origin}${router.pathname}`;
+		return typeof window === 'undefined' ? `${process.env.NEXT_PUBLIC_HOST}${router.pathname}` : `${window.location.origin}${router.pathname}`;
 	}, [router]);
 
 	return (
