@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { STATUS } from '@voyage-app/shared-types';
-import { Shipment } from '@voyage-app/shared-types';
+import { Shipment, STATUS } from '@voyage-app/shared-types';
 import { useShipments } from '../../store/features/shipmentsSlice';
 
 const Billing = () => {
