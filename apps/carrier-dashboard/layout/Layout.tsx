@@ -56,7 +56,7 @@ const Layout = ({ session, children }) => {
 						}
 					}}
 					// Optionally include data about your customer here to identify them
-					customer={{
+					customer={profile.id ? {
 						name: profile.fullName,
 						email: profile.email,
 						external_id: profile.id,
@@ -65,7 +65,7 @@ const Layout = ({ session, children }) => {
 							company: profile.company,
 						},
 						current_url: `${process.env.NEXTAUTH_URL}${router.pathname}`
-					}}
+					}: undefined}
 				/>}
 			</main>
 		</div>

@@ -5,7 +5,6 @@ import { useShipments } from '../../store/features/shipmentsSlice';
 
 const Billing = () => {
 	const shipments = useSelector(useShipments);
-
 	const totalBalance = useMemo(() => {
 		const total = shipments.reduce((prev: number, curr: Shipment) => {
 			return curr.status === STATUS.COMPLETED ? prev + curr.rate : prev
