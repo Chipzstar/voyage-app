@@ -74,40 +74,12 @@ const DashboardPanels = ({ dateRange }) => {
 						</div>
 					</div>
 				</div>
-				<div className='flex flex-col justify-center p-4 border border-voyage-grey'>
-					<div className='space-y-3'>
-						<header className="ml-7">
-							<h2 className='text-2xl font-semibold'>Total Pallets</h2>
-						</header>
-						<TotalPallets range={dateRange} genLabels={generateLabels}/>
-					</div>
-				</div>
 				<div className='flex flex-col justify-center p-4 div border border-voyage-grey space-y-3'>
 					<div className='space-y-3'>
 						<header className="ml-7">
 							<h2 className='text-2xl font-semibold'>Total Number of Bookings</h2>
 						</header>
 						<TotalNumberBookings range={dateRange} genLabels={generateLabels}/>
-					</div>
-				</div>
-				<div className='flex flex-col justify-center p-4 div border border-voyage-grey'>
-					<div className='ml-7 space-y-3'>
-						<header>
-							<h2 className='text-2xl font-semibold'>Sustainability</h2>
-						</header>
-						<div className='h-32 flex items-end'>
-							<img src='/static/images/sustainability.svg' alt='' />
-						</div>
-					</div>
-				</div>
-				<div className='flex flex-col justify-center p-4 div border border-voyage-grey'>
-					<div className='ml-7 space-y-3'>
-						<header>
-							<h2 className='text-2xl font-semibold'>Notifications</h2>
-						</header>
-						<div className='h-32 flex items-center'>
-							<img src='/static/images/notifications.svg' alt='' />
-						</div>
 					</div>
 				</div>
 			</div>

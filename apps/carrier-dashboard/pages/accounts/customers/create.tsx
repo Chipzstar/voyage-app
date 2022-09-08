@@ -53,7 +53,6 @@ const create = ({ customerId, companyName, session }) => {
 	const initialValues: Customer = {
 		id: customer?.id ?? undefined,
 		carrierId: customer?.carrierId ?? profile.id,
-		userId: customer?.userId ?? session?.id,
 		customerId: customer?.customerId ?? `CUSTOMER-ID${alphanumericId(8)}`,
 		createdAt: undefined,
 		accountType: customer?.accountType ?? AccountType.MEDIUM_SHIPPER,

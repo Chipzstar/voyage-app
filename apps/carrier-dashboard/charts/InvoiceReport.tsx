@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { createStyles, ScrollArea, Table } from '@mantine/core';
-import { SAMPLE_INVOICES } from '../utils/constants';
+import { Load } from '../utils/types';
+import { numericId } from '@voyage-app/shared-utils';
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(theme => ({
 	header: {
 		position: 'sticky',
 		top: 0,
@@ -39,20 +40,25 @@ const useStyles = createStyles((theme) => ({
 	}
 }));
 
-const InvoiceReport = props => {
+interface InputProps {
+	loads: Load[]
+}
+
+const InvoiceReport = ({ loads }: InputProps) => {
 	const { classes, cx } = useStyles();
 	const [scrolled, setScrolled] = useState(false);
-	const rows = SAMPLE_INVOICES.map(element => (
-		<tr key={element.invoiceId}>
-			<td>{element.invoiceId}</td>
+	
+	const rows = loads.map(element => (
+		<tr key={element.id}>
+			<td>INV-ID{numericId(6)}</td>
 			<td>{element.loadId}</td>
-			<td>{`£${(element.amountDue / 100).toFixed(2)}`}</td>
+			<td>{`£${(element.rate).toFixed(2)}`}</td>
 		</tr>
 	));
 
 	const totalInvoice = useMemo(() => {
-		const total = SAMPLE_INVOICES.reduce((prev, curr) => prev + curr.amountDue, 0);
-		return (total / 100).toFixed(2);
+		const total = loads.reduce((prev, curr) => prev + curr.rate, 0);
+		return (total).toFixed(2);
 	}, []);
 
 	return (

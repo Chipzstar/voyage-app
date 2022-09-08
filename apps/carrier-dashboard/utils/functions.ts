@@ -1,4 +1,15 @@
-import { ChargeUnitType, Customer, Driver, Load, LoadLocation, Location, Member, NewBooking, RateChargeRules, Settings } from './types';
+import {
+	ChargeUnitType,
+	Customer,
+	Driver,
+	Load,
+	LoadLocation,
+	Location,
+	Member,
+	NewBooking,
+	RateChargeRules,
+	Settings
+} from './types';
 import { STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
 import { numericId } from '@voyage-app/shared-utils';
@@ -160,21 +171,12 @@ export async function fetchMembers(carrierId, prisma) {
 	return members;
 }
 
-export async function fetchVehicles(userId, carrierId, prisma) {
+export async function fetchVehicles(carrierId, prisma) {
 	let vehicles = await prisma.vehicle.findMany({
 		where: {
-			OR: [
-				{
-					carrierId: {
-						equals: carrierId
-					}
-				},
-				{
-					userId: {
-						equals: userId
-					}
-				}
-			]
+			carrierId: {
+				equals: carrierId
+			}
 		},
 		orderBy: {
 			createdAt: 'desc'
@@ -207,21 +209,12 @@ export async function fetchDrivers(carrierId, prisma) {
 	return drivers;
 }
 
-export async function fetchCustomers(userId, carrierId, prisma) {
+export async function fetchCustomers(carrierId, prisma) {
 	let customers = await prisma.customer.findMany({
 		where: {
-			OR: [
-				{
-					carrierId: {
-						equals: carrierId
-					}
-				},
-				{
-					userId: {
-						equals: userId
-					}
-				}
-			]
+			carrierId: {
+				equals: carrierId
+			}
 		},
 		orderBy: {
 			createdAt: 'desc'

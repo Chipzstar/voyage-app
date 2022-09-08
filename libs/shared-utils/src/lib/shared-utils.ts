@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { showNotification } from '@mantine/notifications';
 import { Client, TravelMode, UnitSystem } from '@googlemaps/google-maps-services-js';
+import { DateRange, UnixTimestamp } from '@voyage-app/shared-types';
 
 const GMapsClient = new Client();
 
@@ -121,4 +122,10 @@ export async function calculateJobDistance(origin, destination, GMAPS_API_KEY) {
 	} catch (err) {
 		throw err;
 	}
+}
+
+export function checkWithinTimeRange(dateRange: DateRange, start: UnixTimestamp, end: UnixTimestamp){
+	const isValid = moment.unix(start).isAfter(moment(dateRange[0]).startOf('day'), 'm') && moment.unix(end).isBefore(moment(dateRange[1]).endOf('day'), 'm')
+	console.log("isWithinRange:", isValid)
+	return isValid;
 }

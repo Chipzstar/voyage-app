@@ -5,7 +5,15 @@ import moment from 'moment/moment';
 import { PUBLIC_PATHS } from '../../utils/constants';
 import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
-import { capitalize, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
+import {
+	capitalize,
+	checkWithinTimeRange,
+	fetchShipments,
+	notifyError,
+	notifySuccess,
+	sanitize,
+	uniqueArray
+} from '@voyage-app/shared-utils';
 import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, MultiSelect, Select, SimpleGrid, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -118,12 +126,12 @@ const marketplace = ({ session }) => {
 					if (values.pickup && s.pickup.facilityId !== values.pickup) return false;
 					if (values.delivery && s.delivery.facilityId !== values.delivery) return false;
 					if (Number(values.miles) && s.mileage > Number(values.miles)) return false;
-					if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
 					if (
 						values.dateRange.every((date: Date | null) => date) &&
-						(moment.unix(s.pickup.window.start).isBefore(moment(values.dateRange[0]).startOf('day'), 'm') || moment.unix(s.pickup.window.end).isAfter(moment(values.dateRange[1]).endOf('day'), 'm'))
+						!checkWithinTimeRange(values.dateRange, s.pickup.window.start, s.pickup.window.end)
 					)
 						return false;
+					if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
 					return isValid;
 				})
 			);
@@ -135,7 +143,9 @@ const marketplace = ({ session }) => {
 		return () => debouncedSearch.cancel();
 	}, [debouncedSearch]);
 
-	useEffect(() => debouncedSearch(form.values), [form.values]);
+	useEffect(() => {
+		debouncedSearch(form.values)
+	}, [form.values]);
 
 	return (
 		<ContentContainer>

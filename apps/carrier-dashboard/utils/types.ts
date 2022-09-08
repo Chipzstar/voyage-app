@@ -157,7 +157,6 @@ export interface Settings {
 export interface Driver {
 	id: string;
 	carrierId: string;
-	userId: string | unknown;
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
 	isActive: boolean;
@@ -185,7 +184,6 @@ export interface Driver {
 
 export interface Member {
 	id: string;
-	userId: string;
 	carrierId: string;
 	createdAt: UnixTimestamp;
 	updatedAt?: UnixTimestamp;
@@ -201,7 +199,6 @@ export interface Member {
 
 export interface Vehicle {
 	id: string;
-	userId: string | unknown;
 	carrierId: string;
 	createdAt: UnixTimestamp;
 	vehicleId: string;
@@ -236,7 +233,6 @@ export interface Contact {
 
 export interface Customer {
 	id: string;
-	userId: string;
 	carrierId: string;
 	createdAt: UnixTimestamp;
 	customerId: string;

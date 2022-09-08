@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import PageNav from '../../../layout/PageNav';
 import { Anchor, Select, Textarea, TextInput } from '@mantine/core';
 import Link from 'next/link';
-import { PATHS } from '../../../utils/constants';
+import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useForm } from '@mantine/form';
 import { Driver, DRIVER_STATUS } from '../../../utils/types';
@@ -21,8 +21,8 @@ import prisma from '../../../db';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
-import { fetchDrivers } from '../../../utils/functions'
-import { useSession } from "next-auth/react"
+import { fetchDrivers, fetchProfile, fetchVehicles } from '../../../utils/functions';
+import { useSession } from 'next-auth/react';
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -35,7 +35,7 @@ const items = [
 ));
 
 const create = ({ driverId }) => {
-	const { data: session, status } = useSession()
+	const { data: session, status } = useSession();
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
@@ -47,7 +47,6 @@ const create = ({ driverId }) => {
 
 	const initialValues: Driver = {
 		id: driver?.id ?? undefined,
-		userId: driver?.userId ?? session?.id,
 		carrierId: driver?.carrierId ?? profile?.id,
 		driverId: driverId ?? `DRIVER-ID${alphanumericId(8)}`,
 		vehicleId: driver?.vehicleId ?? '',
@@ -76,7 +75,7 @@ const create = ({ driverId }) => {
 	const form = useForm({
 		initialValues,
 		validate: values => ({
-			vehicleId: !values.vehicleId ? "Please select a vehicle for this driver" : null,
+			vehicleId: !values.vehicleId ? 'Please select a vehicle for this driver' : null
 		})
 	});
 
@@ -105,9 +104,9 @@ const create = ({ driverId }) => {
 	return (
 		<ContentContainer classNames='px-8 h-screen flex flex-col'>
 			<PageNav items={items} />
-			<div className='flex flex-col items-center justify-center h-full'>
+			<div className='flex h-full flex-col items-center justify-center'>
 				<form onSubmit={form.onSubmit(handleSubmit)}>
-					<div className='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-5'>
+					<div className='mb-5 grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2'>
 						<div>
 							<TextInput required label='Full Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('fullName')} />
 						</div>
@@ -115,7 +114,7 @@ const create = ({ driverId }) => {
 							<DatePicker
 								label='Date of Birth'
 								rightSection={
-									<div className='h-full w-full flex items-center justify-center bg-voyage-background border border-voyage-grey'>
+									<div className='bg-voyage-background border-voyage-grey flex h-full w-full items-center justify-center border'>
 										<Calendar size={18} />
 									</div>
 								}
@@ -143,7 +142,7 @@ const create = ({ driverId }) => {
 							<DatePicker
 								label='Hire Date'
 								rightSection={
-									<div className='h-full w-full flex items-center justify-center bg-voyage-background border border-voyage-grey'>
+									<div className='bg-voyage-background border-voyage-grey flex h-full w-full items-center justify-center border'>
 										<Calendar size={18} />
 									</div>
 								}
@@ -190,7 +189,7 @@ const create = ({ driverId }) => {
 						<div>
 							<TextInput autoComplete='address-line2' label='Address 2' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('addressLine2')} />
 						</div>
-						<div className='md:col-span-2 grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6'>
+						<div className='grid grid-cols-1 gap-x-8 gap-y-6 md:col-span-2 lg:grid-cols-3'>
 							<TextInput autoComplete='address-level2' required label='City' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('city')} />
 							<TextInput autoComplete='address-level3' label='Region / County' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('region')} />
 							<TextInput autoComplete='postal-code' required label='Postal Code' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('postcode')} />
@@ -214,50 +213,26 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
+	if (!session) {
+		return {
+			redirect: {
+				destination: PUBLIC_PATHS.LOGIN,
+				permanent: false
+			}
+		};
+	}
 	if (session.id) {
-		const carrier = await prisma.carrier.findFirst({
-			where: {
-				userId: {
-					equals: session.id
-				}
-			}
-		});
-		if (carrier) {
-			carrier.createdAt = moment(carrier.createdAt).unix();
-			carrier.updatedAt = moment(carrier.updatedAt).unix();
-			store.dispatch(setCarrier(carrier));
-		}
-		let drivers = await fetchDrivers(token?.carrierId, prisma)
+		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		store.dispatch(setCarrier(carrier));
+		let drivers = await fetchDrivers(token?.carrierId, prisma);
 		store.dispatch(setDrivers(drivers));
-		let vehicles = await prisma.vehicle.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		vehicles = vehicles.map(vehicle => ({
-			...vehicle,
-			createdAt: moment(vehicle.createdAt).unix(),
-			updatedAt: moment(vehicle.updatedAt).unix()
-		}));
+		let vehicles = await fetchVehicles(token?.carrierId, prisma);
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {
 		props: {
-			driverId: query?.driverId ?? null
+			driverId: query?.driverId ?? null,
+			session
 		}
 	};
 });

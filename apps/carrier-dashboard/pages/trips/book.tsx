@@ -464,7 +464,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let members = await fetchMembers(token?.carrierId, prisma);
 		let drivers = await fetchDrivers(token?.carrierId, prisma);
-		let customers = await fetchCustomers(session.id, token?.carrierId, prisma);
+		let customers = await fetchCustomers(token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
 		store.dispatch(setMembers(members));
 		store.dispatch(setDrivers(drivers));

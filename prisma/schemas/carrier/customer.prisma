@@ -6,8 +6,6 @@ enum AccountType {
 
 model Customer {
     id  String  @id @default(auto()) @map("_id") @db.ObjectId
-    user User @relation(fields: [userId], references: [id])
-    userId String @db.ObjectId
     carrier Carrier @relation(fields: [carrierId], references: [id])
     carrierId String @db.ObjectId
     createdAt DateTime @default(now())

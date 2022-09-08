@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { MantineNumberSize, Pagination, Table } from '@mantine/core';
 import EmptyTable from './EmptyTable';
 import useTable from '../hooks/useTable';
@@ -12,11 +11,12 @@ export interface DataGridProps {
 	headings: string[];
 	emptyContent: JSX.Element;
 	spacingY?: MantineNumberSize;
+	offset?: number;
 }
 
-const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spacingY = 'sm'}: DataGridProps) => {
+const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spacingY = 'sm', offset =0}: DataGridProps) => {
 	const { height: windowHeight } = useWindowSize();
-	const { slice, range } = useTable(rows, activePage, windowHeight);
+	const { slice, range } = useTable(rows, activePage, windowHeight - offset);
 	return rows?.length ? (
 		<div className="flex flex-col justify-between">
 			<Table verticalSpacing={spacingY} fontSize='md'>
@@ -34,11 +34,6 @@ const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spac
 	) : (
 		<EmptyTable content={emptyContent} />
 	);
-};
-
-DataGrid.propTypes = {
-	rows: PropTypes.array.isRequired,
-	headings: PropTypes.array.isRequired
 };
 
 export default DataGrid

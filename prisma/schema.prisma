@@ -41,9 +41,9 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String     @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -53,10 +53,6 @@ model User {
   password      String
   carrierId     Carrier?
   shipperId     Shipper?
-  drivers       Driver[]
-  members       Member[]
-  vehicles      Vehicle[]
-  customers     Customer[]
 }
 
 model VerificationToken {
@@ -373,8 +369,6 @@ enum AccountType {
 
 model Customer {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  user          User        @relation(fields: [userId], references: [id])
-  userId        String      @db.ObjectId
   carrier       Carrier     @relation(fields: [carrierId], references: [id])
   carrierId     String      @db.ObjectId
   createdAt     DateTime    @default(now())
@@ -426,8 +420,6 @@ enum DriverStatus {
 
 model Driver {
   id             String       @id @default(auto()) @map("_id") @db.ObjectId
-  user           User         @relation(fields: [userId], references: [id])
-  userId         String       @db.ObjectId
   carrier        Carrier      @relation(fields: [carrierId], references: [id])
   carrierId      String       @db.ObjectId
   driverId       String
@@ -503,8 +495,6 @@ enum TeamRole {
 
 model Member {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @db.ObjectId
   carrier   Carrier  @relation(fields: [carrierId], references: [id])
   carrierId String   @db.ObjectId
   memberId  String
@@ -562,8 +552,6 @@ enum FuelMeasurementUnit {
 
 model Vehicle {
   id                  String              @id @default(auto()) @map("_id") @db.ObjectId
-  user                User                @relation(fields: [userId], references: [id])
-  userId              String              @db.ObjectId
   carrier             Carrier             @relation(fields: [carrierId], references: [id])
   carrierId           String              @db.ObjectId
   createdAt           DateTime            @default(now())

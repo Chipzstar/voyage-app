@@ -13,7 +13,6 @@ import { authOptions } from '../api/auth/[...nextauth]'
 import { getToken } from 'next-auth/jwt'
 import { PUBLIC_PATHS } from '../../utils/constants'
 import { useSelector } from 'react-redux'
-import { Load } from '../../utils/types';
 
 const TAB_LABELS = {
 	UPCOMING: 'upcoming',

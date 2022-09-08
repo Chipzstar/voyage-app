@@ -3,6 +3,8 @@ export interface SelectInputData {
 	label: string
 }
 
+export type DateRange = [Date | null, Date | null]
+
 export type UnixTimestamp = number
 
 export interface ShipmentTimeWindow {
@@ -37,8 +39,8 @@ export interface Package {
 	packageType: PACKAGE_TYPE,
 	description: string,
 }
-
 //types
+
 export type Address = {
 	line1: string;
 	line2?: string;
@@ -49,8 +51,8 @@ export type Address = {
 };
 
 export type Coordinates = [longitude: number, latitude: number]
-
 //ENUMS
+
 export enum STATUS {
 	NEW = 'NEW',
 	PENDING = 'PENDING',
@@ -197,13 +199,13 @@ interface OperatingProps {
 	open: LocationTimeWindow;
 	close: LocationTimeWindow;
 }
-
 export enum LocationType {
 	WAREHOUSE = 'WAREHOUSE',
 	STORE = 'STORE',
 	LASTMILE_CARRIER = 'LASTMILE_CARRIER'
 }
 // Define a type for the slice state
+
 
 export interface OperatingHoursState {
 	facility: OperatingProps;

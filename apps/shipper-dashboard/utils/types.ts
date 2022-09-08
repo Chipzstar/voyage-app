@@ -1,6 +1,6 @@
 import { Address } from '@voyage-app/shared-types';
 
-export type UnixTimestamp = number
+export type UnixTimestamp = number;
 
 export interface CarrierQuote {
 	quoteID: string,
@@ -49,7 +49,6 @@ export interface Dimensions {
 //types
 export type Coordinates = [longitude: number, latitude: number]
 
-export type DateRange = [Date, Date]
 //ENUMS
 
 export enum SERVICE_TYPE {

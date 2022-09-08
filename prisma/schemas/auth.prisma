@@ -38,10 +38,6 @@ model User {
   password      String
   carrierId     Carrier?
   shipperId     Shipper?
-  drivers       Driver[]
-  members       Member[]
-  vehicles      Vehicle[]
-  customers     Customer[]
 }
 
 model VerificationToken {

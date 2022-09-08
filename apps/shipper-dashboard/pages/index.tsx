@@ -8,37 +8,38 @@ import { authOptions } from './api/auth/[...nextauth]';
 import prisma from '../db';
 import { setShipments } from '../store/features/shipmentsSlice';
 import { PUBLIC_PATHS } from '../utils/constants';
-import { getToken } from 'next-auth/jwt'
+import { getToken } from 'next-auth/jwt';
+import { DateRange } from '@voyage-app/shared-types';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { wrapper } from '../store';
 import { setShipper } from '../store/features/profileSlice';
 import { fetchShipper } from '../utils/functions';
 
-const Index = (props) => {
-	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
+const Index = props => {
+	const [dateRange, setRange] = useState<DateRange>([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
 
 	return (
-		<div className='p-4 h-full'>
-			<div className='flex items-center justify-between pl-4 py-3'>
+		<div className='h-full p-4'>
+			<div className='flex items-center justify-between py-3 pl-4'>
 				<div className='flex flex-col justify-center'>
 					<span className='text-4xl font-medium'>Home</span>
 				</div>
 				<CalendarFilter current={dateRange} setCurrent={setRange} />
 			</div>
 			<DashboardPanels dateRange={dateRange} />
-			<div className='my-6'>
-				<Map height={595} />
+			<div className='mt-6'>
+				<Map height={335} />
 			</div>
 		</div>
 	);
-}
+};
 
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
-	const token = await getToken({ req })
-	console.log("\nHOMEPAGE")
-	console.log(token)
+	const token = await getToken({ req });
+	console.log('\nHOMEPAGE');
+	console.log(token);
 	if (!session) {
 		return {
 			redirect: {
@@ -48,9 +49,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
-		const shipments = await fetchShipments(token?.shipperId, prisma)
-		store.dispatch(setShipper(shipper))
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma);
+		const shipments = await fetchShipments(token?.shipperId, prisma);
+		store.dispatch(setShipper(shipper));
 		store.dispatch(setShipments(shipments));
 	}
 	return {
@@ -58,6 +59,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			session
 		}
 	};
-})
+});
 
 export default Index;

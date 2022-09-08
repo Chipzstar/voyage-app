@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { createStyles, ScrollArea, Table } from '@mantine/core';
-import { useSelector } from 'react-redux';
-import { useCustomers } from '../store/feature/customerSlice';
-import { useLoads } from '../store/feature/loadSlice'
+import { Customer, Load } from '../utils/types';
+import { DateRange } from '@voyage-app/shared-types';
 
 const useStyles = createStyles(theme => ({
 	header: {
@@ -41,31 +40,42 @@ const useStyles = createStyles(theme => ({
 	}
 }));
 
-const DispatcherScoreboard = props => {
+interface DispatcherScoreboardProps {
+	customers: Customer[],
+	loads: Load[]
+	dateRange: DateRange
+}
+
+const DispatcherScoreboard = ({ loads, customers, dateRange } : DispatcherScoreboardProps) => {
 	const { classes, cx } = useStyles();
-	const customers = useSelector(useCustomers)
-	const loads = useSelector(useLoads)
 	const [scrolled, setScrolled] = useState(false);
 	
-	const rows = customers.map((element, index) => (
-		<tr key={index}>
-			<td className='flex items-center'>
-				<div className='p-2 bg-voyage-grey h-2 w-2'>
-					<span>{index + 1}</span>
-				</div>
-				<span>{element.fullName}</span>
-			</td>
-			<td>
-				<span>{loads.reduce((prev, curr) => curr.customer.id === element.id ? 1 : prev, 0)}</span>
-			</td>
-			<td>
-				<span>£2000</span>
-			</td>
-			<td>
-				<span>£500</span>
-			</td>
-		</tr>
-	));
+	const rows = useMemo(() => customers.map((c, index) => {
+		let customerId = c.id
+		const numLoads = loads.filter(load => load.customer.id === customerId).length
+		const totalRev = loads.reduce((prev, curr) => curr.customer.id === customerId ? prev + curr.rate : prev, 0)
+		const avgRRM = (totalRev / 30)
+		return (
+			<tr key={index}>
+				<td className='flex items-center'>
+					<div className='p-2 bg-voyage-grey h-2 w-2'>
+						<span>{index + 1}</span>
+					</div>
+					<span>{c.fullName}</span>
+				</td>
+				<td>
+					<span>{numLoads}</span>
+				</td>
+				<td>
+					<span>${totalRev.toFixed(2)}</span>
+				</td>
+				<td>
+					<span>£{avgRRM.toFixed(2)}</span>
+				</td>
+			</tr>
+		);
+	}), [loads, customers]);
+
 	return (
 		<ScrollArea sx={{ height: 250 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>
 			<Table verticalSpacing={8}>

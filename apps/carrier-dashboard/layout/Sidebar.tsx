@@ -84,7 +84,7 @@ const SideMenuDropdown = ({ title, isActive, options }: SideMenuDropdownProps) =
 };
 
 const Sidebar = () => {
-	const { data: session } = useSession()
+	const { data: session } = useSession();
 	const router = useRouter();
 	const dispatch = useDispatch();
 
@@ -127,16 +127,7 @@ const Sidebar = () => {
 		{
 			title: 'Reporting',
 			href: PATHS.REPORTING,
-			submenu: true,
-			isActive: router.pathname.includes(PATHS.REPORTING),
-			menuItems: [
-				{
-					title: 'Basic Reports',
-					href: PATHS.BASIC_REPORT,
-					isActive: router.pathname === PATHS.BASIC_REPORT
-				},
-				{ title: 'Fuel', href: PATHS.FUEL_REPORT, isActive: router.pathname === PATHS.FUEL_REPORT }
-			]
+			isActive: router.pathname.includes(PATHS.REPORTING)
 		},
 		{ title: 'Settings', href: PATHS.SETTINGS, isActive: router.pathname.includes(PATHS.SETTINGS) }
 	];

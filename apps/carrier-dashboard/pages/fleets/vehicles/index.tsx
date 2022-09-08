@@ -167,7 +167,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let vehicles = await fetchVehicles(session.id, token?.carrierId, prisma)
+		let vehicles = await fetchVehicles(token?.carrierId, prisma)
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {

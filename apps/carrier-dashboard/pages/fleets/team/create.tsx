@@ -44,7 +44,6 @@ const create = ({ memberId, session }) => {
 
 	const initialValues: Member = {
 		id: member?.id ?? undefined,
-		userId: member?.userId ?? session?.id,
 		carrierId: member?.carrierId ?? profile.id,
 		memberId: memberId ?? `MEMBER-ID${alphanumericId(8)}`,
 		createdAt: undefined,

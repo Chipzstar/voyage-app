@@ -48,7 +48,6 @@ const create = ({ vehicleName, vehicleId }) => {
 
 	const initialValues: Vehicle = {
 		id: vehicle?.id ?? undefined,
-		userId: vehicle?.userId ?? session?.id,
 		carrierId: vehicle?.carrierId ?? profile.id,
 		vehicleId: vehicleId ?? `VEH-ID${alphanumericId(8)}`,
 		createdAt: undefined,
@@ -234,7 +233,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			carrier.updatedAt = moment(carrier.updatedAt).unix();
 			store.dispatch(setCarrier(carrier));
 		}
-		let vehicles = await fetchVehicles(session.id, token?.carrierId, prisma);
+		let vehicles = await fetchVehicles(token?.carrierId, prisma);
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {

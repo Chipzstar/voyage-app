@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
 import { filterByTimeRange } from '../utils/functions';
 import { useSelector } from 'react-redux';
-import { DateRange } from '../utils/types';
 import moment from 'moment';
-import { Shipment } from '@voyage-app/shared-types';
+import { DateRange, Shipment } from '@voyage-app/shared-types';
 
 type InputProps = {
 	range: DateRange,
