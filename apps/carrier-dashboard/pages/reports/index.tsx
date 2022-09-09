@@ -1,4 +1,4 @@
-import { Card, Center, Container, Grid, Group, Stack } from '@mantine/core';
+import { Card, Center, Container, createStyles, Grid, Group, RingProgress, Stack, Text } from '@mantine/core';
 import React, { useMemo, useState } from 'react';
 import moment from 'moment';
 import { CalendarFilter } from '@voyage-app/shared-ui-components';
@@ -13,30 +13,52 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { PUBLIC_PATHS } from '../../utils/constants';
-import { fetchCustomers, fetchDrivers, fetchLoads, fetchProfile, fetchVehicles } from '../../utils/functions';
+import { fetchDrivers, fetchLoads, fetchMembers, fetchProfile, fetchVehicles } from '../../utils/functions';
+import prisma from '../../db';
 import { setCarrier } from '../../store/feature/profileSlice';
 import { setVehicles, useVehicles } from '../../store/feature/vehicleSlice';
 import { setLoads, useLoads } from '../../store/feature/loadSlice';
 import { DateRange } from '@voyage-app/shared-types';
-import { checkWithinTimeRange } from '@voyage-app/shared-utils';
-import prisma from '../../db';
 import { VEHICLE_STATUS } from '../../utils/types';
-import { setCustomers, useCustomers } from 'apps/carrier-dashboard/store/feature/customerSlice';
+import { setMembers, useControllers } from '../../store/feature/memberSlice';
+
+const useStyles = createStyles(theme => ({
+	inner: {
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+		[theme.fn.smallerThan(350)]: {
+			flexDirection: 'column'
+		}
+	},
+	label: {
+		fontSize: 22,
+		fontWeight: 700,
+		lineHeight: 1
+	},
+	ring: {
+		display: 'flex',
+		flex: 1,
+		justifyContent: 'center',
+
+		[theme.fn.smallerThan(350)]: {
+			justifyContent: 'center',
+			marginTop: theme.spacing.md
+		}
+	}
+}));
 
 const reporting = () => {
-	const [dateRange, setRange] = useState<DateRange>([
-		moment().startOf('day').toDate(),
-		moment().startOf('day').add(1, 'day').toDate()
-	]);
+	const { classes, theme } = useStyles();
+	const [dateRange, setRange] = useState<DateRange>([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
 	const drivers = useSelector(useDrivers);
 	const loads = useSelector(useLoads);
 	const vehicles = useSelector(useVehicles);
-	const customers = useSelector(useCustomers);
+	const controllers = useSelector(useControllers);
 
 	const truckData = useMemo(() => {
-		const numAssigned = vehicles.filter(v => v.status === VEHICLE_STATUS.ON_THE_ROAD).length
-		const numUnassigned = vehicles.length - numAssigned
-		
+		const numAssigned = vehicles.filter(v => v.status === VEHICLE_STATUS.ON_THE_ROAD).length;
+		const numUnassigned = vehicles.length - numAssigned;
 		return [
 			{
 				id: 'assigned',
@@ -53,18 +75,9 @@ const reporting = () => {
 		];
 	}, [vehicles]);
 
-	const numLoads = useMemo(() => loads.filter(load => checkWithinTimeRange(dateRange, load.pickup.window.start, load.pickup.window.end)).length, [loads, dateRange]);
-	
-	const avgRate = useMemo(
-		() =>
-			loads.reduce((prev, curr) => {
-				if (checkWithinTimeRange(dateRange, curr.pickup.window.start, curr.pickup.window.end)) {
-					return prev + curr.rate;
-				}
-				return prev;
-			}, 0),
-		[loads, dateRange]
-	);
+	const activeVehicles = useMemo(() => {
+		return vehicles.filter(v => v.currentDriver || v.status === VEHICLE_STATUS.ON_THE_ROAD).length;
+	}, [vehicles]);
 
 	return (
 		<Container fluid className='h-screen bg-stone-100' py={0}>
@@ -73,40 +86,39 @@ const reporting = () => {
 			</div>
 			<Grid grow gutter='xl'>
 				<Grid.Col md={6}>
-					<Group className='h-full w-full' noWrap={false}>
-						<Card p='lg' radius='xs' shadow='sm' className='h-full'>
-							<Card.Section p='lg' className='h-full'>
-								<header className='chart-header'>Trucks</header>
+					<Card p='lg' radius='xs' shadow='sm' className='h-full'>
+						<header className='chart-header'>Trucks</header>
+						<div className={classes.inner}>
+							<Stack p='md' >
 								<Center className='h-full'>
 									<OverviewPieChart data={truckData} />
 								</Center>
-							</Card.Section>
-						</Card>
-						<Card p='lg' radius='xs' shadow='sm' className='flex h-full grow flex-wrap items-center justify-center'>
-							<Card.Section className='w-full'>
-								<Stack p='md' className='w-full' align='center'>
-									<div className='w-full space-y-2 text-center'>
-										<h3>Loads</h3>
-										<Center>
-											<div className='border-voyage-grey w-full rounded-sm border py-1'>{numLoads}</div>
-										</Center>
-									</div>
-									<div className='w-full space-y-2 text-center'>
-										<h3>Avg Rate</h3>
-										<Center>
-											<div className='border-voyage-grey w-full rounded-sm border py-1'>£{avgRate.toFixed(2)}</div>
-										</Center>
-									</div>
-									<div className='w-full space-y-2 text-center'>
-										<h3>Loaded Avg Rate</h3>
-										<Center>
-											<div className='border-voyage-grey w-full rounded-sm border py-1'>£0.00</div>
-										</Center>
-									</div>
-								</Stack>
-							</Card.Section>
-						</Card>
-					</Group>
+							</Stack>
+							<div className={classes.ring}>
+								<RingProgress
+									roundCaps
+									thickness={6}
+									size={150}
+									sections={[
+										{
+											value: (activeVehicles / vehicles.length) * 100,
+											color: theme.primaryColor
+										}
+									]}
+									label={
+										<div>
+											<Text align='center' size='lg' className={classes.label} sx={{ fontSize: 22 }}>
+												{((activeVehicles / vehicles.length) * 100).toFixed(0)}%
+											</Text>
+											<Text align='center' size='xs' color='dimmed'>
+												Vehicle Utilization
+											</Text>
+										</div>
+									}
+								/>
+							</div>
+						</div>
+					</Card>
 				</Grid.Col>
 				<Grid.Col md={6}>
 					<Card p='lg' radius='xs' shadow='sm' className='flex h-full grow flex-wrap'>
@@ -128,7 +140,7 @@ const reporting = () => {
 					<Card p='lg' radius='xs' shadow='sm' className='flex h-full grow flex-wrap'>
 						<Card.Section className='w-full' p='lg'>
 							<header className='chart-header'>Dispatcher Scoreboard</header>
-							<DispatcherScoreboard loads={loads} customers={customers} dateRange={dateRange} />
+							<DispatcherScoreboard loads={loads} controllers={controllers} dateRange={dateRange} />
 						</Card.Section>
 					</Card>
 				</Grid.Col>
@@ -153,13 +165,13 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let drivers = await fetchDrivers(token?.carrierId, prisma);
 		let loads = await fetchLoads(token?.carrierId, prisma);
-		let vehicles = await fetchVehicles(token?.carrierId, prisma)
-		let customers = await fetchCustomers(token?.carrierId, prisma)
+		let vehicles = await fetchVehicles(token?.carrierId, prisma);
+		let members = await fetchMembers(token?.carrierId, prisma);
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setDrivers(drivers));
 		store.dispatch(setLoads(loads));
 		store.dispatch(setVehicles(vehicles));
-		store.dispatch(setCustomers(customers))
+		store.dispatch(setMembers(members));
 	}
 	return {
 		props: {

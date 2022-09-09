@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Member, TeamRole } from '../../utils/types'
+import { Member, TeamRole } from '../../utils/types';
 import axios from 'axios';
-import { HYDRATE } from 'next-redux-wrapper'
 
 const initialState = [];
 
@@ -72,6 +71,11 @@ export const useMembers = state => {
 	let team: Member[] = state['members'];
 	return [...team].sort((a, b) => b.createdAt - a.createdAt);
 };
+
+export const useControllers = state => {
+	let team: Member[] = state['members'];
+	return [...team].filter(m => m.role === TeamRole.CONTROLLER).sort((a, b) => b.createdAt - a.createdAt)
+}
 
 export const { addMember, changeRole, editMember, removeMember, setMembers } = memberSlice.actions;
 

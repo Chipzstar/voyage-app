@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { createStyles, ScrollArea, Table } from '@mantine/core';
-import { Customer, Load } from '../utils/types';
+import { 	Load, Member } from '../utils/types';
 import { DateRange } from '@voyage-app/shared-types';
 
 const useStyles = createStyles(theme => ({
@@ -41,20 +41,21 @@ const useStyles = createStyles(theme => ({
 }));
 
 interface DispatcherScoreboardProps {
-	customers: Customer[],
+	controllers: Member[],
 	loads: Load[]
 	dateRange: DateRange
 }
 
-const DispatcherScoreboard = ({ loads, customers, dateRange } : DispatcherScoreboardProps) => {
+const DispatcherScoreboard = ({ loads, controllers, dateRange } : DispatcherScoreboardProps) => {
 	const { classes, cx } = useStyles();
 	const [scrolled, setScrolled] = useState(false);
 	
-	const rows = useMemo(() => customers.map((c, index) => {
-		let customerId = c.id
-		const numLoads = loads.filter(load => load.customer.id === customerId).length
-		const totalRev = loads.reduce((prev, curr) => curr.customer.id === customerId ? prev + curr.rate : prev, 0)
+	const rows = useMemo(() => controllers.map((c, index) => {
+		let controllerId = c.memberId
+		const numLoads = loads.filter(load => load.carrierInfo.controllerId === controllerId).length
+		const totalRev = loads.reduce((prev, curr) => curr.carrierInfo.controllerId === controllerId ? prev + curr.rate : prev, 0)
 		const avgRRM = (totalRev / 30)
+
 		return (
 			<tr key={index}>
 				<td className='flex items-center'>
@@ -67,14 +68,14 @@ const DispatcherScoreboard = ({ loads, customers, dateRange } : DispatcherScoreb
 					<span>{numLoads}</span>
 				</td>
 				<td>
-					<span>${totalRev.toFixed(2)}</span>
+					<span>£{totalRev.toFixed(2)}</span>
 				</td>
 				<td>
 					<span>£{avgRRM.toFixed(2)}</span>
 				</td>
 			</tr>
 		);
-	}), [loads, customers]);
+	}), [loads, controllers]);
 
 	return (
 		<ScrollArea sx={{ height: 250 }} onScrollPositionChange={({ y }) => setScrolled(y !== 0)}>

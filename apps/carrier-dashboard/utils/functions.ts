@@ -73,13 +73,13 @@ export async function generateLoad(profile, values: NewBooking, drivers: Driver[
 		carrierId: profile.id,
 		loadId: `VOY-ID${numericId(8)}`,
 		customer: {
-			id: customer?.customerId,
+			id: customer?.id,
 			name: customer?.fullName,
 			email: customer?.billingEmail || customer?.email,
 			company: customer?.companyName
 		},
 		driver: {
-			id: driver?.driverId,
+			id: driver?.id,
 			name: driver?.fullName,
 			phone: driver?.defaultPhone
 		},

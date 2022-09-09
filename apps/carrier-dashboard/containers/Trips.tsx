@@ -63,7 +63,7 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 			return (
 				<tr key={index}>
 					<td colSpan={1}>
-						<span className='text-secondary font-semibold text-lg'>{element.loadId}</span>
+						<span className='text-secondary text-lg font-semibold'>{element.loadId}</span>
 					</td>
 					<td colSpan={1}>
 						<div className={statusClass}>
@@ -71,28 +71,28 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 						</div>
 					</td>
 					<td colSpan={1}>
-						<div className='flex flex-col flex-shrink'>
+						<div className='flex flex-shrink flex-col'>
 							<span>{element.carrierInfo.controllerName}</span>
 						</div>
 					</td>
 					<td colSpan={1}>
-						<div className='flex flex-col flex-shrink'>
+						<div className='flex flex-shrink flex-col'>
 							<span>{element.carrierInfo.driverName}</span>
 						</div>
 					</td>
 					<td colSpan={1}>
-						<div className='flex flex-col flex-shrink'>
+						<div className='flex flex-shrink flex-col'>
 							<span>{element.updatedAt ? moment.unix(element?.updatedAt).fromNow() : '-'}</span>
 						</div>
 					</td>
 					<td colSpan={1}>
-						<div className='flex flex-col flex-shrink'>
+						<div className='flex flex-shrink flex-col'>
 							<span>{element.source}</span>
 						</div>
 					</td>
 					<td role='button' colSpan={2}>
-						<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.TRIPS}/${element.loadId}`)}>
-							<span className='text-secondary font-semibold text-lg'>View</span>
+						<button className='flex grow bg-transparent hover:underline' onClick={() => router.push(`${PATHS.TRIPS}/${element.loadId}`)}>
+							<span className='text-secondary text-lg font-semibold'>View</span>
 						</button>
 					</td>
 				</tr>
@@ -101,7 +101,7 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 
 	return (
 		<ContentContainer classNames='px-6 py-2'>
-			<div className='flex justify-between items-center mt-2 mb-6'>
+			<div className='mt-2 mb-6 flex items-center justify-between'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search by ID, postcode, driver, customer...' onChange={e => debouncedSearch(e.target.value)} />
 				<button className='voyage-button h-11' onClick={() => router.push(PATHS.BOOK).then(() => console.log('navigating to booking page...'))}>
 					<span className='text-base'>
@@ -109,14 +109,7 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 					</span>
 				</button>
 			</div>
-			<DataGrid
-				offset={100}
-				activePage={activePage}
-				setPage={setPage}
-				rows={rows}
-				headings={['Trip ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']}
-				emptyContent={<Empty message={message} />}
-			/>
+			<DataGrid offset={100} activePage={activePage} setPage={setPage} rows={rows} headings={['Trip ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
 		</ContentContainer>
 	);
 };

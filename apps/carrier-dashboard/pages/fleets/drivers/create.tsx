@@ -22,7 +22,6 @@ import { authOptions } from '../../api/auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import { fetchDrivers, fetchProfile, fetchVehicles } from '../../../utils/functions';
-import { useSession } from 'next-auth/react';
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -35,7 +34,6 @@ const items = [
 ));
 
 const create = ({ driverId }) => {
-	const { data: session, status } = useSession();
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const drivers = useSelector(useDrivers);
