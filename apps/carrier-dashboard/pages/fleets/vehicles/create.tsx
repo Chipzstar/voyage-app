@@ -64,7 +64,6 @@ const create = ({ vehicleName, vehicleId }) => {
 		status: vehicle?.status ?? VEHICLE_STATUS.IDLE,
 		vin: vehicle?.vin ?? '',
 		yearOfManufacture: vehicle?.yearOfManufacture ?? '',
-		currentDriver: '',
 		notes: ''
 	};
 
@@ -138,7 +137,7 @@ const create = ({ vehicleName, vehicleId }) => {
 							<TextInput required label='Vehicle Name' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('vehicleName')} />
 						</div>
 						<div>
-							<TextInput label='Engine Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('engineNumber')} />
+							<TextInput label='Vin Number' radius={0} autoCapitalize='on' size='sm' {...form.getInputProps('vin')} />
 						</div>
 
 						<div>

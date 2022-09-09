@@ -202,7 +202,6 @@ export interface Vehicle {
 	carrierId: string;
 	createdAt: UnixTimestamp;
 	vehicleId: string;
-	currentDriver?: string;
 	vehicleType: VEHICLE_TYPES;
 	vehicleName: string;
 	regNumber: string;

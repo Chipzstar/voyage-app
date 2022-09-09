@@ -1,17 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Loader, MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { Calendar, CalendarStats, ChevronDown, ChevronLeft } from 'tabler-icons-react';
+import { Calendar, CalendarStats, Check, ChevronDown, ChevronLeft, X } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
-import {
-	LocationType,
-	PACKAGE_TYPE,
-	SCHEDULING_TYPE,
-	SERVICE_TYPE,
-	SHIPMENT_ACTIVITY,
-	SHIPMENT_TYPE
-} from '@voyage-app/shared-types';
+import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
 import { NewBooking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
@@ -27,8 +20,9 @@ import { setLocations } from '../../store/features/locationSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { setShipper } from '../../store/features/profileSlice';
+import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
-const create = ({bookingID}) => {
+const create = ({ bookingID }) => {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
@@ -38,13 +32,12 @@ const create = ({bookingID}) => {
 	}));
 	const [isFTL, setFTL] = useState(false);
 
-	const booking = useMemo(() => {
-		return bookings.find((booking: NewBooking) => booking.id === bookingID);
-	}, [bookings]);
+	const booking = useMemo(() => bookings.find((booking: NewBooking) => booking.id === bookingID), [bookings]);
 
-	const form = useForm({
+	const form = useForm<NewBooking>({
 		initialValues: {
 			id: booking?.id ?? undefined,
+			shipperId: booking?.shipperId ?? undefined,
 			createdAt: booking?.createdAt ?? undefined,
 			serviceType: booking?.serviceType ?? '',
 			shipmentType: booking?.shipmentType ?? '',
@@ -52,11 +45,11 @@ const create = ({bookingID}) => {
 			activitiesRequired: booking?.activitiesRequired ? booking.activitiesRequired : [],
 			internalPONumber: booking?.internalPONumber ?? '',
 			customerPONumber: booking?.customerPONumber ?? '',
-			weight: booking?.weight ?? 0,
-			quantity: booking?.quantity ?? 1,
-			height: booking?.height ?? 1,
-			length: booking?.length ?? 1,
-			width: booking?.width ?? 1,
+			weight: booking?.weight ?? null,
+			quantity: booking?.quantity ?? null,
+			height: booking?.height ?? null,
+			length: booking?.length ?? null,
+			width: booking?.width ?? null,
 			packageType: booking?.packageType ?? PACKAGE_TYPE.PALLET,
 			pickupDate: booking?.pickupDate ?? null,
 			pickupLocation: booking?.pickupLocation ?? '',
@@ -64,13 +57,13 @@ const create = ({bookingID}) => {
 			description: booking?.description ?? '',
 			notes: booking?.notes ?? ''
 		},
-		validate: (values) => ({
-			pickupLocation: !values.pickupLocation ? 'Please choose a pickup location': null,
-			deliveryLocation: !values.deliveryLocation ? 'Please choose a delivery location': null,
+		validate: values => ({
+			pickupLocation: !values.pickupLocation ? 'Please choose a pickup location' : null,
+			deliveryLocation: !values.deliveryLocation ? 'Please choose a delivery location' : null,
 			pickupDate: !values.pickupDate ? 'Please select a date for pickup' : null,
 			schedulingType: !values.schedulingType ? 'Please provide the schedule-type for this shipment' : null,
 			shipmentType: !values.shipmentType ? 'Please provide a Shipment Type' : null,
-			serviceType: !values.serviceType ? 'Please provide a Service Type': null
+			serviceType: !values.serviceType ? 'Please provide a Service Type' : null
 		})
 	});
 
@@ -127,23 +120,26 @@ const create = ({bookingID}) => {
 			form.setFieldValue('packageType', PACKAGE_TYPE.PALLET);
 			form.setFieldValue('quantity', 26);
 		} else {
-			form.setFieldValue('weight', 0);
-			form.setFieldValue('quantity', 1);
+			form.setFieldValue('weight', undefined);
+			form.setFieldValue('quantity', undefined);
 		}
 	};
 
 	const handleSubmit = useCallback(
 		async values => {
-			setLoading(true)
+			setLoading(true);
 			const pickupLocation = locations.find(({ id }) => id === values.pickupLocation);
 			const deliveryLocation = locations.find(({ id }) => id === values.deliveryLocation);
 			try {
-				const shipment = generateShipment(values, pickupLocation, deliveryLocation);
-				dispatch(createShipment(shipment));
+				const shipment = await generateShipment(values, pickupLocation, deliveryLocation);
+				console.log(shipment)
+				await dispatch(createShipment(shipment)).unwrap();
+				notifySuccess('create-shipment-success', "Your shipment was created successfully!", <Check size={20}/>)
 				setLoading(false);
 				router.push(PATHS.SHIPMENTS).then(() => console.log('Navigated to shipments page'));
 			} catch (err) {
 				console.error(err)
+				notifyError('create-shipment-error', err.message, <X size={20}/>)
 				setLoading(false);
 			}
 		},
@@ -151,16 +147,16 @@ const create = ({bookingID}) => {
 	);
 
 	return (
-		<div className='pb-4 px-8 min-h-screen'>
-			<section className='flex sticky top-0 items-center space-x-4 pt-4 pb-8 bg-white z-50' role='button' onClick={() => router.back()}>
+		<div className='min-h-screen px-8 pb-4'>
+			<section className='sticky top-0 z-50 flex items-center space-x-4 bg-white pt-4 pb-8' role='button' onClick={() => router.back()}>
 				<ChevronLeft size={48} strokeWidth={2} color={'black'} />
 				<span className='page-header'>Bookings</span>
 			</section>
-			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 lg:grid-cols-4 gap-20'>
-				<div id='quote-form-container' className='flex flex-col space-y-5 col-span-3'>
+			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 gap-20 lg:grid-cols-4'>
+				<div id='quote-form-container' className='col-span-3 flex flex-col space-y-5'>
 					<div className='grid grid-cols-1 gap-6'>
 						<header className='quote-header'>Service Type</header>
-						<div className='py-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
+						<div className='grid grid-cols-1 gap-y-4 py-4 lg:grid-cols-3 lg:gap-x-6 xl:gap-x-12'>
 							<button
 								type='button'
 								className={`${inputButton} ${form.values.serviceType === SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE && 'bg-secondary text-white'}`}
@@ -182,12 +178,12 @@ const create = ({bookingID}) => {
 							>
 								Direct to carrier injections
 							</button>
-							{form.errors.serviceType && <span className="text-red-500">{form.errors.serviceType}</span>}
+							{form.errors.serviceType && <span className='text-red-500'>{form.errors.serviceType}</span>}
 						</div>
 					</div>
 					<div className='grid grid-cols-1 gap-6'>
 						<header className='quote-header'>Shipment Type</header>
-						<div className='py-4 grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
+						<div className='grid grid-cols-1 gap-y-4 py-4 lg:grid-cols-3 lg:gap-x-6 xl:gap-x-12'>
 							<button type='button' className={`${inputButton} ${form.values.shipmentType === 'FTL' && 'bg-secondary text-white'}`} onClick={() => handleFTL(true, SHIPMENT_TYPE.FULL_TRUCK_LOAD)}>
 								FTL
 							</button>
@@ -197,13 +193,13 @@ const create = ({bookingID}) => {
 							<button type='button' className={`${inputButton} ${form.values.shipmentType === 'LPS' && 'bg-secondary text-white'}`} onClick={() => handleFTL(false, SHIPMENT_TYPE.LESS_THAN_PALLET_SIZE)}>
 								Less than pallet size
 							</button>
-							{form.errors.shipmentType && <span className="text-red-500">{form.errors.shipmentType}</span>}
+							{form.errors.shipmentType && <span className='text-red-500'>{form.errors.shipmentType}</span>}
 						</div>
 					</div>
 					<div className='grid grid-cols-1 gap-6'>
 						<header className='quote-header'>Load Type</header>
-						<div className='border border-gray-300 p-4 grid grid-cols-4 lg:grid-cols-12 lg:row-span-3 gap-y-4 gap-x-12 pb-12'>
-							<div className='lg:row-span-1 col-span-4'>
+						<div className='grid grid-cols-4 gap-y-4 gap-x-12 border border-gray-300 p-4 pb-12 lg:row-span-3 lg:grid-cols-12'>
+							<div className='col-span-4 lg:row-span-1'>
 								<TextInput
 									radius={0}
 									label={
@@ -215,7 +211,7 @@ const create = ({bookingID}) => {
 									{...form.getInputProps('internalPONumber')}
 								/>
 							</div>
-							<div className='lg:row-span-1 col-span-4'>
+							<div className='col-span-4 lg:row-span-1'>
 								<TextInput
 									radius={0}
 									label={
@@ -227,7 +223,7 @@ const create = ({bookingID}) => {
 									{...form.getInputProps('customerPONumber')}
 								/>
 							</div>
-							<div className='lg:row-span-1 col-span-4 '>
+							<div className='col-span-4 lg:row-span-1 '>
 								<NumberInput
 									radius={0}
 									min={0}
@@ -243,7 +239,7 @@ const create = ({bookingID}) => {
 							<div className='col-span-4 lg:col-span-6 lg:row-span-2'>
 								<Textarea size='sm' radius={0} label='Load Description' autosize minRows={3} maxRows={6} {...form.getInputProps('description')} />
 							</div>
-							<div className='lg:col-span-6 col-span-4 lg:row-span-2 grid grid-cols-12 gap-x-6 gap-y-4'>
+							<div className='col-span-4 grid grid-cols-12 gap-x-6 gap-y-4 lg:col-span-6 lg:row-span-2'>
 								<div className='col-span-4 lg:row-span-1'>
 									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Length' placeholder='Units' {...form.getInputProps('length')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
 								</div>
@@ -324,14 +320,22 @@ const create = ({bookingID}) => {
 					</div>
 					<div className='grid grid-cols-1 gap-6'>
 						<header className='quote-header'>Scheduling</header>
-						<div className='grid grid-cols-1 lg:grid-cols-3 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
-							<button type='button' className={`${inputButton} ${form.values.schedulingType === SCHEDULING_TYPE.ONE_TIME && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.ONE_TIME)}>
+						<div className='grid grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-x-6 xl:gap-x-12'>
+							<button
+								type='button'
+								className={`${inputButton} ${form.values.schedulingType === SCHEDULING_TYPE.ONE_TIME && 'bg-secondary text-white'}`}
+								onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.ONE_TIME)}
+							>
 								One-time
 							</button>
-							<button type='button' className={`${inputButton} ${form.values.schedulingType === SCHEDULING_TYPE.RECURRING && 'bg-secondary text-white'}`} onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.RECURRING)}>
+							<button
+								type='button'
+								className={`${inputButton} ${form.values.schedulingType === SCHEDULING_TYPE.RECURRING && 'bg-secondary text-white'}`}
+								onClick={() => form.setFieldValue('schedulingType', SCHEDULING_TYPE.RECURRING)}
+							>
 								Recurring
 							</button>
-							{form.errors.schedulingType && <span className="text-red-500">{form.errors.schedulingType}</span>}
+							{form.errors.schedulingType && <span className='text-red-500'>{form.errors.schedulingType}</span>}
 						</div>
 						<div className='flex flex-col'>
 							<p className='font-normal'>Select a pickup date, and we’ll calculate a delivery date based on transit time.</p>
@@ -371,7 +375,7 @@ const create = ({bookingID}) => {
 					<div className='grid grid-cols-1 gap-5'>
 						<div className='flex flex-col space-y-6'>
 							<header className='quote-header'>Activities/Equipment Required</header>
-							<div className='py-4 grid grid-cols-1 lg:grid-cols-4 gap-y-4 lg:gap-x-6 xl:gap-x-12'>
+							<div className='grid grid-cols-1 gap-y-4 py-4 lg:grid-cols-4 lg:gap-x-6 xl:gap-x-12'>
 								{Object.values(SHIPMENT_ACTIVITY).map((item, index) => (
 									<button
 										key={index}
@@ -400,8 +404,7 @@ const create = ({bookingID}) => {
 					</div>
 				</div>
 				<div id='button-container' className='flex flex-col flex-wrap justify-center space-y-8'>
-					{!!form.values.weight && !!form.values.pickupDate && <span className='text-4xl text-center w-auto'>£345.00</span>}
-					<button type='submit' className='voyage-button w-auto'>
+					<button type='submit' className='flex justify-center items-center voyage-button w-auto'>
 						<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
 						<span>Book</span>
 					</button>
@@ -428,6 +431,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
+	console.log(token)
 	if (!session) {
 		return {
 			redirect: {
@@ -436,8 +440,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			}
 		};
 	}
-	const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
-	store.dispatch(setShipper(shipper))
+	const shipper = await fetchShipper(session.id, token?.shipperId, prisma);
+	store.dispatch(setShipper(shipper));
 	const locations = await fetchLocations(token?.shipperId, prisma);
 	store.dispatch(setLocations(locations));
 	return {
@@ -445,6 +449,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			bookingID: query?.bookingId || ''
 		} // will be passed to the page component as props
 	};
-})
+});
 
-export default create
+export default create;

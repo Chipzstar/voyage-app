@@ -12,14 +12,13 @@ import { createMember, setMembers, updateMember, useMembers } from '../../../sto
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, wrapper } from '../../../store';
 import { useRouter } from 'next/router';
-import { showNotification } from '@mantine/notifications';
 import { Check, X } from 'tabler-icons-react';
-import moment from 'moment/moment';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
 import { getToken } from 'next-auth/jwt'
+import { fetchMembers, fetchProfile } from '../../../utils/functions';
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -145,47 +144,15 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
 	if (session.id) {
-		const carrier = await prisma.carrier.findFirst({
-			where: {
-				userId: {
-					equals: session.id
-				}
-			}
-		});
-		if (carrier) {
-			carrier.createdAt = moment(carrier.createdAt).unix();
-			carrier.updatedAt = moment(carrier.updatedAt).unix();
-			store.dispatch(setCarrier(carrier));
-		}
-		let members = await prisma.member.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		members = members.map(member => ({
-			...member,
-			createdAt: moment(member.createdAt).unix(),
-			updatedAt: moment(member.updatedAt).unix()
-		}));
+		const carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		store.dispatch(setCarrier(carrier));
+		const members = await fetchMembers(token?.carrierId, prisma)
 		store.dispatch(setMembers(members));
 	}
 	return {
 		props: {
-			memberId: query?.memberId ?? null
+			memberId: query?.memberId ?? null,
+			session
 		}
 	};
 });

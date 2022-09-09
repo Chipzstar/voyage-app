@@ -8,17 +8,17 @@ import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteVehicle, setVehicles, useVehicles } from '../../../store/feature/vehicleSlice';
-import { useDrivers } from 'apps/carrier-dashboard/store/feature/driverSlice';
+import { setDrivers, useDrivers } from 'apps/carrier-dashboard/store/feature/driverSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
-import '../../../utils/string.extensions';
 import { AppDispatch, wrapper } from '../../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
-import { fetchVehicles } from '../../../utils/functions';
+import { fetchDrivers, fetchVehicles } from '../../../utils/functions';
 import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
+import '../../../utils/string.extensions';
 
 const vehicles = () => {
 	const modals = useModals();
@@ -68,23 +68,26 @@ const vehicles = () => {
 		[vehicles]
 	);
 
-	useEffect(() => setFilter(vehicles), [vehicles]);
+	useEffect(() => {
+		console.log(vehicles)
+		setFilter(vehicles)
+	}, [vehicles]);
 
-	const rows = filteredVehicles.map((element, index) => {
-		const foundDriver = drivers.find(driver => driver.driverId === element.currentDriver);
+	const rows = filteredVehicles.map((v, index) => {
+		const foundDriver = drivers.find(driver => driver.vehicleId === v.id);
 		return (
-			<tr key={element.vehicleId}>
+			<tr key={v.vehicleId}>
 				<td colSpan={1}>
-					<span>{element.vehicleName}</span>
+					<span>{v.vehicleName}</span>
 				</td>
 				<td colSpan={1}>
-					<span>{element.make}</span>
+					<span>{v.make}</span>
 				</td>
 				<td colSpan={1}>
-					<span>{element.model}</span>
+					<span>{v.model}</span>
 				</td>
 				<td colSpan={1}>
-					<span className='capitalize'>{element.status.replace(/-/g, ' ')}</span>
+					<span className='capitalize'>{v.status.replace(/-/g, ' ')}</span>
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
@@ -93,7 +96,7 @@ const vehicles = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span className='capitalize'>{element.regNumber}</span>
+						<span className='capitalize'>{v.regNumber}</span>
 					</div>
 				</td>
 				<td colSpan={2}>
@@ -103,13 +106,13 @@ const vehicles = () => {
 							onClick={() =>
 								router.push({
 									pathname: `${PATHS.NEW_VEHICLE}`,
-									query: { vehicleId: element.vehicleId }
+									query: { vehicleId: v.vehicleId }
 								})
 							}
 						>
 							<Pencil />
 						</ActionIcon>
-						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(element.id, element.vehicleName)}>
+						<ActionIcon size='sm' color='red' onClick={() => openConfirmModal(v.id, v.vehicleName)}>
 							<Trash />
 						</ActionIcon>
 					</Group>
@@ -167,7 +170,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
+		let drivers = await fetchDrivers(token?.carrierId, prisma)
 		let vehicles = await fetchVehicles(token?.carrierId, prisma)
+		store.dispatch(setDrivers(drivers))
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {

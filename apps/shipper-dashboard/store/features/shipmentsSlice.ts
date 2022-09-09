@@ -6,13 +6,12 @@ const initialState = [];
 
 export const createShipment = createAsyncThunk('shipment/createShipment', async (payload : Shipment, thunkAPI) => {
 	try {
-		console.log(payload)
 		const shipment = (await axios.post(`/api/shipment/${payload.shipmentId}`, payload)).data
 		thunkAPI.dispatch(addShipment(shipment))
 		return shipment
 	} catch (err) {
-	    console.error(err)
-		thunkAPI.rejectWithValue(err.message)
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 })
 

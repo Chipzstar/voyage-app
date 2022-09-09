@@ -85,6 +85,7 @@ export enum PACKAGE_TYPE {
 
 export interface NewBooking {
 	id: string;
+	shipperId: string;
 	createdAt: UnixTimestamp;
 	serviceType: SERVICE_TYPE;
 	shipmentType: SHIPMENT_TYPE;

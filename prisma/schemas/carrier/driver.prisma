@@ -11,7 +11,7 @@ model Driver {
     carrierId String @db.ObjectId
     driverId String
     vehicle Vehicle @relation(fields: [vehicleId], references: [id])
-    vehicleId String
+    vehicleId String @unique @db.ObjectId
     fullName String
     firstName String
     lastName String

@@ -424,7 +424,7 @@ model Driver {
   carrierId      String       @db.ObjectId
   driverId       String
   vehicle        Vehicle      @relation(fields: [vehicleId], references: [id])
-  vehicleId      String
+  vehicleId      String       @unique @db.ObjectId
   fullName       String
   firstName      String
   lastName       String
@@ -557,12 +557,12 @@ model Vehicle {
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
   vehicleId           String
-  currentDriver       String
+  currentDriver       Driver?
   vehicleType         VehicleType
   vehicleName         String
   regNumber           String
   vin                 String
-  engineNumber        String
+  engineNumber        String?
   yearOfManufacture   String
   colour              String
   fuelType            FuelType
@@ -573,5 +573,4 @@ model Vehicle {
   model               String
   notes               String?
   status              VehicleStatus
-  drivers             Driver[]
 }

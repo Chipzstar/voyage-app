@@ -57,7 +57,7 @@ const reporting = () => {
 	const controllers = useSelector(useControllers);
 
 	const truckData = useMemo(() => {
-		const numAssigned = vehicles.filter(v => v.currentDriver || v.status === VEHICLE_STATUS.ON_THE_ROAD).length;
+		const numAssigned = vehicles.filter(v => drivers.some(d => d.vehicleId === v.id)).length;
 		const numUnassigned = vehicles.length - numAssigned;
 		return [
 			{
@@ -76,7 +76,7 @@ const reporting = () => {
 	}, [vehicles]);
 
 	const activeVehicles = useMemo(() => {
-		return vehicles.filter(v => v.currentDriver || v.status === VEHICLE_STATUS.ON_THE_ROAD).length;
+		return vehicles.filter(v => v.status === VEHICLE_STATUS.ON_THE_ROAD).length;
 	}, [vehicles]);
 
 	return (
