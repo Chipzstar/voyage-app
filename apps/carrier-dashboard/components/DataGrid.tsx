@@ -12,9 +12,10 @@ export interface DataGridProps {
 	emptyContent: JSX.Element;
 	spacingY?: MantineNumberSize;
 	offset?: number;
+	paginationPadding?: string
 }
 
-const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spacingY = 'sm', offset =0}: DataGridProps) => {
+const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spacingY = 'sm', offset =0, paginationPadding=""}: DataGridProps) => {
 	const { height: windowHeight } = useWindowSize();
 	const { slice, range } = useTable(rows, activePage, windowHeight - offset);
 	return rows?.length ? (
@@ -29,7 +30,9 @@ const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spac
 				</thead>
 				<tbody>{slice}</tbody>
 			</Table>
-			<Pagination page={activePage} onChange={setPage} total={range.length} position="right"/>
+			<div className={paginationPadding}>
+				<Pagination page={activePage} onChange={setPage} total={range.length} position="right" />
+			</div>
 		</div>
 	) : (
 		<EmptyTable content={emptyContent} />

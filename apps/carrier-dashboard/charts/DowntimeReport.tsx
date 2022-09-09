@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Card, createStyles, Group, RingProgress, Stack, Text } from '@mantine/core';
-import { Driver, DRIVER_STATUS, Load } from '../utils/types';
+import { Driver, DRIVER_STATUS } from '../utils/types';
 
 const useStyles = createStyles(theme => ({
 	card: {

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Driver } from '../../utils/types'
 import axios from 'axios'
-import { HYDRATE } from 'next-redux-wrapper'
 
 const initialState = [];
 
