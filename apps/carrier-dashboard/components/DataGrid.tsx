@@ -31,7 +31,7 @@ const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spac
 				<tbody>{slice}</tbody>
 			</Table>
 			<div className={paginationPadding}>
-				<Pagination page={activePage} onChange={setPage} total={range.length} position="right" />
+				<Pagination page={activePage} onChange={setPage} total={range.length} position="left" />
 			</div>
 		</div>
 	) : (

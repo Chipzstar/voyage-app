@@ -109,7 +109,7 @@ const Trips = ({ loads, statuses = Object.values(STATUS), message }: TripsProps)
 					</span>
 				</button>
 			</div>
-			<DataGrid offset={100} activePage={activePage} paginationPadding="mr-12 pr-6" setPage={setPage} rows={rows} headings={['Trip ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
+			<DataGrid offset={100} activePage={activePage} setPage={setPage} rows={rows} headings={['Trip ID', 'Status', 'Controller', 'Driver', 'Last Updated', 'Source', 'Tracking']} emptyContent={<Empty message={message} />} />
 		</ContentContainer>
 	);
 };

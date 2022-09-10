@@ -18,6 +18,7 @@ import { wrapper } from '../store';
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css';
+import { IntercomProvider } from '../context/IntercomProvider';
 //Binding events.
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -43,15 +44,15 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 			>
 				<NotificationsProvider position='top-right'>
 					<ModalsProvider>
-						<Layout session={session}>
+						<Layout>
 							<Head>
 								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 								<Favicon />
 								<title>Carrier Dashboard</title>
 							</Head>
-							<main className='app'>
+							<IntercomProvider session={session}>
 								<Component {...pageProps} />
-							</main>
+							</IntercomProvider>
 						</Layout>
 					</ModalsProvider>
 				</NotificationsProvider>
@@ -60,4 +61,4 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 	);
 }
 
-export default wrapper.withRedux(App)
+export default wrapper.withRedux(App);
