@@ -16,17 +16,14 @@ export const prisma =
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma*/
 
 import { PrismaClient } from '@prisma/client'
-import { fieldEncryptionMiddleware } from 'prisma-field-encryption'
 
 let prisma
 if (process.env.NODE_ENV === 'production') {
 	prisma = new PrismaClient()
-	prisma.$use(fieldEncryptionMiddleware())
 } else {
 	if (!global.prisma) {
 		global.prisma = new PrismaClient()
 	}
 	prisma = global.prisma
-	prisma.$use(fieldEncryptionMiddleware())
 }
 export default prisma

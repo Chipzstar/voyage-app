@@ -11,9 +11,9 @@ import { PUBLIC_PATHS } from '../utils/constants';
 import { getToken } from 'next-auth/jwt';
 import { DateRange } from '@voyage-app/shared-types';
 import { fetchShipments } from '@voyage-app/shared-utils';
-import { wrapper } from '../store';
 import { setShipper } from '../store/features/profileSlice';
 import { fetchShipper } from '../utils/functions';
+import { wrapper } from '../store';
 
 const Index = props => {
 	const [dateRange, setRange] = useState<DateRange>([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
