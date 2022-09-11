@@ -11,6 +11,7 @@ import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { wrapper } from '../store';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
+import { IntercomProvider } from '../context/IntercomProvider';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
@@ -47,9 +48,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 								<title>Shipper Dashboard</title>
 							</Head>
-							<main className='app'>
+							<IntercomProvider session={session}>
 								<Component {...pageProps} />
-							</main>
+							</IntercomProvider>
 						</Layout>
 					</ModalsProvider>
 				</NotificationsProvider>
