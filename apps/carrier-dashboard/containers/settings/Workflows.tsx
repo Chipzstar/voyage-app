@@ -8,6 +8,7 @@ import { defaultSettings } from '../../utils/constants';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
+import { editCarrier } from '../../store/feature/profileSlice'
 
 interface WorkflowsProps {
 	carrierInfo: Carrier;
@@ -33,7 +34,10 @@ const Workflows = ({ carrierInfo, settings, nextTab }: WorkflowsProps) => {
 						.unwrap()
 						.then(() => {
 							notifySuccess('update-settings-success', 'Quote settings saved!', <Check size={20} />);
-							carrierInfo.status === SignupStatus.WORKFLOWS && nextTab();
+							if (carrierInfo.status === SignupStatus.WORKFLOWS) {
+								dispatch(editCarrier({...carrierInfo, status: SignupStatus.BANK_ACCOUNT }))
+								nextTab();
+							}
 						})
 						.catch(err => notifyError('update-settings-failure', `There was a problem saving your settings. ${err?.message}`, <X size={20} />))
 				: dispatch(createSettings(values))
@@ -44,7 +48,7 @@ const Workflows = ({ carrierInfo, settings, nextTab }: WorkflowsProps) => {
 						})
 						.catch(err => notifyError('create-settings-failure', `There was a problem updating your settings ${err.message}`, <X size={20} />));
 		},
-		[settings]
+		[settings, carrierInfo]
 	);
 
 	return (

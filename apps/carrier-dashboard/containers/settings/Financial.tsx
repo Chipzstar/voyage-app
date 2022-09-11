@@ -3,7 +3,7 @@ import { Button, Center, Container, Group, Loader, Select, Stack, TextInput } fr
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { BankAccountForm, Carrier, SignupStatus } from '../../utils/types';
-import { createBankAccount } from '../../store/feature/profileSlice';
+import { createBankAccount, editCarrier } from '../../store/feature/profileSlice'
 import { useForm } from '@mantine/form';
 import { countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
@@ -51,14 +51,16 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 		try {
 			await dispatch(createBankAccount(payload)).unwrap();
 			notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />);
-			carrierInfo.status === SignupStatus.BANK_ACCOUNT && nextTab();
-			setLoading(false)
+			if (carrierInfo.status === SignupStatus.BANK_ACCOUNT) {
+				dispatch(editCarrier({...carrierInfo, status: SignupStatus.DOCUMENTS }))
+				nextTab();
+			}
 		} catch (e) {
 			console.error(e);
 			notifyError('update-bank-details-failed', e.message, <X size={20} />);
 			setLoading(false)
 		}
-	}, []);
+	}, [carrierInfo]);
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>

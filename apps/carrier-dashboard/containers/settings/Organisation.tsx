@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Center, Container, Group, Loader, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { updateCarrier } from '../../store/feature/profileSlice';
+import { editCarrier, updateCarrier } from '../../store/feature/profileSlice'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { Check, X } from 'tabler-icons-react';
@@ -50,14 +50,17 @@ const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
 			.then(() => {
 				notifySuccess('update-carrier-success', `Your Organisation details have been saved`, <Check size={20} />);
 				setLoading(false);
-				carrierInfo.status === SignupStatus.COMPANY_INFO && nextTab()
+				if (carrierInfo.status === SignupStatus.COMPANY_INFO) {
+					dispatch(editCarrier({...carrierInfo, status: SignupStatus.WORKFLOWS }))
+					nextTab();
+				}
 			})
 			.catch(err => {
 				console.error(err);
 				notifyError('update-carrier-error', `There was error updating your organisation details ${err.message}`, <X size={20} />);
 				setLoading(false);
 			});
-	}, []);
+	}, [carrierInfo]);
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
