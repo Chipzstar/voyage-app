@@ -1,27 +1,22 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { APP_ID } from '../utils/intercom';
-import { loadIntercom, updateIntercom } from 'next-intercom';
+import {
+	load as loadIntercom,
+	boot as bootIntercom,
+	update as updateIntercom
+} from '../utils/intercom'
 
 export const IntercomProvider = ({ session, children }) => {
 	const router = useRouter();
 
 	if (typeof window !== "undefined") {
-		loadIntercom({
-			appId: APP_ID, // default : ''
-			name: session?.user.name,
-			email: session?.user.email,
-			user_id: session?.id,
-			ssr: false, // default: false
-			initWindow: true, // default: true
-			delay: 0, // default: 0  - usefull for mobile devices to prevent blocking the main thread
-		});
-		/*bootIntercom({
+		loadIntercom()
+		bootIntercom({
 			api_base: "https://api-iam.intercom.io",
 			user_id: session?.id,
 			name: session?.user.name,
 			email: session?.user.email,
-		});*/
+		});
 	}
 
 	useEffect(() => {

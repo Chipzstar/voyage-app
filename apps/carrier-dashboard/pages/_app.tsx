@@ -13,12 +13,12 @@ import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
+import { IntercomProvider } from '@voyage-app/shared-ui-components';
 import { wrapper } from '../store';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css';
-import { IntercomProvider } from '../context/IntercomProvider';
 //Binding events.
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -50,7 +50,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 								<Favicon />
 								<title>Carrier Dashboard</title>
 							</Head>
-							<IntercomProvider session={session}>
+							<IntercomProvider appId={process.env.NEXT_PUBLIC_INTERCOM_APP_ID} session={session}>
 								<Component {...pageProps} />
 							</IntercomProvider>
 						</Layout>

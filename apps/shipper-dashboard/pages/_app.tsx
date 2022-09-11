@@ -11,10 +11,12 @@ import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import { wrapper } from '../store';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
+import { IntercomProvider } from '@voyage-app/shared-ui-components';
 
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
+import { APP_ID } from '../utils/intercom';
 
 //Binding events.
 Router.events.on('routeChangeStart', () => NProgress.start());
@@ -47,9 +49,9 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 								<title>Shipper Dashboard</title>
 							</Head>
-							<main className='app'>
+							<IntercomProvider appId={APP_ID} session={session}>
 								<Component {...pageProps} />
-							</main>
+							</IntercomProvider>
 						</Layout>
 					</ModalsProvider>
 				</NotificationsProvider>
