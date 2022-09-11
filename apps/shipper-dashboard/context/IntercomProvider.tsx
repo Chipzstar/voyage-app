@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { initIntercomWindow, loadIntercom, updateIntercom } from 'next-intercom';
+import { intercomPlatform } from '@voyage-app/shared-utils';
 
 export const IntercomProvider = ({ session, children }) => {
 	const router = useRouter();
@@ -12,6 +13,7 @@ export const IntercomProvider = ({ session, children }) => {
 			name: session?.user.name,
 			email: session?.user.email,
 			user_id: session?.id,
+			platform: intercomPlatform.SHIPPER,
 			ssr: false, // default: false
 			initWindow: true, // default: true
 			delay: 0 // default: 0  - useful for mobile devices to prevent blocking the main thread

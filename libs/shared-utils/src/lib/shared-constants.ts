@@ -3,6 +3,11 @@ import { customAlphabet } from 'nanoid';
 export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 export const numericId = customAlphabet('1234567890');
 
+export const intercomPlatform = {
+	SHIPPER: 'Shipper Dashboard',
+	CARRIER: 'Carrier Dashboard'
+}
+
 export const countries = [
 	{
 		code: 'AT',
