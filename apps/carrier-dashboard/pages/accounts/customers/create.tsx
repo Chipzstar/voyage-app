@@ -12,7 +12,6 @@ import { alphanumericId, capitalize, notifyError, notifySuccess, sanitize } from
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { createCustomer, setCustomers, updateCustomer, useCustomers } from '../../../store/feature/customerSlice';
-import moment from 'moment';
 import useWindowSize from '../../../hooks/useWindowSize';
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
 import { AppDispatch, wrapper } from '../../../store';
@@ -20,6 +19,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
+import { fetchCustomers, fetchProfile } from '../../../utils/functions';
 
 const emptyContact: Contact = {
 	name: '',
@@ -38,7 +38,7 @@ const items = [
 	</Anchor>
 ));
 
-const create = ({ customerId, companyName, session }) => {
+const create = ({ customerId, companyName }) => {
 	const [loading, setLoading] = useState(false);
 	const { height } = useWindowSize();
 	const dispatch = useDispatch<AppDispatch>();
@@ -216,51 +216,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
 	if (session.id) {
-		const carrier = await prisma.carrier.findFirst({
-			where: {
-				OR: [
-					{
-						userId: {
-							equals: session.id
-						}
-					},
-					{
-						id: {
-							equals: token?.carrierId
-						}
-					}
-				]
-			}
-		});
-		if (carrier) {
-			carrier.createdAt = moment(carrier.createdAt).unix();
-			carrier.updatedAt = moment(carrier.updatedAt).unix();
-			store.dispatch(setCarrier(carrier));
-		}
-		let customers = await prisma.customer.findMany({
-			where: {
-				OR: [
-					{
-						carrierId: {
-							equals: token?.carrierId
-						}
-					},
-					{
-						userId: {
-							equals: session.id
-						}
-					}
-				]
-			},
-			orderBy: {
-				createdAt: 'desc'
-			}
-		});
-		customers = customers.map(customer => ({
-			...customer,
-			createdAt: moment(customer.createdAt).unix(),
-			updatedAt: moment(customer.updatedAt).unix()
-		}));
+		const carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		const customers = await fetchCustomers(token?.customerId, prisma)
+		store.dispatch(setCarrier(carrier))
 		store.dispatch(setCustomers(customers));
 	}
 	return {
