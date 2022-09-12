@@ -51,20 +51,20 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			}
 		};
 	}
-	// check if the user has not completed account registration, if not redirect to settings page
-	if (token?.status !== SignupStatus.COMPLETE) {
-		return {
-			redirect: {
-				destination: PATHS.SETTINGS,
-				permanent: false
-			}
-		};
-	}
 	if (session.id || token?.carrierId) {
 		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
 		let loads = await fetchLoads(token?.carrierId, prisma);
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setLoads(loads));
+		// check if the user has not completed account registration, if not redirect to settings page
+		if (token?.status !== SignupStatus.COMPLETE && carrier?.status !== SignupStatus.COMPLETE) {
+			return {
+				redirect: {
+					destination: PATHS.SETTINGS,
+					permanent: false
+				}
+			};
+		}
 	}
 	return {
 		props: {

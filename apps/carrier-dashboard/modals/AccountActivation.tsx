@@ -1,17 +1,14 @@
 import React from 'react';
 import { Button, Divider, Group, Modal, Text } from '@mantine/core';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { PATHS } from '../utils/constants';
 
-const AccountActivation = ({ opened, onClose, onSuccess }) => {
+const AccountActivation = ({ opened, onClose }) => {
 	const router = useRouter();
 	return (
 		<Modal
 			opened={opened}
-			onClose={() => {
-				onClose()
-				onSuccess()
-			}}
+			onClose={onClose}
 			title='Welcome to Voyage!'
 			classNames={{title: 'page-subheading'}}
 			centered
@@ -30,7 +27,7 @@ const AccountActivation = ({ opened, onClose, onSuccess }) => {
 						root: `bg-secondary 'hover:bg-secondary-600`
 					}}
 					onClick={() => {
-						onSuccess()
+						onClose()
 						router.push(PATHS.HOME)
 					}}
 				>
