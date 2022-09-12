@@ -13,7 +13,7 @@ export const IntercomProvider = ({ session, children }) => {
 			name: session?.user.name,
 			email: session?.user.email,
 			user_id: session?.id,
-			platform: intercomPlatform.SHIPPER,
+			Platform: intercomPlatform.SHIPPER,
 			ssr: false, // default: false
 			initWindow: true, // default: true
 			delay: 0 // default: 0  - useful for mobile devices to prevent blocking the main thread

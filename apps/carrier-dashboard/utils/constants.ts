@@ -1,14 +1,13 @@
 import moment from 'moment';
-import { PACKAGE_TYPE, STATUS, VEHICLE_TYPES } from '@voyage-app/shared-types';
-import { alphanumericId } from '@voyage-app/shared-utils';
-import { ChargeUnitType, Driver, DRIVER_STATUS, FuelMeasurementUnit, FuelType, INVOICE_STATUS, Load, Member, RateChargeRules, Settings, SignupStatus, TeamRole, Vehicle, VEHICLE_STATUS } from './types';
+import { ChargeUnitType, INVOICE_STATUS, RateChargeRules, Settings, SignupStatus } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 
 moment.tz.setDefault('Europe/London');
 
-export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY || 'pk_test_51LXPkaEqdCHY4B77SWShCyp3LDZXzgVCfNmIk9mvQfIHYZLOt9sLBFQN9af8EZDLimKj5sCTE3Y1vwkPR99fCYbq008YylFuKb';
+export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY
+console.log(STRIPE_PUBLIC_KEY)
 
 export const phoneUtil = PhoneNumberUtil.getInstance();
 
