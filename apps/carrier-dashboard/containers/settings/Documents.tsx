@@ -95,9 +95,6 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
 			<AccountActivation opened={activation} onClose={() => setActivation(false)}/>
-			<Button size="lg" onClick={testFullAccess}>
-				Test
-			</Button>
 			<div className='grid h-full grid-cols-3 gap-x-10 px-4 py-6'>
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>
