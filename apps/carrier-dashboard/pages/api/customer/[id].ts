@@ -1,7 +1,5 @@
-import { runMiddleware, cors, stripe } from '../index';
+import { cors, runMiddleware, stripe } from '../index';
 import prisma from '../../../db';
-import { unstable_getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]';
 import { Customer } from 'apps/carrier-dashboard/utils/types';
 
 export default async function handler(req, res) {
@@ -9,8 +7,8 @@ export default async function handler(req, res) {
 	await runMiddleware(req, res, cors);
 	// @ts-ignore
 	const payload: Partial<Customer> = req.body;
-	console.log("PAYLOAD", payload)
-	const { id } = req.query
+	console.log('PAYLOAD', payload);
+	const { id } = req.query;
 	if (req.method === 'POST') {
 		try {
 			// create stripe customer using input details
@@ -28,9 +26,9 @@ export default async function handler(req, res) {
 				description: payload.companyName,
 				metadata: {
 					env: process.env.DOPPLER_ENVIRONMENT,
-					type: "customer"
+					type: 'customer'
 				}
-			})
+			});
 			const customer = await prisma.customer.create({
 				data: {
 					...payload,
@@ -41,13 +39,12 @@ export default async function handler(req, res) {
 			console.log(customer);
 			res.json(customer);
 		} catch (err) {
-			console.log(err)
-			res.status(500).send({message:'Internal Server Error. Please try again'});
+			console.log(err);
+			res.status(500).send({ message: 'Internal Server Error. Please try again' });
 		}
-	}
-	else if (req.method === 'PUT'){
+	} else if (req.method === 'PUT') {
 		try {
-			let { id, ...rest } = payload
+			let { id, ...rest } = payload;
 			// update stripe details of the customer
 			const stripeCustomer = await stripe.customers.update(rest.customerId, {
 				name: rest.fullName,
@@ -61,24 +58,23 @@ export default async function handler(req, res) {
 					postal_code: rest.postcode,
 					country: rest.country
 				}
-			})
-			console.log("Stripe Customer", stripeCustomer)
+			});
+			console.log('Stripe Customer', stripeCustomer);
 			const customer = await prisma.customer.update({
 				where: {
 					id
 				},
 				data: {
-					...rest,
+					...rest
 				}
 			});
-			console.log("Prisma Customer", customer);
+			console.log('Prisma Customer', customer);
 			res.json(customer);
 		} catch (err) {
-			console.log(err)
-			res.status(400).json({ status: 400, message: 'An error occurred!' })
+			console.log(err);
+			res.status(400).json({ status: 400, message: 'An error occurred!' });
 		}
-	}
-	else if (req.method === 'DELETE'){
+	} else if (req.method === 'DELETE') {
 		try {
 			// delete customer in db
 			const result = await prisma.customer.delete({
@@ -86,14 +82,14 @@ export default async function handler(req, res) {
 					id
 				}
 			});
-			console.log(result)
+			console.log(result);
 			// delete customer from stripe
-			const stripeCustomer = await stripe.customers.del(result.customerId)
-			console.log(stripeCustomer)
-			res.json({success: true})
+			const stripeCustomer = await stripe.customers.del(result.customerId);
+			console.log(stripeCustomer);
+			res.json({ success: true });
 		} catch (err) {
-			console.error(err)
-			res.status(400).json({success: false})
+			console.error(err);
+			res.status(400).json({ success: false });
 		}
 	} else {
 		res.status(404).json({ status: 404, message: 'Unrecognised HTTP method used' });

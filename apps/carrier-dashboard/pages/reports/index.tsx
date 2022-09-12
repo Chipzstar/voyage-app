@@ -101,7 +101,7 @@ const reporting = () => {
 									size={150}
 									sections={[
 										{
-											value: (activeVehicles / vehicles.length) * 100,
+											value: vehicles.length === 0 ? 0 : (activeVehicles / vehicles.length) * 100,
 											color: theme.primaryColor
 										}
 									]}

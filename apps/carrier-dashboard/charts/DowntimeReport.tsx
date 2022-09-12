@@ -89,11 +89,11 @@ const DowntimeReport = ({ drivers }: DowntimeReportProps) => {
 						roundCaps
 						thickness={6}
 						size={150}
-						sections={[{ value: (activeDrivers / drivers.length) * 100, color: theme.primaryColor }]}
+						sections={[{ value: drivers.length === 0 ? 0 : (activeDrivers / drivers.length) * 100, color: theme.primaryColor }]}
 						label={
 							<div>
 								<Text align='center' size='lg' className={classes.label} sx={{ fontSize: 22 }}>
-									{((activeDrivers / drivers.length) * 100).toFixed(0)}%
+									{drivers.length === 0 ? 0 : ((activeDrivers / drivers.length) * 100).toFixed(0)}%
 								</Text>
 								<Text align='center' size='xs' color='dimmed'>
 									Driver Utilization
