@@ -175,7 +175,7 @@ const create = ({ driverId }) => {
 								data={vehicles.map(
 									(vehicle): SelectInputData => ({
 										label: vehicle.vehicleName,
-										value: vehicle.vehicleId
+										value: vehicle.id
 									})
 								)}
 								{...form.getInputProps('vehicleId')}
