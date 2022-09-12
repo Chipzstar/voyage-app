@@ -35,6 +35,7 @@ import ReviewModal from '../../modals/ReviewModal';
 import { createLoad } from '../../store/feature/loadSlice';
 import axios from 'axios';
 import _ from 'lodash';
+import { Load } from '../../utils/types';
 
 const items = [
 	{ title: 'Home', href: '/' },
@@ -86,14 +87,15 @@ const marketplace = ({ session }) => {
 				showAssignmentModal(false);
 				setLoading(true);
 				console.log(selectedShipment);
-				const newLoad = (await axios.post(`/api/shipment/convert/${selectedShipment?.id}`, values)).data;
+				const newLoad: Partial<Load> = (await axios.post(`/api/shipment/convert/${selectedShipment?.id}`, values)).data;
 				await dispatch(createLoad(newLoad)).unwrap();
 				notifySuccess('convert-shipment-to-load-success', 'You have successfully booked this load', <Check size={20} />);
 				setLoading(false);
 				dispatch(
 					updateShipment({
 						id: selectedShipment.id,
-						status: STATUS.PENDING
+						status: STATUS.PENDING,
+						carrierInfo: newLoad.carrierInfo
 					})
 				)
 					.unwrap()
