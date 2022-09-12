@@ -16,7 +16,6 @@ export default async function handler(req, res) {
 			const member = await prisma.member.create({
 				data: {
 					...payload,
-					userId: session.id,
 					carrierId: payload.carrierId
 				}
 			});

@@ -88,12 +88,9 @@ const Sidebar = () => {
 	const { data: session } = useSession();
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const profile = useSelector(useCarrier)
+	const profile = useSelector(useCarrier);
 
-	const signupComplete = useMemo(() => {
-		console.log(profile)
-		return session?.status === SignupStatus.COMPLETE || profile?.status === SignupStatus.COMPLETE
-	}, [session, profile]);
+	const signupComplete = useMemo(() => session?.status === SignupStatus.COMPLETE || profile?.status === SignupStatus.COMPLETE, [session, profile]);
 
 	const operationsRoute = useMemo(() => [PATHS.HOME, PATHS.TRIPS, PATHS.TRIPS, PATHS.MARKETPLACE].includes(router.pathname), [router.pathname]);
 	const Menu: NavMenu[] = [

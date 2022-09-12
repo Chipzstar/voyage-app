@@ -7,7 +7,6 @@ export default async function handler(req, res) {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
 	// @ts-ignore
-	const session = await unstable_getServerSession(req, res, authOptions)
 	let payload = req.body;
 	console.log("PAYLOAD", payload)
 	const { id } = req.query
@@ -16,7 +15,6 @@ export default async function handler(req, res) {
 			const driver = await prisma.driver.create({
 				data: {
 					...payload,
-					userId: session.id,
 					carrierId: payload.carrierId
 				}
 			});
