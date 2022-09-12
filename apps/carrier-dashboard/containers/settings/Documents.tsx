@@ -44,6 +44,11 @@ interface DocumentsProps {
 	documents: Document[];
 }
 
+const reloadSession = () => {
+	const event = new Event("visibilitychange");
+	document.dispatchEvent(event);
+};
+
 const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(false);
@@ -88,7 +93,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			<AccountActivation opened={activation} onClose={() => setActivation(false)} />
+			<AccountActivation opened={activation} onClose={() => setActivation(false)} onSuccess={reloadSession} />
 			<div className='grid h-full grid-cols-3 gap-x-10 px-4 py-6'>
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>

@@ -3,16 +3,17 @@ import { Button, Divider, Group, Modal, Text } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { PATHS } from '../utils/constants';
 
-const AccountActivation = ({ opened, onClose }) => {
+const AccountActivation = ({ opened, onClose, onSuccess }) => {
 	const router = useRouter();
 	return (
 		<Modal
 			opened={opened}
-			onClose={onClose}
-			title='Welcome to Voyage!'
-			classNames={{
-				title: 'page-subheading'
+			onClose={() => {
+				onClose()
+				onSuccess()
 			}}
+			title='Welcome to Voyage!'
+			classNames={{title: 'page-subheading'}}
 			centered
 		>
 			<div className='flex flex-col justify-center space-y-3 p-6'>
@@ -29,8 +30,8 @@ const AccountActivation = ({ opened, onClose }) => {
 						root: `bg-secondary 'hover:bg-secondary-600`
 					}}
 					onClick={() => {
+						onSuccess()
 						router.push(PATHS.HOME)
-						onClose()
 					}}
 				>
 					Go to dashboard
