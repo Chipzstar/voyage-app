@@ -15,7 +15,7 @@ import { getToken } from 'next-auth/jwt';
 import { fetchDocuments, fetchProfile, fetchSettings } from '../../utils/functions';
 import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice';
-import { SignupStatus } from '../../utils/types';
+import { ActivationStatus } from '../../utils/types';
 import { setDocuments, useDocuments } from '../../store/feature/documentSlice';
 
 const TAB_LABELS = {
@@ -31,7 +31,7 @@ const settings = () => {
 	const documents = useSelector(useDocuments);
 
 	const defaultTab = useMemo(() => {
-		return profile?.status !== SignupStatus.COMPLETE ? profile.status : SETTINGS_TABS[0].value;
+		return profile?.status !== ActivationStatus.COMPLETE ? profile.status : SETTINGS_TABS[0].value;
 	}, [profile]);
 
 	const [activeTab, setActiveTab] = useState<string | null>(defaultTab);
@@ -40,13 +40,13 @@ const settings = () => {
 		<Container fluid px={0} className='h-full'>
 			<TabBar tabLabels={SETTINGS_TABS} activeTab={activeTab} setActiveTab={setActiveTab} status={profile.status}>
 				<Tabs.Panel value={TAB_LABELS.ORGANIZATION}>
-					<Organisation carrierInfo={profile} nextTab={() => setActiveTab(SignupStatus.WORKFLOWS)} />
+					<Organisation carrierInfo={profile} nextTab={() => setActiveTab(ActivationStatus.WORKFLOWS)} />
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.WORKFLOWS}>
-					<Workflows carrierInfo={profile} settings={settings} nextTab={() => setActiveTab(SignupStatus.BANK_ACCOUNT)} />
+					<Workflows carrierInfo={profile} settings={settings} nextTab={() => setActiveTab(ActivationStatus.BANK_ACCOUNT)} />
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.FINANCIAL}>
-					<Financial carrierInfo={profile} nextTab={() => setActiveTab(SignupStatus.DOCUMENTS)}/>
+					<Financial carrierInfo={profile} nextTab={() => setActiveTab(ActivationStatus.DOCUMENTS)}/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.DOCUMENTS}>
 					<Documents carrierInfo={profile} documents={documents} />

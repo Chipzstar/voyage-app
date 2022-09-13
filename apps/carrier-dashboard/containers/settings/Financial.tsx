@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Button, Center, Container, Group, Loader, Select, Stack, TextInput } from '@mantine/core';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
-import { BankAccountForm, Carrier, SignupStatus } from '../../utils/types';
+import { BankAccountForm, Carrier, ActivationStatus } from '../../utils/types';
 import { createBankAccount, editCarrier } from '../../store/feature/profileSlice'
 import { useForm } from '@mantine/form';
 import { countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
@@ -51,8 +51,8 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 		try {
 			await dispatch(createBankAccount(payload)).unwrap();
 			notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />);
-			if (carrierInfo.status === SignupStatus.BANK_ACCOUNT) {
-				dispatch(editCarrier({...carrierInfo, status: SignupStatus.DOCUMENTS }))
+			if (carrierInfo.status === ActivationStatus.BANK_ACCOUNT) {
+				dispatch(editCarrier({...carrierInfo, status: ActivationStatus.DOCUMENTS }))
 				nextTab();
 			}
 		} catch (e) {

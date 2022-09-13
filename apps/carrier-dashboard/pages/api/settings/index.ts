@@ -1,5 +1,5 @@
 import prisma from '../../../db';
-import { SignupStatus } from '../../../utils/types';
+import { ActivationStatus } from '../../../utils/types';
 import { cors, runMiddleware } from '../index';
 import { getToken } from 'next-auth/jwt';
 
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 					id: payload.carrierId|| token?.carrierId
 				},
 				data: {
-					status: SignupStatus.BANK_ACCOUNT
+					status: ActivationStatus.BANK_ACCOUNT
 				}
 			});
 			res.status(201).json(settings);

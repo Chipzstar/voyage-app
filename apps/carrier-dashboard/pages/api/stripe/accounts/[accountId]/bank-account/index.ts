@@ -2,7 +2,7 @@ import { cors, runMiddleware, stripe } from '../../../../index';
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../../../../db';
 import { getToken } from 'next-auth/jwt';
-import { SignupStatus } from '../../../../../../utils/types';
+import { ActivationStatus } from '../../../../../../utils/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	await runMiddleware(req, res, cors);
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 								}
 							}
 						},
-						...(payload.status === SignupStatus.BANK_ACCOUNT && {status: SignupStatus.DOCUMENTS})
+						...(payload.status === ActivationStatus.BANK_ACCOUNT && {status: ActivationStatus.DOCUMENTS})
 					}
 				});
 				console.log(updatedCarrier)

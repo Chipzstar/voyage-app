@@ -1,7 +1,7 @@
 import { cors, runMiddleware } from '../index';
 import prisma from '../../../db';
 import { numericId } from '@voyage-app/shared-utils';
-import { SignupStatus } from '../../../utils/types';
+import { ActivationStatus } from '../../../utils/types';
 
 export default async function handler(req, res) {
 	// Run the middleware
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
 					},
 					userId: user.id,
 					carrierId: `CARRIER-ID${numericId(12)}`,
-					status: SignupStatus.COMPANY_INFO
+					status: ActivationStatus.COMPANY_INFO
 				}
 			});
 			console.log('CARRIER', carrier);

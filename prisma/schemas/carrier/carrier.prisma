@@ -1,4 +1,4 @@
-enum SignupStatus {
+enum ActivationStatus {
     COMPANY_INFO
     BANK_ACCOUNT
     WORKFLOWS
@@ -28,5 +28,5 @@ model Carrier {
     vehicles    Vehicle[]
     customers   Customer[]
     settings    Settings?
-    status      SignupStatus?
+    status      ActivationStatus?
 }

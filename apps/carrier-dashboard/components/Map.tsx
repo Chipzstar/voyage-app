@@ -15,7 +15,7 @@ interface MapGeoJson {
 			coordinates: [];
 		}
 	}
-};
+}
 
 interface MapProps {
 	type: MapType;
