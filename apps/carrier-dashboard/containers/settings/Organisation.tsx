@@ -15,7 +15,7 @@ interface OrganisationProps {
 }
 
 const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
-	const [opened, setOpen] = useState(true);
+	const [opened, setOpen] = useState(false);
 	const interval = useInterval(() => setOpen(true), 3000);
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
@@ -106,6 +106,7 @@ const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
 							<Popover.Target>
 								<Button
 									type='submit'
+									size='md'
 									classNames={{
 										root: 'bg-secondary hover:bg-secondary-600'
 									}}

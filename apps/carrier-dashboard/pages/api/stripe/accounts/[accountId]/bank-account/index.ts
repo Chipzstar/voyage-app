@@ -34,7 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			console.log('************************************************');
 			// update the stripe details in db
 			if (bankAccount.object !== 'card') {
-				console.log(jwtToken)
 				const updatedCarrier = await prisma.carrier.update({
 					where: {
 						id: jwtToken?.carrierId
@@ -49,8 +48,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 									sortCode: bankAccount.routing_number,
 									last4: bankAccount.last4,
 									accountHolderName: bankAccount.account_holder_name,
-									currency: bankAccount.currency,
-									country: bankAccount.country,
+									currency: payload.currency,
+									country: payload.country,
 									status: bankAccount.status
 								}
 							}

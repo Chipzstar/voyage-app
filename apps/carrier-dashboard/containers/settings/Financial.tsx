@@ -27,7 +27,7 @@ interface FinancialProps {
 
 const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 	const [loading, setLoading] = useState(false);
-	const [opened, setOpen] = useState(true);
+	const [opened, setOpen] = useState(false);
 	const interval = useInterval(() => setOpen(true), 3000);
 	const dispatch = useDispatch<AppDispatch>();
 
@@ -52,7 +52,8 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 			let payload = { ...values, accountId: carrierInfo?.stripe.accountId, status: carrierInfo.status };
 			try {
 				await dispatch(createBankAccount(payload)).unwrap();
-				notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />);
+				notifySuccess('create-bank-account-success', 'Bank details added successfully', <Check size={20} />);
+				setLoading(false);
 				if (carrierInfo.status === ActivationStatus.BANK_ACCOUNT) {
 					dispatch(editCarrier({ ...carrierInfo, status: ActivationStatus.DOCUMENTS }));
 					nextTab();

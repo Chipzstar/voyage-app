@@ -7,7 +7,6 @@ import { PhoneNumberUtil } from 'google-libphonenumber';
 moment.tz.setDefault('Europe/London');
 
 export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY
-console.log(STRIPE_PUBLIC_KEY)
 
 export const phoneUtil = PhoneNumberUtil.getInstance();
 
