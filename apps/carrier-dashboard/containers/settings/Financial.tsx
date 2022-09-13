@@ -1,17 +1,16 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Button, Center, Container, Group, Loader, Select, Stack, TextInput } from '@mantine/core';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Center, Container, Group, Loader, Popover, Select, Stack, Text, TextInput } from '@mantine/core';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { BankAccountForm, Carrier, ActivationStatus } from '../../utils/types';
-import { createBankAccount, editCarrier } from '../../store/feature/profileSlice'
+import { createBankAccount, editCarrier } from '../../store/feature/profileSlice';
 import { useForm } from '@mantine/form';
 import { countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
 import { Check, X } from 'tabler-icons-react';
+import { useInterval } from '@mantine/hooks';
 
-const formatAccNumber = (accNumber: string): string => {
-	return accNumber ? '****' + accNumber : undefined;
-};
+const formatAccNumber = (accNumber: string): string => (accNumber ? '****' + accNumber : undefined);
 
 const formatCode = codeText => {
 	return codeText
@@ -28,6 +27,8 @@ interface FinancialProps {
 
 const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 	const [loading, setLoading] = useState(false);
+	const [opened, setOpen] = useState(true);
+	const interval = useInterval(() => setOpen(true), 3000);
 	const dispatch = useDispatch<AppDispatch>();
 
 	const bankAccount = useMemo(() => carrierInfo?.stripe?.bankAccount, [carrierInfo]);
@@ -44,82 +45,99 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 		}
 	});
 
-	const handleSubmit = useCallback(async values => {
-		setLoading(true)
-		values.sortCode = formatCode(values.sortCode);
-		let payload = { ...values, accountId: carrierInfo?.stripe.accountId, status: carrierInfo.status };
-		try {
-			await dispatch(createBankAccount(payload)).unwrap();
-			notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />);
-			if (carrierInfo.status === ActivationStatus.BANK_ACCOUNT) {
-				dispatch(editCarrier({...carrierInfo, status: ActivationStatus.DOCUMENTS }))
-				nextTab();
+	const handleSubmit = useCallback(
+		async values => {
+			setLoading(true);
+			values.sortCode = formatCode(values.sortCode);
+			let payload = { ...values, accountId: carrierInfo?.stripe.accountId, status: carrierInfo.status };
+			try {
+				await dispatch(createBankAccount(payload)).unwrap();
+				notifySuccess('update-bank-details-success', 'Bank details updated successfully', <Check size={20} />);
+				if (carrierInfo.status === ActivationStatus.BANK_ACCOUNT) {
+					dispatch(editCarrier({ ...carrierInfo, status: ActivationStatus.DOCUMENTS }));
+					nextTab();
+				}
+			} catch (e) {
+				console.error(e);
+				notifyError('update-bank-details-failed', e.message, <X size={20} />);
+				setLoading(false);
 			}
-		} catch (e) {
-			console.error(e);
-			notifyError('update-bank-details-failed', e.message, <X size={20} />);
-			setLoading(false)
-		}
+		},
+		[carrierInfo]
+	);
+
+	useEffect(() => {
+		carrierInfo.status !== ActivationStatus.COMPLETE && interval.start();
+		return interval.stop();
 	}, [carrierInfo]);
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			<Center className='flex h-full flex-col'>
-				<section className='border-voyage-grey flex h-full flex-col items-center justify-center'>
-					<header className='page-header my-6'>Bank Account Details</header>
-					<form onSubmit={form.onSubmit(handleSubmit)}>
-						<Stack className='md:w-196'>
-							<TextInput required label='Account Holder Name' radius={0} {...form.getInputProps('accountHolderName')} />
-							<Group grow>
-								<TextInput
-									required={!bankAccount}
-									disabled={!!bankAccount}
-									label='Sort Code'
-									radius={0}
-									minLength={6}
-									maxLength={6}
-									value={form.values.sortCode}
-									onChange={event => form.setFieldValue('sortCode', event.currentTarget.value)}
-								/>
-								<TextInput required={!bankAccount} disabled={!!bankAccount} label='Account Number' radius={0} minLength={8} {...form.getInputProps('last4')} />
-							</Group>
-							<Group grow>
-								<Select
-									required={!bankAccount}
-									disabled={!!bankAccount}
-									searchable
-									label='Country'
-									radius={0}
-									data={countries.map(
-										(country): SelectInputData => ({
-											label: country.name,
-											value: country.code
-										})
+			<Popover opened={opened} onChange={setOpen} transition='fade' transitionDuration={500} position='bottom' withArrow shadow='md'>
+				<Center className='flex h-full flex-col'>
+					<section className='border-voyage-grey flex h-full flex-col items-center justify-center'>
+						<header className='page-header my-6'>Bank Account Details</header>
+						<form onSubmit={form.onSubmit(handleSubmit)}>
+							<Stack className='md:w-196'>
+								<TextInput required label='Account Holder Name' radius={0} {...form.getInputProps('accountHolderName')} />
+								<Group grow>
+									<TextInput
+										required={!bankAccount}
+										disabled={!!bankAccount}
+										label='Sort Code'
+										radius={0}
+										minLength={6}
+										maxLength={6}
+										value={form.values.sortCode}
+										onChange={event => form.setFieldValue('sortCode', event.currentTarget.value)}
+									/>
+									<TextInput required={!bankAccount} disabled={!!bankAccount} label='Account Number' radius={0} minLength={8} {...form.getInputProps('last4')} />
+								</Group>
+								<Group grow>
+									<Select
+										required={!bankAccount}
+										disabled={!!bankAccount}
+										searchable
+										label='Country'
+										radius={0}
+										data={countries.map(
+											(country): SelectInputData => ({
+												label: country.name,
+												value: country.code
+											})
+										)}
+										{...form.getInputProps('country')}
+									/>
+									<Select disabled={bankAccount} required={!bankAccount} searchable readOnly label='Currency' radius={0} data={['GBP', 'EUR', 'USD']} {...form.getInputProps('currency')} />
+								</Group>
+								<Group position='right' py={6}>
+									<Popover.Target>
+										<Button
+											disabled={!!bankAccount}
+											size='md'
+											type='submit'
+											classNames={{
+												root: 'bg-secondary hover:bg-secondary-600'
+											}}
+										>
+											<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
+											<span>Save Changes</span>
+										</Button>
+									</Popover.Target>
+									<Popover.Dropdown>
+										<Text size='sm'>Click "Save Changes" to continue</Text>
+									</Popover.Dropdown>
+									{!!bankAccount && (
+										<Button disabled size='md' type='button' color='red' className='bg-red-500 hover:bg-red-600'>
+											<span>Delete Bank Account</span>
+										</Button>
 									)}
-									{...form.getInputProps('country')}
-								/>
-								<Select disabled={bankAccount} required={!bankAccount} searchable readOnly label='Currency' radius={0} data={['GBP', 'EUR', 'USD']} {...form.getInputProps('currency')} />
-							</Group>
-							<Group position='right' py={6}>
-								<Button
-									disabled={!!bankAccount}
-									size='md'
-									type='submit'
-									classNames={{
-										root: 'bg-secondary hover:bg-secondary-600'
-									}}
-								>
-									<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
-									<span>Save Changes</span>
-								</Button>
-								{!!bankAccount && <Button disabled size='md' type='button' color='red' className='bg-red-500 hover:bg-red-600'>
-									<span>Delete Bank Account</span>
-								</Button>}
-							</Group>
-						</Stack>
-					</form>
-				</section>
-			</Center>
+								</Group>
+							</Stack>
+						</form>
+					</section>
+				</Center>
+			</Popover>
 		</Container>
 	);
 };

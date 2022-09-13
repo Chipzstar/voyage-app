@@ -10,12 +10,21 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import prisma from '../../db';
 import { useSelector } from 'react-redux';
 import { setShipments, useShipments } from '../../store/features/shipmentsSlice';
-import { capitalize, EVENT_DESCRIPTIONS, fetchShipments, sanitize } from '@voyage-app/shared-utils';
+import { capitalize, fetchShipments, sanitize } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { fetchShipper } from '../../utils/functions';
 import { setShipper } from '../../store/features/profileSlice';
-import { Shipment } from '@voyage-app/shared-types';
+import { Shipment, STATUS } from '@voyage-app/shared-types';
 import { wrapper } from '../../store';
+
+export const EVENT_DESCRIPTIONS = {
+	[STATUS.NEW]: `Shipment has been created and awaiting for driver to accept`,
+	[STATUS.PENDING]: '',
+	[STATUS.DISPATCHED]: 'Shipment has been accepted by the driver and heading to pickup',
+	[STATUS.EN_ROUTE]: 'Driver has collected the shipment and is heading to the destination',
+	[STATUS.COMPLETED]: 'Shipment has been delivered successfully',
+	[STATUS.CANCELLED]: 'Shipment has been cancelled'
+};
 
 const viewShipment = ({ shipmentId, pageIndex }) => {
 	const router = useRouter();
