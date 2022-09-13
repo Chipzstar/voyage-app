@@ -189,9 +189,24 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 					<header className='page-header mb-6'>Upload Documents</header>
 					<Stack className='w-full'>
 						<Radio.Group label='Select the type of document to upload' description='You must upload one of each document type before creating loads.' required className='w-full' {...form.getInputProps('documentType')}>
-							<Radio disabled={documents.some(doc => doc.type === DocumentType.UK_HGV_OPERATORS_LICENSE)} key={0} value={DocumentType.UK_HGV_OPERATORS_LICENSE} label='UK HGV Operators Licence' />
-							<Radio disabled={documents.some(doc => doc.type === DocumentType.GOODS_IN_TRANSIT_INSURANCE)} key={1} value={DocumentType.GOODS_IN_TRANSIT_INSURANCE} label='Goods in Transit insurance' />
-							<Radio disabled={documents.some(doc => doc.type === DocumentType.LIABILITY_INSURANCE)} key={2} value={DocumentType.LIABILITY_INSURANCE} label='Liability Insurance' />
+							<Radio
+								disabled={documents.some(doc => doc.type === DocumentType.UK_HGV_OPERATORS_LICENSE)}
+								key={0}
+								value={DocumentType.UK_HGV_OPERATORS_LICENSE}
+								label='UK HGV Operators Licence'
+							/>
+							<Radio
+								disabled={documents.some(doc => doc.type === DocumentType.GOODS_IN_TRANSIT_INSURANCE)}
+								key={1}
+								value={DocumentType.GOODS_IN_TRANSIT_INSURANCE}
+								label='Goods in Transit insurance'
+							/>
+							<Radio
+								disabled={documents.some(doc => doc.type === DocumentType.LIABILITY_INSURANCE)}
+								key={2}
+								value={DocumentType.LIABILITY_INSURANCE}
+								label='Liability Insurance'
+							/>
 						</Radio.Group>
 
 						<Dropzone
@@ -227,6 +242,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 						<Button
 							disabled={!form.values.file}
 							type='submit'
+							size="md"
 							classNames={{
 								root: `bg-secondary ${form.values.file && 'hover:bg-secondary-600'}`
 							}}
