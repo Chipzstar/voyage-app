@@ -318,7 +318,7 @@ const book = props => {
 						</div>
 						<div id='col-1'>
 							<div className='flex h-48 flex-col space-y-4'>
-								<header className='space-y-3'>
+								<header className='space-y-3 md:h-28'>
 									<h1 className='form-header'>Select Account</h1>
 									<p className='font-normal'>Select which customer to create the load for</p>
 								</header>

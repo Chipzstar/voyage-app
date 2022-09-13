@@ -8,12 +8,25 @@ export default async function handler(req, res) {
 	// @ts-ignore
 	const token = await getToken({ req });
 	let payload = req.body;
-	console.log('PAYLOAD', payload);
 	const { id: ID } = req.query;
+	console.log('PAYLOAD', payload);
 	if (req.method === 'PUT') {
-		const { id, ...rest } = payload;
 		try {
 			const settings = await prisma.settings.update({
+				where: {
+					id: ID
+				},
+				data: payload
+			});
+			console.log(settings);
+			res.status(200).json(settings);
+		} catch (err) {
+			console.log(err);
+			res.status(400).json(err);
+		}
+	} else if (req.method === 'DELETE') {
+		try {
+			const result = await prisma.settings.delete({
 				where: {
 					OR: [
 						{
@@ -23,29 +36,13 @@ export default async function handler(req, res) {
 							carrierId: token?.carrierId
 						}
 					]
-				},
-				data: {
-					...rest
-				}
-			});
-			console.log(settings);
-			res.status(200).json(settings);
-		} catch (err) {
-			console.log(err);
-			res.status(400).json({ status: 400, message: 'An error occurred!' });
-		}
-	} else if (req.method === 'DELETE') {
-		try {
-			const result = await prisma.settings.delete({
-				where: {
-					carrierId: token?.carrierId
 				}
 			});
 			console.log(result);
 			res.json({ success: true });
 		} catch (err) {
 			console.error(err);
-			res.status(400).json({ success: false });
+			res.status(400).json(err);
 		}
 	} else {
 		res.setHeader('Allow', 'PUT');

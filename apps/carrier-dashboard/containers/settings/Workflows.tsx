@@ -23,7 +23,7 @@ const Workflows = ({ carrierInfo, settings, nextTab }: WorkflowsProps) => {
 	const dispatch = useDispatch<AppDispatch>();
 	const initialValues: Settings = {
 		id: settings?.id ?? undefined,
-		carrierId: settings?.carrierId ?? carrierInfo?.id ?? undefined,
+		carrierId: undefined,
 		rateChargeRules: settings?.rateChargeRules ?? defaultSettings.rateChargeRules
 	};
 	const quoteConfigForm = useForm({
