@@ -21,7 +21,8 @@ export const createSettings = createAsyncThunk('settings/createSettings', async 
 
 export const updateSettings = createAsyncThunk('settings/updateSettings', async (payload: Partial<Settings>, thunkAPI) => {
 	try {
-		const settings = (await axios.put(`/api/settings/${payload.id}`, payload)).data;
+		const { id, ...rest } = payload
+		const settings = (await axios.put(`/api/settings/${id}`, rest)).data;
 		thunkAPI.dispatch(editSettings(settings));
 		return settings;
 	} catch (err) {
