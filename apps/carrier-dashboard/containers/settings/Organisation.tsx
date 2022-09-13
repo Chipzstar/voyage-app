@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { Button, Center, Container, Group, Loader, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { editCarrier, updateCarrier } from '../../store/feature/profileSlice'
+import { editCarrier, updateCarrier } from '../../store/feature/profileSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { Check, X } from 'tabler-icons-react';
-import { Carrier, ActivationStatus } from '../../utils/types';
+import { ActivationStatus, Carrier } from '../../utils/types';
 import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 interface OrganisationProps {
@@ -32,7 +32,8 @@ const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
 			region: '',
 			postcode: '',
 			country: 'UK'
-		}
+		},
+		status: carrierInfo?.status ?? ActivationStatus.COMPLETE
 	};
 	const form = useForm({
 		initialValues
