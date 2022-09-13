@@ -11,11 +11,27 @@ export const createDocument = createAsyncThunk('document/createDocument', async 
 				type: payload.documentType,
 				filename: payload.file.name,
 				filepath: `${payload.id}/${payload.documentType}/${payload.file.name}`,
-				status: 'PENDING',
+				status: 'VERIFYING',
 				verified: false
 			})
 		).data;
 		thunkAPI.dispatch(addDocument(document));
+		return document;
+	} catch (err) {
+		console.error(err?.response?.data);
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
+export const deleteDocument = createAsyncThunk('document/deleteDocument', async (payload: Document, thunkAPI) => {
+	try {
+		const document = (await axios.delete(`/api/document`, {
+			params: {
+				id: payload.id,
+				filepath: payload.filepath
+			}
+		})).data;
+		thunkAPI.dispatch(removeDocument(payload.id));
 		return document;
 	} catch (err) {
 		console.error(err?.response?.data);
@@ -33,12 +49,15 @@ export const documentSlice = createSlice({
 		},
 		addDocument: (state, action: PayloadAction<Document>) => {
 			return [...state, action.payload];
+		},
+		removeDocument: (state, action: PayloadAction<string>) => {
+			return state.filter((doc) => doc.id !== action.payload);
 		}
 	}
 });
 
 export const useDocuments = (state): Document[] => state['documents'];
 
-export const { setDocuments, addDocument } = documentSlice.actions;
+export const { setDocuments, addDocument, removeDocument } = documentSlice.actions;
 
 export default documentSlice.reducer;

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Customer, Driver } from '../../utils/types'
+import { Customer } from '../../utils/types';
 import axios from 'axios';
 
 const initialState = [];

@@ -1,4 +1,4 @@
-import { Settings, SignupStatus } from '../../utils/types';
+import { Settings, ActivationStatus } from '../../utils/types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '../index';
 import axios from 'axios';
@@ -11,7 +11,7 @@ export const createSettings = createAsyncThunk('settings/createSettings', async 
 	try {
 		const settings = (await axios.post(`/api/settings`, payload)).data;
 		thunkAPI.dispatch(setSettings(settings));
-		thunkAPI.dispatch(editCarrier({status: SignupStatus.BANK_ACCOUNT}))
+		thunkAPI.dispatch(editCarrier({status: ActivationStatus.BANK_ACCOUNT}))
 		return settings;
 	} catch (err) {
 		console.error(err?.response?.data)

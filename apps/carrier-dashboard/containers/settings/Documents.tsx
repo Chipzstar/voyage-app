@@ -1,16 +1,20 @@
-import React, { useCallback, useState } from 'react';
-import { Badge, Button, Container, Group, Loader, Paper, Radio, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Badge, Button, Container, Group, Loader, Paper, Radio, ScrollArea, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
 import { uploadFile } from '../../utils/functions';
-import { Carrier, Document, DocumentType, NewDocument, SignupStatus } from '../../utils/types';
+import { Carrier, Document, DocumentType, NewDocument, ActivationStatus } from '../../utils/types';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
-import { createDocument } from '../../store/feature/documentSlice';
+import { createDocument, deleteDocument } from '../../store/feature/documentSlice';
 import AccountActivation from '../../modals/AccountActivation';
 import { updateCarrier } from '../../store/feature/profileSlice';
 import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
+import { useModals } from '@mantine/modals';
+import { useViewportSize } from '@mantine/hooks';
+
+const ONE_GB = 1073741824; // in bytes units
 
 const Empty = () => {
 	return (
@@ -45,10 +49,44 @@ interface DocumentsProps {
 }
 
 const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
+	const modals = useModals();
 	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(false);
 	const [activation, setActivation] = useState(false);
 	const theme = useMantineTheme();
+	const { height } = useViewportSize()
+	const dropzoneRef = useRef<HTMLDivElement>(null);
+
+	const openConfirmModal = (doc: Document) =>
+		modals.openConfirmModal({
+			title: 'Delete Document',
+			children: (
+				<Text size='md'>
+					You have selected <strong>{doc.filename}</strong>
+					<br />
+					Are you sure you want to delete this document?
+				</Text>
+			),
+			labels: { confirm: 'Delete', cancel: 'Cancel' },
+			onConfirm: () =>
+				dispatch(deleteDocument(doc))
+					.unwrap()
+					.then(res => notifySuccess('delete-document-success', `${doc.filename} has been removed!`, <Check size={20} />))
+					.catch(err => notifyError('delete-document-failure', `An error occurred while deleting your document, ${err.message}`, <X size={20} />)),
+			onCancel: () => console.log('Cancel'),
+			classNames: {
+				title: 'modal-header'
+			},
+			confirmProps: {
+				color: 'red',
+				classNames: {
+					root: 'bg-red-500'
+				}
+			},
+			closeOnCancel: true,
+			closeOnConfirm: true
+		});
+
 	const form = useForm<NewDocument>({
 		initialValues: {
 			id: carrierInfo?.id ?? '',
@@ -60,79 +98,92 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 		}
 	});
 
-	const handleSubmit = useCallback(values => {
-		setLoading(true);
-		uploadFile(values)
-			.then(res => {
-				dispatch(createDocument(values))
-					.unwrap()
-					.then(res => {
-						notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
-						setLoading(false);
-						if (documents.length >= 2) {
-							dispatch(updateCarrier({ ...carrierInfo, status: SignupStatus.COMPLETE }))
-								.unwrap()
-								.then(() => setActivation(true));
-						}
-					})
-					.catch(err => {
-						notifyError('store-document-failure', `An error occurred while saving your document, ${err.message}`, <X size={20} />);
-						setLoading(false);
-					});
-			})
-			.catch(err => {
-				notifyError('upload-document-failure', `An error occurred while uploading your document, ${err.message}`, <X size={20} />);
-				setLoading(false);
-			});
-	}, [documents, carrierInfo]);
-
-	const testFullAccess = useCallback(() => {
-		dispatch(updateCarrier({ ...carrierInfo, status: SignupStatus.COMPLETE }))
-			.unwrap()
-			.then(() => setActivation(true));
-	}, [carrierInfo])
+	const handleSubmit = useCallback(
+		values => {
+			setLoading(true);
+			uploadFile(values)
+				.then(res => {
+					dispatch(createDocument(values))
+						.unwrap()
+						.then(res => {
+							form.reset();
+							notifySuccess('upload-document-success', 'Your document has been uploaded!', <Check size={20} />);
+							setLoading(false);
+							// if all 3 document types are uploaded and user account still not fully activated
+							if (documents.length >= 2 && carrierInfo.status !== ActivationStatus.COMPLETE) {
+								// set carrier activation status to "COMPLETE"
+								dispatch(updateCarrier({ ...carrierInfo, status: ActivationStatus.COMPLETE }))
+									.unwrap()
+									.then(() => setActivation(true));
+							}
+						})
+						.catch(err => {
+							notifyError('store-document-failure', `An error occurred while saving your document, ${err.message}`, <X size={20} />);
+							setLoading(false);
+						});
+				})
+				.catch(err => {
+					notifyError('upload-document-failure', `An error occurred while uploading your document, ${err.message}`, <X size={20} />);
+					setLoading(false);
+				});
+		},
+		[documents, carrierInfo]
+	);
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>
-			<AccountActivation opened={activation} onClose={() => setActivation(false)}/>
+			<AccountActivation opened={activation} onClose={() => setActivation(false)} />
 			<div className='grid h-full grid-cols-3 gap-x-10 px-4 py-6'>
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>
-					<SimpleGrid>
-						{documents.map((doc, index) => (
-							<Paper key={index} shadow='md' p='md' withBorder className='w-full bg-transparent'>
-								<Stack>
-									<Group position='apart'>
+					<ScrollArea.Autosize maxHeight={height - 150}>
+						<SimpleGrid>
+							{documents.map((doc, index) => (
+								<Paper key={index} shadow='md' p='md' withBorder className='w-full bg-transparent'>
+									<Stack>
+										<Group position='apart'>
+											<div>
+												<Text color='dimmed' weight={600}>
+													Filename
+												</Text>
+												<span>{doc.filename}</span>
+											</div>
+											<Badge
+												variant='gradient'
+												gradient={
+													doc.verified
+														? {
+																from: 'teal',
+																to: 'lime',
+																deg: 105
+														  }
+														: { from: 'grey', to: 'black' }
+												}
+											>
+												{doc.status}
+											</Badge>
+										</Group>
 										<div>
 											<Text color='dimmed' weight={600}>
-												Filename
+												Document Type
 											</Text>
-											<span>{doc.filename}</span>
+											<span className='capitalize'>{doc.type.replace(/_/g, ' ')}</span>
 										</div>
-										<Badge variant='gradient' gradient={doc.verified ? { from: 'teal', to: 'lime', deg: 105 } : { from: 'grey', to: 'black' }}>
-											{doc.status}
-										</Badge>
-									</Group>
-									<div>
-										<Text color='dimmed' weight={600}>
-											Document Type
-										</Text>
-										<span className='capitalize'>{doc.type.replace(/_/g, ' ')}</span>
-									</div>
-								</Stack>
-								<Group position='right' mt='xs'>
-									<a href={doc.location} target='_blank' download>
-										<Button variant='default' size='xs'>
-											<Text color='dimmed'>Download</Text>
+									</Stack>
+									<Group position='right' mt='xs'>
+										<a href={doc.location} target='_blank' download>
+											<Button variant='default' size='xs'>
+												<Text color='dimmed'>Download</Text>
+											</Button>
+										</a>
+										<Button variant='outline' color='red' size='xs' onClick={() => openConfirmModal(doc)}>
+											Remove
 										</Button>
-									</a>
-									<Button variant='outline' color='red' size='xs'>
-										Remove
-									</Button>
-								</Group>
-							</Paper>
-						))}
-					</SimpleGrid>
+									</Group>
+								</Paper>
+							))}
+						</SimpleGrid>
+					</ScrollArea.Autosize>
 				</section>
 				<form encType='multipart/form-data' onSubmit={form.onSubmit(handleSubmit)} className='col-span-2'>
 					<header className='page-header mb-6'>Upload Documents</header>
@@ -144,6 +195,7 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 						</Radio.Group>
 
 						<Dropzone
+							ref={dropzoneRef}
 							classNames={{
 								root: `${form.values.file} && 'z-0'`
 							}}
@@ -153,8 +205,11 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 								console.log('accepted files', files);
 								form.setFieldValue('file', files[0]);
 							}}
-							onReject={files => console.log('rejected files', files)}
-							maxSize={3 * 1024 ** 2}
+							onReject={files => {
+								console.log('rejected files', files);
+								notifyError('rejected-file', 'This file is too large for upload. Please make sure you document is < 1GB in size', <X size={20} />);
+							}}
+							maxSize={ONE_GB} // 1 GB
 							accept={PDF_MIME_TYPE}
 						>
 							<Group position='center' spacing='xl' style={{ minHeight: 220, pointerEvents: 'none' }}>

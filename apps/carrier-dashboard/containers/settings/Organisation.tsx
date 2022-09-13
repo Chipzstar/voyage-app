@@ -5,7 +5,7 @@ import { editCarrier, updateCarrier } from '../../store/feature/profileSlice'
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { Check, X } from 'tabler-icons-react';
-import { Carrier, SignupStatus } from '../../utils/types';
+import { Carrier, ActivationStatus } from '../../utils/types';
 import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 
 interface OrganisationProps {
@@ -41,17 +41,17 @@ const Organisation = ({ carrierInfo, nextTab }: OrganisationProps) => {
 	const handleSubmit = useCallback(values => {
 		setLoading(true);
 		// CHECK IF CARRIER SIGNUP STATUS IS NOT COMPLETE, IF IT IS NOT, change status to WORKFLOWS
-		if (carrierInfo.status === SignupStatus.COMPANY_INFO) {
+		if (carrierInfo.status === ActivationStatus.COMPANY_INFO) {
 			console.log("STATUS:",carrierInfo.status)
-			values.status = SignupStatus.WORKFLOWS
+			values.status = ActivationStatus.WORKFLOWS
 		}
 		dispatch(updateCarrier(values))
 			.unwrap()
 			.then(() => {
 				notifySuccess('update-carrier-success', `Your Organisation details have been saved`, <Check size={20} />);
 				setLoading(false);
-				if (carrierInfo.status === SignupStatus.COMPANY_INFO) {
-					dispatch(editCarrier({...carrierInfo, status: SignupStatus.WORKFLOWS }))
+				if (carrierInfo.status === ActivationStatus.COMPANY_INFO) {
+					dispatch(editCarrier({...carrierInfo, status: ActivationStatus.WORKFLOWS }))
 					nextTab();
 				}
 			})

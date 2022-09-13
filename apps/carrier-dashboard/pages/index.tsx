@@ -15,7 +15,7 @@ import { fetchLoads, fetchProfile } from '../utils/functions';
 import { setLoads, useLoads } from '../store/feature/loadSlice';
 import { useSelector } from 'react-redux';
 import { STATUS } from '@voyage-app/shared-types';
-import { MapType, SignupStatus } from '../utils/types';
+import { MapType, ActivationStatus } from '../utils/types';
 
 export function Index(props) {
 	const [dateRange, setRange] = useState([moment().startOf('day').toDate(), moment().startOf('day').add(1, 'day').toDate()]);
@@ -57,7 +57,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setLoads(loads));
 		// check if the user has not completed account registration, if not redirect to settings page
-		if (token?.status !== SignupStatus.COMPLETE && carrier?.status !== SignupStatus.COMPLETE) {
+		if (token?.status !== ActivationStatus.COMPLETE && carrier?.status !== ActivationStatus.COMPLETE) {
 			return {
 				redirect: {
 					destination: PATHS.SETTINGS,

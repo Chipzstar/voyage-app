@@ -53,7 +53,7 @@ export enum MapType {
 	ORDER
 }
 
-export enum SignupStatus {
+export enum ActivationStatus {
 	COMPANY_INFO = 'COMPANY_INFO',
 	BANK_ACCOUNT = 'BANK_ACCOUNT',
 	WORKFLOWS = 'WORKFLOWS',
@@ -103,16 +103,6 @@ export enum DocumentType {
 	LIABILITY_INSURANCE = 'LIABILITY_INSURANCE'
 }
 
-export interface CarrierDocument {
-	id: string;
-	carrierId: string;
-	type: DocumentType;
-	filename: string;
-	filepath?: string;
-	location: string;
-	verified: boolean;
-}
-
 export interface Carrier {
 	id: string;
 	carrierId: string;
@@ -127,8 +117,7 @@ export interface Carrier {
 	address: Address;
 	phone: string;
 	stripe?: StripeDetails;
-	documents?: CarrierDocument;
-	status?: SignupStatus;
+	status: ActivationStatus;
 }
 
 export enum ChargeUnitType {
