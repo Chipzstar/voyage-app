@@ -21,7 +21,7 @@ import ContentContainer from '../../layout/ContentContainer';
 import PageNav from '../../layout/PageNav';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, wrapper } from '../../store';
-import { setShipments, updateShipment } from '../../store/feature/shipmentSlice';
+import { setShipments, updateShipment, useNewShipments } from '../../store/feature/shipmentSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
@@ -56,14 +56,14 @@ interface FilterFormProps {
 
 const marketplace = ({ session }) => {
 	const [loading, setLoading] = useState(false);
-	const shipments = useSelector(state => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW));
+	const shipments = useSelector(useNewShipments);
 	const [filteredShipments, setFilteredShipments] = useState(shipments);
 	const drivers = useSelector(useDrivers);
 	const members = useSelector(useMembers);
 	const dispatch = useDispatch<AppDispatch>();
 	const [reviewModal, showReviewModal] = useState(false);
 	const [assignmentModal, showAssignmentModal] = useState(false);
-	const [selectedShipment, setSelectedShipment] = useState(null);
+	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
@@ -86,7 +86,6 @@ const marketplace = ({ session }) => {
 			try {
 				showAssignmentModal(false);
 				setLoading(true);
-				console.log(selectedShipment);
 				const newLoad: Partial<Load> = (await axios.post(`/api/shipment/convert/${selectedShipment?.id}`, values)).data;
 				await dispatch(createLoad(newLoad)).unwrap();
 				notifySuccess('convert-shipment-to-load-success', 'You have successfully booked this load', <Check size={20} />);
@@ -95,11 +94,18 @@ const marketplace = ({ session }) => {
 					updateShipment({
 						id: selectedShipment.id,
 						status: STATUS.PENDING,
-						carrierInfo: newLoad.carrierInfo
+						carrierInfo: newLoad.carrierInfo,
+						trackingHistory: [
+							...selectedShipment.trackingHistory,
+							{
+								status: STATUS.PENDING,
+								timestamp: moment().unix()
+							}
+						]
 					})
 				)
 					.unwrap()
-					.then(() => console.log('shipment updated'))
+					.then(() => setFilteredShipments(shipments))
 					.catch(err => console.error(err));
 			} catch (err) {
 				console.error(err);
@@ -107,7 +113,7 @@ const marketplace = ({ session }) => {
 				setLoading(false);
 			}
 		},
-		[selectedShipment]
+		[selectedShipment, shipments]
 	);
 
 	const form = useForm<FilterFormProps>({

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Shipment } from '@voyage-app/shared-types';
+import { Shipment, STATUS } from '@voyage-app/shared-types';
 import axios from 'axios';
 
 const initialState = [];
@@ -46,6 +46,8 @@ export const shipmentSlice = createSlice({
 });
 
 export const useShipments = state => state['shipments']
+
+export const useNewShipments = state => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW)
 
 export const { setShipments, addShipment, editShipment } = shipmentSlice.actions;
 

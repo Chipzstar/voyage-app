@@ -310,6 +310,7 @@ model Shipment {
   delivery           ShipmentDelivery
   packageInfo        PackageInfo
   carrierInfo        CarrierInfo?
+  trackingHistory    TrackingHistory[]
 }
 model Shipper {
   id        String         @id @default(auto()) @map("_id") @db.ObjectId
@@ -338,12 +339,12 @@ enum ActivationStatus {
 }
 
 model Carrier {
-  id        String         @id @default(auto()) @map("_id") @db.ObjectId
-  carrierId String         @unique
-  user      User           @relation(fields: [userId], references: [id])
-  userId    String         @unique @db.ObjectId
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  carrierId String            @unique
+  user      User              @relation(fields: [userId], references: [id])
+  userId    String            @unique @db.ObjectId
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
   fullName  String
   firstname String
   lastname  String

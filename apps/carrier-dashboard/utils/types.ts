@@ -1,4 +1,4 @@
-import { Address, CarrierInfo, HAZMAT_TYPES, Package, PACKAGE_TYPE, SHIPMENT_ACTIVITY, STATUS, UnixTimestamp, VEHICLE_TYPES } from '@voyage-app/shared-types';
+import { Address, CarrierInfo, HAZMAT_TYPES, Package, PACKAGE_TYPE, SHIPMENT_ACTIVITY, STATUS, Tracking, UnixTimestamp, VEHICLE_TYPES } from '@voyage-app/shared-types';
 
 export enum TeamRole {
 	ADMIN = 'ADMIN',
@@ -85,11 +85,6 @@ export type StripeDetails = {
 		last4: string;
 	};
 	bankAccount?: BankAccount;
-};
-
-type Tracking = {
-	status: STATUS;
-	timestamp: UnixTimestamp;
 };
 
 type Geolocation = {

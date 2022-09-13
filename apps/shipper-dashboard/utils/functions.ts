@@ -67,7 +67,13 @@ export async function generateShipment(values: NewBooking, pickupLocation: Locat
 				driverName: '',
 				driverPhone: '',
 				location: [-1.778197, 52.412811]
-			}
+			},
+			trackingHistory: [
+				{
+					status: STATUS.NEW,
+					timestamp: moment().unix()
+				}
+			]
 		};
 	} catch (e) {
 		console.error(e);

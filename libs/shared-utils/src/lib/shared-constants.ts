@@ -1,4 +1,5 @@
 import { customAlphabet } from 'nanoid';
+import { STATUS } from '@voyage-app/shared-types';
 
 export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 export const numericId = customAlphabet('1234567890');
@@ -7,6 +8,15 @@ export const intercomPlatform = {
 	SHIPPER: 'Shipper Dashboard',
 	CARRIER: 'Carrier Dashboard'
 }
+
+export const EVENT_DESCRIPTIONS = {
+	[STATUS.NEW]: `Shipment has been created and awaiting for driver to accept`,
+	[STATUS.PENDING]: 'Your drivers have been alerted about this new load',
+	[STATUS.DISPATCHED]: 'Shipment has been accepted by the driver and heading to pickup',
+	[STATUS.EN_ROUTE]: 'Driver has collected the shipment and is heading to the destination',
+	[STATUS.COMPLETED]: 'Shipment has been delivered successfully',
+	[STATUS.CANCELLED]: 'Shipment has been cancelled'
+};
 
 export const countries = [
 	{

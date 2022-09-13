@@ -163,6 +163,8 @@ export interface Shipment {
 	delivery: Delivery;
 	packageInfo: Package;
 	carrierInfo: Partial<CarrierInfo>;
+	trackingHistory: Tracking[]
+
 }
 
 export interface Shipper {
@@ -227,3 +229,8 @@ export interface Location {
 	deliveryInstructions: string;
 	operatingHours: OperatingHoursState[];
 }
+
+export type Tracking = {
+	status: STATUS;
+	timestamp: UnixTimestamp;
+};

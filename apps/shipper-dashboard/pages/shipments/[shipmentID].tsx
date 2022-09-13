@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Timeline, Text, Button } from '@mantine/core';
 import { ChevronLeft, ChevronRight } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
@@ -9,17 +9,22 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import prisma from '../../db';
 import { useSelector } from 'react-redux';
-import { store } from '../../store';
 import { setShipments, useShipments } from '../../store/features/shipmentsSlice';
-import { fetchShipments } from '@voyage-app/shared-utils';
+import { capitalize, EVENT_DESCRIPTIONS, fetchShipments, sanitize } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
-import { Shipment } from '@voyage-app/shared-types';
 import { fetchShipper } from '../../utils/functions';
 import { setShipper } from '../../store/features/profileSlice';
+import { Shipment } from '@voyage-app/shared-types';
+import { wrapper } from '../../store';
 
 const viewShipment = ({ shipmentId, pageIndex }) => {
 	const router = useRouter();
 	const shipments = useSelector(useShipments);
+
+	const shipment: Shipment = useMemo(() => {
+		console.log(shipments)
+		return shipments[pageIndex]
+	}, [shipments, pageIndex]);
 
 	return (
 		<div className='h-screen p-4'>
@@ -90,11 +95,11 @@ const viewShipment = ({ shipmentId, pageIndex }) => {
 							<aside className='border-voyage-grey border p-5'>
 								<header className='shipment-header'>Summary</header>
 								<div className='pt-8'>
-									<Timeline active={1} bulletSize={24} lineWidth={2}>
-										{[].map((event, index) => (
-											<Timeline.Item key={index} title={event.status} active={index === 0}>
+									<Timeline active={1} bulletSize={18} lineWidth={2}>
+										{shipment?.trackingHistory.map((event, index) => (
+											<Timeline.Item key={index} title={capitalize(sanitize(event.status))} active={index === 0}>
 												<Text color='dimmed' size='sm'>
-													{event.description}
+													{EVENT_DESCRIPTIONS[event.status]}
 												</Text>
 												<Text size='xs' mt={4}>
 													{moment.unix(event.timestamp).from(moment())}
@@ -115,7 +120,7 @@ const viewShipment = ({ shipmentId, pageIndex }) => {
 	);
 };
 
-export async function getServerSideProps({ req, res, params }) {
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res, params }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
@@ -144,6 +149,6 @@ export async function getServerSideProps({ req, res, params }) {
 			pageIndex
 		} // will be passed to the page component as props
 	};
-}
+})
 
 export default viewShipment;

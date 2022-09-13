@@ -64,4 +64,5 @@ model Shipment {
     delivery ShipmentDelivery
     packageInfo PackageInfo
     carrierInfo CarrierInfo?
+    trackingHistory TrackingHistory[]
 }
