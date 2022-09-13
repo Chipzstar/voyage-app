@@ -16,23 +16,15 @@ import { getToken } from 'next-auth/jwt';
 import { fetchLoads } from '../../utils/functions';
 import prisma from '../../db';
 import { wrapper } from '../../store';
-import { capitalize, sanitize } from '@voyage-app/shared-utils';
+import { capitalize, EVENT_DESCRIPTIONS, sanitize } from '@voyage-app/shared-utils';
 import Pluralize from 'react-pluralize';
 import { Load, MapType } from '../../utils/types';
 import { mapboxClient } from '../../utils/clients';
+import { STATUS } from '@voyage-app/shared-types';
 
 const tripDetails = ({ loadId, pageIndex, geoJSON }) => {
 	const router = useRouter();
 	const loads = useSelector(useLoads);
-
-	const EVENT_DESCRIPTIONS = {
-		NEW: `Shipment has been created and awaiting for driver to accept `,
-		PENDING: '',
-		DISPATCHED: 'Shipment has been accepted by the driver and heading to pickup',
-		EN_ROUTE: 'Driver has collected the shipment and is heading to the destination',
-		COMPLETED: 'Shipment has been delivered successfully',
-		CANCELLED: 'Shipment has been cancelled'
-	};
 
 	const items = [
 		{ title: 'Home', href: PATHS.HOME },

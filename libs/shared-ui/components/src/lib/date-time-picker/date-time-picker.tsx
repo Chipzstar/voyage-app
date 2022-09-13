@@ -165,7 +165,7 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 				date.setHours(now.getHours());
 				date.setMinutes(now.getMinutes());
 			}
-			setValue(date	);
+			setValue(date);
 			closeCalendarOnChange && setInputState(upperFirst(moment(date).locale(finalLocale).format(dateFormat)));
 			closeCalendarOnChange && setDropdownOpened(false);
 			window.setTimeout(() => inputRef.current?.focus(), 0);
@@ -208,8 +208,11 @@ export const DateTimePicker = forwardRef<HTMLInputElement, DateTimePickerProps>(
 		};
 
 		const handleTimeChange = (date: Date) => {
-			setValue(date);
-			closeCalendarOnChange && setInputState(upperFirst(moment(date).locale(finalLocale).format(dateFormat)));
+			const hours = date.getHours()
+			const minutes = date.getMinutes()
+			const newDate = moment(_value).set('h', hours).set('m', minutes ).toDate()
+			setValue(newDate);
+			closeCalendarOnChange && setInputState(upperFirst(moment(newDate).locale(finalLocale).format(dateFormat)));
 			closeCalendarOnChange && setDropdownOpened(false);
 		};
 

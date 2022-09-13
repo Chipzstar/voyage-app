@@ -178,7 +178,12 @@ const book = props => {
 			<section className='sticky top-0 z-50 flex items-center space-x-4 bg-white pt-4 pb-8' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
-			<QuoteEstimate opened={suggestedQuote.show} load={suggestedQuote.load} onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))} onSubmit={confirmRate} />
+			<QuoteEstimate
+				opened={suggestedQuote.show}
+				load={suggestedQuote.load}
+				onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))}
+				onSubmit={confirmRate}
+			/>
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 gap-20 lg:grid-cols-4'>
 				<div id='book-form-container' className='col-span-3 flex flex-col space-y-5'>
 					<div id='load-type' className='grid grid-cols-1 gap-6'>
