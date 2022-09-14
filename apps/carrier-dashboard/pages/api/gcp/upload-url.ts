@@ -18,7 +18,6 @@ export default async function handler(req, res) {
 			fields: { 'x-goog-meta-test': 'data' }
 		};
 		const [response] = await file.generateSignedPostPolicyV4(options);
-		console.log(response);
 		res.status(200).json(response);
 	} catch (e) {
 		res.status(500).send({ message: e?.message ? e.message : 'Internal Server Error. Please try again' });

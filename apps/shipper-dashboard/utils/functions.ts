@@ -1,4 +1,4 @@
-import { Delivery, NewBooking, Pickup } from './types';
+import { Delivery, Booking, Pickup } from './types';
 import moment from 'moment';
 import { numericId } from '@voyage-app/shared-utils';
 import { Location, Shipment, STATUS } from '@voyage-app/shared-types';
@@ -10,7 +10,7 @@ export function calculateRate(weight, numPallets, miles = 300) {
 	return sum;
 }
 
-export async function generateShipment(values: NewBooking, pickupLocation: Location, deliveryLocation: Location): Promise<Shipment> {
+export async function generateShipment(values: Booking, pickupLocation: Location, deliveryLocation: Location): Promise<Shipment> {
 	console.log(values.pickupDate);
 	const pickup: Pickup = {
 		facilityId: pickupLocation.id,

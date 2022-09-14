@@ -5,39 +5,39 @@ import { Calendar, CalendarStats, Check, ChevronDown, ChevronLeft, X } from 'tab
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
-import { NewBooking } from '../../utils/types';
+import { Booking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
 import { PATHS, PUBLIC_PATHS } from 'apps/shipper-dashboard/utils/constants';
 import { createShipment } from '../../store/features/shipmentsSlice';
 import moment from 'moment';
-import { fetchLocations, fetchShipper, generateShipment } from '../../utils/functions';
-import { createBooking } from '../../store/features/bookingsSlice';
+import { fetchBookings, fetchLocations, fetchShipper, generateShipment } from '../../utils/functions';
+import { createBooking, setBookings, useBooking } from '../../store/features/bookingsSlice';
 import { AppDispatch, wrapper } from '../../store';
 import { getToken } from 'next-auth/jwt';
 import prisma from '../../db';
-import { setLocations } from '../../store/features/locationSlice';
+import { setLocations, useLocation } from '../../store/features/locationSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { setShipper } from '../../store/features/profileSlice';
-import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
+import { notifyError, notifySuccess, numericId } from '@voyage-app/shared-utils';
 
 const create = ({ bookingID }) => {
+	console.log(bookingID)
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const dispatch = useDispatch<AppDispatch>();
-	const { locations, bookings } = useSelector(state => ({
-		locations: state['locations'],
-		bookings: state['bookings']
-	}));
+	const locations = useSelector(useLocation);
+	const bookings = useSelector(useBooking);
 	const [isFTL, setFTL] = useState(false);
 
-	const booking = useMemo(() => bookings.find((booking: NewBooking) => booking.id === bookingID), [bookings]);
+	const booking = useMemo(() => bookings.find((booking: Booking) => booking.bookingId === bookingID), [bookings]);
 
-	const form = useForm<NewBooking>({
+	const form = useForm<Booking>({
 		initialValues: {
 			id: booking?.id ?? undefined,
 			shipperId: booking?.shipperId ?? undefined,
+			bookingId: booking?.bookingId ?? `VOY-ID${numericId(8)}`,
 			createdAt: booking?.createdAt ?? undefined,
 			serviceType: booking?.serviceType ?? '',
 			shipmentType: booking?.shipmentType ?? '',
@@ -55,6 +55,7 @@ const create = ({ bookingID }) => {
 			pickupLocation: booking?.pickupLocation ?? '',
 			deliveryLocation: booking?.deliveryLocation ?? '',
 			description: booking?.description ?? '',
+			status: 'Incomplete',
 			notes: booking?.notes ?? ''
 		},
 		validate: values => ({
@@ -412,8 +413,13 @@ const create = ({ bookingID }) => {
 						type='button'
 						className='voyage-button w-auto leading-5'
 						onClick={() => {
-							dispatch(createBooking(form.values));
-							router.back();
+							dispatch(createBooking(form.values)).unwrap().then(() => {
+								notifySuccess('save-booking-success', 'Booking saved successfully', <Check size={20} />)
+								router.back()
+							}).catch(err => {
+								console.error(err)
+								notifyError('save-booking-error', err.message, <X size={20} />)
+							})
 						}}
 					>
 						Save and go to Booking
@@ -442,6 +448,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	const shipper = await fetchShipper(session.id, token?.shipperId, prisma);
 	store.dispatch(setShipper(shipper));
+	const bookings = await fetchBookings(token?.shipperId, prisma)
+	store.dispatch(setBookings(bookings))
 	const locations = await fetchLocations(token?.shipperId, prisma);
 	store.dispatch(setLocations(locations));
 	return {

@@ -4,8 +4,10 @@ import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { NewBooking } from '../utils/types'
+import { Booking } from '../utils/types'
 import { Shipment } from '@voyage-app/shared-types';
+import { useBooking } from '../store/features/bookingsSlice';
+import { useShipments } from '../store/features/shipmentsSlice';
 
 const Empty = () => {
 	const router = useRouter();
@@ -22,22 +24,19 @@ const Empty = () => {
 
 const Bookings = () => {
 	const router = useRouter();
-	const { bookings, shipments } = useSelector(state => ({
-		bookings: state['bookings'],
-		shipments: state['shipments']
-	}));
-	bookings.sort((a, b) => b.createdAt - a.createdAt);
+	const bookings = useSelector(useBooking)
+	const shipments = useSelector(useShipments)
 
 	const rows = bookings
-		.map((element: NewBooking) => (
+		.map((element: Booking) => (
 			<tr key={element.id}>
-				<td>{element.id}</td>
-				<td>Incomplete</td>
+				<td>{element.bookingId}</td>
+				<td>{element.status}</td>
 				<td>-</td>
 				<td>-</td>
 				<td>-</td>
 				<td role='button'>
-					<span className='text-secondary' onClick={() => router.push(`${PATHS.CREATE_BOOKING}/?bookingId=${element.id}`)}>
+					<span className='text-secondary' onClick={() => router.push(`${PATHS.CREATE_BOOKING}/?bookingId=${element.bookingId}`)}>
 						Finish booking
 					</span>
 				</td>
@@ -53,7 +52,7 @@ const Bookings = () => {
 						<td>{element.bookingStatus}</td>
 						<td>£{element.rate}</td>
 						{[minWindow, maxWindow].includes(NaN) ? <td>Estimating</td> : <td>{`${minWindow} - ${maxWindow} hours`}</td>}
-						<td>{element.carrierInfo?.name || "-"}</td>
+						<td>{element.carrierInfo?.name || '-'}</td>
 						<td role='button'>
 							<span className='text-secondary' onClick={() => router.push(`${PATHS.SHIPMENTS}/${element.shipmentId}`)}>
 								View in shipments

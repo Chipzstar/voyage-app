@@ -9,6 +9,7 @@ import { countries, notifyError, notifySuccess } from '@voyage-app/shared-utils'
 import { SelectInputData } from '@voyage-app/shared-types';
 import { Check, X } from 'tabler-icons-react';
 import { useInterval } from '@mantine/hooks';
+import SortCodeInput from '../../components/SortCodeInput';
 
 const formatAccNumber = (accNumber: string): string => (accNumber ? '****' + accNumber : undefined);
 
@@ -48,7 +49,6 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 	const handleSubmit = useCallback(
 		async values => {
 			setLoading(true);
-			values.sortCode = formatCode(values.sortCode);
 			let payload = { ...values, accountId: carrierInfo?.stripe.accountId, status: carrierInfo.status };
 			try {
 				await dispatch(createBankAccount(payload)).unwrap();
@@ -82,16 +82,31 @@ const Financial = ({ carrierInfo, nextTab }: FinancialProps) => {
 							<Stack className='md:w-196'>
 								<TextInput required label='Account Holder Name' radius={0} {...form.getInputProps('accountHolderName')} />
 								<Group grow>
-									<TextInput
+									<div>
+										<SortCodeInput
+											onChange={event => {
+												console.log(event.currentTarget.value);
+												form.setFieldValue('sortCode', event.currentTarget.value);
+											}}
+											value={form.values.sortCode}
+											required={!bankAccount}
+											disabled={!!bankAccount}
+										/>
+									</div>
+									{/*<TextInput
 										required={!bankAccount}
 										disabled={!!bankAccount}
 										label='Sort Code'
 										radius={0}
-										minLength={6}
-										maxLength={6}
+										minLength={8}
+										maxLength={8}
 										value={form.values.sortCode}
-										onChange={event => form.setFieldValue('sortCode', event.currentTarget.value)}
-									/>
+										onKeyDown={event => event.key === "Backspace"}
+										onChange={event => {
+											console.log(event)
+											form.setFieldValue('sortCode', formatCode(event.currentTarget.value))
+										}}
+									/>*/}
 									<TextInput required={!bankAccount} disabled={!!bankAccount} label='Account Number' radius={0} minLength={8} {...form.getInputProps('last4')} />
 								</Group>
 								<Group grow>
