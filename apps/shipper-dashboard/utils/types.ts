@@ -87,7 +87,8 @@ export interface Booking {
 	id: string;
 	shipperId: string;
 	bookingId: string;
-	createdAt: UnixTimestamp;
+	createdAt?: UnixTimestamp;
+	updatedAt?: UnixTimestamp;
 	serviceType: SERVICE_TYPE;
 	shipmentType: SHIPMENT_TYPE;
 	schedulingType: SCHEDULING_TYPE;
