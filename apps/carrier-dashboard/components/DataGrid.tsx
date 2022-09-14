@@ -1,8 +1,7 @@
 import React from 'react';
 import { MantineNumberSize, Pagination, Table } from '@mantine/core';
 import EmptyTable from './EmptyTable';
-import useTable from '../hooks/useTable';
-import useWindowSize from '../hooks/useWindowSize';
+import { useTable, useWindowSize } from '@voyage-app/shared-ui-hooks';
 
 export interface DataGridProps {
 	rows: JSX.Element[];

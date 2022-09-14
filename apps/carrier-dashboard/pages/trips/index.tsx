@@ -35,10 +35,18 @@ const trips = () => {
 					<Tabs.Tab value={TAB_LABELS.LATE}>Late</Tabs.Tab>
 				</Tabs.List>
 
-				<Tabs.Panel value={TAB_LABELS.UPCOMING}><Trips loads={loads} statuses={[STATUS.NEW, STATUS.PENDING]} message={<span className="text-center text-2xl">You have no upcoming loads!</span>} /></Tabs.Panel>
-				<Tabs.Panel value={TAB_LABELS.IN_TRANSIT}><Trips loads={loads} statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]} message={<span className="text-center text-2xl">You have no loads in-transit</span>} /></Tabs.Panel>
-				<Tabs.Panel value={TAB_LABELS.COMPLETED}><Trips loads={loads} statuses={[STATUS.COMPLETED]} message={<span className="text-center text-2xl">You have no completed trips</span>}/></Tabs.Panel>
-				<Tabs.Panel value={TAB_LABELS.LATE}><Trips loads={loads} statuses={[]} message={<span className="text-center text-2xl">All your trips are on schedule!</span>}/></Tabs.Panel>
+				<Tabs.Panel value={TAB_LABELS.UPCOMING}>
+					<Trips loads={loads} statuses={[STATUS.NEW, STATUS.PENDING]} message={<span className="text-center text-2xl">You have no upcoming loads!</span>} />
+				</Tabs.Panel>
+				<Tabs.Panel value={TAB_LABELS.IN_TRANSIT}>
+					<Trips loads={loads} statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]} message={<span className="text-center text-2xl">You have no loads in-transit</span>} />
+				</Tabs.Panel>
+				<Tabs.Panel value={TAB_LABELS.COMPLETED}>
+					<Trips loads={loads} statuses={[STATUS.COMPLETED]} message={<span className="text-center text-2xl">You have no completed trips</span>}/>
+				</Tabs.Panel>
+				<Tabs.Panel value={TAB_LABELS.LATE}>
+					<Trips loads={loads} statuses={[]} message={<span className="text-center text-2xl">All your trips are on schedule!</span>}/>
+				</Tabs.Panel>
 			</Tabs>
 		</PageContainer>
 	);

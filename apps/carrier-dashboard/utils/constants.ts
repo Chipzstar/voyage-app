@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { ChargeUnitType, INVOICE_STATUS, RateChargeRules, Settings, ActivationStatus } from './types';
+import { ChargeUnitType, INVOICE_STATUS, RateChargeRules, Settings, ActivationStatus, TabInfo } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
 import { PhoneNumberUtil } from 'google-libphonenumber';
@@ -42,22 +42,31 @@ export const PATHS = {
 	FUEL_REPORT: '/reports/fuel'
 };
 
-export const SETTINGS_TABS = [
+export const SETTINGS_TABS : TabInfo[] = [
 	{
 		value: ActivationStatus.COMPANY_INFO,
-		label: 'Organisation'
-	},
-	{
-		value: ActivationStatus.WORKFLOWS,
-		label: 'Workflows'
-	},
-	{
-		value: ActivationStatus.BANK_ACCOUNT,
-		label: 'Financial'
+		label: 'Organisation',
+		order: 1,
+		required: true
 	},
 	{
 		value: ActivationStatus.DOCUMENTS,
-		label: 'Documents'
+		label: 'Documents',
+		order: 2,
+		required: true
+	},
+	{
+		value: ActivationStatus.WORKFLOWS,
+		label: 'Workflows',
+		order: 3,
+		required: true
+	},
+	{
+		value: ActivationStatus.BANK_ACCOUNT,
+		label: 'Financial',
+		order: 4,
+		required: false
+
 	}
 ];
 

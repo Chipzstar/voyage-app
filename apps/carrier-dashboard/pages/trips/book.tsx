@@ -63,7 +63,7 @@ const QuoteEstimate = ({
 		>
 			<Paper radius='md' p='md'>
 				<Text size='lg'>
-					We will charge {load?.customer?.company} £{Number(newRate)} for this load
+					You will charge {load?.customer?.company} £{Number(newRate)} for this load
 				</Text>
 				<Text color='dimmed' size='xs' className='flex w-72 flex-wrap'>
 					Click "Confirm" to charge this rate, otherwise enter a new value using the form below
