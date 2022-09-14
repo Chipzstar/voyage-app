@@ -7,7 +7,6 @@ export const IntercomProvider = ({ session, children }) => {
 	const router = useRouter();
 
 	if (typeof window !== 'undefined') {
-		console.log(process.env.NEXT_PUBLIC_INTERCOM_APP_ID);
 		loadIntercom({
 			appId: process.env.NEXT_PUBLIC_INTERCOM_APP_ID, // default : ''
 			name: session?.user.name,
