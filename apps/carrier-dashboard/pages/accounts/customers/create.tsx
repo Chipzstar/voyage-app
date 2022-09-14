@@ -12,7 +12,6 @@ import { alphanumericId, capitalize, notifyError, notifySuccess, sanitize } from
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { createCustomer, setCustomers, updateCustomer, useCustomers } from '../../../store/feature/customerSlice';
-import useWindowSize from '../../../hooks/useWindowSize';
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
 import { AppDispatch, wrapper } from '../../../store';
 import { unstable_getServerSession } from 'next-auth';
@@ -20,6 +19,7 @@ import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
 import { fetchCustomers, fetchProfile } from '../../../utils/functions';
+import { useWindowSize } from '@voyage-app/shared-ui-hooks';
 
 const emptyContact: Contact = {
 	name: '',

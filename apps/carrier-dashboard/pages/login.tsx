@@ -123,7 +123,6 @@ const login = ({ csrfToken, ...props }) => {
 export async function getServerSideProps({ req, res }) {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
-	console.log(session);
 	if (session?.user) {
 		return {
 			redirect: {
@@ -134,6 +133,13 @@ export async function getServerSideProps({ req, res }) {
 	}
 	const csrfToken = await getCsrfToken();
 	const users = await prisma.user.findMany({
+		where: {
+			carrierId: {
+				is: {
+					carrierId: {}
+				}
+			}
+		},
 		select: {
 			email: true,
 			password: true

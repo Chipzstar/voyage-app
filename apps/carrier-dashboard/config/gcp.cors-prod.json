@@ -4,5 +4,11 @@
 		"method": ["GET", "POST", "PUT", "DELETE"],
 		"responseHeader": ["Content-Type"],
 		"maxAgeSeconds": 3600
+	},
+	{
+		"origin": ["https://carrier.usevoyage.com"],
+		"method": ["GET", "POST", "PUT", "DELETE"],
+		"responseHeader": ["Content-Type"],
+		"maxAgeSeconds": 3600
 	}
 ]

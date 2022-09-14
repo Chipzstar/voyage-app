@@ -55,7 +55,7 @@ const Sidebar = () => {
                 className='flex items-center p-4 text-base font-normal text-gray-900 hover:bg-secondary-100'
                 onClick={() => {
                     dispatch({ type: 'RESET' })
-                    signOut({ callbackUrl: `${window.location.origin}/login` }).then(r  => console.log("Sign Out Success!"))
+                    signOut().then(r  => console.log("Sign Out Success!"))
                 }}
             >
                 <Logout size={30} strokeWidth={1} color={'black'}/>

@@ -1,14 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Badge, Button, Container, Group, Loader, Paper, Radio, ScrollArea, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
+import React, { forwardRef, useCallback, useRef, useState } from 'react';
+import { Badge, Button, Container, Group, Loader, Paper, Popover, Radio, ScrollArea, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { Check, Note, Upload, X } from 'tabler-icons-react';
 import { uploadFile } from '../../utils/functions';
-import { Carrier, Document, DocumentType, NewDocument, ActivationStatus } from '../../utils/types';
+import { ActivationStatus, Carrier, Document, DocumentType, NewDocument } from '../../utils/types';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { createDocument, deleteDocument } from '../../store/feature/documentSlice';
-import AccountActivation from '../../modals/AccountActivation';
 import { updateCarrier } from '../../store/feature/profileSlice';
 import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { useModals } from '@mantine/modals';
@@ -46,15 +45,15 @@ const DocumentInfo = ({ fileInfo }: { fileInfo: File | null }) => {
 interface DocumentsProps {
 	carrierInfo: Carrier;
 	documents: Document[];
+	nextTab: () => void;
 }
 
-const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
+const Documents = forwardRef<HTMLDivElement, DocumentsProps>(({ carrierInfo, documents, nextTab }, ref) => {
 	const modals = useModals();
 	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(false);
-	const [activation, setActivation] = useState(false);
 	const theme = useMantineTheme();
-	const { height } = useViewportSize()
+	const { height } = useViewportSize();
 	const dropzoneRef = useRef<HTMLDivElement>(null);
 
 	const openConfirmModal = (doc: Document) =>
@@ -111,10 +110,10 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 							setLoading(false);
 							// if all 3 document types are uploaded and user account still not fully activated
 							if (documents.length >= 2 && carrierInfo.status !== ActivationStatus.COMPLETE) {
-								// set carrier activation status to "COMPLETE"
-								dispatch(updateCarrier({ ...carrierInfo, status: ActivationStatus.COMPLETE }))
+								// set carrier activation status to "WORKFLOWS"
+								dispatch(updateCarrier({ ...carrierInfo, status: ActivationStatus.WORKFLOWS }))
 									.unwrap()
-									.then(() => setActivation(true));
+									.then(() => nextTab());
 							}
 						})
 						.catch(err => {
@@ -130,14 +129,8 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 		[documents, carrierInfo]
 	);
 
-	useEffect(() => {
-		console.log("useEffect Documents:", carrierInfo)
-	}, [carrierInfo]);
-
-
 	return (
-		<Container fluid className='tab-container bg-voyage-background'>
-			<AccountActivation opened={activation} onClose={() => setActivation(false)} />
+		<Container ref={ref} fluid className='tab-container bg-voyage-background'>
 			<div className='grid h-full grid-cols-3 gap-x-10 px-4 py-6'>
 				<section>
 					<header className='page-header mb-3'>Your Documents</header>
@@ -194,24 +187,9 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 					<header className='page-header mb-6'>Upload Documents</header>
 					<Stack className='w-full'>
 						<Radio.Group label='Select the type of document to upload' description='You must upload one of each document type before creating loads.' required className='w-full' {...form.getInputProps('documentType')}>
-							<Radio
-								disabled={documents.some(doc => doc.type === DocumentType.UK_HGV_OPERATORS_LICENSE)}
-								key={0}
-								value={DocumentType.UK_HGV_OPERATORS_LICENSE}
-								label='UK HGV Operators Licence'
-							/>
-							<Radio
-								disabled={documents.some(doc => doc.type === DocumentType.GOODS_IN_TRANSIT_INSURANCE)}
-								key={1}
-								value={DocumentType.GOODS_IN_TRANSIT_INSURANCE}
-								label='Goods in Transit insurance'
-							/>
-							<Radio
-								disabled={documents.some(doc => doc.type === DocumentType.LIABILITY_INSURANCE)}
-								key={2}
-								value={DocumentType.LIABILITY_INSURANCE}
-								label='Liability Insurance'
-							/>
+							<Radio disabled={documents.some(doc => doc.type === DocumentType.UK_HGV_OPERATORS_LICENSE)} key={0} value={DocumentType.UK_HGV_OPERATORS_LICENSE} label='UK HGV Operators Licence' />
+							<Radio disabled={documents.some(doc => doc.type === DocumentType.GOODS_IN_TRANSIT_INSURANCE)} key={1} value={DocumentType.GOODS_IN_TRANSIT_INSURANCE} label='Goods in Transit insurance' />
+							<Radio disabled={documents.some(doc => doc.type === DocumentType.LIABILITY_INSURANCE)} key={2} value={DocumentType.LIABILITY_INSURANCE} label='Liability Insurance' />
 						</Radio.Group>
 
 						<Dropzone
@@ -244,23 +222,47 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 						</Dropzone>
 					</Stack>
 					<Group my={10} py={10} position='center'>
-						<Button
-							disabled={!form.values.file}
-							type='submit'
-							size="md"
-							classNames={{
-								root: `bg-secondary ${form.values.file && 'hover:bg-secondary-600'}`
-							}}
-						>
+						<Button disabled={!form.values.file} type='submit' color='green' size='md' classNames={{
+							root: `bg-green-500 hover:bg-green-600`
+						}}>
 							<Loader size='sm' className={`mr-3 ${!loading && 'hidden'}`} />
 							<span>Upload</span>
 						</Button>
+						{carrierInfo.status !== ActivationStatus.COMPLETE && (
+							<Popover opened transition='fade' transitionDuration={500} position='bottom' withArrow shadow='md'>
+								<Popover.Target>
+									<Button
+										disabled={documents.length < 3}
+										type='button'
+										size='md'
+										classNames={{
+											root: `bg-secondary ${form.values.file && 'hover:bg-secondary-600'}`
+										}}
+										onClick={() =>
+											dispatch(
+												updateCarrier({
+													...carrierInfo,
+													status: ActivationStatus.WORKFLOWS
+												})
+											)
+												.unwrap()
+												.then(() => nextTab())
+										}
+									>
+										<span>Save Changes</span>
+									</Button>
+								</Popover.Target>
+								<Popover.Dropdown>
+									<Text size='sm'>Click "Save Changes" to continue</Text>
+								</Popover.Dropdown>
+							</Popover>
+						)}
 					</Group>
 				</form>
 			</div>
 		</Container>
 	);
-};
+});
 
 Documents.propTypes = {};
 

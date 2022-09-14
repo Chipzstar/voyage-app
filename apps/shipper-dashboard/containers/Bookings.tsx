@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DataGrid from '../components/DataGrid';
 import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
@@ -26,6 +26,7 @@ const Bookings = () => {
 	const router = useRouter();
 	const bookings = useSelector(useBooking)
 	const shipments = useSelector(useShipments)
+	const [activePage, setPage] = useState(1);
 
 	const rows = bookings
 		.map((element: Booking) => (
@@ -65,7 +66,7 @@ const Bookings = () => {
 
 	return (
 		<div className='py-5 flex flex-col grow'>
-			<DataGrid rows={rows} headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']} emptyContent={<Empty />} />
+			<DataGrid activePage={activePage} setPage={setPage} offset={100} rows={rows} headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']} emptyContent={<Empty />} />
 		</div>
 	);
 };

@@ -367,3 +367,11 @@ export interface NewDocument {
 	documentType: string;
 	file: File | null;
 }
+
+export interface TabInfo {
+	value: ActivationStatus;
+	label: string;
+	order: number;
+	required: boolean;
+
+}
