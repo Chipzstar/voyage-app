@@ -219,6 +219,32 @@ type RateChargeRules {
   WEIGHT   ChargeRule
   PACKAGE  ChargeRule
 }
+model Booking {
+  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
+  shipper            Shipper             @relation(fields: [shipperId], references: [id])
+  shipperId          String              @db.ObjectId
+  bookingId          String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  serviceType        SERVICE_TYPE
+  schedulingType     SCHEDULING_TYPE
+  shipmentType       SHIPMENT_TYPE
+  activitiesRequired SHIPMENT_ACTIVITY[]
+  internalPONumber   String?             @default("")
+  customerPONumber   String?             @default("")
+  weight             Int
+  quantity           Int
+  height             Int
+  length             Int
+  width              Int
+  packageType        PACKAGE_TYPE
+  pickupDate         Int                 @db.Long
+  pickupLocation     String
+  deliveryLocation   String
+  description        String
+  status             String
+  notes              String?
+}
 enum LocationType {
   WAREHOUSE
   STORE
@@ -328,6 +354,7 @@ model Shipper {
   phone     String
   stripe    ShipperStripe?
   shipment  Shipment[]
+  booking   Booking[]
   location  Location[]
 }
 enum ActivationStatus {

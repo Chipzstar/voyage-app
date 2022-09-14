@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Badge, Button, Container, Group, Loader, Paper, Radio, ScrollArea, SimpleGrid, Stack, Text, useMantineTheme } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
@@ -129,6 +129,11 @@ const Documents = ({ carrierInfo, documents }: DocumentsProps) => {
 		},
 		[documents, carrierInfo]
 	);
+
+	useEffect(() => {
+		console.log("useEffect Documents:", carrierInfo)
+	}, [carrierInfo]);
+
 
 	return (
 		<Container fluid className='tab-container bg-voyage-background'>

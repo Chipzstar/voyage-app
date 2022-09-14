@@ -12,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 		const payload = req.body;
 		console.log('Account Id', accountId);
 		console.log("Payload", payload)
+		console.log('-----------------------------------------------');
 		try {
 			// create bank account token
 			const token = await stripe.tokens.create({
@@ -24,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					account_number: payload.last4,
 				},
 			});
-			console.log("TOKEN", token)
+			console.log("BANK ACCOUNT TOKEN", token)
 			// update stripe bank details
 			const bankAccount = await stripe.accounts.createExternalAccount(<string>accountId, {
 				external_account: token.id
@@ -58,6 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					}
 				});
 				console.log(updatedCarrier)
+				console.log('************************************************');
 				res.status(200).json(updatedCarrier);
 			} else {
 				res.status(400).json({ statusCode: 400, message: "Wrong External Account of type 'card' was created" })

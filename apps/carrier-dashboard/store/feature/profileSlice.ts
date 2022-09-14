@@ -30,6 +30,7 @@ export const updateCarrier = createAsyncThunk('carrier/updateCarrier', async (pa
 export const createBankAccount = createAsyncThunk('carrier/createBankAccount', async (payload : BankAccountForm, thunkAPI) => {
 	try {
 		const { accountId, ...rest} = payload
+		console.log(rest)
 		const carrier = (await axios.post(`/api/stripe/accounts/${accountId}/bank-account`, rest)).data;
 		thunkAPI.dispatch(editCarrier(carrier));
 		return carrier;

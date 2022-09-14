@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 			const bucket = storage.bucket(process.env.GCS_BUCKET_NAME);
 			const file = bucket.file(filepath);
 			const result = await file.delete()
-			console.log(result[0])
+			console.log(result[0].body)
 			res.status(200).json(result)
 		} catch (e) {
 			console.error(e)

@@ -83,9 +83,10 @@ export enum PACKAGE_TYPE {
 	SKIDS = 'SKID',
 }
 
-export interface NewBooking {
+export interface Booking {
 	id: string;
 	shipperId: string;
+	bookingId: string;
 	createdAt: UnixTimestamp;
 	serviceType: SERVICE_TYPE;
 	shipmentType: SHIPMENT_TYPE;
@@ -103,6 +104,7 @@ export interface NewBooking {
 	pickupLocation: string;
 	deliveryLocation: string;
 	description: string;
+	status: string;
 	notes: string;
 }
 
