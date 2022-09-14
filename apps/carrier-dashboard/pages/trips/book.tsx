@@ -94,43 +94,41 @@ const book = props => {
 	const profile = useSelector(useCarrier);
 	const settings = useSelector(useSettings);
 
-	const initialValues: NewBooking = {
-		createdAt: undefined,
-		carrierId: profile?.id,
-		customerId: '',
-		driverId: '',
-		controllerId: '',
-		vehicleType: VEHICLE_TYPES.DRY_VAN,
-		pickupLocation: {
-			street: '',
-			city: '',
-			region: '',
-			postcode: '',
-			country: 'UK',
-			note: ''
+	const form = useForm<NewBooking>({
+		initialValues: {
+			createdAt: undefined,
+			carrierId: profile?.id,
+			customerId: '',
+			driverId: '',
+			controllerId: '',
+			vehicleType: VEHICLE_TYPES.DRY_VAN,
+			pickupLocation: {
+				street: '',
+				city: '',
+				region: '',
+				postcode: '',
+				country: 'UK',
+				note: ''
+			},
+			deliveryLocation: {
+				street: '',
+				city: '',
+				region: '',
+				postcode: '',
+				country: 'UK',
+				note: ''
+			},
+			pickupDate: null,
+			description: '',
+			internalPONumber: '',
+			customerPONumber: '',
+			height: null,
+			length: null,
+			width: null,
+			weight: null,
+			quantity: 1,
+			packageType: PACKAGE_TYPE.PALLET
 		},
-		deliveryLocation: {
-			street: '',
-			city: '',
-			region: '',
-			postcode: '',
-			country: 'UK',
-			note: ''
-		},
-		pickupDate: null,
-		description: '',
-		internalPONumber: '',
-		customerPONumber: '',
-		height: null,
-		length: null,
-		width: null,
-		weight: null,
-		quantity: 1,
-		packageType: PACKAGE_TYPE.PALLET
-	};
-
-	const form = useForm({
-		initialValues,
 		validate: values => ({
 			pickupDate: !values.pickupDate ? 'Please select a date for pickup' : null,
 			vehicleType: !values.vehicleType ? 'Please select the type of vehicle for this load' : null,
@@ -178,12 +176,7 @@ const book = props => {
 			<section className='sticky top-0 z-50 flex items-center space-x-4 bg-white pt-4 pb-8' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
-			<QuoteEstimate
-				opened={suggestedQuote.show}
-				load={suggestedQuote.load}
-				onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))}
-				onSubmit={confirmRate}
-			/>
+			<QuoteEstimate opened={suggestedQuote.show} load={suggestedQuote.load} onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))} onSubmit={confirmRate} />
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 gap-20 lg:grid-cols-4'>
 				<div id='book-form-container' className='col-span-3 flex flex-col space-y-5'>
 					<div id='load-type' className='grid grid-cols-1 gap-6'>

@@ -32,12 +32,15 @@ export function calculateRate(weight, numPallets, miles = 300, rates: RateCharge
 		switch (key) {
 			case ChargeUnitType.DISTANCE:
 				newVal += miles * rate.value;
+				console.log(`Mileage: ${miles} x ${rate.value} = ${newVal}`)
 				return newVal;
 			case ChargeUnitType.WEIGHT:
+				console.log(`Weight: ${weight} x ${rate.value} = ${newVal}`)
 				newVal += weight * rate.value;
 				return newVal;
 			case ChargeUnitType.PACKAGE:
-				newVal += weight * numPallets * rate.value;
+				console.log(`Quantity: ${numPallets} x ${rate.value} = ${newVal}`)
+				newVal += numPallets * rate.value;
 				return newVal;
 			default:
 				return prev;
@@ -48,7 +51,6 @@ export function calculateRate(weight, numPallets, miles = 300, rates: RateCharge
 }
 
 export async function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[], settings: Settings): Promise<Load> {
-	console.log('Rate Rules', settings?.rateChargeRules);
 	const pickup: LoadLocation = {
 		...values.pickupLocation,
 		fullAddress: genFullAddress(values.pickupLocation),
