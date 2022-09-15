@@ -12,19 +12,20 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
 model Account {
-  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.String
-  access_token       String?  @db.String
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.String
-  session_state      String?
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -40,9 +41,9 @@ model Session {
 }
 
 model User {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String   @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -61,548 +62,560 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}type BankAccount {
-    id          String
-    fingerprint String
-    country     String
-    currency    String
-    accountHolderName String
-    last4       String
-    sortCode    String
-    status      String
+}
+type BankAccount {
+  id                String
+  fingerprint       String
+  country           String
+  currency          String
+  accountHolderName String
+  last4             String
+  sortCode          String
+  status            String
 }
 
 type PaymentMethod {
-    id          String
-    brand       String
-    fingerprint String
-    last4       String
-    expMonth    Int
-    expYear     Int
+  id          String
+  brand       String
+  fingerprint String
+  last4       String
+  expMonth    Int
+  expYear     Int
 }
 
 type CarrierStripe {
-    accountId String
-    personId String?
-    paymentMethod PaymentMethod?
-    bankAccount BankAccount?
+  accountId     String
+  personId      String?
+  paymentMethod PaymentMethod?
+  bankAccount   BankAccount?
 }
 
 type ShipperStripe {
-    customerId String
-    paymentMethod PaymentMethod?
+  customerId    String
+  paymentMethod PaymentMethod?
 }
 
 type Address {
-    line1 String
-    line2 String?
-    city String
-    region String?
-    postcode String
-    country String
+  line1    String
+  line2    String?
+  city     String
+  region   String?
+  postcode String
+  country  String
 }
 
 type TimeWindow {
-    start Int @db.Long
-    end Int @db.Long
+  start Int @db.Long
+  end   Int @db.Long
 }
 
 type Dimensions {
-    length Int
-    width Int
-    height Int
+  length Int
+  width  Int
+  height Int
 }
 
 type ShipmentPickup {
-    facilityId String
-    facilityName String
-    fullAddress String
-    line1 String
-    line2 String?
-    city String
-    region String
-    postcode String
-    window TimeWindow
+  facilityId   String
+  facilityName String
+  fullAddress  String
+  line1        String
+  line2        String?
+  city         String
+  region       String
+  postcode     String
+  window       TimeWindow
 }
 
 type ShipmentDelivery {
-    facilityId String
-    facilityName String
-    fullAddress String
-    line1 String
-    line2 String?
-    city String
-    region String
-    postcode String
-    window TimeWindow?
+  facilityId   String
+  facilityName String
+  fullAddress  String
+  line1        String
+  line2        String?
+  city         String
+  region       String
+  postcode     String
+  window       TimeWindow?
 }
 
 type PackageInfo {
-	weight Int
-	quantity Int
-	dimensions Dimensions
-	packageType PACKAGE_TYPE
-	description String
+  weight      Int
+  quantity    Int
+  dimensions  Dimensions
+  packageType PACKAGE_TYPE
+  description String
 }
 
 type ShipperInfo {
-    name String
-    company String
-    email String
-    phone String
+  name    String
+  company String
+  email   String
+  phone   String
 }
 
 type CarrierInfo {
-	name            String
-	driverId        String
-	driverName      String
-	driverPhone     String
-	controllerId    String?
-	controllerName  String?
-	location        Float?[]
-	vehicleType     String?
+  name           String
+  driverId       String
+  driverName     String
+  driverPhone    String
+  controllerId   String?
+  controllerName String?
+  location       Float[]
+  vehicleType    String?
 }
 
 type LocationTimeWindow {
-    h: Int
-    m: Int
+  h Int
+  m Int
 }
 
 type OperatingProps {
-	isActive Boolean
-	open LocationTimeWindow
-	close LocationTimeWindow
+  isActive Boolean
+  open     LocationTimeWindow
+  close    LocationTimeWindow
 }
 
 type OperatingHoursState {
-    facility OperatingProps
+  facility OperatingProps
 }
 
 type Contact {
-    name String
-    email String
-    phone String
-    notes String?
+  name  String
+  email String
+  phone String
+  notes String?
 }
 
 type LoadLocation {
-    fullAddress String
-    street      String
-    city        String
-    region      String?
-    postcode    String
-    country     String
-    note        String?
-    location    Geolocation?
-    window      TimeWindow?
+  fullAddress String
+  street      String
+  city        String
+  region      String?
+  postcode    String
+  country     String
+  note        String?
+  location    Geolocation?
+  window      TimeWindow?
 }
 
 type CustomerInfo {
-    id      String
-    name    String
-    email   String?
-    company String
+  id      String
+  name    String
+  email   String?
+  company String
 }
 
 type DriverInfo {
-    id      String
-    name    String
-    phone   String
+  id    String
+  name  String
+  phone String
 }
 
 type TrackingHistory {
-    status STATUS
-    timestamp Int
+  status    STATUS
+  timestamp Int
 }
 
 enum GEOLOCATION_TYPE {
-    Point
+  Point
 }
 
 type Geolocation {
-   type: GEOLOCATION_TYPE
-   coordinates: Float[]
+  type        GEOLOCATION_TYPE
+  coordinates Float[]
 }
 
 type ChargeRule {
-    active  Boolean
-    value   Float
+  active Boolean
+  value  Float
 }
 
 type RateChargeRules {
-    DISTANCE    ChargeRule
-    WEIGHT      ChargeRule
-    PACKAGE     ChargeRule
-}model Booking {
-    id  String              @id @default(auto()) @map("_id") @db.ObjectId
-    shipper Shipper         @relation(fields: [shipperId], references: [id])
-    shipperId String        @db.ObjectId
-    bookingId String
-    createdAt DateTime      @default(now())
-    updatedAt DateTime      @updatedAt
-    serviceType SERVICE_TYPE
-    schedulingType SCHEDULING_TYPE
-    shipmentType SHIPMENT_TYPE
-    activitiesRequired SHIPMENT_ACTIVITY[]
-    internalPONumber String? @default("")
-    customerPONumber String? @default("")
-    weight Int
-    quantity Int
-    height Int
-    length Int
-    width Int
-    packageType PACKAGE_TYPE
-    pickupDate Int          @db.Long
-    pickupLocation String
-    deliveryLocation String
-    description String
-    status String
-    notes String?
-}enum LocationType {
-    WAREHOUSE
-    STORE
-    LASTMILE_CARRIER
+  DISTANCE ChargeRule
+  WEIGHT   ChargeRule
+  PACKAGE  ChargeRule
+}
+model Booking {
+  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
+  shipper            Shipper             @relation(fields: [shipperId], references: [id])
+  shipperId          String              @db.ObjectId
+  bookingId          String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  serviceType        SERVICE_TYPE
+  schedulingType     SCHEDULING_TYPE
+  shipmentType       SHIPMENT_TYPE
+  activitiesRequired SHIPMENT_ACTIVITY[]
+  internalPONumber   String?             @default("")
+  customerPONumber   String?             @default("")
+  weight             Int
+  quantity           Int
+  height             Int
+  length             Int
+  width              Int
+  packageType        PACKAGE_TYPE
+  pickupDate         Int                 @db.Long
+  pickupLocation     String
+  deliveryLocation   String
+  description        String
+  status             String
+  notes              String?
+}
+enum LocationType {
+  WAREHOUSE
+  STORE
+  LASTMILE_CARRIER
 }
 
 model Location {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
-	locationId String @unique
-	shipper Shipper  @relation(fields: [shipperId], references: [id])
-    shipperId String @db.ObjectId
-	name String
-	createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-	type LocationType
-	line1 String
-	line2 String?
-	city String
-	postcode String
-	region String
-	country String
-	pickupInstructions String?
-	deliveryInstructions String?
-	operatingHours OperatingHoursState[]
-}enum STATUS {
-    NEW
-    PENDING
-    ACCEPTED
-    DISPATCHED
-    AT_PICKUP
-    LOADING
-    EN_ROUTE
-    AT_DROPOFF
-    COMPLETED
-    CANCELLED
+  id                   String                @id @default(auto()) @map("_id") @db.ObjectId
+  locationId           String                @unique
+  shipper              Shipper               @relation(fields: [shipperId], references: [id])
+  shipperId            String                @db.ObjectId
+  name                 String
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  type                 LocationType
+  line1                String
+  line2                String?
+  city                 String
+  postcode             String
+  region               String
+  country              String
+  pickupInstructions   String?
+  deliveryInstructions String?
+  operatingHours       OperatingHoursState[]
+}
+enum STATUS {
+  NEW
+  PENDING
+  ACCEPTED
+  DISPATCHED
+  AT_PICKUP
+  LOADING
+  EN_ROUTE
+  AT_DROPOFF
+  COMPLETED
+  CANCELLED
 }
 
 enum SERVICE_TYPE {
-    W2W
-    D2S
-    D2C
+  W2W
+  D2S
+  D2C
 }
 
 enum SHIPMENT_TYPE {
-    FTL
-    LTL
-    LPS
+  FTL
+  LTL
+  LPS
 }
 
 enum SCHEDULING_TYPE {
-    ONE_TIME
-    RECURRING
+  ONE_TIME
+  RECURRING
 }
 
 enum SHIPMENT_ACTIVITY {
-	NO_PREFERENCE
-	TAIL_LIFT
-	JUMBO_TRAILER
-	FLATBED_TRAILER
+  NO_PREFERENCE
+  TAIL_LIFT
+  JUMBO_TRAILER
+  FLATBED_TRAILER
 }
 
 enum PACKAGE_TYPE {
-	PALLET
-	CRATE
-	BOX
-	CONTAINER
-	SKID
+  PALLET
+  CRATE
+  BOX
+  CONTAINER
+  SKID
 }
 
 model Shipment {
-    id  String @id @default(auto()) @map("_id") @db.ObjectId
-    shipmentId String  @unique
-    shipper Shipper  @relation(fields: [shipperId], references: [id])
-    shipperId String @db.ObjectId
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    bookingStatus String @default("Booked")
-    status STATUS
-    serviceType SERVICE_TYPE
-    schedulingType SCHEDULING_TYPE
-    shipmentType SHIPMENT_TYPE
-    activitiesRequired SHIPMENT_ACTIVITY[]
-    internalPONumber String? @default("")
-    customerPONumber String? @default("")
-    rate Float
-    mileage Float?
-    pickup ShipmentPickup
-    delivery ShipmentDelivery
-    packageInfo PackageInfo
-    shipperInfo ShipperInfo
-    carrierInfo CarrierInfo?
-    trackingHistory TrackingHistory[]
-}model Shipper {
-    id              String @id @default(auto()) @map("_id") @db.ObjectId
-    shipperId       String @unique
-    user            User @relation(fields: [userId], references: [id])
-    userId          String @unique @db.ObjectId
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @updatedAt
-    fullName        String
-    firstname       String
-    lastname        String
-    company         String
-    address         Address
-    email           String
-    phone           String
-    stripe          ShipperStripe?
-    shipment        Shipment[]
-    booking         Booking[]
-    location        Location[]
-}enum ActivationStatus {
-    COMPANY_INFO
-    BANK_ACCOUNT
-    WORKFLOWS
-    DOCUMENTS
-    COMPLETE
+  id                 String              @id @default(auto()) @map("_id") @db.ObjectId
+  shipmentId         String              @unique
+  shipper            Shipper             @relation(fields: [shipperId], references: [id])
+  shipperId          String              @db.ObjectId
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  bookingStatus      String              @default("Booked")
+  status             STATUS
+  serviceType        SERVICE_TYPE
+  schedulingType     SCHEDULING_TYPE
+  shipmentType       SHIPMENT_TYPE
+  activitiesRequired SHIPMENT_ACTIVITY[]
+  internalPONumber   String?             @default("")
+  customerPONumber   String?             @default("")
+  rate               Float
+  mileage            Float?
+  pickup             ShipmentPickup
+  delivery           ShipmentDelivery
+  packageInfo        PackageInfo
+  shipperInfo        ShipperInfo
+  carrierInfo        CarrierInfo?
+  trackingHistory    TrackingHistory[]
+}
+model Shipper {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  shipperId String         @unique
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String         @unique @db.ObjectId
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  fullName  String
+  firstname String
+  lastname  String
+  company   String
+  address   Address
+  email     String
+  phone     String
+  stripe    ShipperStripe?
+  shipment  Shipment[]
+  booking   Booking[]
+  location  Location[]
+}
+enum ActivationStatus {
+  COMPANY_INFO
+  BANK_ACCOUNT
+  WORKFLOWS
+  DOCUMENTS
+  COMPLETE
 }
 
 model Carrier {
-    id          String @id @default(auto()) @map("_id") @db.ObjectId
-    carrierId   String @unique
-    user        User @relation(fields: [userId], references: [id])
-    userId      String @unique @db.ObjectId
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    fullName    String
-    firstname   String
-    lastname    String
-    company     String
-    address     Address
-    email       String
-    phone       String
-    stripe      CarrierStripe?
-    documents   Document[]
-    loads       Load[]
-    drivers     Driver[]
-    members     Member[]
-    vehicles    Vehicle[]
-    customers   Customer[]
-    settings    Settings?
-    status      ActivationStatus?
-}enum AccountType {
-    SMALL_SHIPPER
-    MEDIUM_SHIPPER
-    LARGE_SHIPPER
+  id        String            @id @default(auto()) @map("_id") @db.ObjectId
+  carrierId String            @unique
+  user      User              @relation(fields: [userId], references: [id])
+  userId    String            @unique @db.ObjectId
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  fullName  String
+  firstname String
+  lastname  String
+  company   String
+  address   Address
+  email     String
+  phone     String
+  stripe    CarrierStripe?
+  documents Document[]
+  loads     Load[]
+  drivers   Driver[]
+  members   Member[]
+  vehicles  Vehicle[]
+  customers Customer[]
+  settings  Settings?
+  status    ActivationStatus?
+}
+enum AccountType {
+  SMALL_SHIPPER
+  MEDIUM_SHIPPER
+  LARGE_SHIPPER
 }
 
 model Customer {
-    id  String  @id @default(auto()) @map("_id") @db.ObjectId
-    carrier Carrier @relation(fields: [carrierId], references: [id])
-    carrierId String @db.ObjectId
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    customerId String
-    accountType AccountType
-    companyName String
-    fullName String
-    firstName String?
-    lastName String?
-    email String
-    phone String
-    billingEmail String
-    addressLine1 String
-    addressLine2 String?
-    city String
-    region String?
-    postcode String
-    country String
-    taxIDNumber String?
-    extraContacts Contact[]
-    notes String?
-}enum DocumentType {
-	UK_HGV_OPERATORS_LICENSE
-	GOODS_IN_TRANSIT_INSURANCE
-	LIABILITY_INSURANCE
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  carrier       Carrier     @relation(fields: [carrierId], references: [id])
+  carrierId     String      @db.ObjectId
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  customerId    String
+  accountType   AccountType
+  companyName   String
+  fullName      String
+  firstName     String?
+  lastName      String?
+  email         String
+  phone         String
+  billingEmail  String
+  addressLine1  String
+  addressLine2  String?
+  city          String
+  region        String?
+  postcode      String
+  country       String
+  taxIDNumber   String?
+  extraContacts Contact[]
+  notes         String?
+}
+enum DocumentType {
+  UK_HGV_OPERATORS_LICENSE
+  GOODS_IN_TRANSIT_INSURANCE
+  LIABILITY_INSURANCE
 }
 
 model Document {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
-    carrier     Carrier @relation(fields: [carrierId], references: [id])
-    carrierId   String @db.ObjectId
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    type        DocumentType
-    filename    String
-    filepath    String
-    location    String
-    status      String
-    verified    Boolean
-}enum DriverStatus {
-    OFFLINE
-    AVALIABLE
-    BUSY
-    UNVERIFIED
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  carrier   Carrier      @relation(fields: [carrierId], references: [id])
+  carrierId String       @db.ObjectId
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  type      DocumentType
+  filename  String
+  filepath  String
+  location  String
+  status    String
+  verified  Boolean
+}
+enum DriverStatus {
+  OFFLINE
+  AVALIABLE
+  BUSY
+  UNVERIFIED
 }
 
 model Driver {
-    id  String   @id @default(auto()) @map("_id") @db.ObjectId
-    carrier Carrier @relation(fields: [carrierId], references: [id])
-    carrierId String @db.ObjectId
-    driverId String
-    vehicle Vehicle @relation(fields: [vehicleId], references: [id])
-    vehicleId String @unique @db.ObjectId
-    fullName String
-    firstName String
-    lastName String
-    email String
-    dob Int? @db.Long
-    defaultPhone String
-    primaryPhone String
-    secondaryPhone String?
-    companyName String
-    hireDate Int? @db.Long
-    isActive Boolean
-    addressLine1 String
-    addressLine2 String?
-    city String
-    region String?
-    postcode String
-    fleetId String?
-    notes String?
-    status DriverStatus
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  carrier        Carrier      @relation(fields: [carrierId], references: [id])
+  carrierId      String       @db.ObjectId
+  driverId       String
+  vehicle        Vehicle      @relation(fields: [vehicleId], references: [id])
+  vehicleId      String       @unique @db.ObjectId
+  fullName       String
+  firstName      String
+  lastName       String
+  email          String
+  dob            Int?         @db.Long
+  defaultPhone   String
+  primaryPhone   String
+  secondaryPhone String?
+  companyName    String
+  hireDate       Int?         @db.Long
+  isActive       Boolean
+  addressLine1   String
+  addressLine2   String?
+  city           String
+  region         String?
+  postcode       String
+  fleetId        String?
+  notes          String?
+  status         DriverStatus
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
+
 enum HamzatType {
-    NONE
-    EXPLOSIVES
-    GASES
-    FLAMMABLE_LIQUIDS
-    FLAMMABLE_SOLIDS
-    OXIDIZERS
-    TOXIC_SUBSTANCE
-    INFECTIOUS_SUBSTANCE
-    RADIOACTIVE_MATERIA
-    CORROSIVE_SUBSTANCE
-    MISC_DANGEROUS
+  NONE
+  EXPLOSIVES
+  GASES
+  FLAMMABLE_LIQUIDS
+  FLAMMABLE_SOLIDS
+  OXIDIZERS
+  TOXIC_SUBSTANCE
+  INFECTIOUS_SUBSTANCE
+  RADIOACTIVE_MATERIA
+  CORROSIVE_SUBSTANCE
+  MISC_DANGEROUS
 }
 
 model Load {
-    id  String @id @default(auto()) @map("_id") @db.ObjectId
-    loadId String  @unique
-    carrier Carrier @relation(fields: [carrierId], references: [id])
-    carrierId String @db.ObjectId
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    source String
-    status STATUS
-    internalPONumber String? @default("")
-    customerPONumber String? @default("")
-    rate Float
-    mileage Float?
-    pickup LoadLocation
-    delivery LoadLocation
-    packageInfo PackageInfo
-    carrierInfo CarrierInfo?
-    hamzat HamzatType?
-    vehicleType VehicleType
-    customer CustomerInfo
-    driver DriverInfo
-    trackingHistory TrackingHistory[]
-}enum TeamRole {
-	ADMIN
-	CONTROLLER
-	SECRETARY
-	FLEET_MANAGER
-	COORDINATOR
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  loadId           String            @unique
+  carrier          Carrier           @relation(fields: [carrierId], references: [id])
+  carrierId        String            @db.ObjectId
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  source           String
+  status           STATUS
+  internalPONumber String?           @default("")
+  customerPONumber String?           @default("")
+  rate             Float
+  mileage          Float?
+  pickup           LoadLocation
+  delivery         LoadLocation
+  packageInfo      PackageInfo
+  carrierInfo      CarrierInfo?
+  hamzat           HamzatType?
+  vehicleType      VehicleType
+  customer         CustomerInfo
+  driver           DriverInfo
+  trackingHistory  TrackingHistory[]
+}
+enum TeamRole {
+  ADMIN
+  CONTROLLER
+  SECRETARY
+  FLEET_MANAGER
+  COORDINATOR
 }
 
 model Member {
-    id  String  @id @default(auto()) @map("_id") @db.ObjectId
-    carrier Carrier @relation(fields: [carrierId], references: [id])
-    carrierId String @db.ObjectId
-    memberId String
-    fullName String
-    firstName String
-    lastName String
-    email String
-    phone String
-    role TeamRole
-    isActive Boolean
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}enum ChargeUnitTypes {
-    DISTANCE
-    WEIGHT
-    QUANTITY
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  carrier   Carrier  @relation(fields: [carrierId], references: [id])
+  carrierId String   @db.ObjectId
+  memberId  String
+  fullName  String
+  firstName String
+  lastName  String
+  email     String
+  phone     String
+  role      TeamRole
+  isActive  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+enum ChargeUnitTypes {
+  DISTANCE
+  WEIGHT
+  QUANTITY
 }
 
 model Settings {
-    id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-    carrier             Carrier @relation(fields: [carrierId], references: [id])
-    carrierId           String @db.ObjectId @unique
-    rateChargeRules     RateChargeRules
-}enum VehicleStatus {
-    IDLE
-	OCCUPIED
-	ON_THE_ROAD
-	FULL_CAPACITY
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  carrier         Carrier         @relation(fields: [carrierId], references: [id])
+  carrierId       String          @unique @db.ObjectId
+  rateChargeRules RateChargeRules
+}
+enum VehicleStatus {
+  IDLE
+  OCCUPIED
+  ON_THE_ROAD
+  FULL_CAPACITY
 }
 
 enum VehicleType {
-    DRY_VAN
-    TAIL_LIFT
-    JUMBO_TRAILER
-    FLATBED_TRAILER
-    STEP_DECK_TRAILER
-    ARCTIC_TRUCK
-    OTHER
+  DRY_VAN
+  TAIL_LIFT
+  JUMBO_TRAILER
+  FLATBED_TRAILER
+  STEP_DECK_TRAILER
+  ARCTIC_TRUCK
 }
 
 enum FuelType {
-	PETROL
-	DIESEL
-	ELECTRIC
-	HYBRID
-	ALTERNATIVE
+  PETROL
+  DIESEL
+  ELECTRIC
+  HYBRID
+  ALTERNATIVE
 }
 
 enum FuelMeasurementUnit {
-	LITRE
-	GALLON
+  LITRE
+  GALLON
 }
 
 model Vehicle {
-    id  String   @id @default(auto()) @map("_id") @db.ObjectId
-    carrier Carrier @relation(fields: [carrierId], references: [id])
-    carrierId String @db.ObjectId
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    vehicleId String
-    currentDriver Driver?
-    vehicleType VehicleType
-    vehicleName String
-    regNumber String
-    vin String
-    engineNumber String?
-    yearOfManufacture String
-    colour String
-    fuelType FuelType
-    fuelMeasurementUnit FuelMeasurementUnit
-    image String?
-    dimensions Dimensions
-    make String
-    model String
-    notes String?
-    status VehicleStatus
+  id                  String              @id @default(auto()) @map("_id") @db.ObjectId
+  carrier             Carrier             @relation(fields: [carrierId], references: [id])
+  carrierId           String              @db.ObjectId
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  vehicleId           String
+  currentDriver       Driver?
+  vehicleType         VehicleType
+  vehicleName         String
+  regNumber           String
+  vin                 String
+  engineNumber        String?
+  yearOfManufacture   String
+  colour              String
+  fuelType            FuelType
+  fuelMeasurementUnit FuelMeasurementUnit
+  image               String?
+  dimensions          Dimensions
+  make                String
+  model               String
+  notes               String?
+  status              VehicleStatus
 }

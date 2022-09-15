@@ -3,7 +3,7 @@ import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
 import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
-import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-app/shared-types';
+import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
 import { capitalize, checkWithinTimeRange, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
 import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, MultiSelect, Select, SimpleGrid, Text } from '@mantine/core';
@@ -13,7 +13,7 @@ import ContentContainer from '../../layout/ContentContainer';
 import PageNav from '../../layout/PageNav';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, wrapper } from '../../store';
-import { setShipments, updateShipment, useNewShipments } from '../../store/feature/shipmentSlice';
+import { getMarketplaceShipments, setShipments, updateShipment, useNewShipments } from '../../store/feature/shipmentSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
@@ -30,7 +30,7 @@ import _ from 'lodash';
 import { Load } from '../../utils/types';
 import { setCarrier } from '../../store/feature/profileSlice';
 import { useRouter } from 'next/router';
-import { useListState } from '@mantine/hooks';
+import { useInterval, useListState } from '@mantine/hooks';
 
 const items = [
 	{ title: 'Home', href: '/' },
@@ -51,15 +51,16 @@ interface FilterFormProps {
 
 const marketplace = ({ session }) => {
 	const router = useRouter();
+	const dispatch = useDispatch<AppDispatch>();
 	const [loading, setLoading] = useState(false);
 	const [reviewModal, showReviewModal] = useState(false);
 	const [assignmentModal, showAssignmentModal] = useState(false);
 	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
 	const shipments = useSelector(useNewShipments);
-	const [filteredShipments, handlers] = useListState([...shipments]);
+	const [filtered, handlers] = useListState([...shipments]);
+	const subscriber = useInterval(() => dispatch(getMarketplaceShipments()).unwrap().then((shipments) => handlers.setState(shipments)), 5000);
 	const drivers = useSelector(useDrivers);
 	const members = useSelector(useMembers);
-	const dispatch = useDispatch<AppDispatch>();
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
@@ -134,8 +135,13 @@ const marketplace = ({ session }) => {
 				})
 			);
 		}, 300),
-		[filteredShipments]
+		[filtered]
 	);
+
+	useEffect(() => {
+		subscriber.start()
+		return subscriber.stop
+	}, []);
 
 	useEffect(() => {
 		return () => debouncedSearch.cancel();
@@ -144,14 +150,6 @@ const marketplace = ({ session }) => {
 	useEffect(() => {
 		debouncedSearch(form.values);
 	}, [form.values]);
-
-	useEffect(() => {
-		console.log("Booked Shipments", shipments.reduce((prev, curr) => curr.status !== STATUS.NEW ? prev + 1 : prev, 0))
-	}, [shipments]);
-
-	useEffect(() => {
-		console.log("Booked filtered Shipments", filteredShipments.reduce((prev, curr) => curr.status !== STATUS.NEW ? prev + 1 : prev, 0))
-	}, [filteredShipments]);
 
 	return (
 		<ContentContainer>
@@ -199,7 +197,7 @@ const marketplace = ({ session }) => {
 				/>
 				<MultiSelect
 					placeholder='All equipments'
-					data={Object.values(SHIPMENT_ACTIVITY).map(
+					data={Object.values(VEHICLE_TYPES).map(
 						(item): SelectInputData => ({
 							value: item,
 							label: capitalize(item.replace(/_/g, ' '))
@@ -215,12 +213,12 @@ const marketplace = ({ session }) => {
 			</form>
 			<div className='mb-5 space-y-3'>
 				<header className='page-subheading'>
-					<Pluralize singular={'Load'} count={filteredShipments.length ?? 0} /> available for you
+					<Pluralize singular={'Load'} count={filtered.length ?? 0} /> available for you
 				</header>
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
-				{filteredShipments.map((shipment: Shipment, index) => (
+				{filtered.map((shipment: Shipment, index) => (
 					<main key={index} className='border-voyage-grey space-y-3 border p-3'>
 						<section className='flex space-x-8'>
 							<div className='flex flex-col flex-wrap space-y-1'>

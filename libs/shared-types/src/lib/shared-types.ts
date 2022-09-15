@@ -1,6 +1,7 @@
 export interface SelectInputData {
 	value: string;
-	label: string
+	label: string;
+	disabled?: boolean;
 }
 
 export type DateRange = [Date | null, Date | null]
@@ -92,12 +93,26 @@ export enum SCHEDULING_TYPE {
 	RECURRING = 'RECURRING'
 }
 
-export enum SHIPMENT_ACTIVITY {
-	NO_PREFERENCE= 'NO_PREFERENCE',
+export enum VEHICLE_TYPES {
+	DRY_VAN = 'DRY_VAN',
 	TAIL_LIFT = 'TAIL_LIFT',
 	JUMBO_TRAILER = 'JUMBO_TRAILER',
-	FLATBED_TRAILER = 'FLATBED_TRAILER'
+	FLATBED_TRAILER = 'FLATBED_TRAILER',
+	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
+	ARCTIC_TRUCK = 'ARCTIC_TRUCK'
 }
+
+export enum SHIPMENT_ACTIVITY {
+	NO_PREFERENCE = 'NO_PREFERENCE',
+	DRY_VAN = 'DRY_VAN',
+	TAIL_LIFT = 'TAIL_LIFT',
+	JUMBO_TRAILER = 'JUMBO_TRAILER',
+	FLATBED_TRAILER = 'FLATBED_TRAILER',
+	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
+	ARCTIC_TRUCK = 'ARCTIC_TRUCK',
+}
+
+export type VehicleOnly = Exclude<SHIPMENT_TYPE, "NO_PREFERENCE">
 
 export enum PACKAGE_TYPE {
 	PALLET = 'PALLET',
@@ -119,16 +134,6 @@ export enum HAZMAT_TYPES {
 	RADIOACTIVE_MATERIAL = 'Class 7: Radioactive material',
 	CORROSIVE_SUBSTANCE = 'Class 8: Corrosive material',
 	MISC_DANGEROUS = 'Class 9: Miscellaneous dangerous goods'
-}
-
-export enum VEHICLE_TYPES {
-	DRY_VAN = 'DRY_VAN',
-	TAIL_LIFT = 'TAIL_LIFT',
-	JUMBO_TRAILER = 'JUMBO_TRAILER',
-	FLATBED_TRAILER = 'FLATBED_TRAILER',
-	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
-	ARCTIC_TRUCK = 'ARCTIC_TRUCK',
-	OTHER = 'OTHER'
 }
 
 export enum LocationType {

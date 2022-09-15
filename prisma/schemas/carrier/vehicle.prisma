@@ -12,7 +12,6 @@ enum VehicleType {
     FLATBED_TRAILER
     STEP_DECK_TRAILER
     ARCTIC_TRUCK
-    OTHER
 }
 
 enum FuelType {

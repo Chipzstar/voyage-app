@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { showNotification } from '@mantine/notifications';
 import { Client, TravelMode, UnitSystem } from '@googlemaps/google-maps-services-js';
-import { DateRange, UnixTimestamp, Geolocation, LoadLocation } from '@voyage-app/shared-types';
+import { DateRange, UnixTimestamp, Geolocation, LoadLocation, Shipment } from '@voyage-app/shared-types';
 import { PLACE_TYPES } from './shared-constants';
 
 const GMapsClient = new Client();
@@ -45,7 +45,7 @@ export function isValidUrl(urlString) {
 	}
 
 }
-export async function fetchShipments(shipperId, prisma) {
+export async function fetchShipments(shipperId, prisma): Promise<Shipment[]> {
 	let shipments = await prisma.shipment.findMany({
 		where: {
 			shipperId: {

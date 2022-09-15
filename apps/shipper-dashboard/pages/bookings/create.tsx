@@ -4,7 +4,7 @@ import { useForm } from '@mantine/form';
 import { Calendar, CalendarStats, Check, ChevronDown, ChevronLeft, X } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
-import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
+import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SelectInputData, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, VEHICLE_TYPES, VehicleOnly } from '@voyage-app/shared-types';
 import { Booking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { CustomLoader, DateTimePicker } from '@voyage-app/shared-ui-components';
@@ -20,19 +20,19 @@ import { setLocations, useLocation } from '../../store/features/locationSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { setShipper, useShipper } from '../../store/features/profileSlice';
-import { notifyError, notifySuccess, numericId } from '@voyage-app/shared-utils';
+import { capitalize, notifyError, notifySuccess, numericId, sanitize } from '@voyage-app/shared-utils';
 
 const SUBMIT_TYPES = {
 	SAVE_BOOKING: 'SAVE_BOOKING',
-	CREATE_SHIPMENT: 'CREATE_SHIPMENT',
-}
+	CREATE_SHIPMENT: 'CREATE_SHIPMENT'
+};
 
 const create = ({ bookingID }) => {
 	const router = useRouter();
 	const [isFTL, setFTL] = useState(false);
-	const [loading, setLoading] = useState({ show: false, type: SUBMIT_TYPES.CREATE_SHIPMENT});
+	const [loading, setLoading] = useState({ show: false, type: SUBMIT_TYPES.CREATE_SHIPMENT });
 	const dispatch = useDispatch<AppDispatch>();
-	const shipper = useSelector(useShipper)
+	const shipper = useSelector(useShipper);
 	const locations = useSelector(useLocation);
 	const bookings = useSelector(useBooking);
 
@@ -127,15 +127,25 @@ const create = ({ bookingID }) => {
 		}
 	};
 
-	const handleServiceType = (serviceType) => {
-		form.setFieldValue('serviceType', serviceType)
-		form.setFieldValue('pickupLocation', '')
-		form.setFieldValue('deliveryLocation', '')
-	}
+	const handleServiceType = serviceType => {
+		form.setFieldValue('serviceType', serviceType);
+		form.setFieldValue('pickupLocation', '');
+		form.setFieldValue('deliveryLocation', '');
+	};
+
+	const noPrefDisabled = useMemo(() => {
+		// @ts-ignore
+		return form.values.activitiesRequired.some(item => Object.values(VEHICLE_TYPES).includes(item));
+	}, [form.values.activitiesRequired]);
+
+	const vehTypeDisabled = useMemo(() => {
+		// @ts-ignore
+		return form.values.activitiesRequired.some(item => item === SHIPMENT_ACTIVITY.NO_PREFERENCE);
+	}, [form.values.activitiesRequired]);
 
 	const handleSubmit = useCallback(
 		async values => {
-			setLoading(prevState => ({...prevState, show: true}));
+			setLoading(prevState => ({ ...prevState, show: true }));
 			const pickupLocation = locations.find(({ id }) => id === values.pickupLocation);
 			const deliveryLocation = locations.find(({ id }) => id === values.deliveryLocation);
 			try {
@@ -145,13 +155,13 @@ const create = ({ bookingID }) => {
 				console.log(shipment);
 				console.log('-----------------------------------------------');
 				notifySuccess('create-shipment-success', 'Your shipment was created successfully!', <Check size={20} />);
-				booking && await dispatch(deleteBooking(booking.id)).unwrap()
-				setLoading(prevState => ({...prevState, show: false}));
+				booking && (await dispatch(deleteBooking(booking.id)).unwrap());
+				setLoading(prevState => ({ ...prevState, show: false }));
 				setTimeout(() => router.push(PATHS.SHIPMENTS).then(() => console.log('Navigated to shipments page')), 500);
 			} catch (err) {
 				console.error(err);
 				notifyError('create-shipment-error', err.message, <X size={20} />);
-				setLoading(prevState => ({...prevState, show: false}));
+				setLoading(prevState => ({ ...prevState, show: false }));
 			}
 		},
 		[locations, booking]
@@ -362,7 +372,7 @@ const create = ({ bookingID }) => {
 									inputFormat={'DD-MMM-YYYY HH:mm a'}
 									value={form.values.pickupDate ? moment.unix(form.values.pickupDate).toDate() : null}
 									onChange={(value: Date) => form.setFieldValue('pickupDate', moment(value).unix())}
-									classNames={{ root: 'md:w-72' }}
+									classNames={{ root: 'md:w-96' }}
 								/>
 								{form.values.schedulingType === SCHEDULING_TYPE.RECURRING && (
 									<MultiSelect
@@ -387,25 +397,31 @@ const create = ({ bookingID }) => {
 					<div className='grid grid-cols-1 gap-5'>
 						<div className='flex flex-col space-y-6'>
 							<header className='quote-header'>Equipment Required</header>
-							<div className='grid grid-cols-1 gap-y-4 py-4 lg:grid-cols-4 lg:gap-x-6 xl:gap-x-12'>
-								{Object.values(SHIPMENT_ACTIVITY).map((item, index) => (
-									<button
-										key={index}
-										type='button'
-										className={`${inputButton} ${form.values.activitiesRequired.includes(item) && 'bg-secondary text-white'}`}
-										onClick={() => {
-											if (!form.values.activitiesRequired.includes(item)) {
-												form.insertListItem('activitiesRequired', item);
-											} else {
-												const index = form.values.activitiesRequired.indexOf(item);
-												form.removeListItem('activitiesRequired', index);
-											}
-										}}
-									>
-										<span className='capitalize'>{item.toLowerCase().replace('_', ' ')}</span>
-									</button>
-								))}
-							</div>
+							<MultiSelect
+								dropdownPosition="top"
+								clearable
+								required
+								size='md'
+								radius={0}
+								placeholder='Select equipment'
+								rightSectionWidth={30}
+								classNames={{ root: 'md:w-96' }}
+								styles={{ rightSection: { pointerEvents: 'none' } }}
+								data={Object.values(SHIPMENT_ACTIVITY).map((item, index): SelectInputData => {
+									return item === SHIPMENT_ACTIVITY.NO_PREFERENCE
+										? {
+												value: item,
+												label: capitalize(sanitize(item)),
+												disabled: noPrefDisabled
+										  }
+										: {
+												value: item,
+												label: capitalize(sanitize(item)),
+												disabled: vehTypeDisabled
+										  };
+								})}
+								{...form.getInputProps('activitiesRequired')}
+							/>
 						</div>
 					</div>
 					<div className='grid grid-cols-1 gap-5'>
@@ -421,33 +437,33 @@ const create = ({ bookingID }) => {
 					</button>
 					<button
 						type='button'
-						className='flex justify-center items-center voyage-button w-auto leading-5'
+						className='voyage-button flex w-auto items-center justify-center leading-5'
 						onClick={() => {
-							setLoading({type: SUBMIT_TYPES.SAVE_BOOKING, show: true});
+							setLoading({ type: SUBMIT_TYPES.SAVE_BOOKING, show: true });
 							booking
 								? dispatch(updateBooking(form.values))
 										.unwrap()
 										.then(() => {
 											notifySuccess('update-booking-success', 'Booking updated successfully!', <Check size={20} />);
-											setLoading(prevState => ({...prevState, show: false}));
+											setLoading(prevState => ({ ...prevState, show: false }));
 											router.back();
 										})
 										.catch(err => {
 											console.error(err);
 											notifyError('save-booking-error', err.message, <X size={20} />);
-											setLoading(prevState => ({...prevState, show: false}));
+											setLoading(prevState => ({ ...prevState, show: false }));
 										})
 								: dispatch(createBooking(form.values))
 										.unwrap()
 										.then(() => {
 											notifySuccess('save-booking-success', 'Booking saved successfully', <Check size={20} />);
-											setLoading(prevState => ({...prevState, show: false}));
+											setLoading(prevState => ({ ...prevState, show: false }));
 											router.back();
 										})
 										.catch(err => {
 											console.error(err);
 											notifyError('save-booking-error', err.message, <X size={20} />);
-											setLoading(prevState => ({...prevState, show: false}));
+											setLoading(prevState => ({ ...prevState, show: false }));
 										});
 						}}
 					>
