@@ -3,7 +3,7 @@ import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
 import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
-import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS, VEHICLE_TYPES } from '@voyage-app/shared-types';
+import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
 import { capitalize, checkWithinTimeRange, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
 import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, MultiSelect, Select, SimpleGrid, Text } from '@mantine/core';
@@ -65,7 +65,7 @@ const marketplace = ({ session }) => {
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
 			value: item.pickup.facilityId,
-			label: item.pickup.facilityName
+			label: item.pickup.city
 		}));
 		return uniqueArray(labels, 'value');
 	}, []);
@@ -73,7 +73,7 @@ const marketplace = ({ session }) => {
 	const uniqueDeliveryLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
 			value: item.delivery.facilityId,
-			label: item.delivery.facilityName
+			label: item.delivery.city
 		}));
 		return uniqueArray(labels, 'value');
 	}, []);
