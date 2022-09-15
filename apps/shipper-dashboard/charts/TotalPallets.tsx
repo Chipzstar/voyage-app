@@ -1,10 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Bar } from 'react-chartjs-2';
-import { PACKAGE_TYPE, UnixTimestamp } from '../utils/types';
 import moment from 'moment';
 import { filterByTimeRange } from '../utils/functions';
-import { Shipment } from '@voyage-app/shared-types';
+import { PACKAGE_TYPE, Shipment, UnixTimestamp } from '@voyage-app/shared-types';
 
 const TotalPallets = ({ range, genLabels }) => {
 	const shipments = useSelector(state => state['shipments']);

@@ -197,7 +197,7 @@ const marketplace = ({ session }) => {
 				/>
 				<MultiSelect
 					placeholder='All equipments'
-					data={Object.values(VEHICLE_TYPES).map(
+					data={Object.values(SHIPMENT_ACTIVITY).map(
 						(item): SelectInputData => ({
 							value: item,
 							label: capitalize(item.replace(/_/g, ' '))
