@@ -6,7 +6,7 @@ import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
 import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
 import { capitalize, checkWithinTimeRange, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
-import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, MultiSelect, Select, SimpleGrid, Text } from '@mantine/core';
+import { ActionIcon, Anchor, Badge, Button, Group, LoadingOverlay, MultiSelect, ScrollArea, Select, SimpleGrid, Stack, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import ContentContainer from '../../layout/ContentContainer';
@@ -30,7 +30,10 @@ import _ from 'lodash';
 import { Load } from '../../utils/types';
 import { setCarrier } from '../../store/feature/profileSlice';
 import { useRouter } from 'next/router';
-import { useInterval, useListState } from '@mantine/hooks';
+import { useListState } from '@mantine/hooks';
+import { useWindowSize } from '@voyage-app/shared-ui-hooks';
+
+let subscriber;
 
 const items = [
 	{ title: 'Home', href: '/' },
@@ -56,15 +59,37 @@ const marketplace = ({ session }) => {
 	const [reviewModal, showReviewModal] = useState(false);
 	const [assignmentModal, showAssignmentModal] = useState(false);
 	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
-	const shipments = useSelector(useNewShipments);
-	const [filtered, handlers] = useListState([...shipments]);
-	const subscriber = useInterval(() => dispatch(getMarketplaceShipments()).unwrap().then((shipments) => handlers.setState(shipments)), 5000);
 	const drivers = useSelector(useDrivers);
 	const members = useSelector(useMembers);
+	const shipments = useSelector(useNewShipments);
+	const [filtered, handlers] = useListState([...shipments]);
+	const { height } = useWindowSize()
+
+	function fetch(filters) {
+		dispatch(getMarketplaceShipments())
+			.unwrap()
+			.then(shipments => {
+				handlers.setState(shipments);
+				handlers.filter((s: Shipment) => {
+					let isValid = true;
+					if (filters.pickup && s.pickup.facilityId !== filters.pickup) return false;
+					if (filters.delivery && s.delivery.facilityId !== filters.delivery) return false;
+					if (Number(filters.miles) && s.mileage > Number(filters.miles)) return false;
+					if (filters.dateRange.every((date: Date | null) => date) && !checkWithinTimeRange(filters.dateRange, s.pickup.window.start, s.pickup.window.end)) return false;
+					if (filters.equipment.length && !s.activitiesRequired.every(a => filters.equipment.includes(a))) return false;
+					return isValid;
+				});
+			});
+	}
+
+	useEffect(() => {
+		subscriber = setInterval(fetch, 5000, form.values);
+		return () => clearInterval(subscriber);
+	}, []);
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
-			value: item.pickup.facilityId,
+			value: item.pickup.city,
 			label: item.pickup.city
 		}));
 		return uniqueArray(labels, 'value');
@@ -72,7 +97,7 @@ const marketplace = ({ session }) => {
 
 	const uniqueDeliveryLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
-			value: item.delivery.facilityId,
+			value: item.delivery.city,
 			label: item.delivery.city
 		}));
 		return uniqueArray(labels, 'value');
@@ -87,7 +112,8 @@ const marketplace = ({ session }) => {
 				await dispatch(createLoad(newLoad)).unwrap();
 				notifySuccess('convert-shipment-to-load-success', 'You have successfully booked this load', <Check size={20} />);
 				setLoading(false);
-				await dispatch(updateShipment({
+				await dispatch(
+					updateShipment({
 						id: selectedShipment.id,
 						status: STATUS.PENDING,
 						carrierInfo: newLoad.carrierInfo,
@@ -99,10 +125,10 @@ const marketplace = ({ session }) => {
 							}
 						]
 					})
-				).unwrap()
+				).unwrap();
 				// TODO send email alerts to dev about new loads from marketplace
-				handlers.filter(item => item.id !== selectedShipment.id)
-				router.push(`${PATHS.TRIPS}/${newLoad.loadId}`).then(() => console.log("Marketplace load booked!"))
+				handlers.filter(item => item.id !== selectedShipment.id);
+				router.push(`${PATHS.TRIPS}/${newLoad.loadId}`).then(() => console.log('Marketplace load booked!'));
 			} catch (err) {
 				console.error(err);
 				notifyError('convert-shipment-to-load-failure', `${err.message}`, <X size={20} />);
@@ -112,44 +138,46 @@ const marketplace = ({ session }) => {
 		[selectedShipment, shipments]
 	);
 
+	const initialValues: FilterFormProps = {
+		pickup: '',
+		delivery: '',
+		miles: String(Number.POSITIVE_INFINITY),
+		dateRange: [null, null],
+		equipment: []
+	};
+
 	const form = useForm<FilterFormProps>({
-		initialValues: {
-			pickup: '',
-			delivery: '',
-			miles: String(Number.POSITIVE_INFINITY),
-			dateRange: [null, null],
-			equipment: []
-		}
+		initialValues
 	});
 
-	const debouncedSearch = useCallback(
+	const filterShipments = useCallback(
 		_.debounce((values: FilterFormProps) => {
-			handlers.filter(((s: Shipment) => {
-					let isValid = true;
-					if (values.pickup && s.pickup.facilityId !== values.pickup) return false;
-					if (values.delivery && s.delivery.facilityId !== values.delivery) return false;
-					if (Number(values.miles) && s.mileage > Number(values.miles)) return false;
-					if (values.dateRange.every((date: Date | null) => date) && !checkWithinTimeRange(values.dateRange, s.pickup.window.start, s.pickup.window.end)) return false;
-					if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
-					return isValid;
-				})
-			);
-		}, 300),
+			console.log(values);
+			handlers.filter((s: Shipment) => {
+				let isValid = true;
+				if (values.pickup && s.pickup.facilityId !== values.pickup) return false;
+				if (values.delivery && s.delivery.facilityId !== values.delivery) return false;
+				if (Number(values.miles) && s.mileage > Number(values.miles)) return false;
+				if (values.dateRange.every((date: Date | null) => date) && !checkWithinTimeRange(values.dateRange, s.pickup.window.start, s.pickup.window.end)) return false;
+				if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
+				console.log('isValid:', isValid);
+				return isValid;
+			});
+			console.log('destroying filter');
+			clearInterval(subscriber);
+			console.log('creating new filter');
+			subscriber = setInterval(fetch, 5000, values);
+		}, 100),
 		[filtered]
 	);
 
-	useEffect(() => {
-		subscriber.start()
-		return subscriber.stop
-	}, []);
-
-	useEffect(() => {
-		return () => debouncedSearch.cancel();
-	}, [debouncedSearch]);
-
-	useEffect(() => {
-		debouncedSearch(form.values);
-	}, [form.values]);
+	const resetForm = () => {
+		form.reset();
+		handlers.setState(shipments);
+		clearInterval(subscriber);
+		console.log('creating new filter');
+		subscriber = setInterval(fetch, 5000, initialValues);
+	};
 
 	return (
 		<ContentContainer>
@@ -165,7 +193,7 @@ const marketplace = ({ session }) => {
 				loadInfo={selectedShipment}
 			/>
 			<AssignDriverModal opened={assignmentModal} onClose={() => showAssignmentModal(false)} team={members} drivers={drivers} onSubmit={handleSubmit} />
-			<form className='flex flex-row space-x-3 pb-8'>
+			<form className='flex flex-row space-x-3 pb-3' onReset={form.onReset}>
 				<div className='flex'>
 					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} {...form.getInputProps('pickup')} />
 					<Select size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} {...form.getInputProps('delivery')} />
@@ -207,87 +235,94 @@ const marketplace = ({ session }) => {
 					clearable
 					{...form.getInputProps('equipment')}
 				/>
-				<Button variant='outline' onClick={() => form.reset()}>
-					<Text size='sm'>Clear</Text>
-				</Button>
+				<Group spacing='xs'>
+					<Button variant='outline' color='gray' onClick={resetForm}>
+						<Text size='sm'>Clear</Text>
+					</Button>
+					<Button variant='outline' onClick={() => filterShipments(form.values)}>
+						<Text size='sm'>Apply</Text>
+					</Button>
+				</Group>
 			</form>
-			<div className='mb-5 space-y-3'>
+			<div className='my-5 space-y-3'>
 				<header className='page-subheading'>
 					<Pluralize singular={'Load'} count={filtered.length ?? 0} /> available for you
 				</header>
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
-			<SimpleGrid cols={1}>
-				{filtered.map((shipment: Shipment, index) => (
-					<main key={index} className='border-voyage-grey space-y-3 border p-3'>
-						<section className='flex space-x-8'>
-							<div className='flex flex-col flex-wrap space-y-1'>
-								<span className='font-medium'>{shipment.pickup.city}</span>
-								<span>
-									{shipment.pickup.line1} {shipment.pickup.postcode}
-								</span>
-								<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
-									<Text>
-										{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
-									</Text>
-								</Badge>
-							</div>
-							<div className='flex flex-col items-center justify-center'>
-								<Text size='sm' color='gray' weight={600}>
-									{shipment.mileage} mi
-								</Text>
-								<ArrowRight size={20} />
-							</div>
-							<div className='flex flex-col flex-wrap space-y-1'>
-								<span className='font-medium'>{shipment.delivery.city}</span>
-								<span>
-									{shipment.delivery.line1} {shipment.delivery.postcode}
-								</span>
-								{shipment.delivery?.window ? (
-									<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
-										<Text>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</Text>
+			<ScrollArea.Autosize maxHeight={height - 250}>
+				<SimpleGrid cols={1}>
+					{filtered.map((shipment: Shipment, index) => (
+						<main key={index} className='border-voyage-grey space-y-3 border p-3'>
+							<section className='flex space-x-8'>
+								<div className='flex flex-col flex-wrap space-y-1'>
+									<span className='font-medium'>{shipment.pickup.city}</span>
+									<span>
+										{shipment.pickup.line1} {shipment.pickup.postcode}
+									</span>
+									<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center lg:w-40'>
+										<Text>
+											{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
+										</Text>
 									</Badge>
-								) : null}
-							</div>
-							<div className='flex flex-col flex-wrap space-y-1'>
-								<span className='font-medium'>Equipment Required</span>
-								<SimpleGrid spacing='xs' cols={2}>
-									{shipment.activitiesRequired.map((item, index) => (
-										<Badge key={index} size='sm' variant='outline' color='gray'>
-											<Text>{capitalize(sanitize(item))}</Text>
-										</Badge>
-									))}
-								</SimpleGrid>
-							</div>
-						</section>
-						<section className='flex items-center justify-between'>
-							<div className='flex items-center space-x-3'>
-								<div className='flex items-center space-x-3'>
-									<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
 								</div>
-								<span className='lowercase'>
-									{shipment.packageInfo.weight} kg of {shipment.packageInfo.packageType}s
-								</span>
-							</div>
-							<div className='flex items-center space-x-3'>
-								<span className='text-2xl font-semibold'>{`£${shipment.rate.toFixed(2)}`}</span>
-								<ActionIcon color='dark' size='md'>
-									<Message size={19} />
-								</ActionIcon>
-								<button
-									className='voyage-button h-10 md:w-32'
-									onClick={() => {
-										setSelectedShipment(shipment);
-										showReviewModal(true);
-									}}
-								>
-									Book
-								</button>
-							</div>
-						</section>
-					</main>
-				))}
-			</SimpleGrid>
+								<div className='flex flex-col items-center justify-center'>
+									<Text size='sm' color='gray' weight={600}>
+										{shipment.mileage} mi
+									</Text>
+									<ArrowRight size={20} />
+								</div>
+								<div className='flex flex-col flex-wrap space-y-1'>
+									<span className='font-medium'>{shipment.delivery.city}</span>
+									<span>
+										{shipment.delivery.line1} {shipment.delivery.postcode}
+									</span>
+									{shipment.delivery?.window ? (
+										<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center lg:w-40'>
+											<Text>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</Text>
+										</Badge>
+									) : null}
+								</div>
+								<div className='flex flex-col flex-wrap space-y-1'>
+									<span className='font-medium'>Equipment Required</span>
+									<SimpleGrid spacing='xs' cols={2}>
+										{shipment.activitiesRequired.map((item, index) => (
+											<Badge key={index} size='sm' variant='outline' color='gray'>
+												<Text>{capitalize(sanitize(item))}</Text>
+											</Badge>
+										))}
+									</SimpleGrid>
+								</div>
+							</section>
+							<section className='flex items-center justify-between'>
+								<div className='flex items-center space-x-3'>
+									<div className='flex items-center space-x-3'>
+										<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
+									</div>
+									<span className='lowercase'>
+										{shipment.packageInfo.weight} kg of {shipment.packageInfo.packageType}s
+									</span>
+								</div>
+								<div className='flex items-center space-x-3'>
+									<span className='text-2xl font-semibold'>{`£${shipment.rate.toFixed(2)}`}</span>
+									<ActionIcon color='dark' size='md'>
+										<Message size={19} />
+									</ActionIcon>
+									<button
+										className='voyage-button h-10 md:w-32'
+										onClick={() => {
+											setSelectedShipment(shipment);
+											showReviewModal(true);
+										}}
+									>
+										Book
+									</button>
+								</div>
+							</section>
+						</main>
+					))}
+				</SimpleGrid>
+			</ScrollArea.Autosize>
 		</ContentContainer>
 	);
 };
