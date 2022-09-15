@@ -19,7 +19,7 @@ import prisma from '../../db';
 import { setLocations, useLocation } from '../../store/features/locationSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { setShipper } from '../../store/features/profileSlice';
+import { setShipper, useShipper } from '../../store/features/profileSlice';
 import { notifyError, notifySuccess, numericId } from '@voyage-app/shared-utils';
 
 const SUBMIT_TYPES = {
@@ -29,11 +29,12 @@ const SUBMIT_TYPES = {
 
 const create = ({ bookingID }) => {
 	const router = useRouter();
+	const [isFTL, setFTL] = useState(false);
 	const [loading, setLoading] = useState({ show: false, type: SUBMIT_TYPES.CREATE_SHIPMENT});
 	const dispatch = useDispatch<AppDispatch>();
+	const shipper = useSelector(useShipper)
 	const locations = useSelector(useLocation);
 	const bookings = useSelector(useBooking);
-	const [isFTL, setFTL] = useState(false);
 
 	const booking = useMemo(() => bookings.find((booking: Booking) => booking.bookingId === bookingID), [bookings]);
 
@@ -138,7 +139,7 @@ const create = ({ bookingID }) => {
 			const pickupLocation = locations.find(({ id }) => id === values.pickupLocation);
 			const deliveryLocation = locations.find(({ id }) => id === values.deliveryLocation);
 			try {
-				let shipment = await generateShipment(values, pickupLocation, deliveryLocation);
+				let shipment = await generateShipment(values, pickupLocation, deliveryLocation, shipper);
 				shipment = await dispatch(createShipment(shipment)).unwrap();
 				console.log('-----------------------------------------------');
 				console.log(shipment);

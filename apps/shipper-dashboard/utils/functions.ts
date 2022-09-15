@@ -1,7 +1,7 @@
 import { Booking } from './types';
 import moment from 'moment';
 import { numericId } from '@voyage-app/shared-utils';
-import { Delivery, Location, Pickup, Shipment, STATUS } from '@voyage-app/shared-types';
+import { Delivery, Location, Pickup, Shipment, Shipper, STATUS } from '@voyage-app/shared-types';
 import axios from 'axios';
 
 export function calculateRate(weight, numPallets, miles = 300) {
@@ -10,7 +10,7 @@ export function calculateRate(weight, numPallets, miles = 300) {
 	return sum;
 }
 
-export async function generateShipment(values: Booking, pickupLocation: Location, deliveryLocation: Location): Promise<Shipment> {
+export async function generateShipment(values: Booking, pickupLocation: Location, deliveryLocation: Location, shipperInfo: Shipper): Promise<Shipment> {
 	const pickup: Pickup = {
 		facilityId: pickupLocation.id,
 		facilityName: pickupLocation.name,
@@ -69,6 +69,12 @@ export async function generateShipment(values: Booking, pickupLocation: Location
 				},
 				packageType: values.packageType,
 				description: values.description
+			},
+			shipperInfo: {
+				name: shipperInfo.fullName,
+				company: shipperInfo.company,
+				email: shipperInfo.email,
+				phone: shipperInfo.phone
 			},
 			carrierInfo: {
 				name: '',
