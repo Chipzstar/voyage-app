@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import { alphanumericId, capitalize, getYears, notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
 import { SelectInputData, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import PageHeader from '../../../layout/PageHeader';
-import { Check, Upload, X } from 'tabler-icons-react';
+import { Check, X } from 'tabler-icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
 import { AppDispatch, wrapper } from 'apps/carrier-dashboard/store';
@@ -22,7 +22,6 @@ import prisma from '../../../db';
 import moment from 'moment';
 import { fetchVehicles } from '../../../utils/functions';
 import { getToken } from 'next-auth/jwt';
-import { useSession } from 'next-auth/react';
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -36,7 +35,6 @@ const items = [
 
 const create = ({ vehicleName, vehicleId }) => {
 	const [loading, setLoading] = useState(false);
-	const { data: session } = useSession();
 	const dispatch = useDispatch<AppDispatch>();
 	const router = useRouter();
 	const vehicles = useSelector(useVehicles);

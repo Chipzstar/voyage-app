@@ -42,8 +42,8 @@ const location = ({ locationId, locationName }) => {
 			locationId: locationId || `LOCATION-ID${alphanumericId(8)}`,
 			name: locationName || location?.name || '',
 			type: location?.type || LocationType.WAREHOUSE,
-			addressLine1: location?.addressLine1 ?? '',
-			addressLine2: location?.addressLine2 ?? '',
+			line1: location?.line1 ?? '',
+			line2: location?.line2 ?? '',
 			city: location?.city ?? '',
 			postcode: location?.postcode ?? '',
 			region: location?.region ?? '',
@@ -139,7 +139,7 @@ const location = ({ locationId, locationName }) => {
 								size='md'
 								radius={0}
 								placeholder='Address Line 1'
-								{...form.getInputProps('addressLine1')}
+								{...form.getInputProps('line1')}
 							/>
 						</div>
 						<div className='col-span-2'>
@@ -150,7 +150,7 @@ const location = ({ locationId, locationName }) => {
 								size='md'
 								radius={0}
 								placeholder='Address Line 2'
-								{...form.getInputProps('addressLine2')}
+								{...form.getInputProps('line2')}
 							/>
 						</div>
 						<div className='col-span-2 lg:col-span-1'>

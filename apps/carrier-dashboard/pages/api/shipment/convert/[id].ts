@@ -1,11 +1,10 @@
-import { calculateJobDistance, numericId } from '@voyage-app/shared-utils';
-import { Shipment, Shipper, STATUS, Location } from '@voyage-app/shared-types';
-import moment from 'moment';
-import { calculateRate } from '../../../../utils/functions';
 import { cors, runMiddleware } from '../../index';
+import { Carrier, Driver, Load, LoadCustomer, Member, Vehicle } from '../../../../utils/types';
+import moment from 'moment';
+import { Shipment, Shipper, STATUS, Location, LoadLocation } from '@voyage-app/shared-types';
+import { calculateJobDistance } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import prisma from '../../../../db';
-import { Carrier, Driver, Load, LoadLocation, Member, Vehicle } from '../../../../utils/types';
 
 interface RequestBodyProps {
 	driverId: string,
@@ -61,7 +60,7 @@ export default async function handler(req, res) {
 		})
 		console.log('-----------------------------------------------');
 		// calculate distance between origin and destination
-		const distance = await calculateJobDistance(shipment.pickup.location, shipment.delivery.location, process.env.GOOGLE_MAPS_API_KEY);
+		const distance = await calculateJobDistance(shipment.pickup.fullAddress, shipment.delivery.fullAddress, process.env.GOOGLE_MAPS_API_KEY);
 		// lookup location entities for pickup and delivery facilities
 		const pickupLocation: Location = await prisma.location.findFirst({
 			where: {
@@ -79,13 +78,14 @@ export default async function handler(req, res) {
 		console.log("Delivery")
 		console.log(deliveryLocation)
 		console.log('-----------------------------------------------');
+
 		const load: Load = {
 			id: undefined,
 			createdAt: undefined,
-			source: 'VOYAGE',
+			source: 'Marketplace',
 			carrierId: <string>token?.carrierId,
 			loadId: shipment.shipmentId,
-			customer: {
+			customer: <LoadCustomer>{
 				id: shipment?.shipperId,
 				name: shipper.fullName,
 				email: shipper.email,
@@ -102,8 +102,8 @@ export default async function handler(req, res) {
 			rate: shipment.rate,
 			mileage: distance,
 			pickup: <LoadLocation>{
-				fullAddress: shipment.pickup.location,
-				street: pickupLocation.addressLine1 + ' ' + pickupLocation.addressLine2,
+				fullAddress: shipment.pickup.fullAddress,
+				street: pickupLocation.line1 + ' ' + pickupLocation.line2,
 				city: pickupLocation.city,
 				region: pickupLocation.region,
 				postcode: pickupLocation.postcode,
@@ -119,8 +119,8 @@ export default async function handler(req, res) {
 				note: pickupLocation.pickupInstructions
 			},
 			delivery: <LoadLocation>{
-				fullAddress: shipment.delivery.location,
-				street: deliveryLocation.addressLine1 + ' ' + deliveryLocation.addressLine2,
+				fullAddress: shipment.delivery.fullAddress,
+				street: deliveryLocation.line1 + ' ' + deliveryLocation.line2,
 				city: deliveryLocation.city,
 				region: deliveryLocation.region,
 				postcode: deliveryLocation.postcode,

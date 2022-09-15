@@ -4,18 +4,6 @@ import axios from 'axios';
 
 const initialState = [];
 
-/*export const createShipment = createAsyncThunk('shipment/createShipment', async (payload : Shipment, thunkAPI) => {
-	try {
-		console.log(payload)
-		const shipment = (await axios.post(`/api/shipment/${payload.shipmentId}`, payload)).data
-		thunkAPI.dispatch(addShipment(shipment))
-		return shipment
-	} catch (err) {
-		console.error(err?.response?.data)
-		return thunkAPI.rejectWithValue(err?.response?.data);
-	}
-})*/
-
 export const updateShipment = createAsyncThunk('shipment/updateShipment', async (payload : Partial<Shipment>, thunkAPI) => {
 	try {
 	    const { id, ...rest } = payload

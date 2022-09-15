@@ -24,8 +24,8 @@ const TAB_LABELS = {
 	ALL: 'ALL',
 	PENDING: 'PENDING',
 	IN_TRANSIT: 'IN_TRANSIT',
-	COMPLETED: 'COMPLETED',
-}
+	COMPLETED: 'COMPLETED'
+};
 
 /*const STATUS_MAP = {
 	ALL: Object.values(STATUS),
@@ -53,13 +53,13 @@ const index = () => {
 					</Tabs.List>
 
 					<Tabs.Panel value={TAB_LABELS.ALL} className='text-lg'>
-						<Shipments shipments={shipments} statuses={Object.values(STATUS)} message="You have no created shipments!" />
+						<Shipments shipments={shipments} statuses={Object.values(STATUS)} message='You have no created shipments!' />
 					</Tabs.Panel>
 					<Tabs.Panel value={TAB_LABELS.PENDING} className='text-lg'>
-						<Shipments shipments={shipments} statuses={[STATUS.NEW , STATUS.PENDING]} message="No shipments pending!" />
+						<Shipments shipments={shipments} statuses={[STATUS.NEW, STATUS.PENDING]} message='No shipments pending!' />
 					</Tabs.Panel>
 					<Tabs.Panel value={TAB_LABELS.IN_TRANSIT} className='text-lg'>
-						<Shipments shipments={shipments} statuses={[STATUS.AT_PICKUP, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.EN_ROUTE]} message='No shipments in transit'/>
+						<Shipments shipments={shipments} statuses={[STATUS.AT_PICKUP, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.EN_ROUTE]} message='No shipments in transit' />
 					</Tabs.Panel>
 					<Tabs.Panel value={TAB_LABELS.COMPLETED} className='text-lg'>
 						<Shipments shipments={shipments} statuses={[STATUS.COMPLETED]} message='No shipments completed' />
@@ -73,7 +73,7 @@ const index = () => {
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, res }) => {
 	// @ts-ignore
 	const session = await unstable_getServerSession(req, res, authOptions);
-	const token = await getToken({ req })
+	const token = await getToken({ req });
 	if (!session) {
 		return {
 			redirect: {
@@ -83,9 +83,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
-		store.dispatch(setShipper(shipper))
-		const shipments = await fetchShipments(token?.shipperId, prisma)
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma);
+		store.dispatch(setShipper(shipper));
+		const shipments = await fetchShipments(token?.shipperId, prisma);
 		store.dispatch(setShipments(shipments));
 	}
 	return {
@@ -93,6 +93,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			session
 		}
 	};
-})
+});
 
 export default index;

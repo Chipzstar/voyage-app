@@ -12,17 +12,17 @@ export interface ShipmentTimeWindow {
 	end: number;
 }
 
-export interface Pickup {
+export interface Pickup extends Address {
 	facilityId: string,
 	facilityName: string;
-	location: string;
+	fullAddress: string;
 	window: ShipmentTimeWindow;
 }
 
-export interface Delivery {
+export interface Delivery extends Address {
 	facilityId: string,
 	facilityName: string;
-	location: string;
+	fullAddress: string;
 	window?: ShipmentTimeWindow;
 }
 
@@ -39,8 +39,8 @@ export interface Package {
 	packageType: PACKAGE_TYPE,
 	description: string,
 }
-//types
 
+//types
 export type Address = {
 	line1: string;
 	line2?: string;
@@ -131,6 +131,19 @@ export enum VEHICLE_TYPES {
 	OTHER = 'OTHER'
 }
 
+export enum LocationType {
+	WAREHOUSE = 'WAREHOUSE',
+	STORE = 'STORE',
+	LASTMILE_CARRIER = 'LASTMILE_CARRIER'
+}
+
+export interface ShipperInfo {
+	name: string;
+	company: string;
+	email: string;
+	phone: string;
+}
+
 export interface CarrierInfo {
 	name: string;
 	driverId: string;
@@ -162,9 +175,9 @@ export interface Shipment {
 	pickup: Pickup;
 	delivery: Delivery;
 	packageInfo: Package;
+	shipperInfo: ShipperInfo;
 	carrierInfo: Partial<CarrierInfo>;
 	trackingHistory: Tracking[]
-
 }
 
 export interface Shipper {
@@ -201,13 +214,6 @@ interface OperatingProps {
 	open: LocationTimeWindow;
 	close: LocationTimeWindow;
 }
-export enum LocationType {
-	WAREHOUSE = 'WAREHOUSE',
-	STORE = 'STORE',
-	LASTMILE_CARRIER = 'LASTMILE_CARRIER'
-}
-// Define a type for the slice state
-
 
 export interface OperatingHoursState {
 	facility: OperatingProps;
@@ -219,8 +225,8 @@ export interface Location {
 	shipperId: string;
 	name: string;
 	type: LocationType;
-	addressLine1: string;
-	addressLine2: string;
+	line1: string;
+	line2: string;
 	city: string;
 	postcode: string;
 	region: string;
@@ -234,3 +240,25 @@ export type Tracking = {
 	status: STATUS;
 	timestamp: UnixTimestamp;
 };
+
+export type Geolocation = {
+	type: 'Point';
+	coordinates: [number, number];
+};
+
+export interface LoadTimeWindow {
+	start: number;
+	end: number;
+}
+
+export interface LoadLocation {
+	fullAddress: string;
+	street: string;
+	city: string;
+	region?: string;
+	postcode: string;
+	country: string;
+	note?: string;
+	location?: Geolocation;
+	window?: LoadTimeWindow;
+}

@@ -65,3 +65,15 @@ export const countries = [
 	{ code: 'GB', code3: 'GBR', name: 'United Kingdom', number: '826', currency: 'GBP' },
 	{ code: 'US', code3: 'USA', name: 'United States', number: '840', currency: 'USD' }
 ];
+
+export const PLACE_TYPES = {
+	ESTABLISHMENT: 'establishment',
+	SUB_PREMISE: 'subpremise',
+	PREMISE: 'premise',
+	STREET_NUMBER: 'street_number',
+	STREET_ADDRESS: 'route',
+	CITY: 'postal_town',
+	POSTCODE: 'postal_code',
+	POSTCODE_PREFIX: 'postal_code_prefix',
+	INTERSECTION: 'intersection'
+};

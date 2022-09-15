@@ -53,14 +53,24 @@ type Dimensions {
 type ShipmentPickup {
     facilityId String
     facilityName String
-    location String
+    fullAddress String
+    line1 String
+    line2 String?
+    city String
+    region String
+    postcode String
     window TimeWindow
 }
 
 type ShipmentDelivery {
     facilityId String
     facilityName String
-    location String
+    fullAddress String
+    line1 String
+    line2 String?
+    city String
+    region String
+    postcode String
     window TimeWindow?
 }
 
@@ -70,6 +80,13 @@ type PackageInfo {
 	dimensions Dimensions
 	packageType PACKAGE_TYPE
 	description String
+}
+
+type ShipperInfo {
+    name String
+    company String
+    email String
+    phone String
 }
 
 type CarrierInfo {

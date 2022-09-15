@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button, Divider, Group, Loader, Modal } from '@mantine/core';
+import { Button, Divider, Group, Modal } from '@mantine/core';
 import { Shipment } from '@voyage-app/shared-types';
 import moment from 'moment';
-import { sanitize } from '@voyage-app/shared-utils';
+import { capitalize, sanitize } from '@voyage-app/shared-utils';
 
 interface ReviewModalProps {
 	opened: boolean;
@@ -17,7 +17,7 @@ const ReviewModal = ({ opened, onClose, loadInfo, onSubmit }: ReviewModalProps) 
 			opened={opened}
 			onClose={onClose}
 			centered
-			size='lg'
+			size='xl'
 			title='Job details'
 			classNames={{
 				title: 'font-semibold text-xl'
@@ -26,41 +26,45 @@ const ReviewModal = ({ opened, onClose, loadInfo, onSubmit }: ReviewModalProps) 
 			<div className='overflow-hidden bg-white shadow sm:rounded-lg'>
 				<div className='border-t border-gray-200'>
 					<dl>
-						<div className='flex items-center bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+						<div className='flex bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-x-4 sm:px-6'>
 							<dt className='text-sm font-medium text-gray-500 '>Shipper</dt>
 							<div className='flex flex-col space-y-1 sm:col-span-2'>
-								<dd className='mt-1 text-sm text-gray-900  sm:mt-0'>Margot Foster</dd>
-								<dd className='mt-1 text-sm text-gray-900  sm:mt-0'>support@asos.com</dd>
-								<dd className='mt-1 text-sm text-gray-900  sm:mt-0'>Asos</dd>
+								<dd className='mt-1 text-sm text-gray-900  sm:mt-0'>{loadInfo?.shipperInfo.name}</dd>
+								<dd className='mt-1 text-sm text-gray-900  sm:mt-0'>{loadInfo?.shipperInfo.email}</dd>
+								<dd className='mt-1 text-sm text-gray-900  sm:mt-0'>{loadInfo?.shipperInfo.company}</dd>
 							</div>
 						</div>
-						<div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+						<div className='bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-x-4 sm:px-6'>
 							<dt className='text-sm font-medium text-gray-500'>Origin</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>{loadInfo?.pickup.location}</dd>
+							<div className='flex flex-col space-y-1 sm:col-span-2'>
+								<dd className='mt-1 text-sm text-gray-900 sm:mt-0'>{loadInfo?.pickup.fullAddress}</dd>
+							</div>
 						</div>
-						<div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+						<div className='bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-x-4 sm:px-6'>
 							<dt className='text-sm font-medium text-gray-500'>Destination</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>{loadInfo?.delivery.location}</dd>
+							<div className='flex flex-col space-y-1 sm:col-span-2'>
+								<dd className='mt-1 text-sm text-gray-900 sm:mt-0'>{loadInfo?.delivery.fullAddress}</dd>
+							</div>
 						</div>
-						<div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+						<div className='bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
 							<dt className='text-sm font-medium text-gray-500'>Pickup Window</dt>
 							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
 								{moment.unix(loadInfo?.pickup.window.start).format('DD MMM')} {moment.unix(loadInfo?.pickup.window.start).format('HH:mm')} - {moment.unix(loadInfo?.pickup.window.end).format('HH:mm')}
 							</dd>
 						</div>
-						<div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+						<div className='bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
 							<dt className='text-sm font-medium text-gray-500'>Schedule</dt>
 							<dd className='mt-1 text-sm capitalize text-gray-900 sm:col-span-2 sm:mt-0'>{sanitize(loadInfo?.schedulingType ?? '')}</dd>
 						</div>
-						<div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-							<dt className='text-sm font-medium text-gray-500'>Service Type</dt>
-							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>{loadInfo?.serviceType}</dd>
+						<div className='bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+							<dt className='text-sm font-medium text-gray-500'>Equipment Required</dt>
+							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>{loadInfo?.activitiesRequired.map(item => capitalize(sanitize(item))).join(",")}</dd>
 						</div>
-						<div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+						<div className='bg-gray-50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
 							<dt className='text-sm font-medium text-gray-500'>Rate</dt>
 							<dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>£{loadInfo?.rate.toFixed(2)}</dd>
 						</div>
-						<div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+						<div className='bg-white px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
 							<dt className='text-sm font-medium text-gray-500'>Package Info</dt>
 							<div className='flex flex-col space-y-1 sm:col-span-2'>
 								<dd className='mt-1 text-sm text-gray-900 sm:mt-0'>Weight: {loadInfo?.packageInfo.weight} kg</dd>

@@ -63,6 +63,7 @@ model Shipment {
     pickup ShipmentPickup
     delivery ShipmentDelivery
     packageInfo PackageInfo
+    shipperInfo ShipperInfo
     carrierInfo CarrierInfo?
     trackingHistory TrackingHistory[]
 }

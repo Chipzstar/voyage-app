@@ -3,20 +3,18 @@ import {
 	Customer,
 	Driver,
 	Load,
-	LoadLocation,
-	Location,
+	BookingLocation,
 	Member,
 	NewBooking,
 	RateChargeRules,
 	Settings
 } from './types';
-import { STATUS } from '@voyage-app/shared-types';
+import { LoadLocation, STATUS } from '@voyage-app/shared-types';
 import moment from 'moment/moment';
-import { numericId } from '@voyage-app/shared-utils';
-import { PLACE_TYPES } from './constants';
+import { numericId, PLACE_TYPES } from '@voyage-app/shared-utils';
 import axios from 'axios';
 
-function genFullAddress(location: Location) {
+function genFullAddress(location: BookingLocation) {
 	let fullAddress = '';
 	Object.entries(location).forEach(([key, value]) => {
 		if (key !== 'note') fullAddress += value + ' ';
@@ -71,7 +69,7 @@ export async function generateLoad(profile, values: NewBooking, drivers: Driver[
 
 	return {
 		id: undefined,
-		source: 'CUSTOMER',
+		source: customer.companyName,
 		carrierId: profile.id,
 		loadId: `VOY-ID${numericId(8)}`,
 		customer: {

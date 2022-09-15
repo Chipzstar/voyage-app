@@ -1,7 +1,7 @@
-import { Delivery, Booking, Pickup } from './types';
+import { Booking } from './types';
 import moment from 'moment';
 import { numericId } from '@voyage-app/shared-utils';
-import { Location, Shipment, STATUS } from '@voyage-app/shared-types';
+import { Delivery, Location, Pickup, Shipment, STATUS } from '@voyage-app/shared-types';
 import axios from 'axios';
 
 export function calculateRate(weight, numPallets, miles = 300) {
@@ -11,11 +11,15 @@ export function calculateRate(weight, numPallets, miles = 300) {
 }
 
 export async function generateShipment(values: Booking, pickupLocation: Location, deliveryLocation: Location): Promise<Shipment> {
-	console.log(values.pickupDate);
 	const pickup: Pickup = {
 		facilityId: pickupLocation.id,
 		facilityName: pickupLocation.name,
-		location: `${pickupLocation.addressLine1} ${pickupLocation.postcode}`,
+		fullAddress: `${pickupLocation.line1} ${pickupLocation.line2} ${pickupLocation.city} ${pickupLocation.postcode}`,
+		line1: pickupLocation.line1,
+		line2: pickupLocation.line2,
+		city: pickupLocation.city,
+		region: pickupLocation.region,
+		postcode: pickupLocation.postcode,
 		window: {
 			start: values.pickupDate,
 			end: moment.unix(values.pickupDate).add(1, 'hour').unix()
@@ -24,13 +28,18 @@ export async function generateShipment(values: Booking, pickupLocation: Location
 	const delivery: Delivery = {
 		facilityId: deliveryLocation.id,
 		facilityName: deliveryLocation.name,
-		location: `${deliveryLocation.addressLine1} ${deliveryLocation.postcode}`
+		fullAddress: `${deliveryLocation.line1} ${deliveryLocation.line2} ${deliveryLocation.city} ${deliveryLocation.postcode}`,
+		line1: deliveryLocation.line1,
+		line2: deliveryLocation.line2,
+		city: deliveryLocation.city,
+		region: deliveryLocation.region,
+		postcode: deliveryLocation.postcode,
 	};
 	try {
 		const { distance } = (
 			await axios.post('/api/utils/distance-matrix', {
-				pickupAddress: pickup.location,
-				deliverAddress: delivery.location
+				pickupAddress: pickup.fullAddress,
+				deliverAddress: delivery.fullAddress
 			})
 		).data;
 		return {
@@ -46,7 +55,7 @@ export async function generateShipment(values: Booking, pickupLocation: Location
 			activitiesRequired: values.activitiesRequired,
 			internalPONumber: values.internalPONumber,
 			customerPONumber: values.customerPONumber,
-			rate: calculateRate(values.weight, values.quantity),
+			rate: calculateRate(values.weight, values.quantity, distance),
 			mileage: distance,
 			pickup,
 			delivery,

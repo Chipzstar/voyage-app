@@ -31,8 +31,8 @@ const viewShipment = ({ shipmentId, pageIndex }) => {
 	const shipments = useSelector(useShipments);
 
 	const shipment: Shipment = useMemo(() => {
-		console.log(shipments)
-		return shipments[pageIndex]
+		console.log(shipments);
+		return shipments[pageIndex];
 	}, [shipments, pageIndex]);
 
 	return (
@@ -144,8 +144,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	let pageIndex = 0;
 	// fetch all shipments for the current user
 	if (session.id || token?.shipperId) {
-		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
-		store.dispatch(setShipper(shipper))
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma);
+		store.dispatch(setShipper(shipper));
 		const shipments = await fetchShipments(token?.shipperId, prisma);
 		store.dispatch(setShipments(shipments));
 		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
@@ -158,6 +158,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			pageIndex
 		} // will be passed to the page component as props
 	};
-})
+});
 
 export default viewShipment;

@@ -3,51 +3,26 @@ import { Address } from '@voyage-app/shared-types';
 export type UnixTimestamp = number;
 
 export interface CarrierQuote {
-	quoteID: string,
-	quantity: number,
-	price: number
-	rate: string
-	timeWindow: string,
-	carrier: string
-}
-
-export interface Quote {
-	quoteID:string;
+	quoteID: string;
 	quantity: number;
 	price: number;
 	rate: string;
 	timeWindow: string;
 	carrier: string;
-	carrierQuotes: CarrierQuote
 }
 
-export interface ShipmentTimeWindow {
-	start: number;
-	end: number;
-}
-
-export interface Pickup {
-	facilityId: string,
-	facilityName: string;
-	location: string;
-	window: ShipmentTimeWindow;
-}
-
-export interface Delivery {
-	facilityId: string,
-	facilityName: string;
-	location: string;
-	window?: ShipmentTimeWindow;
-}
-
-export interface Dimensions {
-	length: number;
-	width: number;
-	height: number;
+export interface Quote {
+	quoteID: string;
+	quantity: number;
+	price: number;
+	rate: string;
+	timeWindow: string;
+	carrier: string;
+	carrierQuotes: CarrierQuote;
 }
 
 //types
-export type Coordinates = [longitude: number, latitude: number]
+export type Coordinates = [longitude: number, latitude: number];
 
 //ENUMS
 
@@ -69,7 +44,7 @@ export enum SCHEDULING_TYPE {
 }
 
 export enum SHIPMENT_ACTIVITY {
-	NO_PREFERENCE= 'NO_PREFERENCE',
+	NO_PREFERENCE = 'NO_PREFERENCE',
 	TAIL_LIFT = 'TAIL_LIFT',
 	JUMBO_TRAILER = 'JUMBO_TRAILER',
 	FLATBED_TRAILER = 'FLATBED_TRAILER'
@@ -80,7 +55,7 @@ export enum PACKAGE_TYPE {
 	CRATE = 'CRATE',
 	BOX = 'BOX',
 	CONTAINER = 'CONTAINER',
-	SKIDS = 'SKID',
+	SKIDS = 'SKID'
 }
 
 export interface Booking {

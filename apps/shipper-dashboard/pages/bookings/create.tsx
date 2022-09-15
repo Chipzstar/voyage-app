@@ -126,6 +126,12 @@ const create = ({ bookingID }) => {
 		}
 	};
 
+	const handleServiceType = (serviceType) => {
+		form.setFieldValue('serviceType', serviceType)
+		form.setFieldValue('pickupLocation', '')
+		form.setFieldValue('deliveryLocation', '')
+	}
+
 	const handleSubmit = useCallback(
 		async values => {
 			setLoading(prevState => ({...prevState, show: true}));
@@ -165,21 +171,21 @@ const create = ({ bookingID }) => {
 							<button
 								type='button'
 								className={`${inputButton} ${form.values.serviceType === SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE && 'bg-secondary text-white'}`}
-								onClick={() => form.setFieldValue('serviceType', SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE)}
+								onClick={() => handleServiceType(SERVICE_TYPE.WAREHOUSE_TO_WAREHOUSE)}
 							>
 								Warehouse to warehouse
 							</button>
 							<button
 								type='button'
 								className={`${inputButton} ${form.values.serviceType === SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION && 'bg-secondary text-white'}`}
-								onClick={() => form.setFieldValue('serviceType', SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION)}
+								onClick={() => handleServiceType(SERVICE_TYPE.DIRECT_TO_STORE_DISTRIBUTION)}
 							>
 								Direct to store distribution
 							</button>
 							<button
 								type='button'
 								className={`${inputButton} ${form.values.serviceType === SERVICE_TYPE.DIRECT_TO_CARRIER_INJECTION && 'bg-secondary text-white'}`}
-								onClick={() => form.setFieldValue('serviceType', SERVICE_TYPE.DIRECT_TO_CARRIER_INJECTION)}
+								onClick={() => handleServiceType(SERVICE_TYPE.DIRECT_TO_CARRIER_INJECTION)}
 							>
 								Direct to carrier injections
 							</button>
@@ -379,7 +385,7 @@ const create = ({ bookingID }) => {
 					</div>
 					<div className='grid grid-cols-1 gap-5'>
 						<div className='flex flex-col space-y-6'>
-							<header className='quote-header'>Activities/Equipment Required</header>
+							<header className='quote-header'>Equipment Required</header>
 							<div className='grid grid-cols-1 gap-y-4 py-4 lg:grid-cols-4 lg:gap-x-6 xl:gap-x-12'>
 								{Object.values(SHIPMENT_ACTIVITY).map((item, index) => (
 									<button
