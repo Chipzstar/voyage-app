@@ -13,6 +13,7 @@ export const phoneUtil = PhoneNumberUtil.getInstance();
 export const localizer = momentLocalizer(moment);
 
 export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
+console.log("DEBUG MODE = " + DEBUG_MODE)
 
 export const PUBLIC_PATHS = {
 	LOGIN: '/login',

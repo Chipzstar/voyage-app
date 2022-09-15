@@ -8,6 +8,7 @@ export const updateShipment = createAsyncThunk('shipment/updateShipment', async 
 	try {
 	    const { id, ...rest } = payload
 		const shipment = (await axios.put(`/api/shipment/${id}`, rest)).data
+		console.log(shipment)
 		thunkAPI.dispatch(editShipment(shipment))
 		return shipment
 	} catch (err) {
@@ -33,9 +34,9 @@ export const shipmentSlice = createSlice({
 	}
 });
 
-export const useShipments = state => state['shipments']
+export const useShipments = (state) : Shipment[] => state['shipments']
 
-export const useNewShipments = state => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW)
+export const useNewShipments = (state) : Shipment[] => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW)
 
 export const { setShipments, addShipment, editShipment } = shipmentSlice.actions;
 

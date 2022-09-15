@@ -151,7 +151,7 @@ export interface CarrierInfo {
 	driverPhone: string;
 	controllerId?: string;
 	controllerName?: string;
-	location?: Coordinates;
+	location?: Coordinates | [];
 	vehicleId?: string
 	vehicleType?: VEHICLE_TYPES | SHIPMENT_ACTIVITY;
 }

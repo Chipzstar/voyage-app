@@ -30,6 +30,7 @@ import _ from 'lodash';
 import { Load } from '../../utils/types';
 import { setCarrier } from '../../store/feature/profileSlice';
 import { useRouter } from 'next/router';
+import { useListState } from '@mantine/hooks';
 
 const items = [
 	{ title: 'Home', href: '/' },
@@ -51,14 +52,14 @@ interface FilterFormProps {
 const marketplace = ({ session }) => {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
-	const shipments = useSelector(useNewShipments);
-	const [filteredShipments, setFilteredShipments] = useState(shipments);
-	const drivers = useSelector(useDrivers);
-	const members = useSelector(useMembers);
-	const dispatch = useDispatch<AppDispatch>();
 	const [reviewModal, showReviewModal] = useState(false);
 	const [assignmentModal, showAssignmentModal] = useState(false);
 	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
+	const shipments = useSelector(useNewShipments);
+	const [filteredShipments, handlers] = useListState([...shipments]);
+	const drivers = useSelector(useDrivers);
+	const members = useSelector(useMembers);
+	const dispatch = useDispatch<AppDispatch>();
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
@@ -98,7 +99,8 @@ const marketplace = ({ session }) => {
 						]
 					})
 				).unwrap()
-				setFilteredShipments(shipments)
+				// TODO send email alerts to dev about new loads from marketplace
+				handlers.filter(item => item.id !== selectedShipment.id)
 				router.push(`${PATHS.TRIPS}/${newLoad.loadId}`).then(() => console.log("Marketplace load booked!"))
 			} catch (err) {
 				console.error(err);
@@ -121,8 +123,7 @@ const marketplace = ({ session }) => {
 
 	const debouncedSearch = useCallback(
 		_.debounce((values: FilterFormProps) => {
-			setFilteredShipments(
-				shipments.filter((s: Shipment) => {
+			handlers.filter(((s: Shipment) => {
 					let isValid = true;
 					if (values.pickup && s.pickup.facilityId !== values.pickup) return false;
 					if (values.delivery && s.delivery.facilityId !== values.delivery) return false;
@@ -133,7 +134,7 @@ const marketplace = ({ session }) => {
 				})
 			);
 		}, 300),
-		[shipments]
+		[filteredShipments]
 	);
 
 	useEffect(() => {
@@ -143,6 +144,14 @@ const marketplace = ({ session }) => {
 	useEffect(() => {
 		debouncedSearch(form.values);
 	}, [form.values]);
+
+	useEffect(() => {
+		console.log("Booked Shipments", shipments.reduce((prev, curr) => curr.status !== STATUS.NEW ? prev + 1 : prev, 0))
+	}, [shipments]);
+
+	useEffect(() => {
+		console.log("Booked filtered Shipments", filteredShipments.reduce((prev, curr) => curr.status !== STATUS.NEW ? prev + 1 : prev, 0))
+	}, [filteredShipments]);
 
 	return (
 		<ContentContainer>

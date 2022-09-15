@@ -81,7 +81,7 @@ export async function generateShipment(values: Booking, pickupLocation: Location
 				driverId: '',
 				driverName: '',
 				driverPhone: '',
-				location: [-1.778197, 52.412811]
+				location: []
 			},
 			trackingHistory: [
 				{

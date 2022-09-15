@@ -147,7 +147,7 @@ const create = ({ bookingID }) => {
 				notifySuccess('create-shipment-success', 'Your shipment was created successfully!', <Check size={20} />);
 				booking && await dispatch(deleteBooking(booking.id)).unwrap()
 				setLoading(prevState => ({...prevState, show: false}));
-				router.push(PATHS.SHIPMENTS).then(() => console.log('Navigated to shipments page'));
+				setTimeout(() => router.push(PATHS.SHIPMENTS).then(() => console.log('Navigated to shipments page')), 500);
 			} catch (err) {
 				console.error(err);
 				notifyError('create-shipment-error', err.message, <X size={20} />);
