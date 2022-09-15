@@ -1,7 +1,8 @@
 import moment from 'moment';
 import { showNotification } from '@mantine/notifications';
 import { Client, TravelMode, UnitSystem } from '@googlemaps/google-maps-services-js';
-import { DateRange, UnixTimestamp } from '@voyage-app/shared-types';
+import { DateRange, UnixTimestamp, Geolocation, LoadLocation, Shipment } from '@voyage-app/shared-types';
+import { PLACE_TYPES } from './shared-constants';
 
 const GMapsClient = new Client();
 
@@ -44,7 +45,7 @@ export function isValidUrl(urlString) {
 	}
 
 }
-export async function fetchShipments(shipperId, prisma) {
+export async function fetchShipments(shipperId, prisma): Promise<Shipment[]> {
 	let shipments = await prisma.shipment.findMany({
 		where: {
 			shipperId: {
@@ -121,6 +122,74 @@ export async function calculateJobDistance(origin, destination, GMAPS_API_KEY) {
 		return distance;
 	} catch (err) {
 		throw err;
+	}
+}
+
+export async function geocodeAddress(address: string, GMAPS_API_KEY) {
+	try {
+		const response = (
+			await GMapsClient.geocode({
+				params: {
+					address,
+					key: GMAPS_API_KEY
+				}
+			})
+		).data;
+
+		if (response.results.length) {
+			const formattedAddress: Omit<LoadLocation, "fullAddress"> = {
+				street: '',
+				city: '',
+				region: '',
+				postcode: '',
+				country: 'UK',
+				location: <Geolocation>{
+					type: 'Point',
+					coordinates: [response.results[0].geometry.location.lng, response.results[0].geometry.location.lat]
+				}
+			};
+			let fullAddress = response.results[0].formatted_address;
+			let components = response.results[0].address_components;
+			components.forEach(({ long_name, types }) => {
+				switch (types[0]) {
+					case PLACE_TYPES.ESTABLISHMENT:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.STREET_NUMBER:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.STREET_ADDRESS:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.SUB_PREMISE:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.PREMISE:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.INTERSECTION:
+						formattedAddress.street = formattedAddress.street + long_name + ' ';
+						break;
+					case PLACE_TYPES.CITY:
+						formattedAddress.city = long_name;
+						break;
+					case PLACE_TYPES.POSTCODE:
+						formattedAddress.postcode = long_name;
+						break;
+					case PLACE_TYPES.POSTCODE_PREFIX:
+						// make postcode property empty since the real value is not a full postcode
+						formattedAddress.postcode = long_name;
+						break;
+					default:
+						return;
+				}
+			});
+			return { fullAddress, formattedAddress };
+		}
+		throw new Error('No Address suggestions found');
+	} catch (e) {
+		console.error(e);
+		throw e;
 	}
 }
 

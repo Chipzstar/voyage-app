@@ -2,18 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
-import { PUBLIC_PATHS } from '../../utils/constants';
-import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-app/shared-types';
+import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
+import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
-import {
-	capitalize,
-	checkWithinTimeRange,
-	fetchShipments,
-	notifyError,
-	notifySuccess,
-	sanitize,
-	uniqueArray
-} from '@voyage-app/shared-utils';
+import { capitalize, checkWithinTimeRange, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
 import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, MultiSelect, Select, SimpleGrid, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -21,7 +13,7 @@ import ContentContainer from '../../layout/ContentContainer';
 import PageNav from '../../layout/PageNav';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, wrapper } from '../../store';
-import { setShipments, updateShipment, useNewShipments } from '../../store/feature/shipmentSlice';
+import { getMarketplaceShipments, setShipments, updateShipment, useNewShipments } from '../../store/feature/shipmentSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
@@ -30,12 +22,15 @@ import Pluralize from 'react-pluralize';
 import AssignDriverModal from '../../modals/AssignDriverModal';
 import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
 import { setMembers, useMembers } from '../../store/feature/memberSlice';
-import { fetchDrivers, fetchMembers } from '../../utils/functions';
+import { fetchDrivers, fetchMembers, fetchProfile } from '../../utils/functions';
 import ReviewModal from '../../modals/ReviewModal';
 import { createLoad } from '../../store/feature/loadSlice';
 import axios from 'axios';
 import _ from 'lodash';
 import { Load } from '../../utils/types';
+import { setCarrier } from '../../store/feature/profileSlice';
+import { useRouter } from 'next/router';
+import { useInterval, useListState } from '@mantine/hooks';
 
 const items = [
 	{ title: 'Home', href: '/' },
@@ -55,15 +50,17 @@ interface FilterFormProps {
 }
 
 const marketplace = ({ session }) => {
-	const [loading, setLoading] = useState(false);
-	const shipments = useSelector(useNewShipments);
-	const [filteredShipments, setFilteredShipments] = useState(shipments);
-	const drivers = useSelector(useDrivers);
-	const members = useSelector(useMembers);
+	const router = useRouter();
 	const dispatch = useDispatch<AppDispatch>();
+	const [loading, setLoading] = useState(false);
 	const [reviewModal, showReviewModal] = useState(false);
 	const [assignmentModal, showAssignmentModal] = useState(false);
 	const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
+	const shipments = useSelector(useNewShipments);
+	const [filtered, handlers] = useListState([...shipments]);
+	const subscriber = useInterval(() => dispatch(getMarketplaceShipments()).unwrap().then((shipments) => handlers.setState(shipments)), 5000);
+	const drivers = useSelector(useDrivers);
+	const members = useSelector(useMembers);
 
 	const uniquePickupLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
@@ -90,8 +87,7 @@ const marketplace = ({ session }) => {
 				await dispatch(createLoad(newLoad)).unwrap();
 				notifySuccess('convert-shipment-to-load-success', 'You have successfully booked this load', <Check size={20} />);
 				setLoading(false);
-				dispatch(
-					updateShipment({
+				await dispatch(updateShipment({
 						id: selectedShipment.id,
 						status: STATUS.PENDING,
 						carrierInfo: newLoad.carrierInfo,
@@ -103,10 +99,10 @@ const marketplace = ({ session }) => {
 							}
 						]
 					})
-				)
-					.unwrap()
-					.then(() => setFilteredShipments(shipments))
-					.catch(err => console.error(err));
+				).unwrap()
+				// TODO send email alerts to dev about new loads from marketplace
+				handlers.filter(item => item.id !== selectedShipment.id)
+				router.push(`${PATHS.TRIPS}/${newLoad.loadId}`).then(() => console.log("Marketplace load booked!"))
 			} catch (err) {
 				console.error(err);
 				notifyError('convert-shipment-to-load-failure', `${err.message}`, <X size={20} />);
@@ -128,31 +124,31 @@ const marketplace = ({ session }) => {
 
 	const debouncedSearch = useCallback(
 		_.debounce((values: FilterFormProps) => {
-			setFilteredShipments(
-				shipments.filter((s: Shipment) => {
+			handlers.filter(((s: Shipment) => {
 					let isValid = true;
 					if (values.pickup && s.pickup.facilityId !== values.pickup) return false;
 					if (values.delivery && s.delivery.facilityId !== values.delivery) return false;
 					if (Number(values.miles) && s.mileage > Number(values.miles)) return false;
-					if (
-						values.dateRange.every((date: Date | null) => date) &&
-						!checkWithinTimeRange(values.dateRange, s.pickup.window.start, s.pickup.window.end)
-					)
-						return false;
+					if (values.dateRange.every((date: Date | null) => date) && !checkWithinTimeRange(values.dateRange, s.pickup.window.start, s.pickup.window.end)) return false;
 					if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
 					return isValid;
 				})
 			);
 		}, 300),
-		[shipments]
+		[filtered]
 	);
+
+	useEffect(() => {
+		subscriber.start()
+		return subscriber.stop
+	}, []);
 
 	useEffect(() => {
 		return () => debouncedSearch.cancel();
 	}, [debouncedSearch]);
 
 	useEffect(() => {
-		debouncedSearch(form.values)
+		debouncedSearch(form.values);
 	}, [form.values]);
 
 	return (
@@ -217,17 +213,19 @@ const marketplace = ({ session }) => {
 			</form>
 			<div className='mb-5 space-y-3'>
 				<header className='page-subheading'>
-					<Pluralize singular={'Load'} count={filteredShipments.length ?? 0} /> available for you
+					<Pluralize singular={'Load'} count={filtered.length ?? 0} /> available for you
 				</header>
 				<p className='font-medium text-gray-500'>{moment().format('dddd, MMM D')}</p>
 			</div>
 			<SimpleGrid cols={1}>
-				{filteredShipments.map((shipment: Shipment, index) => (
+				{filtered.map((shipment: Shipment, index) => (
 					<main key={index} className='border-voyage-grey space-y-3 border p-3'>
 						<section className='flex space-x-8'>
 							<div className='flex flex-col flex-wrap space-y-1'>
-								<span className='font-medium'>{shipment.pickup.facilityName}</span>
-								<span>{shipment.pickup.location}</span>
+								<span className='font-medium'>{shipment.pickup.city}</span>
+								<span>
+									{shipment.pickup.line1} {shipment.pickup.postcode}
+								</span>
 								<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
 									<Text>
 										{moment.unix(shipment.pickup.window.start).format('DD MMM')} {moment.unix(shipment.pickup.window.start).format('HH:mm') + ' - ' + moment.unix(shipment.pickup.window.end).format('HH:mm')}
@@ -241,8 +239,10 @@ const marketplace = ({ session }) => {
 								<ArrowRight size={20} />
 							</div>
 							<div className='flex flex-col flex-wrap space-y-1'>
-								<span className='font-medium'>{shipment.delivery.facilityName}</span>
-								<span>{shipment.delivery.location}</span>
+								<span className='font-medium'>{shipment.delivery.city}</span>
+								<span>
+									{shipment.delivery.line1} {shipment.delivery.postcode}
+								</span>
 								{shipment.delivery?.window ? (
 									<Badge size='sm' radius='lg' color='blue' leftSection={<Clock size={12} />} className='flex items-center'>
 										<Text>{moment.unix(shipment.delivery?.window?.start).format('HH:mm') + ' - ' + moment.unix(shipment.delivery?.window?.end).format('HH:mm')}</Text>
@@ -305,9 +305,11 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
+		const carrier = await fetchProfile(session.id, token?.profileId, prisma);
 		const shipments = await fetchShipments(undefined, prisma);
 		const drivers = await fetchDrivers(token?.carrierId, prisma);
 		const members = await fetchMembers(token?.carrierId, prisma);
+		store.dispatch(setCarrier(carrier));
 		store.dispatch(setShipments(shipments));
 		store.dispatch(setDrivers(drivers));
 		store.dispatch(setMembers(members));

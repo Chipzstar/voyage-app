@@ -4,22 +4,22 @@ import axios from 'axios';
 
 const initialState = [];
 
-/*export const createShipment = createAsyncThunk('shipment/createShipment', async (payload : Shipment, thunkAPI) => {
+export const getMarketplaceShipments = createAsyncThunk('shipment/getMarketplaceShipments', async (payload, thunkAPI) => {
 	try {
-		console.log(payload)
-		const shipment = (await axios.post(`/api/shipment/${payload.shipmentId}`, payload)).data
-		thunkAPI.dispatch(addShipment(shipment))
-		return shipment
+		const shipments = (await axios.get('/api/shipment')).data
+		thunkAPI.dispatch(setShipments(shipments))
+		return shipments.filter(s => s.status === STATUS.NEW)
 	} catch (err) {
 		console.error(err?.response?.data)
 		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
-})*/
+});
 
 export const updateShipment = createAsyncThunk('shipment/updateShipment', async (payload : Partial<Shipment>, thunkAPI) => {
 	try {
 	    const { id, ...rest } = payload
 		const shipment = (await axios.put(`/api/shipment/${id}`, rest)).data
+		console.log(shipment)
 		thunkAPI.dispatch(editShipment(shipment))
 		return shipment
 	} catch (err) {
@@ -45,9 +45,9 @@ export const shipmentSlice = createSlice({
 	}
 });
 
-export const useShipments = state => state['shipments']
+export const useShipments = (state) : Shipment[] => state['shipments']
 
-export const useNewShipments = state => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW)
+export const useNewShipments = (state) : Shipment[] => state['shipments'].filter((shipment: Shipment) => shipment.status === STATUS.NEW)
 
 export const { setShipments, addShipment, editShipment } = shipmentSlice.actions;
 

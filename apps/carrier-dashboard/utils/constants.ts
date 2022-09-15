@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { ChargeUnitType, INVOICE_STATUS, RateChargeRules, Settings, ActivationStatus, TabInfo } from './types';
+import { ActivationStatus, ChargeUnitType, INVOICE_STATUS, RateChargeRules, Settings, TabInfo } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
 import { PhoneNumberUtil } from 'google-libphonenumber';
@@ -13,6 +13,7 @@ export const phoneUtil = PhoneNumberUtil.getInstance();
 export const localizer = momentLocalizer(moment);
 
 export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
+console.log("DEBUG MODE = " + DEBUG_MODE)
 
 export const PUBLIC_PATHS = {
 	LOGIN: '/login',
@@ -162,18 +163,6 @@ export const SAMPLE_INVOICES = [
 		status: INVOICE_STATUS.INVOICED
 	}
 ];
-
-export const PLACE_TYPES = {
-	ESTABLISHMENT: 'establishment',
-	SUB_PREMISE: 'subpremise',
-	PREMISE: 'premise',
-	STREET_NUMBER: 'street_number',
-	STREET_ADDRESS: 'route',
-	CITY: 'postal_town',
-	POSTCODE: 'postal_code',
-	POSTCODE_PREFIX: 'postal_code_prefix',
-	INTERSECTION: 'intersection'
-};
 
 export const defaultSettings: Settings = {
 	id: null,

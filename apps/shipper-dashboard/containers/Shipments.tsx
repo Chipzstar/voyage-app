@@ -54,7 +54,7 @@ const Shipments = ({ shipments, statuses = Object.values(STATUS), message }: Tri
 					<td colSpan={1}>
 						<div className='flex flex-col flex-shrink'>
 							<span>{element.pickup.facilityName}</span>
-							<span>{element.pickup.location}</span>
+							<span>{element.pickup.line1} {element.pickup.postcode}</span>
 							<span>
 								{moment.unix(element.pickup.window.start).format('HH:mm')} - {moment.unix(element.pickup.window.end).format('HH:mm DD MMM')}
 							</span>
@@ -63,7 +63,7 @@ const Shipments = ({ shipments, statuses = Object.values(STATUS), message }: Tri
 					<td colSpan={1}>
 						<div className='flex flex-col flex-shrink'>
 							<span>{element.delivery.facilityName}</span>
-							<span>{element.delivery.location}</span>
+							<span>{element.delivery.line1} {element.delivery.postcode}</span>
 							{element.delivery.window ? (
 								<span>
 									{moment.unix(element.delivery?.window?.start).format('HH:mm')} - {moment.unix(element.delivery?.window?.end).format('HH:mm DD MMM')}

@@ -29,11 +29,7 @@ export const EVENT_DESCRIPTIONS = {
 const viewShipment = ({ shipmentId, pageIndex }) => {
 	const router = useRouter();
 	const shipments = useSelector(useShipments);
-
-	const shipment: Shipment = useMemo(() => {
-		console.log(shipments)
-		return shipments[pageIndex]
-	}, [shipments, pageIndex]);
+	const shipment: Shipment = useMemo(() => shipments[pageIndex], [shipments, pageIndex]);
 
 	return (
 		<div className='h-screen p-4'>
@@ -84,20 +80,20 @@ const viewShipment = ({ shipmentId, pageIndex }) => {
 								</div>
 								<div className='space-y-2'>
 									<span className='text-2xl font-medium'>Carrier</span>
-									<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.name}</p>
-									<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.location}</p>
+									<p className='text-lg'>{shipment?.carrierInfo?.name}</p>
+									<p className='text-lg'>{shipment?.carrierInfo?.location.length ? shipment?.carrierInfo?.location : null}</p>
 								</div>
 								<div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Contact</span>
-										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverName}</p>
-										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverPhone}</p>
+										<p className='text-lg'>{shipment?.carrierInfo?.driverName}</p>
+										<p className='text-lg'>{shipment?.carrierInfo?.driverPhone}</p>
 									</div>
 									<div className='space-y-2'>
 										<span className='text-2xl font-medium'>Driver</span>
-										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverName}</p>
-										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.driverPhone}</p>
-										<p className='text-lg'>{shipments[pageIndex]?.carrierInfo?.vehicleId}</p>
+										<p className='text-lg'>{shipment?.carrierInfo?.driverName}</p>
+										<p className='text-lg'>{shipment?.carrierInfo?.driverPhone}</p>
+										<p className='text-lg'>{shipment?.carrierInfo?.vehicleId}</p>
 									</div>
 								</div>
 							</aside>
@@ -144,8 +140,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	let pageIndex = 0;
 	// fetch all shipments for the current user
 	if (session.id || token?.shipperId) {
-		const shipper = await fetchShipper(session.id, token?.shipperId, prisma)
-		store.dispatch(setShipper(shipper))
+		const shipper = await fetchShipper(session.id, token?.shipperId, prisma);
+		store.dispatch(setShipper(shipper));
 		const shipments = await fetchShipments(token?.shipperId, prisma);
 		store.dispatch(setShipments(shipments));
 		pageIndex = store.getState().shipments.findIndex(item => item.shipmentId === params.shipmentID);
@@ -158,6 +154,6 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 			pageIndex
 		} // will be passed to the page component as props
 	};
-})
+});
 
 export default viewShipment;

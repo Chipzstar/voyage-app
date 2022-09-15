@@ -1,6 +1,7 @@
 export interface SelectInputData {
 	value: string;
-	label: string
+	label: string;
+	disabled?: boolean;
 }
 
 export type DateRange = [Date | null, Date | null]
@@ -12,17 +13,17 @@ export interface ShipmentTimeWindow {
 	end: number;
 }
 
-export interface Pickup {
+export interface Pickup extends Address {
 	facilityId: string,
 	facilityName: string;
-	location: string;
+	fullAddress: string;
 	window: ShipmentTimeWindow;
 }
 
-export interface Delivery {
+export interface Delivery extends Address {
 	facilityId: string,
 	facilityName: string;
-	location: string;
+	fullAddress: string;
 	window?: ShipmentTimeWindow;
 }
 
@@ -39,8 +40,8 @@ export interface Package {
 	packageType: PACKAGE_TYPE,
 	description: string,
 }
-//types
 
+//types
 export type Address = {
 	line1: string;
 	line2?: string;
@@ -92,12 +93,26 @@ export enum SCHEDULING_TYPE {
 	RECURRING = 'RECURRING'
 }
 
-export enum SHIPMENT_ACTIVITY {
-	NO_PREFERENCE= 'NO_PREFERENCE',
+export enum VEHICLE_TYPES {
+	DRY_VAN = 'DRY_VAN',
 	TAIL_LIFT = 'TAIL_LIFT',
 	JUMBO_TRAILER = 'JUMBO_TRAILER',
-	FLATBED_TRAILER = 'FLATBED_TRAILER'
+	FLATBED_TRAILER = 'FLATBED_TRAILER',
+	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
+	ARCTIC_TRUCK = 'ARCTIC_TRUCK'
 }
+
+export enum SHIPMENT_ACTIVITY {
+	NO_PREFERENCE = 'NO_PREFERENCE',
+	DRY_VAN = 'DRY_VAN',
+	TAIL_LIFT = 'TAIL_LIFT',
+	JUMBO_TRAILER = 'JUMBO_TRAILER',
+	FLATBED_TRAILER = 'FLATBED_TRAILER',
+	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
+	ARCTIC_TRUCK = 'ARCTIC_TRUCK',
+}
+
+export type VehicleOnly = Exclude<SHIPMENT_TYPE, "NO_PREFERENCE">
 
 export enum PACKAGE_TYPE {
 	PALLET = 'PALLET',
@@ -121,14 +136,17 @@ export enum HAZMAT_TYPES {
 	MISC_DANGEROUS = 'Class 9: Miscellaneous dangerous goods'
 }
 
-export enum VEHICLE_TYPES {
-	DRY_VAN = 'DRY_VAN',
-	TAIL_LIFT = 'TAIL_LIFT',
-	JUMBO_TRAILER = 'JUMBO_TRAILER',
-	FLATBED_TRAILER = 'FLATBED_TRAILER',
-	STEP_DECK_TRAILER = 'STEP_DECK_TRAILER',
-	ARCTIC_TRUCK = 'ARCTIC_TRUCK',
-	OTHER = 'OTHER'
+export enum LocationType {
+	WAREHOUSE = 'WAREHOUSE',
+	STORE = 'STORE',
+	LASTMILE_CARRIER = 'LASTMILE_CARRIER'
+}
+
+export interface ShipperInfo {
+	name: string;
+	company: string;
+	email: string;
+	phone: string;
 }
 
 export interface CarrierInfo {
@@ -138,7 +156,7 @@ export interface CarrierInfo {
 	driverPhone: string;
 	controllerId?: string;
 	controllerName?: string;
-	location?: Coordinates;
+	location?: Coordinates | [];
 	vehicleId?: string
 	vehicleType?: VEHICLE_TYPES | SHIPMENT_ACTIVITY;
 }
@@ -162,9 +180,9 @@ export interface Shipment {
 	pickup: Pickup;
 	delivery: Delivery;
 	packageInfo: Package;
+	shipperInfo: ShipperInfo;
 	carrierInfo: Partial<CarrierInfo>;
 	trackingHistory: Tracking[]
-
 }
 
 export interface Shipper {
@@ -201,13 +219,6 @@ interface OperatingProps {
 	open: LocationTimeWindow;
 	close: LocationTimeWindow;
 }
-export enum LocationType {
-	WAREHOUSE = 'WAREHOUSE',
-	STORE = 'STORE',
-	LASTMILE_CARRIER = 'LASTMILE_CARRIER'
-}
-// Define a type for the slice state
-
 
 export interface OperatingHoursState {
 	facility: OperatingProps;
@@ -219,8 +230,8 @@ export interface Location {
 	shipperId: string;
 	name: string;
 	type: LocationType;
-	addressLine1: string;
-	addressLine2: string;
+	line1: string;
+	line2: string;
 	city: string;
 	postcode: string;
 	region: string;
@@ -234,3 +245,25 @@ export type Tracking = {
 	status: STATUS;
 	timestamp: UnixTimestamp;
 };
+
+export type Geolocation = {
+	type: 'Point';
+	coordinates: [number, number];
+};
+
+export interface LoadTimeWindow {
+	start: number;
+	end: number;
+}
+
+export interface LoadLocation {
+	fullAddress: string;
+	street: string;
+	city: string;
+	region?: string;
+	postcode: string;
+	country: string;
+	note?: string;
+	location?: Geolocation;
+	window?: LoadTimeWindow;
+}

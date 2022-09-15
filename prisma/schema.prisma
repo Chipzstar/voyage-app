@@ -118,14 +118,24 @@ type Dimensions {
 type ShipmentPickup {
   facilityId   String
   facilityName String
-  location     String
+  fullAddress  String
+  line1        String
+  line2        String?
+  city         String
+  region       String
+  postcode     String
   window       TimeWindow
 }
 
 type ShipmentDelivery {
   facilityId   String
   facilityName String
-  location     String
+  fullAddress  String
+  line1        String
+  line2        String?
+  city         String
+  region       String
+  postcode     String
   window       TimeWindow?
 }
 
@@ -135,6 +145,13 @@ type PackageInfo {
   dimensions  Dimensions
   packageType PACKAGE_TYPE
   description String
+}
+
+type ShipperInfo {
+  name    String
+  company String
+  email   String
+  phone   String
 }
 
 type CarrierInfo {
@@ -260,8 +277,8 @@ model Location {
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   type                 LocationType
-  addressLine1         String
-  addressLine2         String?
+  line1                String
+  line2                String?
   city                 String
   postcode             String
   region               String
@@ -335,6 +352,7 @@ model Shipment {
   pickup             ShipmentPickup
   delivery           ShipmentDelivery
   packageInfo        PackageInfo
+  shipperInfo        ShipperInfo
   carrierInfo        CarrierInfo?
   trackingHistory    TrackingHistory[]
 }
@@ -562,7 +580,6 @@ enum VehicleType {
   FLATBED_TRAILER
   STEP_DECK_TRAILER
   ARCTIC_TRUCK
-  OTHER
 }
 
 enum FuelType {

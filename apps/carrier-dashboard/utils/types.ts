@@ -1,4 +1,4 @@
-import { Address, CarrierInfo, HAZMAT_TYPES, Package, PACKAGE_TYPE, SHIPMENT_ACTIVITY, STATUS, Tracking, UnixTimestamp, VEHICLE_TYPES } from '@voyage-app/shared-types';
+import { Address, CarrierInfo, HAZMAT_TYPES, LoadLocation, Package, PACKAGE_TYPE, SHIPMENT_ACTIVITY, STATUS, Tracking, UnixTimestamp, VEHICLE_TYPES } from '@voyage-app/shared-types';
 
 export enum TeamRole {
 	ADMIN = 'ADMIN',
@@ -85,11 +85,6 @@ export type StripeDetails = {
 		last4: string;
 	};
 	bankAccount?: BankAccount;
-};
-
-type Geolocation = {
-	type: 'Point';
-	coordinates: [number, number];
 };
 
 export enum DocumentType {
@@ -238,7 +233,7 @@ export interface Customer {
 	notes?: string;
 }
 
-export interface Location {
+export interface BookingLocation {
 	street: string;
 	city: string;
 	region?: string;
@@ -261,30 +256,13 @@ export interface NewBooking {
 	width: number;
 	packageType: PACKAGE_TYPE;
 	pickupDate?: any;
-	pickupLocation: Location;
-	deliveryLocation: Location;
+	pickupLocation: BookingLocation;
+	deliveryLocation: BookingLocation;
 	customerId: string;
 	driverId: string;
 	controllerId: string;
 	vehicleType: VEHICLE_TYPES;
 	description: string;
-}
-
-export interface LoadTimeWindow {
-	start: number;
-	end: number;
-}
-
-export interface LoadLocation {
-	fullAddress?: string;
-	street: string;
-	city: string;
-	region?: string;
-	postcode: string;
-	country: string;
-	note?: string;
-	location?: Geolocation;
-	window?: LoadTimeWindow;
 }
 
 export interface LoadCustomer {
