@@ -68,7 +68,7 @@ const marketplace = ({ session }) => {
 			label: item.pickup.city
 		}));
 		return uniqueArray(labels, 'value');
-	}, []);
+	}, [shipments]);
 
 	const uniqueDeliveryLocations = useMemo(() => {
 		const labels: SelectInputData[] = shipments.map((item: Shipment, index) => ({
@@ -76,7 +76,7 @@ const marketplace = ({ session }) => {
 			label: item.delivery.city
 		}));
 		return uniqueArray(labels, 'value');
-	}, []);
+	}, [shipments]);
 
 	const handleSubmit = useCallback(
 		async values => {
