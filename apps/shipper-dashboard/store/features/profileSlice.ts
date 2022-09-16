@@ -6,7 +6,7 @@ import axios from 'axios'
 
 const initialState = {}
 
-export const createShipper = createAsyncThunk('shipper/createShipper', async (payload: NewShipper, thunkAPI) => {
+/*export const createShipper = createAsyncThunk('shipper/createShipper', async (payload: NewShipper, thunkAPI) => {
 	try {
 		const newShipper = (await axios.post(`/api/shipper`, payload)).data
 		thunkAPI.dispatch(setShipper(newShipper))
@@ -15,7 +15,7 @@ export const createShipper = createAsyncThunk('shipper/createShipper', async (pa
 		console.error(err?.response?.data)
 		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
-})
+})*/
 
 export const updateShipper = createAsyncThunk('shipper/updateShipper', async (payload: Shipper, thunkAPI) => {
 	try {

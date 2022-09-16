@@ -18,7 +18,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { getToken } from 'next-auth/jwt';
-import { fetchCustomers, fetchProfile } from '../../../utils/functions';
+import { fetchCustomers, fetchCarrier } from '../../../utils/functions';
 import { useWindowSize } from '@voyage-app/shared-ui-hooks';
 
 const emptyContact: Contact = {
@@ -216,7 +216,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
 	if (session.id) {
-		const carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		const carrier = await fetchCarrier(session.id, token?.carrierId, prisma)
 		const customers = await fetchCustomers(token?.customerId, prisma)
 		store.dispatch(setCarrier(carrier))
 		store.dispatch(setCustomers(customers));

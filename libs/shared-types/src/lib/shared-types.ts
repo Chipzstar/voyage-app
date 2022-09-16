@@ -185,6 +185,18 @@ export interface Shipment {
 	trackingHistory: Tracking[]
 }
 
+export type ShipperStripe = {
+	customerId: string;
+	paymentMethod?: {
+		id: string;
+		fingerprint: string;
+		brand: string;
+		expMonth: number;
+		expYear: number;
+		last4: string;
+	};
+};
+
 export interface Shipper {
 	id: string;
 	userId: string;
@@ -196,17 +208,7 @@ export interface Shipper {
 	address: Address;
 	phone: string;
 	email: string;
-	stripe: {
-		customerId: string
-		paymentMethod: {
-			id: string;
-			brand: string;
-			fingerprint: string;
-			last4: string;
-			expMonth: string;
-			expYear: string;
-		}
-	}
+	stripe: ShipperStripe
 }
 
 export interface LocationTimeWindow {

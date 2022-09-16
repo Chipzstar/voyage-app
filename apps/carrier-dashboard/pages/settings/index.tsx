@@ -12,7 +12,7 @@ import { wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
-import { fetchDocuments, fetchProfile, fetchSettings } from '../../utils/functions';
+import { fetchDocuments, fetchCarrier, fetchSettings } from '../../utils/functions';
 import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
 import { setSettings, useSettings } from '../../store/feature/settingsSlice';
 import { ActivationStatus } from '../../utils/types';
@@ -64,7 +64,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id || token?.carrierId) {
-		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
+		let carrier = await fetchCarrier(session.id, token?.carrierId, prisma);
 		let settings = await fetchSettings(token?.carrierId, prisma);
 		let documents = await fetchDocuments(token?.carrierId, prisma);
 		store.dispatch(setCarrier(carrier));
