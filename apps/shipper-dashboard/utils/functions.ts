@@ -105,7 +105,7 @@ export function filterByTimeRange(data: [], range: [Date, Date]) {
 	});
 }
 
-export async function fetchShipper(userId, shipperId, prisma) {
+export async function fetchShipper(userId, shipperId, prisma) : Promise<Shipper> {
 	return await prisma.shipper.findFirst({
 		where: {
 			OR: [
@@ -136,7 +136,7 @@ export async function fetchShipper(userId, shipperId, prisma) {
 	});
 }
 
-export async function fetchLocations(shipperId, prisma) {
+export async function fetchLocations(shipperId, prisma) : Promise<Location[]> {
 	let locations = await prisma.location.findMany({
 		where: {
 			shipperId: {
@@ -155,7 +155,7 @@ export async function fetchLocations(shipperId, prisma) {
 	return locations;
 }
 
-export async function fetchBookings(shipperId, prisma) {
+export async function fetchBookings(shipperId, prisma) : Promise<Booking[]>{
 	let bookings = await prisma.booking.findMany({
 		where: {
 			shipperId: {

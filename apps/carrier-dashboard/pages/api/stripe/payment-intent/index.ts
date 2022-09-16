@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CURRENCY, formatAmountForStripe } from '../../../../utils/stripe';
+import { formatAmountForStripe } from '../../../../utils/stripe';
 import Stripe from 'stripe';
 import { cors, runMiddleware, stripe } from '../../index';
+import { CURRENCY } from '@voyage-app/shared-utils';
 
 export default async function handler(
 	req: NextApiRequest,

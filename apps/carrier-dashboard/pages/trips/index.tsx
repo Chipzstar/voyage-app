@@ -3,7 +3,7 @@ import { Tabs } from '@mantine/core';
 import Trips from '../../containers/Trips';
 import { STATUS } from '@voyage-app/shared-types';
 import PageContainer from '../../layout/PageContainer'
-import { fetchLoads, fetchProfile } from '../../utils/functions'
+import { fetchLoads, fetchCarrier } from '../../utils/functions'
 import prisma from '../../db'
 import { setCarrier } from '../../store/feature/profileSlice'
 import { setLoads, useLoads } from '../../store/feature/loadSlice'
@@ -65,7 +65,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async({ re
 		};
 	}
 	if (session.id || token?.carrierId){
-		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		let carrier = await fetchCarrier(session.id, token?.carrierId, prisma)
 		let loads = await fetchLoads(token?.carrierId, prisma)
 		store.dispatch(setCarrier(carrier));
 		store.dispatch(setLoads(loads));

@@ -81,6 +81,7 @@ const create = ({ bookingID }) => {
 		'hover:text-white': true,
 		'font-medium': true
 	});
+
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
 	const stores = useMemo(() => locations.filter(({ type }) => type === LocationType.STORE), [locations]);
 	const carriers = useMemo(() => locations.filter(({ type }) => type === LocationType.LASTMILE_CARRIER), [locations]);
@@ -151,9 +152,6 @@ const create = ({ bookingID }) => {
 			try {
 				let shipment = await generateShipment(values, pickupLocation, deliveryLocation, shipper);
 				shipment = await dispatch(createShipment(shipment)).unwrap();
-				console.log('-----------------------------------------------');
-				console.log(shipment);
-				console.log('-----------------------------------------------');
 				notifySuccess('create-shipment-success', 'Your shipment was created successfully!', <Check size={20} />);
 				booking && (await dispatch(deleteBooking(booking.id)).unwrap());
 				setLoading(prevState => ({ ...prevState, show: false }));

@@ -1,7 +1,6 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import 'react-big-calendar/lib/sass/styles.scss';
-import 'react-credit-cards/lib/styles.scss';
 import '../styles/globals.css';
 import '../scss/styles.scss';
 import '../utils/string.extensions';

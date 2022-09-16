@@ -13,7 +13,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { PUBLIC_PATHS } from '../../utils/constants';
-import { fetchDrivers, fetchLoads, fetchMembers, fetchProfile, fetchVehicles } from '../../utils/functions';
+import { fetchDrivers, fetchLoads, fetchMembers, fetchCarrier, fetchVehicles } from '../../utils/functions';
 import prisma from '../../db';
 import { setCarrier } from '../../store/feature/profileSlice';
 import { setVehicles, useVehicles } from '../../store/feature/vehicleSlice';
@@ -162,7 +162,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id || token?.carrierId) {
-		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
+		let carrier = await fetchCarrier(session.id, token?.carrierId, prisma);
 		let drivers = await fetchDrivers(token?.carrierId, prisma);
 		let loads = await fetchLoads(token?.carrierId, prisma);
 		let vehicles = await fetchVehicles(token?.carrierId, prisma);

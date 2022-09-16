@@ -18,7 +18,7 @@ import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
 import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
 import { getToken } from 'next-auth/jwt'
-import { fetchMembers, fetchProfile } from '../../../utils/functions';
+import { fetchMembers, fetchCarrier } from '../../../utils/functions';
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -144,7 +144,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	const session = await unstable_getServerSession(req, res, authOptions);
 	const token = await getToken({ req });
 	if (session.id) {
-		const carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		const carrier = await fetchCarrier(session.id, token?.carrierId, prisma)
 		store.dispatch(setCarrier(carrier));
 		const members = await fetchMembers(token?.carrierId, prisma)
 		store.dispatch(setMembers(members));

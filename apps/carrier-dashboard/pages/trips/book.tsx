@@ -10,7 +10,7 @@ import Link from 'next/link';
 import ContentContainer from '../../layout/ContentContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { NewBooking, TeamRole } from '../../utils/types';
-import { fetchCustomers, fetchDrivers, fetchMembers, fetchProfile, fetchSettings, generateLoad } from '../../utils/functions';
+import { fetchCustomers, fetchDrivers, fetchMembers, fetchCarrier, fetchSettings, generateLoad } from '../../utils/functions';
 import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
 import { setMembers, useMembers } from '../../store/feature/memberSlice';
 import { setCustomers, useCustomers } from '../../store/feature/customerSlice';
@@ -459,7 +459,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let carrier = await fetchProfile(session.id, token?.carrierId, prisma);
+		let carrier = await fetchCarrier(session.id, token?.carrierId, prisma);
 		let members = await fetchMembers(token?.carrierId, prisma);
 		let drivers = await fetchDrivers(token?.carrierId, prisma);
 		let customers = await fetchCustomers(token?.carrierId, prisma);
