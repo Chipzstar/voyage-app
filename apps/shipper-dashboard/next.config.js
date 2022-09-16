@@ -13,6 +13,13 @@ const nextConfig = {
 	},
 	sassOptions: {
 		includePaths: [path.join(__dirname, 'scss')]
+	},
+	webpack: (config, options) => {
+		config.experiments = {
+			topLevelAwait: true,
+			layers: true
+		};
+		return config;
 	}
 };
 

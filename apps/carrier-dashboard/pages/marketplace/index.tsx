@@ -22,7 +22,7 @@ import Pluralize from 'react-pluralize';
 import AssignDriverModal from '../../modals/AssignDriverModal';
 import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
 import { setMembers, useMembers } from '../../store/feature/memberSlice';
-import { fetchDrivers, fetchMembers, fetchProfile } from '../../utils/functions';
+import { fetchDrivers, fetchMembers, fetchCarrier } from '../../utils/functions';
 import ReviewModal from '../../modals/ReviewModal';
 import { createLoad } from '../../store/feature/loadSlice';
 import axios from 'axios';
@@ -340,7 +340,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		const carrier = await fetchProfile(session.id, token?.profileId, prisma);
+		const carrier = await fetchCarrier(session.id, token?.profileId, prisma);
 		const shipments = await fetchShipments(undefined, prisma);
 		const drivers = await fetchDrivers(token?.carrierId, prisma);
 		const members = await fetchMembers(token?.carrierId, prisma);

@@ -120,7 +120,7 @@ export async function generateLoad(profile, values: NewBooking, drivers: Driver[
 	};
 }
 
-export async function fetchProfile(userId, carrierId, prisma) {
+export async function fetchCarrier(userId, carrierId, prisma) {
 	return await prisma.carrier.findFirst({
 		where: {
 			OR: [

@@ -1,6 +1,7 @@
 import { customAlphabet } from 'nanoid';
 import { STATUS } from '@voyage-app/shared-types';
 
+export const CURRENCY = 'gbp';
 export const alphanumericId = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789');
 export const numericId = customAlphabet('1234567890');
 
@@ -65,7 +66,6 @@ export const countries = [
 	{ code: 'GB', code3: 'GBR', name: 'United Kingdom', number: '826', currency: 'GBP' },
 	{ code: 'US', code3: 'USA', name: 'United States', number: '840', currency: 'USD' }
 ];
-
 export const PLACE_TYPES = {
 	ESTABLISHMENT: 'establishment',
 	SUB_PREMISE: 'subpremise',

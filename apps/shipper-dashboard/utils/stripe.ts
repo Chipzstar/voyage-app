@@ -1,17 +1,5 @@
 
 
-export function formatAmountForDisplay(
-	amount: number,
-	currency: string
-): string {
-	let numberFormat = new Intl.NumberFormat(['en-GB'], {
-		style: 'currency',
-		currency: currency,
-		currencyDisplay: 'symbol',
-	})
-	return numberFormat.format(amount)
-}
-
 export function formatAmountForStripe(
 	amount: number,
 	currency: string

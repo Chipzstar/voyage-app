@@ -21,7 +21,7 @@ import prisma from '../../../db';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
-import { fetchDrivers, fetchProfile, fetchVehicles } from '../../../utils/functions';
+import { fetchDrivers, fetchCarrier, fetchVehicles } from '../../../utils/functions';
 
 const items = [
 	{ title: 'Home', href: PATHS.HOME },
@@ -220,7 +220,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let carrier = await fetchProfile(session.id, token?.carrierId, prisma)
+		let carrier = await fetchCarrier(session.id, token?.carrierId, prisma)
 		store.dispatch(setCarrier(carrier));
 		let drivers = await fetchDrivers(token?.carrierId, prisma);
 		store.dispatch(setDrivers(drivers));

@@ -1,4 +1,12 @@
-import { Address, PACKAGE_TYPE, SCHEDULING_TYPE, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE } from '@voyage-app/shared-types';
+import {
+	Address,
+	PACKAGE_TYPE,
+	SCHEDULING_TYPE,
+	SERVICE_TYPE,
+	SHIPMENT_ACTIVITY,
+	SHIPMENT_TYPE,
+	ShipperStripe
+} from '@voyage-app/shared-types';
 
 export type UnixTimestamp = number;
 
@@ -29,7 +37,6 @@ export interface Booking {
 }
 
 export interface NewShipper {
-	customerId: string;
 	fullName: string;
 	firstname: string;
 	lastname: string;
@@ -39,4 +46,5 @@ export interface NewShipper {
 	password: string;
 	confirmPassword: string;
 	address: Address;
+	stripe?: ShipperStripe
 }
