@@ -4,7 +4,9 @@ import { OperatingHoursState } from '@voyage-app/shared-types';
 export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
 
 export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY
-console.log(STRIPE_PUBLIC_KEY)
+export const STRIPE_PUBLIC_KEY_PROD = "pk_live_51LXPkaEqdCHY4B77QHJ40Bo0S39Nbf3hmGXzQtbB9sHNywI3TtJntAYTCmIao99dRHj4AOJy55hUSxaGfTn0RvHt00pGvXRqic"
+export const STRIPE_PUBLIC_KEY_STAGING = "pk_test_51LXPkaEqdCHY4B77SWShCyp3LDZXzgVCfNmIk9mvQfIHYZLOt9sLBFQN9af8EZDLimKj5sCTE3Y1vwkPR99fCYbq008YylFuKb"
+export const STRIPE_PUBLIC_KEY_DEV = "pk_test_51LaOJhGDq1hax9m2x8Sr88iFO6OpMZll8TAkUORLrImT2gCarB5jAbka9vaFG7V4GJYEM6sHqWR0QOrP0iuni5US00eEkouX2X"
 
 export const PUBLIC_PATHS = {
 	LOGIN: '/login'
