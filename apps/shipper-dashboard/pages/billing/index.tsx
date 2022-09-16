@@ -23,7 +23,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, PaymentMethod, StripeElementsOptions } from '@stripe/stripe-js';
 import { Group, Button } from '@mantine/core';
 
-const stripePromise = await loadStripe(String(STRIPE_PUBLIC_KEY));
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_API_KEY || String(STRIPE_PUBLIC_KEY));
 
 const Billing = ({ clientSecret }) => {
 	const [updateCardModal, showUpdateCardModal] = useState(false);
