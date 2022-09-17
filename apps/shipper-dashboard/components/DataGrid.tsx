@@ -11,11 +11,12 @@ export interface DataGridProps {
 	emptyContent: JSX.Element;
 	spacingY?: MantineNumberSize;
 	offset?: number;
+	rowHeight?: number;
 }
 
-const DataGrid = ({ activePage, setPage, rows, headings = [], emptyContent, offset }: DataGridProps) => {
+const DataGrid = ({ activePage, setPage, rows, headings = [], emptyContent, offset=0, rowHeight=100 }: DataGridProps) => {
 	const { height: windowHeight } = useWindowSize();
-	const { slice, range } = useTable(rows, activePage, windowHeight - offset);
+	const { slice, range } = useTable(rows, activePage, windowHeight - offset, rowHeight);
 	return rows?.length ? (
 		<div className='flex flex-col justify-between'>
 			<Table verticalSpacing='sm' fontSize='md'>

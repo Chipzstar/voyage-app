@@ -4,8 +4,9 @@ import Link from 'next/link';
 import moment from 'moment/moment';
 import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
 import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-app/shared-types';
-import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
 import { capitalize, checkWithinTimeRange, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
+import { useWindowSize } from '@voyage-app/shared-ui-hooks';
+import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
 import { ActionIcon, Anchor, Badge, Button, Group, LoadingOverlay, MultiSelect, ScrollArea, Select, SimpleGrid, Stack, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -31,7 +32,6 @@ import { Load } from '../../utils/types';
 import { setCarrier } from '../../store/feature/profileSlice';
 import { useRouter } from 'next/router';
 import { useListState } from '@mantine/hooks';
-import { useWindowSize } from '@voyage-app/shared-ui-hooks';
 
 let subscriber;
 
@@ -193,18 +193,18 @@ const marketplace = ({ session }) => {
 				loadInfo={selectedShipment}
 			/>
 			<AssignDriverModal opened={assignmentModal} onClose={() => showAssignmentModal(false)} team={members} drivers={drivers} onSubmit={handleSubmit} />
-			<form className='flex flex-row space-x-3 pb-3' onReset={form.onReset}>
+			<form className='flex flex-row justify-between space-x-2 pb-3 w-full' onReset={form.onReset}>
 				<div className='flex'>
 					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} {...form.getInputProps('pickup')} />
 					<Select size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} {...form.getInputProps('delivery')} />
 				</div>
 				<Select
+					placeholder='Any distance'
+					size='sm'
 					classNames={{
 						root: 'w-32'
 					}}
-					size='sm'
 					data={[
-						{ label: 'Any', value: String(Number.POSITIVE_INFINITY) },
 						{ label: '10mi', value: '10' },
 						{ label: '20mi', value: '20' },
 						{ label: '50mi', value: '50' },
@@ -218,7 +218,7 @@ const marketplace = ({ session }) => {
 					amountOfMonths={2}
 					placeholder='Select dates'
 					classNames={{
-						root: 'grow'
+						root: 'w-56'
 					}}
 					icon={<Calendar size={16} />}
 					{...form.getInputProps('dateRange')}
@@ -233,6 +233,9 @@ const marketplace = ({ session }) => {
 					)}
 					clearButtonLabel='Clear selection'
 					clearable
+					classNames={{
+						root: 'w-60'
+					}}
 					{...form.getInputProps('equipment')}
 				/>
 				<Group spacing='xs'>
@@ -294,7 +297,7 @@ const marketplace = ({ session }) => {
 									</SimpleGrid>
 								</div>
 							</section>
-							<section className='flex items-center justify-between'>
+							<section className='flex justify-between'>
 								<div className='flex items-end space-x-3'>
 									<div className='flex items-center space-x-3'>
 										<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />

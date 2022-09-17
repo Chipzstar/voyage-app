@@ -3,14 +3,14 @@ import { Tabs } from '@mantine/core';
 import { PUBLIC_PATHS } from '../../utils/constants';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { setShipments, getShipments, useShipments } from '../../store/features/shipmentsSlice';
+import { setShipments, getShipments, useShipments } from '../../store/features/shipmentSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { AppDispatch, wrapper } from '../../store';
 import { fetchShipper } from '../../utils/functions';
 import { setShipper } from '../../store/features/profileSlice';
-import { Shipment, STATUS } from '@voyage-app/shared-types';
+import { STATUS } from '@voyage-app/shared-types';
 import Shipments from '../../containers/Shipments';
 import prisma from '../../db';
 

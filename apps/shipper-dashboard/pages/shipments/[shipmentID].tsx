@@ -9,7 +9,7 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import prisma from '../../db';
 import { useSelector } from 'react-redux';
-import { setShipments, useShipments } from '../../store/features/shipmentsSlice';
+import { setShipments, useShipments } from '../../store/features/shipmentSlice';
 import { capitalize, fetchShipments, sanitize } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
 import { fetchShipper } from '../../utils/functions';

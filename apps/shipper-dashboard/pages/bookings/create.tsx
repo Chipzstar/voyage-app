@@ -4,12 +4,12 @@ import { useForm } from '@mantine/form';
 import { Calendar, CalendarStats, Check, ChevronDown, ChevronLeft, X } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
-import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SelectInputData, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, VEHICLE_TYPES, VehicleOnly } from '@voyage-app/shared-types';
+import { LocationType, PACKAGE_TYPE, SCHEDULING_TYPE, SelectInputData, SERVICE_TYPE, SHIPMENT_ACTIVITY, SHIPMENT_TYPE, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { Booking } from '../../utils/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { CustomLoader, DateTimePicker } from '@voyage-app/shared-ui-components';
 import { PATHS, PUBLIC_PATHS } from 'apps/shipper-dashboard/utils/constants';
-import { createShipment } from '../../store/features/shipmentsSlice';
+import { createShipment } from '../../store/features/shipmentSlice';
 import moment from 'moment';
 import { fetchBookings, fetchLocations, fetchShipper, generateShipment } from '../../utils/functions';
 import { createBooking, deleteBooking, setBookings, updateBooking, useBooking } from '../../store/features/bookingsSlice';
@@ -151,7 +151,7 @@ const create = ({ bookingID }) => {
 			const deliveryLocation = locations.find(({ id }) => id === values.deliveryLocation);
 			try {
 				let shipment = await generateShipment(values, pickupLocation, deliveryLocation, shipper);
-				shipment = await dispatch(createShipment(shipment)).unwrap();
+				await dispatch(createShipment(shipment)).unwrap();
 				notifySuccess('create-shipment-success', 'Your shipment was created successfully!', <Check size={20} />);
 				booking && (await dispatch(deleteBooking(booking.id)).unwrap());
 				setLoading(prevState => ({ ...prevState, show: false }));
@@ -405,7 +405,7 @@ const create = ({ bookingID }) => {
 								rightSectionWidth={30}
 								classNames={{ root: 'md:w-96' }}
 								styles={{ rightSection: { pointerEvents: 'none' } }}
-								data={Object.values(SHIPMENT_ACTIVITY).map((item, index): SelectInputData => {
+								data={Object.values(SHIPMENT_ACTIVITY).map((item): SelectInputData => {
 									return item === SHIPMENT_ACTIVITY.NO_PREFERENCE
 										? {
 												value: item,

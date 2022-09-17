@@ -6,7 +6,7 @@ import moment from 'moment';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import prisma from '../db';
-import { setShipments } from '../store/features/shipmentsSlice';
+import { setShipments } from '../store/features/shipmentSlice';
 import { PUBLIC_PATHS } from '../utils/constants';
 import { getToken } from 'next-auth/jwt';
 import { DateRange } from '@voyage-app/shared-types';

@@ -4,15 +4,15 @@ import { PATHS } from '../utils/constants';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { Booking } from '../utils/types'
+import { Booking } from '../utils/types';
 import { Shipment } from '@voyage-app/shared-types';
 import { useBooking } from '../store/features/bookingsSlice';
-import { useShipments } from '../store/features/shipmentsSlice';
+import { useShipments } from '../store/features/shipmentSlice';
 
 const Empty = () => {
 	const router = useRouter();
 	return (
-		<div className='space-y-8 h-full flex flex-col grow justify-center items-center'>
+		<div className='flex h-full grow flex-col items-center justify-center space-y-8'>
 			<h3 className='text-5xl font-light'>Welcome to Voyage!</h3>
 			<p className='text-xl'>Your middle mile shipping partner optimizing your shipments.</p>
 			<button className='voyage-button' onClick={() => router.push(PATHS.CREATE_BOOKING)}>
@@ -24,8 +24,8 @@ const Empty = () => {
 
 const Bookings = () => {
 	const router = useRouter();
-	const bookings = useSelector(useBooking)
-	const shipments = useSelector(useShipments)
+	const bookings = useSelector(useBooking);
+	const shipments = useSelector(useShipments);
 	const [activePage, setPage] = useState(1);
 
 	const rows = bookings
@@ -65,8 +65,15 @@ const Bookings = () => {
 		);
 
 	return (
-		<div className='py-5 flex flex-col grow'>
-			<DataGrid activePage={activePage} setPage={setPage} offset={100} rows={rows} headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']} emptyContent={<Empty />} />
+		<div className='flex grow flex-col py-5'>
+			<DataGrid
+				activePage={activePage}
+				setPage={setPage}
+				rows={rows}
+				headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']}
+				emptyContent={<Empty />}
+				rowHeight={60}
+			/>
 		</div>
 	);
 };

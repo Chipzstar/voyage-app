@@ -11,14 +11,14 @@ export interface DataGridProps {
 	emptyContent: JSX.Element;
 	spacingY?: MantineNumberSize;
 	offset?: number;
-	paginationPadding?: string
+	rowHeight?: number;
 }
 
-const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spacingY = 'sm', offset =0, paginationPadding=""}: DataGridProps) => {
+const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spacingY = 'sm', offset = 0, rowHeight = 100 }: DataGridProps) => {
 	const { height: windowHeight } = useWindowSize();
-	const { slice, range } = useTable(rows, activePage, windowHeight - offset);
+	const { slice, range } = useTable(rows, activePage, windowHeight - offset, rowHeight);
 	return rows?.length ? (
-		<div className="flex flex-col justify-between">
+		<div className='flex flex-col justify-between'>
 			<Table verticalSpacing={spacingY} fontSize='md'>
 				<thead>
 					<tr>
@@ -29,13 +29,11 @@ const DataGrid = ({ rows, activePage, setPage, headings = [], emptyContent, spac
 				</thead>
 				<tbody>{slice}</tbody>
 			</Table>
-			<div className={paginationPadding}>
-				<Pagination page={activePage} onChange={setPage} total={range.length} position="left" />
-			</div>
+			<Pagination page={activePage} onChange={setPage} total={range.length} position='left' />
 		</div>
 	) : (
 		<EmptyTable content={emptyContent} />
 	);
 };
 
-export default DataGrid
+export default DataGrid;

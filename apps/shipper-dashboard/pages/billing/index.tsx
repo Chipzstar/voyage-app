@@ -12,7 +12,7 @@ import { formatAmountForStripe } from '../../utils/stripe';
 import { fetchShipper } from '../../utils/functions';
 import { Shipment, STATUS, ShipperStripe } from '@voyage-app/shared-types';
 import { CURRENCY } from '@voyage-app/shared-utils';
-import { useShipments } from '../../store/features/shipmentsSlice';
+import { useShipments } from '../../store/features/shipmentSlice';
 import { PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from '../../utils/constants';
 import { setShipper, updateShipper, useShipper } from '../../store/features/profileSlice';
 import PaymentCardForm from '../../components/PaymentCardForm';
