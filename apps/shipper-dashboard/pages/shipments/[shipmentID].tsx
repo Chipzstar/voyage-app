@@ -23,7 +23,8 @@ export const EVENT_DESCRIPTIONS = {
 	[STATUS.DISPATCHED]: 'Shipment has been accepted by the driver and heading to pickup',
 	[STATUS.EN_ROUTE]: 'Driver has collected the shipment and is heading to the destination',
 	[STATUS.COMPLETED]: 'Shipment has been delivered successfully',
-	[STATUS.CANCELLED]: 'Shipment has been cancelled'
+	[STATUS.CANCELLED]: 'Shipment has been cancelled',
+	[STATUS.EXPIRED]: 'Shipment was not accepted before the pickup time'
 };
 
 const viewShipment = ({ shipmentId, pageIndex }) => {

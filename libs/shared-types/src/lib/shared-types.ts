@@ -64,7 +64,8 @@ export enum STATUS {
 	EN_ROUTE = 'EN-ROUTE',
 	AT_DROPOFF = 'AT_DROPOFF',
 	COMPLETED = 'COMPLETED',
-	CANCELLED = 'CANCELLED'
+	CANCELLED = 'CANCELLED',
+	EXPIRED = "EXPIRED",
 }
 
 export const STATUS_COLOUR = {
@@ -74,6 +75,7 @@ export const STATUS_COLOUR = {
 	[STATUS.EN_ROUTE]: "#4285F4",
 	[STATUS.COMPLETED]: "#00FF19",
 	[STATUS.CANCELLED]: "#565656",
+	[STATUS.EXPIRED]: '#964B00'
 }
 
 export enum SERVICE_TYPE {
@@ -182,7 +184,8 @@ export interface Shipment {
 	packageInfo: Package;
 	shipperInfo: ShipperInfo;
 	carrierInfo: Partial<CarrierInfo>;
-	trackingHistory: Tracking[]
+	trackingHistory: Tracking[],
+	expiresAt?: UnixTimestamp;
 }
 
 export type ShipperStripe = {
