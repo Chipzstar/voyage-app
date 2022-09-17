@@ -4,7 +4,7 @@ import { PATHS, PUBLIC_PATHS } from '../../utils/constants';
 import Bookings from '../../containers/Bookings';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { setShipments } from '../../store/features/shipmentsSlice';
+import { setShipments } from '../../store/features/shipmentSlice';
 import { getToken } from 'next-auth/jwt';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { wrapper } from '../../store';

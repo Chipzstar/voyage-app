@@ -16,10 +16,10 @@ const sliceData = (data, page, rowsPerPage) => {
 };
 
 // @ts-ignore
-export function useTable(data, page, height) {
+export function useTable(data, page, height, rowHeight) {
 	const [tableRange, setTableRange] = useState<Number[]>([]);
 	const [slice, setSlice] = useState<any[]>([]);
-	const rowsPerPage = Math.floor(height / 100);
+	const rowsPerPage = Math.floor(height / rowHeight);
 
 	useEffect(() => {
 		const range = calculateRange(data, rowsPerPage);

@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import profileReducer from './features/profileSlice';
 import locationsReducer from './features/locationSlice';
-import shipmentsReducer from './features/shipmentsSlice';
+import shipmentsReducer from './features/shipmentSlice';
 import bookingsReducer from './features/bookingsSlice';
 import { HYDRATE } from 'next-redux-wrapper';
 
