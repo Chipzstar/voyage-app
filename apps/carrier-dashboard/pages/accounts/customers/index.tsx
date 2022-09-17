@@ -74,7 +74,7 @@ const customers = () => {
 
 	const rows = filteredCustomers.map((element, index) => {
 		return (
-			<tr key={index}>
+			<tr key={element.id}>
 				<td colSpan={1}>
 					<span>{element.companyName}</span>
 				</td>

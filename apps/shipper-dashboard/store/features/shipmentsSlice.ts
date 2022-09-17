@@ -4,6 +4,17 @@ import axios from 'axios';
 
 const initialState = [];
 
+export const getShipments = createAsyncThunk('shipment/getShipments', async (payload, thunkAPI) => {
+	try {
+		const shipments = (await axios.get('/api/shipment')).data
+		thunkAPI.dispatch(setShipments(shipments))
+		return shipments
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
 export const createShipment = createAsyncThunk('shipment/createShipment', async (payload : Shipment, thunkAPI) => {
 	try {
 		const shipment = (await axios.post(`/api/shipment/${payload.shipmentId}`, payload)).data

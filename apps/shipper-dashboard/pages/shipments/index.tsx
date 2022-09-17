@@ -1,24 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from '@mantine/core';
 import { PUBLIC_PATHS } from '../../utils/constants';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { setShipments, useShipments } from '../../store/features/shipmentsSlice';
-import { useSelector } from 'react-redux';
+import { setShipments, getShipments, useShipments } from '../../store/features/shipmentsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { getToken } from 'next-auth/jwt';
-import { wrapper } from '../../store';
+import { AppDispatch, wrapper } from '../../store';
 import { fetchShipper } from '../../utils/functions';
 import { setShipper } from '../../store/features/profileSlice';
-import { STATUS } from '@voyage-app/shared-types';
+import { Shipment, STATUS } from '@voyage-app/shared-types';
 import Shipments from '../../containers/Shipments';
 import prisma from '../../db';
 
-const Empty = ({ message }) => (
-	<div className='mx-auto my-auto'>
-		<span className='my-auto mx-auto text-3xl'>{message}</span>
-	</div>
-);
+let subscriber;
 
 const TAB_LABELS = {
 	ALL: 'ALL',
@@ -27,16 +23,21 @@ const TAB_LABELS = {
 	COMPLETED: 'COMPLETED'
 };
 
-/*const STATUS_MAP = {
-	ALL: Object.values(STATUS),
-	PENDING: [STATUS.NEW , STATUS.PENDING],
-	IN_TRANSIT: [STATUS.AT_PICKUP, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.EN_ROUTE],
-	COMPLETED: [STATUS.COMPLETED],
-}*/
-
 const index = () => {
+	const dispatch = useDispatch<AppDispatch>();
 	const shipments = useSelector(useShipments);
 	const [activeTab, setActiveTab] = useState<string | null>(TAB_LABELS.ALL);
+
+	function fetch() {
+		dispatch(getShipments())
+			.unwrap()
+			.then(() => console.log("fetching shipments!"));
+	}
+
+	useEffect(() => {
+		subscriber = setInterval(fetch, 5000);
+		return () => clearInterval(subscriber);
+	}, []);
 
 	return (
 		<div className='h-screen p-4'>

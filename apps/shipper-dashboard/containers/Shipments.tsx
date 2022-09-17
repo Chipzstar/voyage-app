@@ -38,8 +38,9 @@ const Shipments = ({ shipments, statuses = Object.values(STATUS), message }: Tri
 				'bg-pending-400': element.status === STATUS.PENDING,
 				'bg-dispatched-400': element.status === STATUS.DISPATCHED,
 				'bg-en-route-400': element.status === STATUS.EN_ROUTE,
-				'bg-completed-300': element.status === STATUS.COMPLETED,
-				'bg-cancelled-300': element.status === STATUS.CANCELLED
+				'bg-completed-500': element.status === STATUS.COMPLETED,
+				'bg-cancelled-300': element.status === STATUS.CANCELLED,
+				'bg-expired-500/75': element.status === STATUS.EXPIRED,
 			});
 			return (
 				<tr key={index}>

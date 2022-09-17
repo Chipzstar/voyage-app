@@ -295,7 +295,7 @@ const marketplace = ({ session }) => {
 								</div>
 							</section>
 							<section className='flex items-center justify-between'>
-								<div className='flex items-center space-x-3'>
+								<div className='flex items-end space-x-3'>
 									<div className='flex items-center space-x-3'>
 										<img src='/static/images/flatbed-trailer.svg' alt='' width={50} height={40} />
 									</div>
@@ -303,20 +303,23 @@ const marketplace = ({ session }) => {
 										{shipment.packageInfo.weight} kg of {shipment.packageInfo.packageType}s
 									</span>
 								</div>
-								<div className='flex items-center space-x-3'>
+								<div className='flex items-end space-x-3'>
 									<span className='text-2xl font-semibold'>{`£${shipment.rate.toFixed(2)}`}</span>
 									<ActionIcon color='dark' size='md'>
 										<Message size={19} />
 									</ActionIcon>
-									<button
-										className='voyage-button h-10 md:w-32'
-										onClick={() => {
-											setSelectedShipment(shipment);
-											showReviewModal(true);
-										}}
-									>
-										Book
-									</button>
+									<Stack spacing="xs" align="center">
+										{moment(shipment?.expiresAt).isValid() && <Text size="sm" weight={600} color="red">Expires {moment.unix(shipment?.expiresAt).fromNow()}</Text>}
+										<button
+											className='voyage-button h-10 md:w-32'
+											onClick={() => {
+												setSelectedShipment(shipment);
+												showReviewModal(true);
+											}}
+										>
+											Book
+										</button>
+									</Stack>
 								</div>
 							</section>
 						</main>
