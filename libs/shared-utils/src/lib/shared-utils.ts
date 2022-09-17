@@ -62,7 +62,6 @@ export async function fetchShipments(shipperId, prisma): Promise<Shipment[]> {
 		updatedAt: moment(shipment.updatedAt).unix()
 	}));
 	return shipments
-
 }
 export function notifySuccess(id: string, message: string, icon: JSX.Element) {
 	showNotification({

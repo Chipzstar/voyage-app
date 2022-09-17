@@ -69,14 +69,13 @@ const vehicles = () => {
 	);
 
 	useEffect(() => {
-		console.log(vehicles)
 		setFilter(vehicles)
 	}, [vehicles]);
 
 	const rows = filteredVehicles.map((v, index) => {
 		const foundDriver = drivers.find(driver => driver.vehicleId === v.id);
 		return (
-			<tr key={v.vehicleId}>
+			<tr key={v.id}>
 				<td colSpan={1}>
 					<span>{v.vehicleName}</span>
 				</td>
@@ -128,7 +127,7 @@ const vehicles = () => {
 	}, [debouncedSearch]);
 
 	return (
-		<ContentContainer classNames='py-4 px-8 h-screen flex flex-col'>
+		<ContentContainer classNames='py-4 px-8 h-screen'>
 			<div className='flex justify-between items-center mt-2 mb-6'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, model, make or reg no.' onChange={e => debouncedSearch(e.target.value)} size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_VEHICLE)}>

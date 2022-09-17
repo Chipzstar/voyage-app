@@ -298,6 +298,7 @@ enum STATUS {
   AT_DROPOFF
   COMPLETED
   CANCELLED
+  EXPIRED
 }
 
 enum SERVICE_TYPE {
@@ -319,9 +320,12 @@ enum SCHEDULING_TYPE {
 
 enum SHIPMENT_ACTIVITY {
   NO_PREFERENCE
+  DRY_VAN
   TAIL_LIFT
   JUMBO_TRAILER
   FLATBED_TRAILER
+  STEP_DECK_TRAILER
+  ARCTIC_TRUCK
 }
 
 enum PACKAGE_TYPE {
@@ -355,6 +359,7 @@ model Shipment {
   shipperInfo        ShipperInfo
   carrierInfo        CarrierInfo?
   trackingHistory    TrackingHistory[]
+  expiresAt          Int?                @db.Long
 }
 model Shipper {
   id        String         @id @default(auto()) @map("_id") @db.ObjectId

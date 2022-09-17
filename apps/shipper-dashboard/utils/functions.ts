@@ -88,7 +88,8 @@ export async function generateShipment(values: Booking, pickupLocation: Location
 					status: STATUS.NEW,
 					timestamp: moment().unix()
 				}
-			]
+			],
+			expiresAt: values.pickupDate
 		};
 	} catch (e) {
 		console.error(e);
