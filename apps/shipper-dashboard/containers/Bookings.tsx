@@ -9,7 +9,7 @@ import { Shipment } from '@voyage-app/shared-types';
 import { useBooking } from '../store/features/bookingsSlice';
 import { useShipments } from '../store/features/shipmentSlice';
 
-const Empty = () => {
+const Empty = ({shipper}) => {
 	const router = useRouter();
 	return (
 		<div className='flex h-full grow flex-col items-center justify-center space-y-8'>
@@ -22,7 +22,7 @@ const Empty = () => {
 	);
 };
 
-const Bookings = () => {
+const Bookings = ({ shipperInfo }) => {
 	const router = useRouter();
 	const bookings = useSelector(useBooking);
 	const shipments = useSelector(useShipments);
@@ -66,14 +66,7 @@ const Bookings = () => {
 
 	return (
 		<div className='flex grow flex-col py-5'>
-			<DataGrid
-				activePage={activePage}
-				setPage={setPage}
-				rows={rows}
-				headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']}
-				emptyContent={<Empty />}
-				rowHeight={60}
-			/>
+			<DataGrid activePage={activePage} setPage={setPage} rows={rows} headings={['Booking ID', 'Status', 'Rate', 'Time Window', 'Carrier', '']} emptyContent={<Empty shipper={shipperInfo}/>} rowHeight={60} />
 		</div>
 	);
 };
