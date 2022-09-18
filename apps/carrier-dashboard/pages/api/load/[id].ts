@@ -12,17 +12,20 @@ async function checkCarrierPermissions(token): Promise<{isAllowed: boolean, mess
 				id: token?.carrierId
 			}
 		});
-		console.log(carrier);
 		// check if the carrier has a bank account
 		const bankAccount = carrier?.stripe?.bankAccount;
 		if (!bankAccount) return { isAllowed, message: "No bank account found. Please add a bank account in the Settings page before creating loads"}
 		// check if the carrier has all 3 document types verified
 		const documents: Document[] = await prisma.document.findMany({
 			where: {
-				id: token?.carrierId
+				carrierId: token?.carrierId
 			}
 		})
+		documents.forEach((document) => console.log(document))
 		const verified = documents.every(document => document.verified)
+		console.log('-----------------------------------------------');
+		console.log("Verified:", verified)
+		console.log('-----------------------------------------------');
 		if (!verified) return { isAllowed, message: "Your license documents are still being checked. Please try again once all your documents have been verified."}
 		isAllowed = !!bankAccount && !!verified;
 		return { isAllowed, message: "Carrier is allowed to create loads!"};
