@@ -21,7 +21,7 @@ export const createShipment = createAsyncThunk('shipment/createShipment', async 
 		thunkAPI.dispatch(addShipment(shipment))
 		return shipment
 	} catch (err) {
-		console.error(err?.response?.data)
+		console.error(err)
 		return thunkAPI.rejectWithValue(err?.response?.data);
 	}
 })
