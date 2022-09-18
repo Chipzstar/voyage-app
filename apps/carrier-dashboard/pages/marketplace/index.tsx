@@ -202,7 +202,7 @@ const marketplace = ({ session }) => {
 					placeholder='Any distance'
 					size='sm'
 					classNames={{
-						root: 'w-32'
+						root: 'w-36'
 					}}
 					data={[
 						{ label: '10mi', value: '10' },
@@ -218,7 +218,7 @@ const marketplace = ({ session }) => {
 					amountOfMonths={2}
 					placeholder='Select dates'
 					classNames={{
-						root: 'w-56'
+						root: 'w-52'
 					}}
 					icon={<Calendar size={16} />}
 					{...form.getInputProps('dateRange')}
@@ -234,7 +234,7 @@ const marketplace = ({ session }) => {
 					clearButtonLabel='Clear selection'
 					clearable
 					classNames={{
-						root: 'w-60'
+						root: 'w-52'
 					}}
 					{...form.getInputProps('equipment')}
 				/>

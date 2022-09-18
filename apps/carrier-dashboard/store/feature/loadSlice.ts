@@ -15,6 +15,17 @@ export const createLoad = createAsyncThunk('load/createLoad', async (payload : P
 	}
 })
 
+export const getLoads = createAsyncThunk('load/getLoads', async (payload, thunkAPI) => {
+	try {
+		const loads = (await axios.get('/api/load')).data
+		thunkAPI.dispatch(setLoads(loads))
+		return loads
+	} catch (err) {
+		console.error(err?.response?.data)
+		return thunkAPI.rejectWithValue(err?.response?.data);
+	}
+});
+
 export const loadSlice = createSlice({
 	name: 'loads',
 	// `createSlice` will infer the state type from the `initialState` argument
