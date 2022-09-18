@@ -6,14 +6,13 @@ import PageContainer from '../../layout/PageContainer';
 import { fetchLoads, fetchCarrier } from '../../utils/functions';
 import prisma from '../../db';
 import { setCarrier } from '../../store/feature/profileSlice';
-import { setLoads, useLoads } from '../../store/feature/loadSlice';
+import { setLoads, useLoads, getLoads } from '../../store/feature/loadSlice';
 import { AppDispatch, wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { PUBLIC_PATHS } from '../../utils/constants';
 import { useDispatch, useSelector } from 'react-redux';
-import { getShipments } from '../../store/feature/shipmentSlice';
 
 let subscriber;
 
@@ -30,7 +29,7 @@ const trips = () => {
 	const loads = useSelector(useLoads);
 
 	function fetch() {
-		dispatch(getShipments()).unwrap().then(r => null);
+		dispatch(getLoads()).unwrap().then(r => null);
 	}
 
 	useEffect(() => {
