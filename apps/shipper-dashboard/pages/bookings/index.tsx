@@ -9,12 +9,14 @@ import { getToken } from 'next-auth/jwt';
 import { fetchShipments } from '@voyage-app/shared-utils';
 import { wrapper } from '../../store';
 import { fetchBookings, fetchShipper } from '../../utils/functions';
-import { setShipper } from '../../store/features/profileSlice';
+import { setShipper, useShipper } from '../../store/features/profileSlice';
 import { setBookings } from '../../store/features/bookingsSlice';
 import prisma from '../../db';
+import { useSelector } from 'react-redux';
 
 const bookings = () => {
 	const router = useRouter();
+	const profile = useSelector(useShipper)
 	return (
 		<div className='p-4 h-screen'>
 			<div className='px-4 flex flex-col h-full'>
@@ -29,7 +31,7 @@ const bookings = () => {
 						</button>
 					</div>
 				</section>
-				<Bookings />
+				<Bookings shipperInfo={profile} />
 			</div>
 		</div>
 	);

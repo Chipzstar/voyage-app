@@ -21,11 +21,22 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { setShipper, useShipper } from '../../store/features/profileSlice';
 import { capitalize, notifyError, notifySuccess, numericId, sanitize } from '@voyage-app/shared-utils';
+import WarningAlert from '../../modals/WarningAlert';
 
 const SUBMIT_TYPES = {
 	SAVE_BOOKING: 'SAVE_BOOKING',
 	CREATE_SHIPMENT: 'CREATE_SHIPMENT'
 };
+
+const inputButton = classNames({
+	'h-16': true,
+	'px-3': true,
+	border: true,
+	'border-gray-300': true,
+	'hover:bg-secondary': true,
+	'hover:text-white': true,
+	'font-medium': true
+});
 
 const create = ({ bookingID }) => {
 	const router = useRouter();
@@ -35,6 +46,7 @@ const create = ({ bookingID }) => {
 	const shipper = useSelector(useShipper);
 	const locations = useSelector(useLocation);
 	const bookings = useSelector(useBooking);
+	const [warning, setWarning] = useState(!!shipper?.stripe?.paymentMethod)
 
 	const booking = useMemo(() => bookings.find((booking: Booking) => booking.bookingId === bookingID), [bookings]);
 
@@ -70,16 +82,6 @@ const create = ({ bookingID }) => {
 			shipmentType: !values.shipmentType ? 'Please provide a Shipment Type' : null,
 			serviceType: !values.serviceType ? 'Please provide a Service Type' : null
 		})
-	});
-
-	const inputButton = classNames({
-		'h-16': true,
-		'px-3': true,
-		border: true,
-		'border-gray-300': true,
-		'hover:bg-secondary': true,
-		'hover:text-white': true,
-		'font-medium': true
 	});
 
 	const warehouses = useMemo(() => locations.filter(({ type }) => type === LocationType.WAREHOUSE), [locations]);
@@ -167,6 +169,7 @@ const create = ({ bookingID }) => {
 
 	return (
 		<div className='min-h-screen px-8 pb-4'>
+			<WarningAlert opened={warning} onClose={() => setWarning(true)} />
 			<LoadingOverlay loader={<CustomLoader text='Creating Shipment...' />} visible={loading.show && loading.type === SUBMIT_TYPES.CREATE_SHIPMENT} overlayBlur={2} />
 			<section className='sticky top-0 z-50 flex items-center space-x-4 bg-white pt-4 pb-8' role='button' onClick={() => router.back()}>
 				<ChevronLeft size={48} strokeWidth={2} color={'black'} />
@@ -261,13 +264,13 @@ const create = ({ bookingID }) => {
 							</div>
 							<div className='col-span-4 grid grid-cols-12 gap-x-6 gap-y-4 lg:col-span-6 lg:row-span-2'>
 								<div className='col-span-4 lg:row-span-1'>
-									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Length' placeholder='Units' {...form.getInputProps('length')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+									<NumberInput required size='sm' radius={0} min={1} max={10000} label='Item Length' placeholder='Units' {...form.getInputProps('length')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
 								</div>
 								<div className='col-span-4 lg:row-span-1'>
-									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Width' placeholder='Units' {...form.getInputProps('width')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
+									<NumberInput required size='sm' radius={0} min={1} max={10000} label='Item Width' placeholder='Units' {...form.getInputProps('width')} rightSection={<span className='text-voyage-grey pr-3'>cm</span>} />
 								</div>
 								<div className='col-span-4 lg:row-span-1'>
-									<NumberInput required size='sm' radius={0} min={1} max={100} label='Item Height' placeholder='Units' rightSection={<span className='text-voyage-grey pr-3'>cm</span>} {...form.getInputProps('height')} />
+									<NumberInput required size='sm' radius={0} min={1} max={10000} label='Item Height' placeholder='Units' rightSection={<span className='text-voyage-grey pr-3'>cm</span>} {...form.getInputProps('height')} />
 								</div>
 								<div className='col-span-4 lg:col-span-6 lg:row-span-1'>
 									<NumberInput required={!isFTL} size='sm' radius={0} min={1} max={26} disabled={isFTL} label='Item Quantity' placeholder='Units' {...form.getInputProps('quantity')} />
