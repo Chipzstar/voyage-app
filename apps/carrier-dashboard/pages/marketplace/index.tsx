@@ -63,7 +63,7 @@ const marketplace = ({ session }) => {
 	const members = useSelector(useMembers);
 	const shipments = useSelector(useNewShipments);
 	const [filtered, handlers] = useListState([...shipments]);
-	const { height } = useWindowSize()
+	const { height } = useWindowSize();
 
 	function fetch(filters) {
 		dispatch(getMarketplaceShipments())
@@ -192,10 +192,28 @@ const marketplace = ({ session }) => {
 				loadInfo={selectedShipment}
 			/>
 			<AssignDriverModal opened={assignmentModal} onClose={() => showAssignmentModal(false)} team={members} drivers={drivers} onSubmit={handleSubmit} />
-			<form className='flex flex-row justify-between space-x-2 pb-3 w-full' onReset={form.onReset}>
+			<form className='flex w-full flex-row space-x-2 pb-3' onReset={form.onReset}>
 				<div className='flex'>
-					<Select size='sm' searchable placeholder='Pickup' data={uniquePickupLocations} {...form.getInputProps('pickup')} />
-					<Select size='sm' searchable placeholder='Delivery' data={uniqueDeliveryLocations} {...form.getInputProps('delivery')} />
+					<Select
+						size='sm'
+						searchable
+						placeholder='Pickup'
+						data={uniquePickupLocations}
+						{...form.getInputProps('pickup')}
+						classNames={{
+							root: 'w-52'
+						}}
+					/>
+					<Select
+						size='sm'
+						searchable
+						placeholder='Delivery'
+						data={uniqueDeliveryLocations}
+						{...form.getInputProps('delivery')}
+						classNames={{
+							root: 'w-52'
+						}}
+					/>
 				</div>
 				<Select
 					placeholder='Any distance'
@@ -237,14 +255,12 @@ const marketplace = ({ session }) => {
 					}}
 					{...form.getInputProps('equipment')}
 				/>
-				<Group spacing='xs'>
-					<Button variant='outline' color='gray' onClick={resetForm}>
-						<Text size='sm'>Clear</Text>
-					</Button>
-					<Button variant='outline' onClick={() => filterShipments(form.values)}>
-						<Text size='sm'>Apply</Text>
-					</Button>
-				</Group>
+				<Button variant='outline' color='gray' onClick={resetForm}>
+					<Text size='sm'>Clear</Text>
+				</Button>
+				<Button variant='outline' onClick={() => filterShipments(form.values)}>
+					<Text size='sm'>Apply</Text>
+				</Button>
 			</form>
 			<div className='my-5 space-y-3'>
 				<header className='page-subheading'>
@@ -310,8 +326,12 @@ const marketplace = ({ session }) => {
 									<ActionIcon color='dark' size='md'>
 										<Message size={19} />
 									</ActionIcon>
-									<Stack spacing="xs" align="center">
-										{moment(shipment?.expiresAt).isValid() && <Text size="sm" weight={600} color="red">Expires {moment.unix(shipment?.expiresAt).fromNow()}</Text>}
+									<Stack spacing='xs' align='center'>
+										{moment(shipment?.expiresAt).isValid() && (
+											<Text size='sm' weight={600} color='red'>
+												Expires {moment.unix(shipment?.expiresAt).fromNow()}
+											</Text>
+										)}
 										<button
 											className='voyage-button h-10 md:w-32'
 											onClick={() => {
