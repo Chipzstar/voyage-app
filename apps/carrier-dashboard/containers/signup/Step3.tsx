@@ -3,7 +3,7 @@ import { useForm } from '@mantine/form';
 import { Box, Button, Center, Checkbox, CloseButton, Group, Loader, Paper, Radio, SimpleGrid, Stack, Text, Tooltip } from '@mantine/core';
 import { Check, InfoCircle, X } from 'tabler-icons-react';
 import { useSelector } from 'react-redux';
-import { useNewCarrier } from '../../store/feature/profileSlice';
+import { useNewCarrier } from '../../store/features/profileSlice';
 import NewBusinessMemberForm from 'apps/carrier-dashboard/modals/NewBusinessMemberForm';
 import { loadStripe } from '@stripe/stripe-js';
 import { STRIPE_PUBLIC_KEY } from '../../utils/constants';

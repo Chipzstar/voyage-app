@@ -1,23 +1,25 @@
 import moment from 'moment';
-import { ActivationStatus, ChargeUnitType, INVOICE_STATUS, RateChargeRules, Settings, TabInfo } from './types';
+import { ActivationStatus, ChargeUnitType, RateChargeRules, Settings, TabInfo } from './types';
 import orderId from 'order-id';
 import { momentLocalizer } from 'react-big-calendar';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import { Invoice, INVOICE_STATUS } from '@voyage-app/shared-types';
+import { alphanumericId } from '@voyage-app/shared-utils';
 
 moment.tz.setDefault('Europe/London');
 
-export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY
+export const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_API_KEY;
 
 export const phoneUtil = PhoneNumberUtil.getInstance();
 
 export const localizer = momentLocalizer(moment);
 
 export const DEBUG_MODE = process.env.NODE_ENV !== 'production';
-console.log("DEBUG MODE = " + DEBUG_MODE)
+console.log('DEBUG MODE = ' + DEBUG_MODE);
 
 export const PUBLIC_PATHS = {
 	LOGIN: '/login',
-	SIGNUP: '/signup',
+	SIGNUP: '/signup'
 };
 
 export const PATHS = {
@@ -43,7 +45,7 @@ export const PATHS = {
 	FUEL_REPORT: '/reports/fuel'
 };
 
-export const SETTINGS_TABS : TabInfo[] = [
+export const SETTINGS_TABS: TabInfo[] = [
 	{
 		value: ActivationStatus.COMPANY_INFO,
 		label: 'Organisation',
@@ -67,100 +69,191 @@ export const SETTINGS_TABS : TabInfo[] = [
 		label: 'Financial',
 		order: 4,
 		required: false
-
 	}
 ];
 
-export const SAMPLE_INVOICES = [
+export const SAMPLE_INVOICES: Invoice[] = [
 	{
-		id: '',
-		customerId: '',
-		invoiceId: 'INV-ID2819',
-		loadId: 'VOY-ID130',
+		id: alphanumericId(12),
+		carrierId: '',
 		createdAt: moment().unix(),
-		reference: orderId(process.env.SECRET).generate(),
-		amountDue: 3412500,
+		invoiceId: `INV-${orderId(process.env.SECRET).generate()}`,
+		items: [
+			{
+				itemId: 'VOY-ID130',
+				type: 'Load',
+				periodStart: 1663171566,
+				periodEnd: 1663517166,
+				amountDue: 341200
+			}
+		],
 		currency: 'GBP',
 		dueDate: 1659098961,
-		periodStart: 1661777361,
-		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.PAID
+		status: INVOICE_STATUS.PAID,
+		billingInfo: {
+			name: 'Ben Franklin',
+			company: 'HBCS Logistics',
+			email: 'ben.franklin@gmail.com',
+			phone: '+11234567890'
+		},
+		pdfLocation: ''
 	},
 	{
-		id: '',
-		customerId: '',
-		invoiceId: 'INV-ID2820',
-		loadId: 'VOY-ID128',
+		id: alphanumericId(12),
+		carrierId: '',
 		createdAt: moment().unix(),
-		reference: orderId(process.env.SECRET).generate(),
-		amountDue: 3412500,
+		invoiceId: `INV-${orderId(process.env.SECRET).generate()}`,
+		items: [
+			{
+				itemId: 'VOY-ID130',
+				type: 'Load',
+				periodStart: 1663171566,
+				periodEnd: 1663517166,
+				amountDue: 341200
+			}
+		],
 		currency: 'GBP',
 		dueDate: 1659098961,
-		periodStart: 1661777361,
-		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.OVERDUE
+		status: INVOICE_STATUS.OVERDUE,
+		billingInfo: {
+			name: 'Ben Franklin',
+			company: 'HBCS Logistics',
+			email: 'ben.franklin@gmail.com',
+			phone: '+11234567890'
+		},
+		pdfLocation: ''
 	},
 	{
-		id: '',
-		customerId: '',
-		invoiceId: 'INV-ID2821',
-		loadId: 'VOY-ID123',
+		id: alphanumericId(12),
+		carrierId: '',
 		createdAt: moment().unix(),
-		reference: orderId(process.env.SECRET).generate(),
-		amountDue: 3412500,
+		invoiceId: `INV-${orderId(process.env.SECRET).generate()}`,
+		items: [
+			{
+				itemId: 'VOY-ID130',
+				type: 'Load',
+				periodStart: 1663171566,
+				periodEnd: 1663517166,
+				amountDue: 341200
+			}
+		],
 		currency: 'GBP',
 		dueDate: 1659098961,
-		periodStart: 1661777361,
-		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.PAID
+		status: INVOICE_STATUS.PAID,
+		billingInfo: {
+			name: 'Ben Franklin',
+			company: 'HBCS Logistics',
+			email: 'ben.franklin@gmail.com',
+			phone: '+11234567890'
+		},
+		pdfLocation: ''
 	},
 	{
-		id: '',
-		customerId: '',
-		invoiceId: 'INV-ID2819',
-		loadId: 'VOY-ID124',
+		id: alphanumericId(12),
+		carrierId: '',
 		createdAt: moment().unix(),
-		reference: orderId(process.env.SECRET).generate(),
-		amountDue: 3412500,
+		invoiceId: `INV-${orderId(process.env.SECRET).generate()}`,
+		items: [
+			{
+				itemId: 'VOY-ID130',
+				type: 'Load',
+				periodStart: 1663171566,
+				periodEnd: 1663517166,
+				amountDue: 341200
+			}
+		],
 		currency: 'GBP',
 		dueDate: 1659098961,
-		periodStart: 1661777361,
-		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.PAID
+		status: INVOICE_STATUS.PAID,
+		billingInfo: {
+			name: 'Ben Franklin',
+			company: 'HBCS Logistics',
+			email: 'ben.franklin@gmail.com',
+			phone: '+11234567890'
+		},
+		pdfLocation: ''
 	},
 	{
-		id: '',
-		customerId: '',
-		invoiceId: 'INV-ID2823',
-		loadId: 'VOY-ID125',
+		id: alphanumericId(12),
+		carrierId: '',
 		createdAt: moment().unix(),
-		reference: orderId(process.env.SECRET).generate(),
-		amountDue: 3412500,
+		invoiceId: `INV-${orderId(process.env.SECRET).generate()}`,
+		items: [
+			{
+				itemId: 'VOY-ID130',
+				type: 'Load',
+				periodStart: 1663171566,
+				periodEnd: 1663517166,
+				amountDue: 341200
+			}
+		],
 		currency: 'GBP',
 		dueDate: 1659098961,
-		periodStart: 1661777361,
-		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.SHORT_PAID
+		status: INVOICE_STATUS.PAID,
+		billingInfo: {
+			name: 'Ben Franklin',
+			company: 'HBCS Logistics',
+			email: 'ben.franklin@gmail.com',
+			phone: '+11234567890'
+		},
+		pdfLocation: ''
 	},
 	{
-		id: '',
-		customerId: '',
-		invoiceId: 'INV-ID2824',
-		loadId: 'VOY-ID127',
+		id: alphanumericId(12),
+		carrierId: '',
 		createdAt: moment().unix(),
-		reference: orderId(process.env.SECRET).generate(),
-		amountDue: 3412500,
+		invoiceId: `INV-${orderId(process.env.SECRET).generate()}`,
+		items: [
+			{
+				itemId: 'VOY-ID130',
+				type: 'Load',
+				periodStart: 1663171566,
+				periodEnd: 1663517166,
+				amountDue: 341200
+			}
+		],
 		currency: 'GBP',
 		dueDate: 1659098961,
-		periodStart: 1661777361,
-		periodEnd: 1661777361,
 		total: 3412500,
-		status: INVOICE_STATUS.INVOICED
+		status: INVOICE_STATUS.OVERDUE,
+		billingInfo: {
+			name: 'Ben Franklin',
+			company: 'HBCS Logistics',
+			email: 'ben.franklin@gmail.com',
+			phone: '+11234567890'
+		},
+		pdfLocation: ''
+	},
+	{
+		id: alphanumericId(12),
+		carrierId: '',
+		createdAt: moment().unix(),
+		invoiceId: `INV-${orderId(process.env.SECRET).generate()}`,
+		items: [
+			{
+				itemId: 'VOY-ID130',
+				type: 'Load',
+				periodStart: 1663171566,
+				periodEnd: 1663517166,
+				amountDue: 341200
+			}
+		],
+		currency: 'GBP',
+		dueDate: 1659098961,
+		total: 3412500,
+		status: INVOICE_STATUS.PAID,
+		billingInfo: {
+			name: 'Ben Franklin',
+			company: 'HBCS Logistics',
+			email: 'ben.franklin@gmail.com',
+			phone: '+11234567890'
+		},
+		pdfLocation: ''
 	}
 ];
 

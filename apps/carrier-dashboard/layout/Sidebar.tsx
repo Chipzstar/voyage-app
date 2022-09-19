@@ -8,7 +8,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ScrollArea, Stack, Text } from '@mantine/core';
 import { ActivationStatus } from '../utils/types';
-import { useCarrier } from '../store/feature/profileSlice';
+import { useCarrier } from '../store/features/profileSlice';
 
 interface NavMenuItem {
 	title: string;

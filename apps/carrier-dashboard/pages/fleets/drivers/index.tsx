@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteDriver, setDrivers, useDrivers } from '../../../store/feature/driverSlice';
+import { deleteDriver, setDrivers, useDrivers } from '../../../store/features/driverSlice';
 import { useModals } from '@mantine/modals';
 import { fetchDrivers } from '../../../utils/functions';
 import _ from 'lodash';

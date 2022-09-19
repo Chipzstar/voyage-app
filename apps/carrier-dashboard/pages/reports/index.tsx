@@ -7,7 +7,7 @@ import InvoiceReport from '../../charts/InvoiceReport';
 import DowntimeReport from '../../charts/DowntimeReport';
 import DispatcherScoreboard from '../../charts/DispatcherScoreboard';
 import { useSelector } from 'react-redux';
-import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
+import { setDrivers, useDrivers } from '../../store/features/driverSlice';
 import { wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
@@ -15,12 +15,12 @@ import { getToken } from 'next-auth/jwt';
 import { PUBLIC_PATHS } from '../../utils/constants';
 import { fetchDrivers, fetchLoads, fetchMembers, fetchCarrier, fetchVehicles } from '../../utils/functions';
 import prisma from '../../db';
-import { setCarrier } from '../../store/feature/profileSlice';
-import { setVehicles, useVehicles } from '../../store/feature/vehicleSlice';
-import { setLoads, useLoads } from '../../store/feature/loadSlice';
+import { setCarrier } from '../../store/features/profileSlice';
+import { setVehicles, useVehicles } from '../../store/features/vehicleSlice';
+import { setLoads, useLoads } from '../../store/features/loadSlice';
 import { DateRange } from '@voyage-app/shared-types';
 import { VEHICLE_STATUS } from '../../utils/types';
-import { setMembers, useControllers } from '../../store/feature/memberSlice';
+import { setMembers, useControllers } from '../../store/features/memberSlice';
 
 const useStyles = createStyles(theme => ({
 	inner: {

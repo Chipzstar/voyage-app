@@ -13,10 +13,10 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { fetchDocuments, fetchCarrier, fetchSettings } from '../../utils/functions';
-import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
-import { setSettings, useSettings } from '../../store/feature/settingsSlice';
+import { setCarrier, useCarrier } from '../../store/features/profileSlice';
+import { setSettings, useSettings } from '../../store/features/settingsSlice';
 import { ActivationStatus } from '../../utils/types';
-import { setDocuments, useDocuments } from '../../store/feature/documentSlice';
+import { setDocuments, useDocuments } from '../../store/features/documentSlice';
 
 const settings = () => {
 	const profile = useSelector(useCarrier);

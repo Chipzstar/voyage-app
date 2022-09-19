@@ -270,6 +270,25 @@ export async function fetchDocuments(carrierId, prisma) {
 	});
 }
 
+export async function fetchInvoices(carrierId, prisma) {
+	let invoices =  await prisma.invoice.findMany({
+		where: {
+			carrierId: {
+				equals: carrierId
+			}
+		},
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+	invoices = invoices.map(invoice => ({
+		...invoice,
+		createdAt: moment(invoice.createdAt).unix(),
+		updatedAt: moment(invoice.updatedAt).unix()
+	}));
+	return invoices
+}
+
 export async function fetchSettings(carrierId, prisma) {
 	return await prisma.settings.findFirst({
 		where: {

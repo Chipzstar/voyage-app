@@ -8,7 +8,7 @@ import { useForm } from '@mantine/form';
 import { Member, TeamRole } from '../../../utils/types';
 import { alphanumericId, capitalize, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';
-import { createMember, setMembers, updateMember, useMembers } from '../../../store/feature/memberSlice'
+import { createMember, setMembers, updateMember, useMembers } from '../../../store/features/memberSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, wrapper } from '../../../store';
 import { useRouter } from 'next/router';
@@ -16,7 +16,7 @@ import { Check, X } from 'tabler-icons-react';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
-import { setCarrier, useCarrier } from '../../../store/feature/profileSlice';
+import { setCarrier, useCarrier } from '../../../store/features/profileSlice';
 import { getToken } from 'next-auth/jwt'
 import { fetchMembers, fetchCarrier } from '../../../utils/functions';
 

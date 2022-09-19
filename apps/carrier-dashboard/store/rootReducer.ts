@@ -1,13 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import teamReducer from './feature/memberSlice';
-import driverReducer from './feature/driverSlice';
-import vehicleReducer from './feature/vehicleSlice';
-import customerReducer from './feature/customerSlice';
-import loadReducer from './feature/loadSlice';
-import shipmentReducer from './feature/shipmentSlice';
-import profileReducer from './feature/profileSlice';
-import settingsReducer from './feature/settingsSlice';
-import documentReducer from './feature/documentSlice';
+import profileReducer from './features/profileSlice';
+import teamReducer from './features/memberSlice';
+import driverReducer from './features/driverSlice';
+import vehicleReducer from './features/vehicleSlice';
+import customerReducer from './features/customerSlice';
+import loadReducer from './features/loadSlice';
+import shipmentReducer from './features/shipmentSlice';
+import settingsReducer from './features/settingsSlice';
+import documentReducer from './features/documentSlice';
+import invoiceReducer from './features/invoiceSlice';
 import { HYDRATE } from 'next-redux-wrapper';
 
 const appReducer = combineReducers({
@@ -19,6 +20,7 @@ const appReducer = combineReducers({
 	loads: loadReducer,
 	shipments: shipmentReducer,
 	documents: documentReducer,
+	invoices: invoiceReducer,
 	settings: settingsReducer
 });
 
@@ -41,6 +43,7 @@ const rootReducer = (state, action) => {
 			loads: action.payload.loads || state.loads,
 			shipments: action.payload.shipments || state.shipments,
 			documents: action.payload.documents || state.documents,
+			invoices: action.payload.invoices || state.invoices,
 		};
 	}
 	if (['LOGOUT', 'RESET'].includes(action.type)) {

@@ -3,7 +3,7 @@ import { Modal, SimpleGrid, TextInput, Text, Button, Group, Stack, Select, Divid
 import { useForm } from '@mantine/form';
 import { PACKAGE_TYPE, SelectInputData } from '@voyage-app/shared-types';
 import { DatePicker } from '@mantine/dates';
-import { useDrivers } from '../store/feature/driverSlice';
+import { useDrivers } from '../store/features/driverSlice';
 import { useSelector } from 'react-redux';
 
 const NewFuelTransaction = ({ opened, onClose }) => {

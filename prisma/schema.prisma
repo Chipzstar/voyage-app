@@ -63,6 +63,32 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+enum InvoiceStatus {
+  PAID
+  OVERDUE
+  INVOICED
+  SHORT_PAID
+  VOID
+}
+
+model Invoice {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  shipper     Shipper?      @relation(fields: [shipperId], references: [id])
+  shipperId   String?       @db.ObjectId
+  carrier     Carrier?      @relation(fields: [carrierId], references: [id])
+  carrierId   String?       @db.ObjectId
+  invoiceId   String        @unique
+  billingInfo BillingInfo
+  items       InvoiceItem[]
+  dueDate     Int           @db.Long
+  total       Float
+  currency    String
+  status      InvoiceStatus
+  pdfLocation String
+}
 type BankAccount {
   id                String
   fingerprint       String
@@ -236,6 +262,21 @@ type RateChargeRules {
   WEIGHT   ChargeRule
   PACKAGE  ChargeRule
 }
+
+type InvoiceItem {
+  itemId      String
+  periodStart Int    @db.Long
+  periodEnd   Int    @db.Long
+  type        String
+  amountDue   Float
+}
+
+type BillingInfo {
+  name    String
+  email   String
+  company String
+  phone   String
+}
 model Booking {
   id                 String              @id @default(auto()) @map("_id") @db.ObjectId
   shipper            Shipper             @relation(fields: [shipperId], references: [id])
@@ -379,6 +420,7 @@ model Shipper {
   shipment  Shipment[]
   booking   Booking[]
   location  Location[]
+  Invoice   Invoice[]
 }
 enum ActivationStatus {
   COMPANY_INFO
@@ -411,6 +453,7 @@ model Carrier {
   customers Customer[]
   settings  Settings?
   status    ActivationStatus?
+  Invoice   Invoice[]
 }
 enum AccountType {
   SMALL_SHIPPER

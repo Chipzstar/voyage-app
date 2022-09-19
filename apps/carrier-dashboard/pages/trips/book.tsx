@@ -11,19 +11,19 @@ import ContentContainer from '../../layout/ContentContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { NewBooking, TeamRole } from '../../utils/types';
 import { fetchCustomers, fetchDrivers, fetchMembers, fetchCarrier, fetchSettings, generateLoad } from '../../utils/functions';
-import { setDrivers, useDrivers } from '../../store/feature/driverSlice';
-import { setMembers, useMembers } from '../../store/feature/memberSlice';
-import { setCustomers, useCustomers } from '../../store/feature/customerSlice';
+import { setDrivers, useDrivers } from '../../store/features/driverSlice';
+import { setMembers, useMembers } from '../../store/features/memberSlice';
+import { setCustomers, useCustomers } from '../../store/features/customerSlice';
 import { capitalize, notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
-import { createLoad } from '../../store/feature/loadSlice';
+import { createLoad } from '../../store/features/loadSlice';
 import { PATHS, PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
-import { setCarrier, useCarrier } from '../../store/feature/profileSlice';
+import { setCarrier, useCarrier } from '../../store/features/profileSlice';
 import { AppDispatch, wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import prisma from '../../db';
-import { setSettings, useSettings } from '../../store/feature/settingsSlice';
+import { setSettings, useSettings } from '../../store/features/settingsSlice';
 
 const items = [
 	{ title: 'Home', href: '/' },

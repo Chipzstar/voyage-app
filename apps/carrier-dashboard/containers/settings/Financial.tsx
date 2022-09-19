@@ -3,7 +3,7 @@ import { Button, Center, Container, Group, Loader, Popover, Select, Stack, Text,
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { BankAccountForm, Carrier, ActivationStatus } from '../../utils/types';
-import { createBankAccount, editCarrier, updateCarrier } from '../../store/feature/profileSlice';
+import { createBankAccount, editCarrier, updateCarrier } from '../../store/features/profileSlice';
 import { useForm } from '@mantine/form';
 import { countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { SelectInputData } from '@voyage-app/shared-types';

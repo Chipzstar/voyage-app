@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import ContentContainer from '../../layout/ContentContainer';
 import { useSelector } from 'react-redux';
-import { setLoads, useLoads } from '../../store/feature/loadSlice';
+import { setLoads, useLoads } from '../../store/features/loadSlice';
 import { wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
-import { PATHS, PUBLIC_PATHS, SAMPLE_INVOICES } from '../../utils/constants';
-import { fetchLoads } from '../../utils/functions';
+import { PUBLIC_PATHS, SAMPLE_INVOICES } from '../../utils/constants';
+import { fetchInvoices, fetchLoads } from '../../utils/functions';
 import prisma from '../../db';
 import DataGrid from '../../components/DataGrid';
 import moment from 'moment';
-import { INVOICE_STATUS } from '../../utils/types';
 import { sanitize } from '@voyage-app/shared-utils';
 import { useRouter } from 'next/router';
+import { CloudDownload } from 'tabler-icons-react';
+import { ActionIcon, Group, Text } from '@mantine/core';
+import { INVOICE_STATUS } from '@voyage-app/shared-types';
+import { setInvoices } from '../../store/features/invoiceSlice';
 
 const Empty = ({message}) => (
 	<div className='flex h-full flex-col justify-center'>
@@ -39,11 +42,6 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span>{element.reference}</span>
-					</div>
-				</td>
-				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
 						<span>£{(element.total / 100).toFixed(2)}</span>
 					</div>
 				</td>
@@ -57,13 +55,15 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-col flex-shrink'>
-						<span>£{(element.amountDue / 100).toFixed(2)}</span>
+						<span>£{(element.items[0].amountDue / 100).toFixed(2)}</span>
 					</div>
 				</td>
 				<td role='button' colSpan={2}>
-					<button className='bg-transparent flex grow hover:underline' onClick={() => router.push(`${PATHS.INVOICES}/${element.invoiceId}`)}>
-						<span className='text-secondary font-semibold text-lg'>View</span>
-					</button>
+					<Group spacing='md' position='left'>
+						<ActionIcon size='md' onClick={() => alert("not working yet... 😜")}>
+							<CloudDownload/>
+						</ActionIcon>
+					</Group>
 				</td>
 			</tr>
 		);
@@ -75,7 +75,7 @@ const invoices = () => {
 				<header className='mb-4 flex h-20 flex-row items-center justify-between py-3'>
 					<h2 className='page-header'>Invoices</h2>
 				</header>
-				<DataGrid activePage={activePage} setPage={setPage} rows={rows} headings={['Invoice ID', 'Date Created', 'Reference', 'Total', 'Paid', 'Date Due', 'Balance Due', 'Action']} emptyContent={<Empty message="No Invoices Created" />}/>
+				<DataGrid activePage={activePage} setPage={setPage} rows={rows} headings={['Invoice ID', 'Date Created', 'Total', 'Paid', 'Date Due', 'Balance Due', 'Download']} emptyContent={<Empty message="No Invoices Created" />}/>
 			</section>
 		</ContentContainer>
 	);
@@ -95,6 +95,8 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	}
 	const loads = await fetchLoads(token?.carrierId, prisma);
 	store.dispatch(setLoads(loads));
+	const invoices = await fetchInvoices(token?.carrierId, prisma);
+	store.dispatch(setInvoices(invoices))
 	return {
 		props: {
 			session

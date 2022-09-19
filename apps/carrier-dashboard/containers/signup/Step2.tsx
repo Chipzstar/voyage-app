@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { PATHS, PUBLIC_PATHS, STRIPE_PUBLIC_KEY } from 'apps/carrier-dashboard/utils/constants';
 import { loadStripe } from '@stripe/stripe-js';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCarrier, useNewCarrier } from '../../store/feature/profileSlice';
+import { createCarrier, useNewCarrier } from '../../store/features/profileSlice';
 import { countries, notifyError, notifySuccess } from '@voyage-app/shared-utils';
 import { Address, SelectInputData } from '@voyage-app/shared-types';
 import { Check, X } from 'tabler-icons-react';

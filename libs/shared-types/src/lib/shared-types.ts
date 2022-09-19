@@ -144,6 +144,13 @@ export enum LocationType {
 	LASTMILE_CARRIER = 'LASTMILE_CARRIER'
 }
 
+export enum INVOICE_STATUS {
+	PAID = 'PAID',
+	OVERDUE = 'OVERDUE',
+	INVOICED = 'INVOICED',
+	SHORT_PAID = 'SHORT_PAID'
+}
+
 export interface ShipperInfo {
 	name: string;
 	company: string;
@@ -271,4 +278,35 @@ export interface LoadLocation {
 	note?: string;
 	location?: Geolocation;
 	window?: LoadTimeWindow;
+}
+
+interface BillingInfo {
+	name: string;
+	email: string;
+	company: string;
+	phone: string;
+}
+
+interface InvoiceItem {
+	itemId: string;
+	type: string;
+	periodStart: UnixTimestamp;
+	periodEnd: UnixTimestamp;
+	amountDue: number;
+}
+
+export interface Invoice {
+	id: string;
+	invoiceId: string;
+	carrierId?: string;
+	shipperId?: string;
+    createdAt?: UnixTimestamp,
+	updatedAt?: UnixTimestamp,
+    status: INVOICE_STATUS,
+	items: InvoiceItem[],
+	billingInfo: BillingInfo,
+	pdfLocation: string,
+	currency: 'GBP',
+	dueDate: UnixTimestamp;
+	total: number
 }

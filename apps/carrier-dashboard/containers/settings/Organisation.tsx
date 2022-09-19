@@ -1,7 +1,7 @@
 import React, { forwardRef, useCallback, useState } from 'react';
 import { Button, Center, Container, Group, Loader, Popover, Stack, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { editCarrier, updateCarrier } from '../../store/feature/profileSlice';
+import { editCarrier, updateCarrier } from '../../store/features/profileSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { Check, X } from 'tabler-icons-react';

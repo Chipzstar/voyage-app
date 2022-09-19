@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { phoneUtil, PUBLIC_PATHS } from 'apps/carrier-dashboard/utils/constants';
 import { PhoneNumberFormat as PNF } from 'google-libphonenumber';
 import { InfoCircle, X } from 'tabler-icons-react';
-import { saveNewCarrier } from '../../store/feature/profileSlice';
+import { saveNewCarrier } from '../../store/features/profileSlice';
 import { AppDispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { NewCarrier } from '../../utils/types';

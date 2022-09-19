@@ -8,7 +8,7 @@ import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useCustomers, deleteCustomer, setCustomers } from '../../../store/feature/customerSlice';
+import { useCustomers, deleteCustomer, setCustomers } from '../../../store/features/customerSlice';
 import { useModals } from '@mantine/modals';
 import _ from 'lodash';
 import '../../../utils/string.extensions';

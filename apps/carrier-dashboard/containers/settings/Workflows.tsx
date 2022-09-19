@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useState } from 'react';
 import { useForm } from '@mantine/form';
-import { createSettings, updateSettings } from '../../store/feature/settingsSlice';
+import { createSettings, updateSettings } from '../../store/features/settingsSlice';
 import { Check, X } from 'tabler-icons-react';
 import { Center, Container, Stack, Group, Button, NumberInput, Popover, Text, Loader } from '@mantine/core';
 import { Carrier, ChargeUnitType, Settings, ActivationStatus } from '../../utils/types';
@@ -8,7 +8,7 @@ import { defaultSettings } from '../../utils/constants';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'apps/carrier-dashboard/store';
 import { notifyError, notifySuccess } from '@voyage-app/shared-utils';
-import { editCarrier, updateCarrier } from '../../store/feature/profileSlice';
+import { editCarrier, updateCarrier } from '../../store/features/profileSlice';
 
 interface WorkflowsProps {
 	carrierInfo: Carrier;

@@ -9,7 +9,7 @@ import PageNav from '../../layout/PageNav';
 import Link from 'next/link';
 import ContentContainer from '../../layout/ContentContainer';
 import { useSelector } from 'react-redux';
-import { setLoads, useLoads } from '../../store/feature/loadSlice';
+import { setLoads, useLoads } from '../../store/features/loadSlice';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';

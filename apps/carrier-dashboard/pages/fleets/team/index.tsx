@@ -7,7 +7,7 @@ import DataGrid from '../../../components/DataGrid';
 import ContentContainer from '../../../layout/ContentContainer';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMember, setMembers, updateMember, useMembers } from '../../../store/feature/memberSlice';
+import { deleteMember, setMembers, updateMember, useMembers } from '../../../store/features/memberSlice';
 import { TeamRole } from '../../../utils/types';
 import { capitalize, notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
 import { useModals } from '@mantine/modals';

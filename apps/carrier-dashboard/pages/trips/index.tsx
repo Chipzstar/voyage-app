@@ -5,8 +5,8 @@ import { STATUS } from '@voyage-app/shared-types';
 import PageContainer from '../../layout/PageContainer';
 import { fetchLoads, fetchCarrier } from '../../utils/functions';
 import prisma from '../../db';
-import { setCarrier } from '../../store/feature/profileSlice';
-import { setLoads, useLoads, getLoads } from '../../store/feature/loadSlice';
+import { setCarrier } from '../../store/features/profileSlice';
+import { setLoads, useLoads, getLoads } from '../../store/features/loadSlice';
 import { AppDispatch, wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
@@ -48,7 +48,7 @@ const trips = () => {
 				</Tabs.List>
 
 				<Tabs.Panel value={TAB_LABELS.UPCOMING}>
-					<Trips loads={loads} statuses={[STATUS.NEW, STATUS.PENDING]} message={<span className='text-center text-2xl'>You have no upcoming loads!</span>} />
+						<Trips loads={loads} statuses={[STATUS.NEW, STATUS.PENDING]} message={<span className='text-center text-2xl'>You have no upcoming loads!</span>} />
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.IN_TRANSIT}>
 					<Trips loads={loads} statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]} message={<span className='text-center text-2xl'>You have no loads in-transit</span>} />
