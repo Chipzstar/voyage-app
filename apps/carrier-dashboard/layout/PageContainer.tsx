@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const PageContainer = ({ children }) => {
+const PageContainer = ({ children, classNames="py-5 h-screen" }) => {
 	return (
-		<div className='py-5 h-screen'>{children}</div>
+		<div className={classNames}>{children}</div>
 	)
 }
 

@@ -72,8 +72,8 @@ const marketplace = ({ session }) => {
 				handlers.setState(shipments);
 				handlers.filter((s: Shipment) => {
 					let isValid = true;
-					if (filters.pickup && s.pickup.facilityId !== filters.pickup) return false;
-					if (filters.delivery && s.delivery.facilityId !== filters.delivery) return false;
+					if (filters.pickup && s.pickup.city !== filters.pickup) return false;
+					if (filters.delivery && s.delivery.city !== filters.delivery) return false;
 					if (Number(filters.miles) && s.mileage > Number(filters.miles)) return false;
 					if (filters.dateRange.every((date: Date | null) => date) && !checkWithinTimeRange(filters.dateRange, s.pickup.window.start, s.pickup.window.end)) return false;
 					if (filters.equipment.length && !s.activitiesRequired.every(a => filters.equipment.includes(a))) return false;
@@ -155,12 +155,11 @@ const marketplace = ({ session }) => {
 			console.log(values);
 			handlers.filter((s: Shipment) => {
 				let isValid = true;
-				if (values.pickup && s.pickup.facilityId !== values.pickup) return false;
-				if (values.delivery && s.delivery.facilityId !== values.delivery) return false;
+				if (values.pickup && s.pickup.city !== values.pickup) return false;
+				if (values.delivery && s.delivery.city !== values.delivery) return false;
 				if (Number(values.miles) && s.mileage > Number(values.miles)) return false;
 				if (values.dateRange.every((date: Date | null) => date) && !checkWithinTimeRange(values.dateRange, s.pickup.window.start, s.pickup.window.end)) return false;
 				if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
-				console.log('isValid:', isValid);
 				return isValid;
 			});
 			console.log('destroying filter');
@@ -218,7 +217,7 @@ const marketplace = ({ session }) => {
 					amountOfMonths={2}
 					placeholder='Select dates'
 					classNames={{
-						root: 'w-52'
+						root: 'w-48'
 					}}
 					icon={<Calendar size={16} />}
 					{...form.getInputProps('dateRange')}
@@ -234,7 +233,7 @@ const marketplace = ({ session }) => {
 					clearButtonLabel='Clear selection'
 					clearable
 					classNames={{
-						root: 'w-52'
+						root: 'w-48'
 					}}
 					{...form.getInputProps('equipment')}
 				/>
