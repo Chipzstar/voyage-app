@@ -21,7 +21,6 @@ export function sanitize(str: string): string {
 }
 export function uniqueArray(array: selectInput[], key) {
 	return [...new Map(array.map(item => [item[key], item])).values()];
-
 }
 export function getYears(amount: number): string[] {
 	return [...Array(amount).keys()].map(pos => moment().subtract(pos, 'y').year().toString());

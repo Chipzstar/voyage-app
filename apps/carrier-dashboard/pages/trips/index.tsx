@@ -38,8 +38,7 @@ const trips = () => {
 	}, []);
 
 	return (
-		<PageContainer>
-			<header className='page-header mb-5 px-5'>Live Trips</header>
+		<PageContainer classNames="pb-5 h-screen">
 			<Tabs value={activeTab} onTabChange={setActiveTab}>
 				<Tabs.List grow>
 					<Tabs.Tab value={TAB_LABELS.UPCOMING}>Upcoming</Tabs.Tab>
