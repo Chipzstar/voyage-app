@@ -24,6 +24,7 @@ function genFullAddress(location: BookingLocation) {
 
 export function calculateRate(weight, numPallets, miles = 300, rates: RateChargeRules) {
 	console.log(rates);
+	console.table({weight, numPallets, miles})
 	let total = Object.entries(rates).reduce((prev, [key, rate]) => {
 		let newVal = prev;
 		if (!rate.active) return prev;
@@ -45,7 +46,7 @@ export function calculateRate(weight, numPallets, miles = 300, rates: RateCharge
 		}
 	}, 0);
 	// const sum = weight * rates.WEIGHT.value + numPallets * rates.PACKAGE.value + miles * rates.DISTANCE.value;
-	return Number((total / 3).toPrecision(2));
+	return Number((total / 3).toFixed(2));
 }
 
 export async function generateLoad(profile, values: NewBooking, drivers: Driver[], controllers: Member[], customers: Customer[], settings: Settings): Promise<Load> {

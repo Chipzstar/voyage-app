@@ -2,14 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from '@mantine/form';
 import moment from 'moment/moment';
+import prisma from '../../db';
+import Link from 'next/link';
 import { PACKAGE_TYPE, SelectInputData, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { Calendar, Check, ChevronDown, X } from 'tabler-icons-react';
 import { Anchor, Breadcrumbs, Paper, Loader, Modal, NumberInput, Select, Textarea, TextInput, Text, Divider, Button, Group } from '@mantine/core';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
-import Link from 'next/link';
 import ContentContainer from '../../layout/ContentContainer';
 import { useDispatch, useSelector } from 'react-redux';
-import { NewBooking, TeamRole } from '../../utils/types';
+import { Load, NewBooking, TeamRole } from '../../utils/types';
 import { fetchCustomers, fetchDrivers, fetchMembers, fetchCarrier, fetchSettings, generateLoad } from '../../utils/functions';
 import { setDrivers, useDrivers } from '../../store/features/driverSlice';
 import { setMembers, useMembers } from '../../store/features/memberSlice';
@@ -22,7 +23,6 @@ import { AppDispatch, wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
-import prisma from '../../db';
 import { setSettings, useSettings } from '../../store/features/settingsSlice';
 
 const items = [
@@ -94,6 +94,31 @@ const book = props => {
 	const profile = useSelector(useCarrier);
 	const settings = useSelector(useSettings);
 
+	// container function to generate the Invoice
+	const generateInvoice = (load: Load) => {
+		// send a post request with the name to our API endpoint
+		const fetchData = async () => {
+			const data = await fetch('/api/gcp/generate-invoice', {
+				method: 'POST',
+				body: JSON.stringify(load)
+			});
+			// convert the response into an array Buffer
+			return data.arrayBuffer();
+		};
+
+		// convert the buffer into an object URL
+		const saveAsPDF = async () => {
+			const buffer = await fetchData();
+			const blob = new Blob([buffer]);
+			const link = document.createElement('a');
+			link.href = URL.createObjectURL(blob);
+			link.download = 'invoice.pdf';
+			link.click();
+		};
+
+		saveAsPDF().then(r => console.log('PDF saved successfully!'));
+	};
+
 	const form = useForm<NewBooking>({
 		initialValues: {
 			createdAt: undefined,
@@ -154,9 +179,13 @@ const book = props => {
 
 	const confirmRate = useCallback(
 		async load => {
+			setLoading(true)
 			try {
 				showSuggestedQuote(prevState => ({ ...prevState, show: false }));
-				await dispatch(createLoad(load)).unwrap();
+				const finalLoad = await dispatch(createLoad(load)).unwrap();
+				console.log(finalLoad);
+				// generate invoice from createdLoad
+				generateInvoice(finalLoad);
 				notifySuccess('new-load-success', "You've booked a new load", <Check size={20} />);
 				setTimeout(() => {
 					router.push(PATHS.TRIPS);
@@ -176,7 +205,15 @@ const book = props => {
 			<section className='sticky top-0 z-50 flex items-center space-x-4 bg-white pt-4 pb-8' role='button'>
 				<Breadcrumbs>{items}</Breadcrumbs>
 			</section>
-			<QuoteEstimate opened={suggestedQuote.show} load={suggestedQuote.load} onClose={() => showSuggestedQuote(prevState => ({ ...prevState, show: false }))} onSubmit={confirmRate} />
+			<QuoteEstimate
+				opened={suggestedQuote.show}
+				load={suggestedQuote.load}
+				onClose={() => {
+					showSuggestedQuote(prevState => ({ ...prevState, show: false }));
+					setLoading(false);
+				}}
+				onSubmit={confirmRate}
+			/>
 			<form onSubmit={form.onSubmit(handleSubmit)} className='grid grid-cols-3 gap-20 lg:grid-cols-4'>
 				<div id='book-form-container' className='col-span-3 flex flex-col space-y-5'>
 					<div id='load-type' className='grid grid-cols-1 gap-6'>

@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 	console.log("File path: " + filepath);
 	if (req.method === "DELETE") {
 		try {
-			const bucket = storage.bucket(process.env.GCS_BUCKET_NAME);
+			const bucket = storage.bucket(process.env.GCS_BUCKET_DOCUMENTS);
 			const file = bucket.file(filepath);
 			const result = await file.delete()
 			console.log(result[0].body)

@@ -21,7 +21,6 @@ async function checkCarrierPermissions(token): Promise<{isAllowed: boolean, mess
 				carrierId: token?.carrierId
 			}
 		})
-		documents.forEach((document) => console.log(document))
 		const verified = documents.every(document => document.verified)
 		console.log('-----------------------------------------------');
 		console.log("Verified:", verified)

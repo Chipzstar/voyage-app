@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt';
 import { cors, runMiddleware, storage } from '../index';
 import prisma from '../../../db';
 
-const BUCKET = storage.bucket(process.env.GCS_BUCKET_NAME);
+const BUCKET = storage.bucket(process.env.GCS_BUCKET_DOCUMENTS);
 
 const generateV4ReadSignedUrl = (filepath) => {
 	return new Promise((resolve, reject) => {
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
 				}
 			});
 			console.log(document);
-			console.log(`gs://${process.env.GCS_BUCKET_NAME}/${payload.filepath} downloaded to ${localFilename}.`);
+			console.log(`gs://${process.env.GCS_BUCKET_DOCUMENTS}/${payload.filepath} downloaded to ${localFilename}.`);
 			res.status(200).json(document);
 		} catch (e) {
 			console.error(e);

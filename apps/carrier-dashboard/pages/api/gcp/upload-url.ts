@@ -9,10 +9,10 @@ export default async function handler(req, res) {
 	const { id, filename, type } = req.query;
 
 	try {
-		const bucket = storage.bucket(process.env.GCS_BUCKET_NAME);
+		const bucket = storage.bucket(process.env.GCS_BUCKET_DOCUMENTS);
 		const filepath = `${id ?? token?.carrierId}/${type}/${filename}`;
 		const file = bucket.file(filepath);
-		console.log(`${filename} uploaded to ${process.env.GCS_BUCKET_NAME}`);
+		console.log(`${filename} uploaded to ${process.env.GCS_BUCKET_DOCUMENTS}`);
 		const options = {
 			expires: Date.now() + 5 * 60 * 1000, //  1 minute,
 			fields: { 'x-goog-meta-test': 'data' }
