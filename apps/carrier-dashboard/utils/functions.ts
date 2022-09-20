@@ -370,6 +370,19 @@ export function validateAddress(pickup, dropoff) {
 	return true;
 }
 
+export function generateInvoice(load: Load) {
+	// send a post request with the name to our API endpoint
+	const fetchData = async () => {
+		const data = await fetch('/api/gcp/generate-invoice', {
+			method: 'POST',
+			body: JSON.stringify(load)
+		});
+		// convert the response into an array Buffer
+		return data.arrayBuffer();
+	};
+	fetchData().then(blob => console.log('PDF saved successfully!', blob));
+}
+
 export async function uploadFile({ id, file, documentType }) {
 	try {
 		const filename = encodeURIComponent(file.name);

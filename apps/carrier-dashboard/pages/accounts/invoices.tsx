@@ -14,7 +14,7 @@ import moment from 'moment';
 import { sanitize } from '@voyage-app/shared-utils';
 import { useRouter } from 'next/router';
 import { CloudDownload } from 'tabler-icons-react';
-import { ActionIcon, Group } from '@mantine/core';
+import { ActionIcon } from '@mantine/core';
 import { INVOICE_STATUS } from '@voyage-app/shared-types';
 import { setInvoices, useInvoices } from '../../store/features/invoiceSlice';
 
@@ -45,7 +45,7 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(invoice.total).toFixed(2)}</span>
+						<span>£{(invoice.items[0].amountDue).toFixed(2)}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
@@ -58,7 +58,7 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(invoice.items[0].amountDue).toFixed(2)}</span>
+						<span>£{(invoice.total).toFixed(2)}</span>
 					</div>
 				</td>
 				<td role='button' colSpan={2}>
@@ -81,7 +81,7 @@ const invoices = () => {
 				activePage={activePage}
 				setPage={setPage}
 				rows={rows}
-				headings={['Invoice ID', 'Date Created', 'Total', 'Paid', 'Date Due', 'Balance Due', 'Download']}
+				headings={['Invoice ID', 'Date Created', 'Amount', 'Paid', 'Date Due', 'Balance Due', 'Download']}
 				emptyContent={<Empty message='No Invoices Created' />}
 			/>
 		</ContentContainer>

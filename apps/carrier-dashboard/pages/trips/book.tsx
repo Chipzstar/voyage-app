@@ -11,7 +11,7 @@ import { DateTimePicker } from '@voyage-app/shared-ui-components';
 import ContentContainer from '../../layout/ContentContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { Load, NewBooking, TeamRole } from '../../utils/types';
-import { fetchCarrier, fetchCustomers, fetchDrivers, fetchMembers, fetchSettings, generateLoad } from '../../utils/functions';
+import { fetchCarrier, fetchCustomers, fetchDrivers, fetchMembers, fetchSettings, generateInvoice, generateLoad } from '../../utils/functions';
 import { setDrivers, useDrivers } from '../../store/features/driverSlice';
 import { setMembers, useMembers } from '../../store/features/memberSlice';
 import { setCustomers, useCustomers } from '../../store/features/customerSlice';
@@ -93,20 +93,6 @@ const book = props => {
 	const customers = useSelector(useCustomers);
 	const profile = useSelector(useCarrier);
 	const settings = useSelector(useSettings);
-
-	// container function to generate the Invoice
-	const generateInvoice = (load: Load) => {
-		// send a post request with the name to our API endpoint
-		const fetchData = async () => {
-			const data = await fetch('/api/gcp/generate-invoice', {
-				method: 'POST',
-				body: JSON.stringify(load)
-			});
-			// convert the response into an array Buffer
-			return data.arrayBuffer();
-		};
-		fetchData().then(blob => console.log('PDF saved successfully!', blob));
-	};
 
 	const form = useForm<NewBooking>({
 		initialValues: {

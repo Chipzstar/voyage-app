@@ -7,7 +7,7 @@ import { SelectInputData, Shipment, SHIPMENT_ACTIVITY, STATUS } from '@voyage-ap
 import { capitalize, checkWithinTimeRange, fetchShipments, notifyError, notifySuccess, sanitize, uniqueArray } from '@voyage-app/shared-utils';
 import { useWindowSize } from '@voyage-app/shared-ui-hooks';
 import { ArrowRight, Calendar, Check, Clock, Message, X } from 'tabler-icons-react';
-import { ActionIcon, Anchor, Badge, Button, Group, LoadingOverlay, MultiSelect, ScrollArea, Select, SimpleGrid, Stack, Text } from '@mantine/core';
+import { ActionIcon, Anchor, Badge, Button, LoadingOverlay, MultiSelect, ScrollArea, Select, SimpleGrid, Stack, Text } from '@mantine/core';
 import { DateRangePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import ContentContainer from '../../layout/ContentContainer';
@@ -23,7 +23,7 @@ import Pluralize from 'react-pluralize';
 import AssignDriverModal from '../../modals/AssignDriverModal';
 import { setDrivers, useDrivers } from '../../store/features/driverSlice';
 import { setMembers, useMembers } from '../../store/features/memberSlice';
-import { fetchDrivers, fetchMembers, fetchCarrier } from '../../utils/functions';
+import { fetchDrivers, fetchMembers, fetchCarrier, generateInvoice } from '../../utils/functions';
 import ReviewModal from '../../modals/ReviewModal';
 import { createLoad } from '../../store/features/loadSlice';
 import axios from 'axios';
@@ -109,7 +109,8 @@ const marketplace = ({ session }) => {
 				showAssignmentModal(false);
 				setLoading(true);
 				const newLoad: Partial<Load> = (await axios.post(`/api/shipment/convert/${selectedShipment?.id}`, values)).data;
-				await dispatch(createLoad(newLoad)).unwrap();
+				const load = await dispatch(createLoad(newLoad)).unwrap();
+				generateInvoice(load)
 				notifySuccess('convert-shipment-to-load-success', 'You have successfully booked this load', <Check size={20} />);
 				setLoading(false);
 				await dispatch(
