@@ -5,6 +5,7 @@ import { intercomPlatform } from '@voyage-app/shared-utils';
 
 export const IntercomProvider = ({ session, children }) => {
 	const router = useRouter();
+	console.log(process.env.NEXT_PUBLIC_INTERCOM_APP_ID)
 
 	if (typeof window !== 'undefined') {
 		loadIntercom({
@@ -17,12 +18,6 @@ export const IntercomProvider = ({ session, children }) => {
 			initWindow: true, // default: true
 			delay: 0 // default: 0  - useful for mobile devices to prevent blocking the main thread
 		});
-		/*bootIntercom({
-			api_base: "https://api-iam.intercom.io",
-			user_id: session?.id,
-			name: session?.user.name,
-			email: session?.user.email,
-		});*/
 	} else {
 		loadIntercom({
 			appId: process.env.NEXT_PUBLIC_INTERCOM_APP_ID, // default : ''

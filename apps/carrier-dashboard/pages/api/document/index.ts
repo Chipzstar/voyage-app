@@ -38,7 +38,6 @@ export default async function handler(req, res) {
 	if (req.method === 'POST') {
 		try {
 			// generate a signed download URL for the user
-			const localFilename = '/Users/chiso/Downloads/test.pdf';
 			const url = await generateV4ReadSignedUrl(payload.filepath);
 			// create document in db using download url in location field of document in db
 			const document = await prisma.document.create({
@@ -49,7 +48,7 @@ export default async function handler(req, res) {
 				}
 			});
 			console.log(document);
-			console.log(`gs://${process.env.GCS_BUCKET_DOCUMENTS}/${payload.filepath} downloaded to ${localFilename}.`);
+			console.log(`gs://${process.env.GCS_BUCKET_DOCUMENTS}/${payload.filepath} downloaded!`);
 			res.status(200).json(document);
 		} catch (e) {
 			console.error(e);

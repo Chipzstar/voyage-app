@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { APP_ID } from '../utils/intercom';
 import { initIntercomWindow, loadIntercom, updateIntercom } from 'next-intercom';
 import { intercomPlatform } from '@voyage-app/shared-utils';
 
@@ -9,7 +8,7 @@ export const IntercomProvider = ({ session, children }) => {
 
 	if (typeof window !== "undefined") {
 		loadIntercom({
-			appId: APP_ID, // default : ''
+			appId: process.env.NEXT_PUBLIC_INTERCOM_APP_ID, // default : ''
 			name: session?.user.name,
 			email: session?.user.email,
 			user_id: session?.id,

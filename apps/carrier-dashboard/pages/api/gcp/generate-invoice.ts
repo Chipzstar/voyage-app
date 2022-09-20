@@ -37,6 +37,31 @@ function genInvoicePayload(invoiceId, load: Load, profile: Carrier, pdfLocation)
 	};
 }
 
+const generateV4ReadSignedUrl = (filepath) => {
+	return new Promise((resolve, reject) => {
+		// These options will allow temporary read access to the file
+		const options = {
+			version: 'v4',
+			action: 'read',
+			expires: Date.now() + 604800 * 950 // 7 days
+		};
+		// Get a v4 signed URL for reading the file
+		const file = BUCKET.file(filepath);
+		console.log(file);
+		// @ts-ignore
+		file.getSignedUrl(options, function(err, url) {
+			if (err) {
+				console.error(err);
+				reject(err);
+			}
+			console.log('Generated GET signed URL:');
+			console.log('URL', url);
+			console.log('You can use this URL with any user agent, for example:');
+			resolve(url);
+		});
+	});
+};
+
 export default async (req, res) => {
 	// Run the middleware
 	await runMiddleware(req, res, cors);
@@ -70,6 +95,7 @@ export default async (req, res) => {
 			vat: (load.rate * 0.2).toFixed(2),
 			totalDue: (load.rate * 1.2).toFixed(2)
 		});
+		const filepath = `CARRIERS/${profile.id}/invoices/${invoiceId}.pdf`
 
 		// simulate a chrome browser with puppeteer and navigate to a new page
 		const browser = await puppeteer.launch();
@@ -79,12 +105,15 @@ export default async (req, res) => {
 		await page.setContent(html, { waitUntil: 'networkidle0' });
 		// convert the page to pdf with the .pdf() method
 		const pdf = await page.pdf({ format: 'A4' });
-		const gcpFile = BUCKET.file(`CARRIERS/${profile.id}/invoices/${invoiceId}.pdf`);
+		const gcpFile = BUCKET.file(filepath);
 		const result = await gcpFile.save(pdf);
 		await browser.close();
 		console.log(result);
-		console.log(`Invoice ${invoiceId} has been stored at CARRIERS/${profile.id}/invoices/${invoiceId}.pdf`);
-		const payload = genInvoicePayload(invoiceId, load, profile, `gs://${process.env.GCS_BUCKET_NAME}/CARRIERS/${profile.id}/invoices/${invoiceId}.pdf`);
+		console.log(`Invoice ${invoiceId} has been stored at ${filepath}`);
+		// generate a signed download URL for the user
+		const url = await generateV4ReadSignedUrl(filepath);
+		console.log("Download URL: " + url);
+		const payload = genInvoicePayload(invoiceId, load, profile, url);
 		console.log(payload);
 		// create the invoice in db
 		const invoice = await prisma.invoice.create({

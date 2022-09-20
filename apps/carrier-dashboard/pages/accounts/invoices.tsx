@@ -32,41 +32,41 @@ const invoices = () => {
 
 	useEffect(() => console.log(invoices), [invoices]);
 
-	const rows = invoices.map((element, index) => {
+	const rows = invoices.map((invoice, index) => {
 		return (
 			<tr key={index}>
 				<td colSpan={1}>
-					<span className='text-secondary text-lg font-semibold'>{element.invoiceId}</span>
+					<span className='text-secondary text-lg font-semibold'>{invoice.invoiceId}</span>
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>{moment.unix(element.createdAt).format('MMM DD, YYYY')}</span>
+						<span>{moment.unix(invoice.createdAt).format('MMM DD, YYYY')}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(element.total).toFixed(2)}</span>
+						<span>£{(invoice.total).toFixed(2)}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span className='capitalize'>{sanitize(element.status)}</span>
+						<span className='capitalize'>{sanitize(invoice.status)}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
-					<div className='flex flex-shrink flex-col'>{element.status === INVOICE_STATUS.OVERDUE ? <span className='text-red-500'>Overdue 6 days</span> : <span>{moment.unix(element.dueDate).format('MMM DD, YYYY')}</span>}</div>
+					<div className='flex flex-shrink flex-col'>{invoice.status === INVOICE_STATUS.OVERDUE ? <span className='text-red-500'>Overdue 6 days</span> : <span>{moment.unix(invoice.dueDate).format('MMM DD, YYYY')}</span>}</div>
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(element.items[0].amountDue).toFixed(2)}</span>
+						<span>£{(invoice.items[0].amountDue).toFixed(2)}</span>
 					</div>
 				</td>
 				<td role='button' colSpan={2}>
-					<Group spacing='md' position='left'>
-						<ActionIcon size='md' onClick={() => alert('not working yet... 😜')}>
+					<a href={invoice.pdfLocation} target='_blank' download>
+						<ActionIcon size='md'>
 							<CloudDownload />
 						</ActionIcon>
-					</Group>
+					</a>
 				</td>
 			</tr>
 		);
