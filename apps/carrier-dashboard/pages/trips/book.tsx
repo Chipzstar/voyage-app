@@ -6,12 +6,12 @@ import prisma from '../../db';
 import Link from 'next/link';
 import { PACKAGE_TYPE, SelectInputData, VEHICLE_TYPES } from '@voyage-app/shared-types';
 import { Calendar, Check, ChevronDown, X } from 'tabler-icons-react';
-import { Anchor, Breadcrumbs, Paper, Loader, Modal, NumberInput, Select, Textarea, TextInput, Text, Divider, Button, Group } from '@mantine/core';
+import { Anchor, Breadcrumbs, Button, Divider, Group, Loader, Modal, NumberInput, Paper, Select, Text, Textarea, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@voyage-app/shared-ui-components';
 import ContentContainer from '../../layout/ContentContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { Load, NewBooking, TeamRole } from '../../utils/types';
-import { fetchCustomers, fetchDrivers, fetchMembers, fetchCarrier, fetchSettings, generateLoad } from '../../utils/functions';
+import { fetchCarrier, fetchCustomers, fetchDrivers, fetchMembers, fetchSettings, generateLoad } from '../../utils/functions';
 import { setDrivers, useDrivers } from '../../store/features/driverSlice';
 import { setMembers, useMembers } from '../../store/features/memberSlice';
 import { setCustomers, useCustomers } from '../../store/features/customerSlice';
@@ -105,18 +105,7 @@ const book = props => {
 			// convert the response into an array Buffer
 			return data.arrayBuffer();
 		};
-
-		// convert the buffer into an object URL
-		const saveAsPDF = async () => {
-			const buffer = await fetchData();
-			const blob = new Blob([buffer]);
-			const link = document.createElement('a');
-			link.href = URL.createObjectURL(blob);
-			link.download = 'invoice.pdf';
-			link.click();
-		};
-
-		saveAsPDF().then(r => console.log('PDF saved successfully!'));
+		fetchData().then(blob => console.log('PDF saved successfully!', blob));
 	};
 
 	const form = useForm<NewBooking>({

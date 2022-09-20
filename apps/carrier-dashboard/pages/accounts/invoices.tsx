@@ -45,7 +45,7 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(element.total / 100).toFixed(2)}</span>
+						<span>£{(element.total).toFixed(2)}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
@@ -58,7 +58,7 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(element.items[0].amountDue / 100).toFixed(2)}</span>
+						<span>£{(element.items[0].amountDue).toFixed(2)}</span>
 					</div>
 				</td>
 				<td role='button' colSpan={2}>

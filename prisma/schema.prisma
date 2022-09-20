@@ -266,7 +266,7 @@ type RateChargeRules {
 type InvoiceItem {
   itemId      String
   periodStart Int    @db.Long
-  periodEnd   Int    @db.Long
+  periodEnd   Int?   @db.Long
   type        String
   amountDue   Float
 }

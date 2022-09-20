@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset='UTF-8'>
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
 	<title>Invoice</title>
 	<style>
         body {
@@ -41,8 +41,6 @@
         }
 
         .invoice-box table tr.top table td.title {
-            font-size: 45px;
-            line-height: 45px;
             color: #333;
         }
 
@@ -104,22 +102,29 @@
 </head>
 
 <body>
-<div class="invoice-box">
-	<table cellpadding="0" cellspacing="0">
-		<tr class="top">
-			<td colspan="2">
+<div class='invoice-box'>
+	<table cellpadding='0' cellspacing='0'>
+		<tr class='top'>
+			<td colspan='2'>
 				<table>
 					<tr>
-						<td class="title">
-							<svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M35 0H0V35H35V0Z" fill="#3646F5"/>
-								<path d="M9.60547 8.5752H13.4831L17.2547 21.7639L21.0615 8.5752H24.8331L18.9047 25.9479H15.4749L9.60547 8.5752Z" fill="white"/>
+						<td class='title'>
+							<svg width='70' height='70' viewBox='0 0 70 70' fill='none'
+								 xmlns='http://www.w3.org/2000/svg'>
+								<path d='M35 0H0V35H35V0Z' fill='#3646F5' />
+								<path
+									d='M9.60547 8.5752H13.4831L17.2547 21.7639L21.0615 8.5752H24.8331L18.9047 25.9479H15.4749L9.60547 8.5752Z'
+									fill='white' />
 							</svg>
+							<br/>
+							<strong>Voyage</strong><br />
+							+447445 976637<br />
+							hello@usevoyage.com
 						</td>
 
 						<td>
-							Invoice #: {{invoiceId}}<br/>
-							Created: {{createdAt}}<br/>
+							Invoice #: {{invoiceId}}<br />
+							Created: {{createdAt}}<br />
 							Due: {{dueOn}}
 						</td>
 					</tr>
@@ -127,60 +132,56 @@
 			</td>
 		</tr>
 
-		<tr class="information">
-			<td colspan="2">
+		<tr class='information'>
+			<td colspan='2'>
 				<table>
 					<tr>
 						<td>
-							<strong>Voyage</strong><br/>
-							+447445 976637<br/>
-							hello@usevoyage.com
+							<strong>From</strong><br />
+							{{recipientCompany}}<br />
+							{{recipientName}}<br />
+							{{recipientEmail}}
 						</td>
-
 						<td>
-							<strong>Bill To</strong><br/>
-							{{company}}<br/>
-							{{customerName}}<br/>
-							{{email}}
+							<strong>Bill To</strong><br />
+							{{customerCompany}}<br />
+							{{customerName}}<br />
+							{{customerEmail}}
 						</td>
 					</tr>
 				</table>
 			</td>
 		</tr>
 
-		<tr class="heading">
+		<tr class='heading'>
 			<td>
 				Item
 			</td>
-
 			<td>
 				Price
 			</td>
 		</tr>
 
-		<tr class="item">
+		<tr class='item'>
 			<td>
 				{{tripId}}
 			</td>
-
 			<td>
 				£{{tripTotal}}
 			</td>
 		</tr>
 
-		<tr class="item last">
+		<tr class='item last'>
 			<td>
 				VAT (20%)
 			</td>
-
 			<td>
 				£{{vat}}
 			</td>
 		</tr>
 
-		<tr class="total">
+		<tr class='total'>
 			<td></td>
-
 			<td>
 				Total: £{{totalDue}}
 			</td>
