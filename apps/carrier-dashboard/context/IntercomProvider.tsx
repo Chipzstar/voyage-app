@@ -35,7 +35,7 @@ export const IntercomProvider = ({ session, children }) => {
 			user_id: session?.id
 		});
 	}
-	
+
 	useEffect(() => {
 		const handleRouteChange = url => {
 			if (typeof window !== 'undefined') {
