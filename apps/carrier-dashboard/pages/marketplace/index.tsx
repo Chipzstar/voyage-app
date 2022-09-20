@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
+import _ from 'lodash';
 import prisma from '../../db';
 import Link from 'next/link';
 import moment from 'moment/moment';
@@ -26,8 +28,6 @@ import { setMembers, useMembers } from '../../store/features/memberSlice';
 import { fetchDrivers, fetchMembers, fetchCarrier, generateInvoice } from '../../utils/functions';
 import ReviewModal from '../../modals/ReviewModal';
 import { createLoad } from '../../store/features/loadSlice';
-import axios from 'axios';
-import _ from 'lodash';
 import { Load } from '../../utils/types';
 import { setCarrier } from '../../store/features/profileSlice';
 import { useRouter } from 'next/router';
@@ -110,6 +110,7 @@ const marketplace = ({ session }) => {
 				setLoading(true);
 				const newLoad: Partial<Load> = (await axios.post(`/api/shipment/convert/${selectedShipment?.id}`, values)).data;
 				const load = await dispatch(createLoad(newLoad)).unwrap();
+				console.log("Final Load", load)
 				generateInvoice(load)
 				notifySuccess('convert-shipment-to-load-success', 'You have successfully booked this load', <Check size={20} />);
 				setLoading(false);
@@ -153,7 +154,6 @@ const marketplace = ({ session }) => {
 
 	const filterShipments = useCallback(
 		_.debounce((values: FilterFormProps) => {
-			console.log(values);
 			handlers.filter((s: Shipment) => {
 				let isValid = true;
 				if (values.pickup && s.pickup.city !== values.pickup) return false;
@@ -163,9 +163,7 @@ const marketplace = ({ session }) => {
 				if (values.equipment.length && !s.activitiesRequired.every(a => values.equipment.includes(a))) return false;
 				return isValid;
 			});
-			console.log('destroying filter');
 			clearInterval(subscriber);
-			console.log('creating new filter');
 			subscriber = setInterval(fetch, 5000, values);
 		}, 100),
 		[filtered]
@@ -175,7 +173,6 @@ const marketplace = ({ session }) => {
 		form.reset();
 		handlers.setState(shipments);
 		clearInterval(subscriber);
-		console.log('creating new filter');
 		subscriber = setInterval(fetch, 5000, initialValues);
 	};
 

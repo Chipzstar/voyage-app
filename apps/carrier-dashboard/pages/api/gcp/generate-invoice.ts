@@ -37,7 +37,7 @@ function genInvoicePayload(invoiceId, load: Load, profile: Carrier, pdfLocation)
 	};
 }
 
-const generateDownloadUrl = async (filepath, pdf) => {
+const generateDownloadUrl = async (filepath) => {
 	try {
 		// Get a v4 signed URL for reading the file
 		const file = BUCKET.file(filepath);
@@ -48,8 +48,6 @@ const generateDownloadUrl = async (filepath, pdf) => {
 		const publicUrl = file.publicUrl();
 		console.log('Download URL', publicUrl);
 		console.log('You can use this URL with any user agent, for example:');
-		const result = await file.save(pdf);
-		console.log(result)
 		return publicUrl;
 	} catch (err) {
 		console.error(err);
@@ -99,8 +97,11 @@ export default async (req, res) => {
 		await page.setContent(html, { waitUntil: 'networkidle0' });
 		// convert the page to pdf with the .pdf() method
 		const pdf = await page.pdf({ format: 'A4' });
+		const gcpFile = BUCKET.file(filepath);
+		const result = await gcpFile.save(pdf);
+		console.log(result)
 		// generate a public download URL for the user
-		const url = await generateDownloadUrl(filepath, pdf);
+		const url = await generateDownloadUrl(filepath);
 		await browser.close();
 		console.log(`Invoice ${invoiceId} has been stored at ${filepath}`);
 		const payload = genInvoicePayload(invoiceId, load, profile, url);
