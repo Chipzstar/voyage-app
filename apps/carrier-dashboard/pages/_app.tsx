@@ -7,6 +7,7 @@ import '../utils/string.extensions';
 import '@stripe/stripe-js';
 import Favicon from '../components/Favicon';
 import moment from 'moment-timezone';
+import { Session } from 'next-auth';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
@@ -31,9 +32,9 @@ moment.updateLocale('en', {
 });
 moment.locale('en');
 
-function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function App({ Component, pageProps }: AppProps<{session: Session}>) {
 	return (
-		<AuthProvider session={session}>
+		<AuthProvider session={pageProps.session}>
 			<MantineProvider
 				withGlobalStyles
 				withNormalizeCSS
@@ -49,7 +50,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 								<Favicon />
 								<title>Carrier Dashboard</title>
 							</Head>
-							<IntercomProvider session={session}>
+							<IntercomProvider session={pageProps.session}>
 								<Component {...pageProps} />
 							</IntercomProvider>
 						</Layout>

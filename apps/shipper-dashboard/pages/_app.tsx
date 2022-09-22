@@ -13,9 +13,10 @@ import Layout from '../layout/Layout';
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
+import { Session } from 'next-auth';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
-import { IntercomProvider } from '../context/IntercomProvider';
 
+import { IntercomProvider } from '../context/IntercomProvider';
 import Router from 'next/router';
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
@@ -33,9 +34,9 @@ moment.updateLocale('en', {
 });
 moment.locale('en');
 
-function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function App({ Component, pageProps }: AppProps<{session: Session}>) {
 	return (
-		<AuthProvider session={session}>
+		<AuthProvider session={pageProps.session}>
 			<MantineProvider
 				withGlobalStyles
 				withNormalizeCSS
@@ -51,7 +52,7 @@ function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 								<meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width' />
 								<title>Shipper Dashboard</title>
 							</Head>
-							<IntercomProvider session={session}>
+							<IntercomProvider session={pageProps.session}>
 								<Component {...pageProps} />
 							</IntercomProvider>
 						</Layout>
