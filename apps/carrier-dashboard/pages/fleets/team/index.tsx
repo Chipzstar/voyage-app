@@ -40,10 +40,11 @@ const team = () => {
 				</Text>
 			),
 			labels: { confirm: 'Delete', cancel: 'Cancel' },
-			onConfirm: () => dispatch(deleteMember(id))
-				.unwrap()
-				.then(res => notifySuccess('delete-member-success', 'Member deleted!', <Check size={20} />))
-				.catch(err => notifyError('delete-member-failure', `There was a problem deleting this member.\n${err.message}`, <X size={20} />)),
+			onConfirm: () =>
+				dispatch(deleteMember(id))
+					.unwrap()
+					.then(res => notifySuccess('delete-member-success', 'Member deleted!', <Check size={20} />))
+					.catch(err => notifyError('delete-member-failure', `There was a problem deleting this member.\n${err.message}`, <X size={20} />)),
 			onCancel: () => console.log('Cancel'),
 			classNames: {
 				title: 'modal-header'
@@ -98,23 +99,27 @@ const team = () => {
 					<span>{element.phone}</span>
 				</td>
 				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
+					<div className='flex flex-shrink flex-col'>
 						<Select
-							data={Object.values(TeamRole).map((role):SelectInputData => ({
-								value: role,
-                        label: capitalize(role.toLowerCase().replace(/_/g, ' '))
-							}))}
+							data={Object.values(TeamRole).map(
+								(role): SelectInputData => ({
+									value: role,
+									label: capitalize(role.toLowerCase().replace(/_/g, ' '))
+								})
+							)}
 							value={element.role}
 							variant='unstyled'
 							onChange={(value: TeamRole) => {
-								dispatch(updateMember({ id: element.id, role: value })).unwrap().then((res) => {
-									console.log("RESULT", res);
-									notifySuccess('edit-member-success', `${element.firstName} has a new role of ${capitalize(sanitize(value))}!`, <Check size={20} />)
-								}).catch(err => {
-									console.error(err)
-									notifyError('edit-member-failure', `There was a problem changing this member's role to ${capitalize(sanitize(value))}`, <X size={20} />)
-								})
-
+								dispatch(updateMember({ id: element.id, role: value }))
+									.unwrap()
+									.then(res => {
+										console.log('RESULT', res);
+										notifySuccess('edit-member-success', `${element.firstName} has a new role of ${capitalize(sanitize(value))}!`, <Check size={20} />);
+									})
+									.catch(err => {
+										console.error(err);
+										notifyError('edit-member-failure', `There was a problem changing this member's role to ${capitalize(sanitize(value))}`, <X size={20} />);
+									});
 							}}
 						/>
 					</div>
@@ -142,7 +147,7 @@ const team = () => {
 	});
 	return (
 		<ContentContainer classNames='py-4 px-8 h-screen'>
-			<div className='flex justify-between items-center mt-2 mb-6'>
+			<div className='mt-2 mb-6 flex items-center justify-between'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} onChange={e => debouncedSearch(e.target.value)} placeholder='Search for name, email or phone' size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_MEMBER)}>
 					<span className='text-base'>Add member</span>
@@ -152,7 +157,16 @@ const team = () => {
 				activePage={activePage}
 				setPage={setPage}
 				rows={rows}
-				headings={['Full Name', 'Email', 'Phone', 'Role', 'Actions']}
+				headings={[
+					{ label: 'Full Name', key: null },
+					{ label: 'Email', key: null },
+					{
+						label: 'Phone',
+						key: null
+					},
+					{ label: 'Role', key: null },
+					{ label: 'Actions', key: null }
+				]}
 				emptyContent={
 					<Empty
 						message={
@@ -183,7 +197,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let members = await fetchMembers(token?.carrierId, prisma)
+		let members = await fetchMembers(token?.carrierId, prisma);
 		store.dispatch(setMembers(members));
 	}
 	return {
@@ -193,4 +207,4 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	};
 });
 
-export default team
+export default team;

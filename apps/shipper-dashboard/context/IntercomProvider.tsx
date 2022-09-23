@@ -5,7 +5,6 @@ import { intercomPlatform } from '@voyage-app/shared-utils';
 
 export const IntercomProvider = ({ session, children }) => {
 	const router = useRouter();
-	console.log(process.env.NEXT_PUBLIC_INTERCOM_APP_ID)
 
 	if (typeof window !== 'undefined') {
 		loadIntercom({

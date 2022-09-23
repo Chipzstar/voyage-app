@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useForm } from '@mantine/form';
-import { Button, PasswordInput, Text, TextInput } from '@mantine/core';
-import { Lock, Mail } from 'tabler-icons-react';
+import { Button, Loader, PasswordInput, Text, TextInput } from '@mantine/core';
+import { Lock, Mail, X } from 'tabler-icons-react';
 import { useRouter } from 'next/router';
 import { getCsrfToken, signIn } from 'next-auth/react';
 import { PATHS } from '../utils/constants';
@@ -9,8 +9,10 @@ import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import moment from 'moment';
 import prisma from '../db';
+import { notifyError } from '@voyage-app/shared-utils';
 
 const login = ({ csrfToken, ...props }) => {
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	const form = useForm({
 		initialValues: {
@@ -25,6 +27,7 @@ const login = ({ csrfToken, ...props }) => {
 
 	const handleSignIn = useCallback(async values => {
 		try {
+			setLoading(true)
 			const { ok, error } = await signIn('credentials', {
 				email: values.email,
 				password: values.password,
@@ -34,15 +37,18 @@ const login = ({ csrfToken, ...props }) => {
 			if (ok) {
 				console.log('Login Success');
 				await router.replace('/');
+				setLoading(false)
 				return;
 			}
 			// Something went wrong
 			if (error) {
+				setLoading(false)
 				return null;
 			}
 		} catch (error) {
-			// handle error here (eg. display message to user)
+			notifyError('user-login-failure', error.error, <X size={20} />)
 			console.log(error.error);
+			setLoading(false)
 		}
 	}, []);
 
@@ -80,6 +86,7 @@ const login = ({ csrfToken, ...props }) => {
 							}}
 							className='text-normal h-12 w-full text-center text-white'
 						>
+							{loading && <Loader size='xs' className='mr-2' />}
 							<Text color='white' size='lg'>
 								Log in
 							</Text>

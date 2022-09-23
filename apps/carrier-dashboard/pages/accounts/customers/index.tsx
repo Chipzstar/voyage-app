@@ -3,7 +3,7 @@ import { PATHS, PUBLIC_PATHS } from '../../../utils/constants';
 import { useRouter } from 'next/router';
 import ContentContainer from '../../../layout/ContentContainer';
 import { ActionIcon, Group, Text, TextInput } from '@mantine/core';
-import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react'
+import { Check, Pencil, Search, Trash, X } from 'tabler-icons-react';
 import DataGrid from '../../../components/DataGrid';
 import { Empty } from '@voyage-app/shared-ui-components';
 import { notifyError, notifySuccess, sanitize } from '@voyage-app/shared-utils';
@@ -17,7 +17,7 @@ import { getToken } from 'next-auth/jwt';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../../api/auth/[...nextauth]';
 import prisma from '../../../db';
-import { fetchCustomers } from '../../../utils/functions'
+import { fetchCustomers } from '../../../utils/functions';
 
 const customers = () => {
 	const modals = useModals();
@@ -82,7 +82,7 @@ const customers = () => {
 					<span>{element.fullName}</span>
 				</td>
 				<td colSpan={1} className='w-64'>
-					<div className='flex flex-col flex-shrink flex-wrap'>
+					<div className='flex flex-shrink flex-col flex-wrap'>
 						<span>
 							{element.addressLine1} {element.addressLine2}
 						</span>
@@ -118,7 +118,7 @@ const customers = () => {
 	});
 	return (
 		<ContentContainer classNames='py-4 px-8 h-screen'>
-			<div className='flex justify-between items-center mt-2 mb-6'>
+			<div className='mt-2 mb-6 flex items-center justify-between'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, email or phone' onChange={e => debouncedSearch(e.target.value)} size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_ACCOUNT)}>
 					<span className='text-base'>New Account</span>
@@ -128,7 +128,20 @@ const customers = () => {
 				activePage={activePage}
 				setPage={setPage}
 				rows={rows}
-				headings={['Account Name', 'POC', 'Address', 'Contact Email', 'Account Type', 'Actions']}
+				headings={[
+					{ label: 'Account Name', key: null },
+					{ label: 'POC', key: null },
+					{
+						label: 'Address',
+						key: null
+					},
+					{ label: 'Contact Email', key: null },
+					{ label: 'Account Type', key: null },
+					{
+						label: 'Actions',
+						key: null
+					}
+				]}
 				emptyContent={
 					<Empty
 						message={
@@ -159,7 +172,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let customers = await fetchCustomers(token?.carrierId, prisma)
+		let customers = await fetchCustomers(token?.carrierId, prisma);
 		store.dispatch(setCustomers(customers));
 	}
 	return {
@@ -169,4 +182,4 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	};
 });
 
-export default customers
+export default customers;

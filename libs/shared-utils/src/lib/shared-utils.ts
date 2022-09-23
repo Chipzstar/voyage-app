@@ -11,6 +11,28 @@ interface selectInput {
 	label: string;
 }
 // functions
+export function getPropByString(obj, propString) {
+	if (!propString)
+		return obj;
+
+	let prop, props = propString.split('.');
+
+	let i = 0
+	let iLen = props.length - 1
+	while (i < iLen) {
+		prop = props[i];
+
+		let candidate = obj[prop];
+		if (candidate !== undefined) {
+			obj = candidate;
+		} else {
+			break;
+		}
+		i++
+	}
+	console.log(obj[props[i]]);
+	return obj[props[i]];
+}
 export function capitalize(str: string): string {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 

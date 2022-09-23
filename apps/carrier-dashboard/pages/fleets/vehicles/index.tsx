@@ -69,7 +69,7 @@ const vehicles = () => {
 	);
 
 	useEffect(() => {
-		setFilter(vehicles)
+		setFilter(vehicles);
 	}, [vehicles]);
 
 	const rows = filteredVehicles.map((v, index) => {
@@ -89,12 +89,12 @@ const vehicles = () => {
 					<span className='capitalize'>{v.status.replace(/-/g, ' ')}</span>
 				</td>
 				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
+					<div className='flex flex-shrink flex-col'>
 						<span className='capitalize'>{foundDriver ? foundDriver.fullName : '-'}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
+					<div className='flex flex-shrink flex-col'>
 						<span className='capitalize'>{v.regNumber}</span>
 					</div>
 				</td>
@@ -128,7 +128,7 @@ const vehicles = () => {
 
 	return (
 		<ContentContainer classNames='py-4 px-8 h-screen'>
-			<div className='flex justify-between items-center mt-2 mb-6'>
+			<div className='mt-2 mb-6 flex items-center justify-between'>
 				<TextInput className='w-96' radius={0} icon={<Search size={18} />} placeholder='Search for name, model, make or reg no.' onChange={e => debouncedSearch(e.target.value)} size='md' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_VEHICLE)}>
 					<span className='text-base'>Add vehicle</span>
@@ -138,7 +138,21 @@ const vehicles = () => {
 				activePage={activePage}
 				setPage={setPage}
 				rows={rows}
-				headings={['Vehicle Name', 'Make', 'Model', 'Status', 'Current Driver', 'Reg No.', 'Actions']}
+				headings={[
+					{ label: 'Vehicle Name', key: null },
+					{ label: 'Make', key: null },
+					{
+						label: 'Model',
+						key: null
+					},
+					{ label: 'Status', key: null },
+					{ label: 'Current Driver', key: null },
+					{
+						label: 'Reg No.',
+						key: null
+					},
+					{ label: 'Actions', key: null }
+				]}
 				emptyContent={
 					<Empty
 						message={
@@ -169,9 +183,9 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let drivers = await fetchDrivers(token?.carrierId, prisma)
-		let vehicles = await fetchVehicles(token?.carrierId, prisma)
-		store.dispatch(setDrivers(drivers))
+		let drivers = await fetchDrivers(token?.carrierId, prisma);
+		let vehicles = await fetchVehicles(token?.carrierId, prisma);
+		store.dispatch(setDrivers(drivers));
 		store.dispatch(setVehicles(vehicles));
 	}
 	return {

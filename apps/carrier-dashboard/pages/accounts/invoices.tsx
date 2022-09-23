@@ -19,7 +19,7 @@ import { INVOICE_STATUS } from '@voyage-app/shared-types';
 import { setInvoices, useInvoices } from '../../store/features/invoiceSlice';
 
 const Empty = ({ message }) => (
-	<div className='flex flex-col grow items-center justify-center'>
+	<div className='flex grow flex-col items-center justify-center'>
 		<span className='text-3xl font-semibold'>{message}</span>
 	</div>
 );
@@ -45,7 +45,7 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(invoice.items[0].amountDue).toFixed(2)}</span>
+						<span>£{invoice.items[0].amountDue.toFixed(2)}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
@@ -58,7 +58,7 @@ const invoices = () => {
 				</td>
 				<td colSpan={1}>
 					<div className='flex flex-shrink flex-col'>
-						<span>£{(invoice.total).toFixed(2)}</span>
+						<span>£{invoice.total.toFixed(2)}</span>
 					</div>
 				</td>
 				<td role='button' colSpan={2}>
@@ -81,7 +81,21 @@ const invoices = () => {
 				activePage={activePage}
 				setPage={setPage}
 				rows={rows}
-				headings={['Invoice ID', 'Date Created', 'Amount', 'Paid', 'Date Due', 'Balance Due', 'Download']}
+				headings={[
+					{ label: 'Invoice ID', key: null },
+					{ label: 'Date Created', key: null },
+					{
+						label: 'Amount',
+						key: null
+					},
+					{ label: 'Paid', key: null },
+					{ label: 'Date Due', key: null },
+					{
+						label: 'Balance Due',
+						key: null
+					},
+					{ label: 'Download', key: null }
+				]}
 				emptyContent={<Empty message='No Invoices Created' />}
 			/>
 		</ContentContainer>

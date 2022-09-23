@@ -310,3 +310,8 @@ export interface Invoice {
 	dueDate: UnixTimestamp;
 	total: number
 }
+
+export type TableHeadings = {
+	label: string;
+	key: string | null
+}

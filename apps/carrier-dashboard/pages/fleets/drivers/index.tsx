@@ -88,17 +88,17 @@ const drivers = () => {
 					<span>{element.defaultPhone}</span>
 				</td>
 				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
+					<div className='flex flex-shrink flex-col'>
 						<span>{element.city}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
+					<div className='flex flex-shrink flex-col'>
 						<span>{element.postcode}</span>
 					</div>
 				</td>
 				<td colSpan={1}>
-					<div className='flex flex-col flex-shrink'>
+					<div className='flex flex-shrink flex-col'>
 						<Switch checked={element.isActive} onChange={() => console.log('')} />
 					</div>
 				</td>
@@ -134,7 +134,7 @@ const drivers = () => {
 
 	return (
 		<ContentContainer classNames='py-4 px-8 h-screen flex flex-col'>
-			<div className='flex justify-between items-center mt-2 mb-6'>
+			<div className='mt-2 mb-6 flex items-center justify-between'>
 				<TextInput className='w-96' size='md' radius={0} icon={<Search size={18} />} onChange={e => debouncedSearch(e.target.value)} placeholder='Search for name, email or phone' />
 				<button className='voyage-button' onClick={() => router.push(PATHS.NEW_DRIVER)}>
 					<span className='text-base'>Add Driver</span>
@@ -145,7 +145,21 @@ const drivers = () => {
 				activePage={activePage}
 				setPage={setPage}
 				spacingY='md'
-				headings={['Driver Name', 'Email', 'Phone', 'City', 'Postcode', 'Status', 'Actions']}
+				headings={[
+					{ label: 'Driver Name', key: null },
+					{
+						label: 'Email',
+						key: null
+					},
+					{ label: 'Phone', key: null },
+					{ label: 'City', key: null },
+					{
+						label: 'Postcode',
+						key: null
+					},
+					{ label: 'Status', key: null },
+					{ label: 'Actions', key: null }
+				]}
 				emptyContent={
 					<Empty
 						message={
@@ -175,7 +189,7 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 		};
 	}
 	if (session.id) {
-		let drivers = await fetchDrivers(token?.carrierId, prisma)
+		let drivers = await fetchDrivers(token?.carrierId, prisma);
 		store.dispatch(setDrivers(drivers));
 	}
 	return {
@@ -185,4 +199,4 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ r
 	};
 });
 
-export default drivers
+export default drivers;

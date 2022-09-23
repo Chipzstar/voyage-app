@@ -6,13 +6,13 @@ import PageContainer from '../../layout/PageContainer';
 import { fetchLoads, fetchCarrier } from '../../utils/functions';
 import prisma from '../../db';
 import { setCarrier } from '../../store/features/profileSlice';
-import { setLoads, useLoads, getLoads } from '../../store/features/loadSlice';
+import { setLoads, getLoads } from '../../store/features/loadSlice';
 import { AppDispatch, wrapper } from '../../store';
 import { unstable_getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { PUBLIC_PATHS } from '../../utils/constants';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 let subscriber;
 
@@ -26,7 +26,6 @@ const TAB_LABELS = {
 const trips = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const [activeTab, setActiveTab] = useState<string | null>(TAB_LABELS.UPCOMING);
-	const loads = useSelector(useLoads);
 
 	function fetch() {
 		dispatch(getLoads()).unwrap().then(r => null);
@@ -48,16 +47,22 @@ const trips = () => {
 				</Tabs.List>
 
 				<Tabs.Panel value={TAB_LABELS.UPCOMING}>
-					<Trips loads={loads} statuses={[STATUS.NEW, STATUS.PENDING]} message={<span className='text-center text-2xl'>You have no upcoming loads!</span>} />
+					<Trips
+						statuses={[STATUS.NEW, STATUS.PENDING]}
+						message={<span className='text-center text-2xl'>You have no upcoming loads!</span>}
+					/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.IN_TRANSIT}>
-					<Trips loads={loads} statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]} message={<span className='text-center text-2xl'>You have no loads in-transit</span>} />
+					<Trips
+						statuses={[STATUS.EN_ROUTE, STATUS.DISPATCHED, STATUS.AT_DROPOFF, STATUS.AT_PICKUP]}
+						message={<span className='text-center text-2xl'>You have no loads in-transit</span>}
+					/>
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.COMPLETED}>
-					<Trips loads={loads} statuses={[STATUS.COMPLETED]} message={<span className='text-center text-2xl'>You have no completed trips</span>} />
+					<Trips statuses={[STATUS.COMPLETED]} message={<span className='text-center text-2xl'>You have no completed trips</span>} />
 				</Tabs.Panel>
 				<Tabs.Panel value={TAB_LABELS.LATE}>
-					<Trips loads={loads} statuses={[]} message={<span className='text-center text-2xl'>All your trips are on schedule!</span>} />
+					<Trips statuses={[]} message={<span className='text-center text-2xl'>All your trips are on schedule!</span>} />
 				</Tabs.Panel>
 			</Tabs>
 		</PageContainer>
